@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Net;
 using System.IO;
-using System.Windows.Forms;
 
 namespace XMReaderConsole
 {
@@ -39,12 +37,14 @@ namespace XMReaderConsole
 
         public void fetch()
         {
-            TheReply = (HttpWebResponse) TheRequest.GetResponse();
+            TheRequest.Timeout = 30000;
+            TheReply = (HttpWebResponse)TheRequest.GetResponse();
         }
 
         public void fetch(String postdata)
         {
             TheRequest.Method = "POST";
+            TheRequest.CookieContainer = new CookieContainer();
             byte[] buffer = Encoding.ASCII.GetBytes(postdata);
             TheRequest.ContentType = "application/x-www-form-urlencoded";
             TheRequest.ContentLength = buffer.Length;
@@ -56,13 +56,13 @@ namespace XMReaderConsole
             TheReply = (HttpWebResponse)TheRequest.GetResponse();
         }
 
-        public int response()
+        public int getStatus()
         {
             int statusCode = (int) TheReply.StatusCode;
             return statusCode;
         }
 
-        public String result()
+        public String response()
         {
             StreamReader Stream = new StreamReader(TheReply.GetResponseStream());
             String result = Stream.ReadToEnd();
@@ -71,9 +71,13 @@ namespace XMReaderConsole
             return result;
         }
 
+        public void close()
+        {
+            TheReply.Close();
+        }
+
         public CookieCollection getCookies()
         {
-            //MessageBox.Show(TheReply.Cookies.Count.ToString());
             return TheReply.Cookies;
             
         }

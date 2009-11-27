@@ -1,49 +1,57 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Linq;
-using System.Text;
 using System.Net;
 using System.Xml;
 using System.IO;
-using System.Security;
+using System.Text;
 
 namespace XMReaderConsole
 {
     class WebListner
     {
         private static System.Threading.AutoResetEvent listenForNextRequest = new System.Threading.AutoResetEvent(false);
-        String port = "9955";
+        String port;
         HttpListener theServer = new HttpListener();
         String prefix;
         XMTuner myTuner;
+        
         String serverHost;
         
         public bool isRunning = false;
-       
 
-        public WebListner(XMTuner tuner)
+
+        public WebListner(XMTuner tuner, String newport)
         {
+            if (Convert.ToInt32(newport) < 2)
+            {
+                port = "9955";
+            }
+            else
+            {
+                port = newport;
+            }
+
             myTuner = tuner;
             prefix = "http://*:" + port + "/";
         }
 
         public void start()
         {
+            myTuner.output("Starting server...", "info");
             theServer.Prefixes.Clear();
             theServer.Prefixes.Add(prefix);
             theServer.Start();
-            myTuner.output("Webserver started");
+            myTuner.output("Server started", "info");
+            myTuner.output("Listening on port " + port, "info");
 
             System.Threading.ThreadPool.QueueUserWorkItem(listen);
-            //MethodInvoker simpleDelegate = new MethodInvoker(listen);
-            //simpleDelegate.BeginInvoke(null, null);
         }
 
         public void stop()
         {
             theServer.Close();
-            myTuner.output("Webserver stopped");
+            myTuner.output("Server stopped", "info");
         }
 
         private void listen(object state)
@@ -52,14 +60,12 @@ namespace XMReaderConsole
             {
                 IAsyncResult result = theServer.BeginGetContext(new AsyncCallback(ListenerCallback), theServer);
                 listenForNextRequest.WaitOne();
-                //result.AsyncWaitHandle.WaitOne();
             }
         }
 
         private void ListenerCallback(IAsyncResult result)
         {
             HttpListener listener = (HttpListener) result.AsyncState;
-            //HttpListenerContext context;
 
             if (listener == null)
             {
@@ -77,40 +83,13 @@ namespace XMReaderConsole
             ProcessRequest(context);
         }
 
-        public void SendRequest(HttpListenerContext context, String responseString, String contentType, bool redirect)
-        {
-            // Obtain a response object.
-            HttpListenerResponse response = context.Response;
-
-            //Set ContentType...
-            if (contentType != "")
-            {
-                response.ContentType = contentType;
-            }
-            if (redirect)
-            {
-                response.Redirect(responseString);
-            }
-
-            // Construct a response.
-            byte[] buffer = System.Text.Encoding.UTF8.GetBytes(responseString);
-            // Get a response stream and write the response to it.
-            response.ContentLength64 = buffer.Length;
-            System.IO.Stream output = response.OutputStream;
-            output.Write(buffer, 0, buffer.Length);
-            // You must close the output stream.
-            output.Close();
-
-        }
-
         protected void ProcessRequest(HttpListenerContext context)
         {
             //do work
-            myTuner.output("Incoming Request...");
             HttpListenerRequest request = context.Request;
             serverHost = request.UserHostName;
             String requestURL = request.Url.PathAndQuery;
-            myTuner.output("For: "+requestURL);
+            myTuner.output("Incoming Request: (Source: " + request.RemoteEndPoint + ") " + request.HttpMethod + " - " + requestURL, "debug");
 
             char[] seperator = new char[] { '/' };
             String[] parsedURL = requestURL.Split(seperator, 2, StringSplitOptions.RemoveEmptyEntries);
@@ -133,54 +112,188 @@ namespace XMReaderConsole
 
             if (baseURL.Equals("streams"))
             {
-                //Do Action for Stream
-                string responseString = DoStream(methodURL);
-                SendRequest(context, responseString, "audio/x-ms-wma", true);
+                // Parse URL
+                String[] streamParams = parseStreamURL(methodURL);
+
+                //Validate Channel
+                string chanName = myTuner.checkChannel(Convert.ToInt32(streamParams[0]));
+                if (!chanName.Equals(""))
+                {
+                    myTuner.output("Incoming Stream Request for XM" + streamParams[0] + " - " + chanName + "", "info");
+                    //Do Action for Stream
+                    string responseString = DoStream(streamParams);
+                    if (responseString == null)
+                    {
+                        String errorMsg = "<html><body><h1>Service Unavailable</h1> "+
+                                          "<p>Stream Error: Unable to fetch XM stream URL. (XMRO Not Logged In or Down)</p>" +
+                                          "</body></html>";
+                        SendRequest(context, null, errorMsg, "text/html", false, HttpStatusCode.ServiceUnavailable);
+                    }
+                    else
+                    {
+                        SendRequest(context, null, responseString, "audio/x-ms-wma", true, HttpStatusCode.OK);
+                    }
+                }
+                else
+                {
+                    myTuner.output("Incoming Stream Request for Unknown XM Channel", "error");
+                    SendRequest(context, null, "Invalid Channel Stream Request", "text/plain", false, HttpStatusCode.OK);
+                }
             }
             else if (baseURL.Equals("feeds"))
             {
                 //Do Action for Feeds
                 NameValueCollection URLParams = request.QueryString;
-                string responseString = DoFeed(methodURL,URLParams);
-                SendRequest(context, responseString, "text/xml;charset=UTF-8", false);
+                Boolean useMMS;
+                if (request.UserAgent.Contains("TVersity"))
+                {
+                    useMMS = true;
+                }
+                else
+                {
+                    useMMS = false;
+                }
+
+                MemoryStream stream = DoFeed(methodURL, URLParams, useMMS);
+                SendRequest(context, stream, null, "text/xml;charset=UTF-8", false, HttpStatusCode.OK);
             }
             else
             {
                 string responseString = "<HTML><BODY>Unknown Request</BODY></HTML>";
-                SendRequest(context, responseString, "", false);
+                SendRequest(context, null, responseString, "", false, HttpStatusCode.OK);
             }
+            myTuner.output("Incoming Request Completed", "debug");
         }
 
-        public string DoStream(string methodURL)
+        private void SendRequest(HttpListenerContext context, MemoryStream input, String responseString,
+            String contentType, bool redirect, HttpStatusCode status)
         {
-            String response = "";
+            //Process data we're given and write to the outputstream for the client.
+            // We accept either an memorystream or a responseString, not both.
 
+            // Obtain a response object (and get its outputstream).
+            HttpListenerResponse response = context.Response;
+            Stream output = response.OutputStream;
+
+            //Try to fetch the Range header...
+            String range = context.Request.Headers.Get("Range");
+            Int32 maxrange = -1;
+            if (range != null)
+            {
+                String[] rangeGrp = range.Split('-');
+                maxrange = Convert.ToInt32(rangeGrp[1]);
+            }
+
+            response.StatusCode = (int) status;
+
+            //Set ContentType... (if provided)
+            if (contentType != "")
+            {
+                response.ContentEncoding = System.Text.Encoding.UTF8;
+                response.ContentType = contentType;
+            }
+
+            //If redirect is true, responseString is the destination to redirect to.
+            // Do the redirect.
+            if (redirect)
+            {
+                response.Redirect(responseString);
+            }
+
+            // Construct a response. (for the build from responseString case)
+            byte[] buffer = System.Text.Encoding.UTF8.GetBytes("");
+            if (responseString != null)
+            {
+                buffer = System.Text.Encoding.UTF8.GetBytes(responseString);
+            }
+
+            //Write to the output buffer and send it to the client..
+            // Hopefully not crashing because the client ran away in the meantime
+            try
+            {
+                if (responseString != null)
+                {
+                    response.ContentLength64 = buffer.Length;
+                    // Get a response stream and write the response to it.
+                    output.Write(buffer, 0, buffer.Length);
+                }
+                else if (input != null)
+                {
+                    if (maxrange < input.Length && maxrange != -1)
+                    {
+
+                    }
+                    else
+                    {
+                        response.ContentLength64 = input.Length;
+                        input.WriteTo(output);
+                    }
+                }
+                // You must close the output stream.
+                output.Close();
+
+            }
+            catch (HttpListenerException e)
+            {
+                response.Abort();
+                myTuner.output("Error - Request Aborted Abnormally (" + e.Message + ")", "debug");
+            }
+
+
+        }
+
+        public String[] parseStreamURL(string methodURL)
+        {
             String[] args = methodURL.Split('/');
             if (args.Length > 0)
             {
-                int ChanNum = Convert.ToInt32(args[0]);
-                string bitrate;
+                //int ChanNum = Convert.ToInt32(args[0]);
+                String ChanNum = args[0];
+                String bitrate = "";
                 if (args.Length > 1)
                 {
                     bitrate = args[1];
                 }
-                else
-                {
-                    //Fetch default bitrate from config!
-                    bitrate = myTuner.bitrate;
-                }
+                //return ChanNum, bitrate;
+                String[] streamParams = new String[2];
+                streamParams[0] = ChanNum;
+                streamParams[1] = bitrate;
 
-                string channelURL = myTuner.play(ChanNum, bitrate);
-                return channelURL;
+                return streamParams;
             }
+            return null;
 
-            return response;
         }
 
-        public string DoFeed(string methodURL, NameValueCollection URLparams)
+        public string DoStream(string[] streamParams)
+        {
+            int ChanNum = Convert.ToInt32(streamParams[0]);
+            string bitrate;
+            if (streamParams[1].Length > 1)
+            {
+                bitrate = streamParams[1];
+            }
+            else
+            {
+                //Fetch default bitrate from config!
+                bitrate = myTuner.bitrate;
+            }
+
+            string channelURL = myTuner.play(ChanNum, bitrate);
+            return channelURL;
+        }
+
+        public MemoryStream DoFeed(string methodURL, NameValueCollection URLparams, bool UseMMS)
         {
             String bitrate = myTuner.bitrate;
-            bitrate = URLparams["bitrate"];
+            if (URLparams.Get("bitrate") != null) 
+            {
+                if (URLparams["bitrate"].ToLower().Equals("high") ||
+                    URLparams["bitrate"].ToLower().Equals("low"))
+                {
+                    bitrate = URLparams["bitrate"].ToLower();
+                }
+            }
             String bitrate_desc ="";
             if (bitrate.Equals("high"))
             {
@@ -189,129 +302,16 @@ namespace XMReaderConsole
             {
                 bitrate_desc = "32 Kbps";
             }
+
+            myTuner.output("Incoming Feed Request: XM Channels (All - "+bitrate_desc+")", "info");
+
             String link = "http://"+serverHost+"/feeds/?bandwidth="+bitrate;
 
             List <XMChannel> list = myTuner.getChannels();
-            list.Sort();
-            list.Reverse();
+            XMLWorker myLittleWorker = new XMLWorker();
+            MemoryStream OutputStream = myLittleWorker.CreateXMFeed(list, bitrate, serverHost, UseMMS);
 
-            StringWriter feedWriter = new StringWriter();
-            //Create a writer to write XML to the console.
-            XmlTextWriter writer = new XmlTextWriter(feedWriter);
-
-            //Use indentation for readability.
-            writer.Formatting = Formatting.Indented;
-            writer.Indentation = 4;
-
-            writer.WriteStartDocument();
-            //writer.WriteString("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-
-            //Write an element (this one is the root).
-            writer.WriteStartElement("rss");
-            writer.WriteAttributeString("version", "2.0");
-            writer.WriteAttributeString("xmlns:media", "http://search.yahoo.com/mrss/");
-            writer.WriteAttributeString("xmlns:upnp", "urn:schemas-upnp-org:metadata-1-0/upnp/");
-            
-            writer.WriteStartElement("channel");
-
-            //Write the title element.
-            writer.WriteStartElement("title");
-            writer.WriteString("XM Channels ("+bitrate_desc+")");
-            writer.WriteEndElement();
-
-            writer.WriteStartElement("link");
-            writer.WriteString(link);
-            writer.WriteEndElement();
-
-            writer.WriteStartElement("guid");
-            writer.WriteString(link);
-            writer.WriteEndElement();
-
-            writer.WriteStartElement("description");
-            writer.WriteString("English");
-            writer.WriteEndElement();
-
-            writer.WriteStartElement("language");
-            writer.WriteString("en-us");
-            writer.WriteEndElement();
-
-
-            
-
-            //feed = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
-            //feed += "<rss version=\"2.0\" xmlns:media=\"http://search.yahoo.com/mrss/\" xmlns:upnp=\"urn:schemas-upnp-org:metadata-1-0/upnp/\">\n";
-            //feed += "  <channel>\n";
-            //feed += "    <title>XM Channels (" + bitrate_desc + ")</title>\n";
-            //feed += "    <link>" + link + "</link>\n";
-            //feed += "    <description>English</description>\n";
-            //feed += "    <language>en-us</language>\n";
-
-            //Channels
-            foreach (XMChannel chan in list)
-            {
-                string media = "http://"+serverHost+"/streams/"+chan.num+"/"+bitrate;
-                writer.WriteStartElement("item");
-
-                //feed += "    <item>\n";
-                writer.WriteStartElement("title");
-                writer.WriteString("XM " + chan.num + " - " + chan.name);
-                writer.WriteEndElement();
-
-                //feed += "      <title>XM " + chan.num + " - " + chan.name + "</title>\n";
-
-                writer.WriteStartElement("link");
-                writer.WriteString(media);
-                writer.WriteEndElement();
-
-                //feed += "      <link>"+media+"</link>\n";
-
-                writer.WriteStartElement("link");
-                writer.WriteString(chan.desc);
-                writer.WriteEndElement();
-                //feed += "      <description>" + chan.desc + "</description>\n";
-
-                writer.WriteStartElement("media:content");
-                writer.WriteAttributeString("url",media);
-                writer.WriteAttributeString("type","audio/x-ms-wma");
-                writer.WriteAttributeString("medium","audio");
-                writer.WriteEndElement();
-
-                //feed += "      <media:content url=\""+media+"\" type=\"audio/x-ms-wma\" medium=\"audio\" />\n";
-
-                writer.WriteStartElement("language");
-                writer.WriteString("en-us");
-                writer.WriteEndElement();
-
-                //feed += "      <language>en-us</language>\n";
-
-                writer.WriteStartElement("upnp:region");
-                writer.WriteString("United States");
-                writer.WriteEndElement();
-
-                //feed += "      <upnp:region>United States</upnp:region>\n";
-                //feed += "    </item>\n";
-                writer.WriteEndElement();
-            }
-
-            //feedWriter.Write("<test>value</test>");
-
-            //Close channel
-            writer.WriteEndElement();
-
-            //Write the close tag for the root element.
-            writer.WriteEndElement();
-
-
-            //Write the XML to file and close the writer.
-            writer.Close();
-
-            String feed = feedWriter.ToString();
-
-
-            //feed += "  </channel>";
-            //feed += "</rss>";
-
-            return feed;
+            return OutputStream;
         }
     }
 }

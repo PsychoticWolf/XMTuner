@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Timers;
+//using System.Timers;
 using System.Net;
-using System.Windows.Forms;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Windows.Forms;
+//using System.Drawing;
 
 namespace XMReaderConsole
 {
@@ -14,11 +13,12 @@ namespace XMReaderConsole
     {
         String user;
         String password;
+        RichTextBox outputbox;
         String cookies;
-        String[] cookieBox;
         String contentURL;
-        bool isDebug = true;
-        bool isLive = false;
+        bool isLoggedIn;
+        bool isDebug = false;
+        bool isLive = true;
         public String OutputData = "";
         public String theLog = "";
         public int cookieCount = 0;
@@ -30,11 +30,13 @@ namespace XMReaderConsole
         {
         }
 
-        public XMTuner(String username, String passw)
+        public XMTuner(String username, String passw, ref RichTextBox box1, String rbitrate)
         {
 
             user = username;
             password = passw;
+            outputbox = box1;
+            bitrate = rbitrate;
            
             System.Timers.Timer loginTimer = new System.Timers.Timer();
             loginTimer.Interval  = 3600;
@@ -56,75 +58,58 @@ namespace XMReaderConsole
                 XMURL = "http://users.pcfire.net/~wolf/XMReader/test.php";
             }
 
-            if (isDebug)
-            {
-                output("Connecting to: "+XMURL);
-            }
+            output("Connecting to: "+XMURL, "debug");
             
             String data = "playerToLaunch=xm&encryptPassword=true&userName="+user+"&password="+password;
             URL loginURL = new URL(XMURL);
             loginURL.fetch(data);
 
-            int responseCode = loginURL.response();
-            output("Server Response: "+responseCode.ToString());
+            int responseCode = loginURL.getStatus();
+            output("Server Response: " + responseCode.ToString(), "debug");
 
 
 
             
-            if (loginURL.response() > 0 && loginURL.response() < 400)
+            if (loginURL.getStatus() > 0 && loginURL.getStatus() < 400)
             {
-                //CookieCollection cookieJar = loginURL.getCookies();
-                cookies = setCookies(loginURL.getHeader("Set-Cookie"));
-                cookieBox = loginURL.getHeader("Set-Cookie");
-                cookieCount = cookieBox.Length;
+                cookies = setCookies(loginURL.getCookies());
+
+                output("Number of Cookies: " + cookieCount.ToString(), "debug");
 
                 if (cookieCount > 0)
                 {
                     
                     if (cookieCount <= 1)
                     {
-                        output("Login failed: Bad Us/Ps");
+                        output("Login failed: Bad Us/Ps", "error");
                     }
-                    else { output("Logged in as " + user+" ("+cookieCount+")"); }
-
-                    //loadConfig();
+                    else { output("Logged in as " + user, "info"); }
+                    isLoggedIn = true;
                     loadChannelData();
                 }
-                else {output("Number of Cookies: "+cookieCount.ToString()); }
             }
             else 
-            { 
-                output("Login Failed: " + loginURL.response()); 
+            {
+                output("Login Failed: " + loginURL.getStatus(), "error"); 
             }
-              
+            loginURL.close();
         }
 
-        public void loadConfig()
-        {
-            URL configURL = new URL("http://www.xmradio.com/player/listen/playerShell.action");
-            configURL.setRequestHeader("Cookie", cookies);
-            configURL.fetch();
+        //public bool isLoggedIn()
+        //{
+            //if (cookies != null && cookieCount > 1)
+            //{
+                //return true;
+            //}
+            //else
+            //{
+                //return false;
+            //}
+        //}
 
-            if (configURL.response() > 0 && configURL.response() < 400)
-            {
-                //String config = configURL.result().Split("</script>");
-            }
-        }
-
-        public bool isLoggedIn()
+        public bool loadChannelData()
         {
-            if (cookies != null && cookieCount > 1)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        public void loadChannelData()
-        {
+            output("Loading channel lineup...", "info");
             bool goodData = false;
             int j;
             for (j = 0; j < 60; j++)
@@ -142,17 +127,20 @@ namespace XMReaderConsole
                 URL channelURL = new URL(url);
                 channelURL.setRequestHeader("Cookie", cookies);
                 channelURL.fetch();
-                String resultStr = channelURL.result();
-                if (channelURL.response() >= 200 && channelURL.response() < 300 && resultStr.IndexOf(":[],") == -1)
+                String resultStr = channelURL.response();
+                if (channelURL.getStatus() >= 200 && channelURL.getStatus() < 300 && resultStr.IndexOf(":[],") == -1)
                 {
                     goodData = true;
                     setChannelData(resultStr);
                 }
                 if (goodData)
                 {
-                    break;
+                    output("Channel lineup loaded successfully.", "info");
+                    return true;
                 }
             }
+            output("Failed to load channel lineup", "error");
+            return false;
         }
 
         public void setChannelData(String rawchanneldata)
@@ -202,10 +190,7 @@ namespace XMReaderConsole
                     {
                         num = Convert.ToInt32(channelData[2]);
                         tempChannel = new XMChannel(neighborhood, num, channelData[1], channelData[3]);
-                        if (isDebug)
-                        {
-                            output(neighborhood + " " + num + " " + channelData[1] + " " + channelData[3]);
-                        }
+                        output(neighborhood + " " + num + " " + channelData[1] + " " + channelData[3], "debug");
                         channels.Add(tempChannel);
                     }
 
@@ -215,26 +200,61 @@ namespace XMReaderConsole
 
         public List<XMChannel> getChannels()
         {
+            channels.Sort();
+            channels.Reverse();
             return channels;
+        }
+
+        public string checkChannel(int num)
+        {
+            return Find(num).name;
+        }
+
+        public void doWhatsOn()
+        {
+            if (isLoggedIn == false)
+            {
+                output("Not logged in. Reconnecting...", "info");
+                login();
+                return;
+            }
+
+            MethodInvoker simpleDelegate = new MethodInvoker(loadWhatsOn);
+            simpleDelegate.BeginInvoke(null, null);
         }
 
         public void loadWhatsOn()
         {
-            URL whatsOnURL = new URL("http://www.xmradio.com/padData/pad_data_servlet.jsp?all_channels=true&remote=true");
-            whatsOnURL.setRequestHeader("Cookie", cookies);
-            whatsOnURL.fetch();
+            output("Update What's On Data...", "debug");
+            String whatsOnURL;
+            if (isLive)
+            {
+                whatsOnURL = "http://www.xmradio.com/padData/pad_data_servlet.jsp?all_channels=true&remote=true";
+            }
+            else
+            {
+                whatsOnURL = "http://users.pcfire.net/~wolf/XMReader/all_data.js";
+            }
+            URL whatsOn = new URL(whatsOnURL);
+            output("Fetching: "+whatsOnURL, "debug");
+            whatsOn.setRequestHeader("Cookie", cookies);
+            whatsOn.fetch();
+
+            int responseCode = whatsOn.getStatus();
+            output("Server Response: " + responseCode.ToString(), "debug");
+            whatsOn.close();
         }
 
         public String setCookies(CookieCollection cookies)
         {
-            int cookieCount = cookies.Count;
+            cookieCount = cookies.Count;
             String[] cookieStr = new String[cookieCount];
             String cookieJar = "";
             int i = 0;
             foreach (Cookie cookie in cookies)
             {
                 cookieStr[i] = cookie.ToString();
-                cookieStr[i].Substring(0, cookieStr[i].IndexOf(";"));
+                //cookieStr[i].Substring(0, cookieStr[i].IndexOf(";"));
                 cookieJar = cookieJar + cookieStr[i] + "; ";
                 
                 i++;
@@ -244,21 +264,23 @@ namespace XMReaderConsole
           
         }
 
-        public String setCookies(String[] cookiesArr)
+        public XMChannel Find(int channum)
         {
-            int cookieCount = cookiesArr.Length;
-            String cookieJar = "";
-            int i = 0;
-            foreach (String cookie in cookiesArr)
+            XMChannel result = channels.Find(
+            delegate(XMChannel chan)
             {
-                output(cookiesArr[i]);
-                cookiesArr[i].Substring(0, cookiesArr[i].IndexOf(";"));
-                cookieJar = cookieJar + cookiesArr[i] + "; ";
-                i++;
-
+                return chan.num == channum;
             }
-            return cookieJar;
-
+            );
+            if (result != null)
+            {
+                return result;
+            }
+            else
+            {
+                XMChannel tmp = new XMChannel("", 0, "", "");
+                return tmp;
+            }
         }
 
         public string play(int channelnum, String speed)
@@ -277,47 +299,51 @@ namespace XMReaderConsole
             playerURL.setRequestHeader("Cookie", cookies);
             playerURL.fetch();
             string URL = playChannel(playerURL);
+            //response is closed in playChannel();
             return URL;
          }
 
         public string playChannel(URL url)
         {
             String pattern = "<PARAM NAME=\"FileName\" VALUE=\"(.*?)\">";
-            String m = Regex.Match(url.result(),pattern).ToString();
+            String m = Regex.Match(url.response(),pattern).ToString();
             m = m.Replace("<PARAM NAME=\"FileName\" VALUE=\"", "");
             m = m.Replace("\">", "");
 
-            if (m != null)
+            if (!m.Equals(""))
             {
                 contentURL = m.ToString();
-                if (isDebug)
-                {
-                    output(contentURL);
-                }
-                else
-                {
-                    output("Write witty output for normal run");
-                }
+                output(contentURL, "debug");
             }
             else 
             {
-                login(); //play again
-                log("Relogin");
+                output("XM Radio Online Error - Not Logged In", "error");
+                isLoggedIn = false;
+                contentURL = null;
             }
 
             return (contentURL);
         }
 
-        public void output(String output)
+        public void output(String output, String level)
         {
-            OutputData = OutputData + output + "\n";
+            if (level.Equals("debug") && !isDebug)
+            {
+                return;
+            }
+            DateTime currentTime = DateTime.Now;
+            output = currentTime.ToString("%H:")+currentTime.ToString("mm:")+currentTime.ToString("ss")+"  "+output + "\n";
+            OutputData = OutputData + output;
             log(output);
-            //Form1.refreshOutput(output);
+
+            //Tell the Form to write to the messagebox in the UI
+            Form1.output(output, level, ref outputbox);
+
         }
 
         public void log(String logentry)
         {
-            theLog = theLog + logentry + "\n";
+            theLog = theLog + logentry;
         }
 
         public void writeLog()
