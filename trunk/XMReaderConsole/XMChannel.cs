@@ -6,7 +6,7 @@ using System.Text;
 
 namespace XMReaderConsole
 {
-    class XMChannel : IComparable<XMChannel>
+    class XMChannel : IComparable<XMChannel>, IEquatable<XMChannel>
     {
         public int num;
         public String name;
@@ -32,6 +32,15 @@ namespace XMReaderConsole
         public int CompareTo(XMChannel other)
         {
             return other.num.CompareTo(this.num);
+        }
+
+        #endregion
+
+        #region IEquatable<XMChannel> Members
+
+        public bool Equals(XMChannel other)
+        {
+            return other.num.Equals(this.num);
         }
 
         #endregion
