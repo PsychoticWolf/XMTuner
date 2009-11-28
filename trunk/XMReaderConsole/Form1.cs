@@ -145,7 +145,7 @@ namespace XMReaderConsole
             {
                 if (port.Equals(""))
                 {
-                    port = "9955";
+                    port = "19081";
                 }
                 
                 outputbox.AppendText("No Configuration\n");

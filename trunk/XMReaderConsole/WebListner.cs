@@ -25,7 +25,7 @@ namespace XMReaderConsole
         {
             if (Convert.ToInt32(newport) < 2)
             {
-                port = "9955";
+                port = "19081";
             }
             else
             {
@@ -41,10 +41,19 @@ namespace XMReaderConsole
             myTuner.output("Starting server...", "info");
             theServer.Prefixes.Clear();
             theServer.Prefixes.Add(prefix);
-            theServer.Start();
-            myTuner.output("Server started", "info");
-            myTuner.output("Listening on port " + port, "info");
-
+            try
+            {
+                theServer.Start();
+                myTuner.output("Server started", "info");
+                myTuner.output("Listening on port " + port, "info");
+            }
+            catch (HttpListenerException e)
+            {
+                myTuner.output("Server failed to start (Port already in use?)", "error");
+                myTuner.output("Check your settings or close the other application using the port", "error");
+                myTuner.output("Error " + e.ErrorCode + ": " + e.Message, "debug");
+                return;
+            }
             System.Threading.ThreadPool.QueueUserWorkItem(listen);
         }
 
@@ -142,6 +151,13 @@ namespace XMReaderConsole
             }
             else if (baseURL.Equals("feeds"))
             {
+                //Redirect legacy lineup.xml URL from uXM
+                if (methodURL.StartsWith("lineup.xml"))
+                {
+                    String destinationurl = "/" + baseURL + "/";
+                    SendRequest(context, null, destinationurl, "text/plain", true, HttpStatusCode.Found);
+                    return;
+                }
                 //Do Action for Feeds
                 NameValueCollection URLParams = request.QueryString;
                 Boolean useMMS;
