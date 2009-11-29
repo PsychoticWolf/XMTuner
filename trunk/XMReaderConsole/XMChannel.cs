@@ -27,6 +27,12 @@ namespace XMReaderConsole
             return theString;
         }
 
+        public String ToSimpleString()
+        {
+            String theString = "[" + num + "] " + name;
+            return theString;
+        }
+
         #region IComparable<XMChannel> Members
 
         public int CompareTo(XMChannel other)

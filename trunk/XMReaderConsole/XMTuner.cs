@@ -327,14 +327,16 @@ namespace XMReaderConsole
 
         public void output(String output, String level)
         {
+            DateTime currentTime = DateTime.Now;
+            output = currentTime.ToString("%H:") + currentTime.ToString("mm:") + currentTime.ToString("ss") + "  " + output + "\n";
+            OutputData = OutputData + output;
+            log(output);
+
             if (level.Equals("debug") && !isDebug)
             {
                 return;
             }
-            DateTime currentTime = DateTime.Now;
-            output = currentTime.ToString("%H:")+currentTime.ToString("mm:")+currentTime.ToString("ss")+"  "+output + "\n";
-            OutputData = OutputData + output;
-            log(output);
+
 
             //Tell the Form to write to the messagebox in the UI
             Form1.output(output, level, ref outputbox);
