@@ -12,6 +12,9 @@ namespace XMReaderConsole
         public String name;
         public String desc;
         public String category;
+        public String artist;
+        public String song;
+        public String album;
 
         public XMChannel(String cat, int nu, String na, String d)
         {
@@ -31,6 +34,13 @@ namespace XMReaderConsole
         {
             String theString = "[" + num + "] " + name;
             return theString;
+        }
+
+        public void addPlayingInfo(String[] stringyInfo)
+        {
+            artist = stringyInfo[1];
+            song = stringyInfo[2];
+            album = stringyInfo[3];
         }
 
         #region IComparable<XMChannel> Members
