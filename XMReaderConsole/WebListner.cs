@@ -81,8 +81,18 @@ namespace XMReaderConsole
                 return;
             }
 
-            HttpListenerContext context = listener.EndGetContext(result);
-            listenForNextRequest.Set();
+            HttpListenerContext context = null;
+            try
+            {
+                context = listener.EndGetContext(result);
+                listenForNextRequest.Set();
+            }
+            catch (ObjectDisposedException)
+            {
+                listenForNextRequest.Set();
+                listenForNextRequest.Close();
+                return;
+            }
 
             if (context == null)
             {

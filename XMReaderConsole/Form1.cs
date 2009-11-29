@@ -231,17 +231,6 @@ namespace XMReaderConsole
                 Hide();
         }
 
-        private void Close_Click(object sender, EventArgs e)
-        {
-            Close();
-        }
-
-        private void Restore_Click(object sender, EventArgs e)
-        {
-            Show();
-            WindowState = FormWindowState.Normal;
-        }
-
         private void Form1_Load(object sender, EventArgs e)
         {
             if (refreshConfig() && autologin)
@@ -281,6 +270,17 @@ namespace XMReaderConsole
         private void makeAddress(object sender, EventArgs e)
         {
             addressBox.Text = getChannelAddress((String)channelBox.SelectedItem);
+        }
+
+        private void exitXMTunerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
+
+        private void restoreToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Show();
+            WindowState = FormWindowState.Normal;
         }
 
     }
