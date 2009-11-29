@@ -15,7 +15,7 @@ namespace XMReaderConsole
         HttpListener theServer = new HttpListener();
         String prefix;
         XMTuner myTuner;
-        
+ 
         String serverHost;
         
         public bool isRunning = false;

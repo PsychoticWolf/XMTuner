@@ -89,8 +89,12 @@ namespace XMReaderConsole
             self.OutputData = outputbox.Text + self.OutputData;
             //outputbox.Text = self.OutputData;
             xmServer.start();
+            
             //outputbox.Text = self.OutputData;
             loggedIn = true;
+            if (loggedIn) {button1.Enabled = false; button5.Enabled = true;}
+            
+            loadChannels();
             self.writeLog();
         }
 
@@ -106,15 +110,6 @@ namespace XMReaderConsole
         {
             log();
             //MessageBox.Show("Info updated and logged");
-        }
-
-        private void Form1_Load(object sender, EventArgs e)
-        {
-            if (refreshConfig() && autologin)
-            {
-                button1_Click(sender, e);
-            }
-            lblClock.Text = "0:00:00";
         }
 
         private void button4_Click(object sender, EventArgs e)
@@ -195,7 +190,7 @@ namespace XMReaderConsole
                 DateTime datetime = DateTime.Now;
                 String header = "XMTuner Output\n";
                 header += datetime.ToString()+"\n\n";
-                textOut.Write(header+self.theLog + "\nTime:" + i);
+                textOut.Write(header+self.theLog + "\nTime: " + i);
             }
             else
             {
@@ -247,6 +242,46 @@ namespace XMReaderConsole
             WindowState = FormWindowState.Normal;
         }
 
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            if (refreshConfig() && autologin)
+            {
+                button1_Click(sender, e);
+            }
+            lblClock.Text = "0:00:00";
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            xmServer.stop();
+        }
+
+        private void loadChannels()
+        {
+          
+            foreach (XMChannel chan in self.getChannels())
+            {
+                if (channelBox.Text.Equals("")) { channelBox.Text = chan.ToSimpleString(); }
+                channelBox.Items.Add(chan.ToSimpleString());
+            }
+            
+        }
+
+        private String getChannelAddress(String channelString)
+        {
+            String[] tmp1 = channelString.Split('[');
+            String[] tmp2 = tmp1[1].Split(']');
+            String channelNum = tmp2[0];
+
+            String channelAddress = channelNum;
+
+            return channelAddress;
+        }
+
+        private void makeAddress(object sender, EventArgs e)
+        {
+            addressBox.Text = getChannelAddress((String)channelBox.SelectedItem);
+        }
 
     }
 }
