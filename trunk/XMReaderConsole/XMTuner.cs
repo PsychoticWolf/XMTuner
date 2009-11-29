@@ -245,6 +245,45 @@ namespace XMReaderConsole
             whatsOn.close();
         }
 
+        public void setWhatsonData(String rawdata)
+        {
+            rawdata = rawdata.Trim();
+            rawdata = rawdata.Replace("\r\n", ""); // No new lines please
+            rawdata = rawdata.Replace("\t", ""); // No tabs...
+            rawdata = rawdata.Replace("xms.sendRPCDone(\"whatson\",[ {", ""); // Remove preamble
+            rawdata = rawdata.Replace("}            ]);", ""); //suffix
+
+            //$data = explode(" {   ", $rawData); // Turn our single line into an array of raw whatsOn data per channel
+            String[] data = rawdata.Split(new string[] { " {   " }, StringSplitOptions.None);
+
+            //foreach ($data as $rawChannel) {
+            foreach (String _rawChannel in data)
+            {
+	            String sep = "::XMTUNER-SEPERATOR::";
+
+	            //Clean up the string
+	            String rawChannel = _rawChannel.Trim();
+	            rawChannel = rawChannel.Replace("},", ""); //Remove Suffix
+                rawChannel = rawChannel.Replace("num: ", ""); //Remove Label Num
+                rawChannel = rawChannel.Replace(",artist: ", sep); //Remove Label Artist
+                rawChannel = rawChannel.Replace(",song: ", sep); //Remove Label Song
+                rawChannel = rawChannel.Replace(",album: ", sep); //Remove Label Album
+                rawChannel = rawChannel.Replace("\"", ""); // Too many double-quotes
+	            //String[] channel = explode($sep, $rawChannel); // num, artist, song, album
+                String[] channel = rawChannel.Split(new string[] { sep }, StringSplitOptions.None);
+            	
+                // XXX -- Need to write these values to some object (XMChannel?) so they're usable.
+
+
+	            String[] whatson = channel;
+
+
+
+            }
+
+        }
+
+
         public String setCookies(CookieCollection cookies)
         {
             cookieCount = cookies.Count;
