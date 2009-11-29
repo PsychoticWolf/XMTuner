@@ -272,6 +272,9 @@ namespace XMReaderConsole
 	            //String[] channel = explode($sep, $rawChannel); // num, artist, song, album
                 String[] channel = rawChannel.Split(new string[] { sep }, StringSplitOptions.None);
             	
+                //channels.Find(Find(Convert.ToInt32(channel[0])));
+                Find(Convert.ToInt32(channel[0])).addPlayingInfo(channel);
+
                 // XXX -- Need to write these values to some object (XMChannel?) so they're usable.
 
 

@@ -15,6 +15,7 @@ namespace XMReaderConsole
         XMTuner self;
         WebListner xmServer;
         bool loggedIn = false;
+        bool serverRunning = false;
         String port = "";
         String bitrate;
         bool highbit = true;
@@ -86,6 +87,7 @@ namespace XMReaderConsole
             self = new XMTuner(txtUser.Text, txtPassword.Text, ref outputbox, bitrate);
             timer2.Enabled = true;
             xmServer = new WebListner(self, port);
+            serverRunning = true;
             self.OutputData = outputbox.Text + self.OutputData;
             //outputbox.Text = self.OutputData;
             xmServer.start();
@@ -151,7 +153,7 @@ namespace XMReaderConsole
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            if (loggedIn)
+            if (serverRunning)
             {
                 //outputbox.Text = self.OutputData;
                 //outputbox.Refresh();
@@ -243,33 +245,45 @@ namespace XMReaderConsole
         private void button5_Click(object sender, EventArgs e)
         {
             xmServer.stop();
+            
         }
 
         private void loadChannels()
         {
-          
+            int i = 0;
             foreach (XMChannel chan in self.getChannels())
             {
-                if (channelBox.Text.Equals("")) { channelBox.Text = chan.ToSimpleString(); }
                 channelBox.Items.Add(chan.ToSimpleString());
+                if (i == 0) { channelBox.SelectedItem = chan.ToSimpleString(); }
+                i++;
             }
+            protocolBox.SelectedItem = "HTTP";
+            addressBox.Text = getChannelAddress((String)channelBox.SelectedItem, (String)protocolBox.SelectedItem);
             
         }
 
-        private String getChannelAddress(String channelString)
+        private String getChannelAddress(String channelString, String protocol)
         {
             String[] tmp1 = channelString.Split('[');
             String[] tmp2 = tmp1[1].Split(']');
             String channelNum = tmp2[0];
-
-            String channelAddress = channelNum;
+            String channelAddress = protocol.ToLower()+"://"+ipName.Text+":"+port+"/streams/"+channelNum+"/"+bitrate;
 
             return channelAddress;
         }
 
         private void makeAddress(object sender, EventArgs e)
         {
-            addressBox.Text = getChannelAddress((String)channelBox.SelectedItem);
+            String protocol;
+            String channel;
+            protocol = (String) protocolBox.SelectedItem;
+            channel = (String)channelBox.SelectedItem; 
+            addressBox.Text = getChannelAddress(channel, protocol);
+        }
+
+        private void channelBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
 
         private void exitXMTunerToolStripMenuItem_Click(object sender, EventArgs e)
