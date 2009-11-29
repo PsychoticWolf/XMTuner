@@ -119,7 +119,14 @@ namespace XMReaderConsole
                 }
             }
 
-            if (baseURL.Equals("streams"))
+            if (baseURL.Equals("/"))
+            {
+                String responseString = "Not Yet";
+                responseString = DoNowPlaying();
+                SendRequest(context, null, responseString, "text/html", false, HttpStatusCode.OK);
+
+            }
+            else  if (baseURL.Equals("streams"))
             {
                 // Parse URL
                 String[] streamParams = parseStreamURL(methodURL);
@@ -176,7 +183,7 @@ namespace XMReaderConsole
             else
             {
                 string responseString = "<HTML><BODY>Unknown Request</BODY></HTML>";
-                SendRequest(context, null, responseString, "", false, HttpStatusCode.OK);
+                SendRequest(context, null, responseString, "", false, HttpStatusCode.BadRequest);
             }
             myTuner.output("Incoming Request Completed", "debug");
         }
@@ -329,5 +336,24 @@ namespace XMReaderConsole
 
             return OutputStream;
         }
+
+        public String DoNowPlaying()
+        {
+            String NowPlayingPage = "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html401/loose.dtd\">";
+            NowPlayingPage += "<html>\n<head>\n\t<title>XM Tuner - What's On</title>\n</head>\n<body>";
+
+            NowPlayingPage += "<h1>XM Tuner - What's On</h1>";
+
+
+            NowPlayingPage += "<table>";
+            NowPlayingPage += "<tr><th></th><th>Channel</th><th>Artist</th><th>Song</th><th>Album</th></tr>\n";
+            NowPlayingPage += "</table>";
+
+            NowPlayingPage += "<hr noshade>\n";
+            NowPlayingPage += "<p style=\"text-align: right; margin: 0px; color: #666;\">XMTuner</p>";
+            NowPlayingPage += "</body>\n</html>";
+            return (NowPlayingPage);
+        }
+
     }
 }
