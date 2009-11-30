@@ -17,7 +17,7 @@ namespace XMReaderConsole
         public bool isMMS = false;
         String cookies;
         public int lastChannelPlayed;
-        bool isLoggedIn;
+        public bool isLoggedIn;
         bool isDebug = false;
         bool isLive = true;
         public String OutputData = "";
@@ -53,7 +53,6 @@ namespace XMReaderConsole
             if (isLive) 
             {
                 XMURL = "http://www.xmradio.com/player/login/xmlogin.action";
-                
             }
             else
             {
@@ -68,9 +67,6 @@ namespace XMReaderConsole
 
             int responseCode = loginURL.getStatus();
             output("Server Response: " + responseCode.ToString(), "debug");
-
-
-
             
             if (loginURL.getStatus() > 0 && loginURL.getStatus() < 400)
             {
@@ -85,10 +81,14 @@ namespace XMReaderConsole
                     {
                         output("Login failed: Bad Us/Ps", "error");
                     }
-                    else { output("Logged in as " + user, "info"); }
-                    isLoggedIn = true;
-                    loadChannelData();
-                    doWhatsOn();
+                    else
+                    {
+                        output("Logged in as " + user, "info");
+                        isLoggedIn = true;
+                        loadChannelData();
+                        doWhatsOn();
+                    }
+                    
                 }
             }
             else 

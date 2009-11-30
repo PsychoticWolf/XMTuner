@@ -7,6 +7,7 @@ Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "XMTunerInstall", "XMTunerIn
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6EF5E2A1-7667-49FB-B5BE-28910F1143EB}"
 	ProjectSection(SolutionItems) = preProject
+		devnotes.txt = devnotes.txt
 		readme.txt = readme.txt
 	EndProjectSection
 EndProject

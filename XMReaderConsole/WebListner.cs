@@ -44,11 +44,13 @@ namespace XMReaderConsole
             try
             {
                 theServer.Start();
+                isRunning = true;
                 myTuner.output("Server started", "info");
                 myTuner.output("Listening on port " + port, "info");
             }
             catch (HttpListenerException e)
             {
+                isRunning = false;
                 myTuner.output("Server failed to start (Port already in use?)", "error");
                 myTuner.output("Check your settings or close the other application using the port", "error");
                 myTuner.output("Error " + e.ErrorCode + ": " + e.Message, "debug");
@@ -60,6 +62,7 @@ namespace XMReaderConsole
         public void stop()
         {
             theServer.Close();
+            isRunning = false;
             myTuner.output("Server stopped", "info");
         }
 
