@@ -30,5 +30,10 @@ namespace XMReaderConsole
         {
 
         }
+
+        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("http://www.pcfire.net/XMTuner/");
+        }
     }
 }

@@ -89,7 +89,9 @@ namespace XMReaderConsole
             timer2.Enabled = true;
             xmServer = new WebListner(self, port);
             i = 0;
+            viewServerToolStripMenuItem.Enabled = true;
             serverRunning = true;
+            loginToolStripMenuItem.Enabled = false;
             self.OutputData = outputbox.Text + self.OutputData;
             //outputbox.Text = self.OutputData;
             xmServer.start();
@@ -112,8 +114,7 @@ namespace XMReaderConsole
 
         private void button3_Click(object sender, EventArgs e)
         {
-            log();
-            //MessageBox.Show("Info updated and logged");
+
         }
 
         private void button4_Click(object sender, EventArgs e)
@@ -137,7 +138,7 @@ namespace XMReaderConsole
                 highbit = Convert.ToBoolean(configArray[4]);
                 autologin = Convert.ToBoolean(configArray[5]);
                 isMMS = Convert.ToBoolean(configArray[6]);
-
+                loginToolStripMenuItem.Enabled = true;
                 outputbox.AppendText("Configuration Loaded\n");
                 if (isMMS) { outputbox.AppendText("URLs default to MMS\n"); }
                 return true;
@@ -291,6 +292,16 @@ namespace XMReaderConsole
         {
             Show();
             WindowState = FormWindowState.Normal;
+        }
+
+        private void viewServerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start("http://localhost:" + port);
+        }
+
+        private void cpyToClip_Click(object sender, EventArgs e)
+        {
+            Clipboard.SetText(addressBox.Text);
         }
 
     }
