@@ -40,6 +40,8 @@
             this.label5 = new System.Windows.Forms.Label();
             this.chkBitrate = new System.Windows.Forms.CheckBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.chkMMS = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -76,7 +78,7 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(124, 224);
+            this.button1.Location = new System.Drawing.Point(111, 261);
             this.button1.Margin = new System.Windows.Forms.Padding(4);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(100, 28);
@@ -90,7 +92,7 @@
             this.txtUser.Location = new System.Drawing.Point(109, 29);
             this.txtUser.Margin = new System.Windows.Forms.Padding(4);
             this.txtUser.Name = "txtUser";
-            this.txtUser.Size = new System.Drawing.Size(132, 22);
+            this.txtUser.Size = new System.Drawing.Size(183, 22);
             this.txtUser.TabIndex = 4;
             // 
             // txtPassword
@@ -99,7 +101,7 @@
             this.txtPassword.Margin = new System.Windows.Forms.Padding(4);
             this.txtPassword.Name = "txtPassword";
             this.txtPassword.PasswordChar = '*';
-            this.txtPassword.Size = new System.Drawing.Size(132, 22);
+            this.txtPassword.Size = new System.Drawing.Size(183, 22);
             this.txtPassword.TabIndex = 5;
             // 
             // txtPort
@@ -107,13 +109,13 @@
             this.txtPort.Location = new System.Drawing.Point(111, 107);
             this.txtPort.Margin = new System.Windows.Forms.Padding(4);
             this.txtPort.Name = "txtPort";
-            this.txtPort.Size = new System.Drawing.Size(132, 22);
+            this.txtPort.Size = new System.Drawing.Size(181, 22);
             this.txtPort.TabIndex = 6;
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(19, 178);
+            this.label4.Location = new System.Drawing.Point(16, 178);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(75, 17);
             this.label4.TabIndex = 7;
@@ -122,7 +124,7 @@
             // chkAutologin
             // 
             this.chkAutologin.AutoSize = true;
-            this.chkAutologin.Location = new System.Drawing.Point(124, 178);
+            this.chkAutologin.Location = new System.Drawing.Point(146, 178);
             this.chkAutologin.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.chkAutologin.Name = "chkAutologin";
             this.chkAutologin.Size = new System.Drawing.Size(18, 17);
@@ -132,7 +134,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(20, 146);
+            this.label5.Location = new System.Drawing.Point(16, 146);
             this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(86, 17);
@@ -142,7 +144,7 @@
             // chkBitrate
             // 
             this.chkBitrate.AutoSize = true;
-            this.chkBitrate.Location = new System.Drawing.Point(124, 146);
+            this.chkBitrate.Location = new System.Drawing.Point(146, 146);
             this.chkBitrate.Margin = new System.Windows.Forms.Padding(4);
             this.chkBitrate.Name = "chkBitrate";
             this.chkBitrate.Size = new System.Drawing.Size(18, 17);
@@ -151,6 +153,8 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.chkMMS);
+            this.groupBox1.Controls.Add(this.label6);
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.chkBitrate);
             this.groupBox1.Controls.Add(this.label2);
@@ -164,15 +168,33 @@
             this.groupBox1.Controls.Add(this.txtPassword);
             this.groupBox1.Location = new System.Drawing.Point(5, 4);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(331, 270);
+            this.groupBox1.Size = new System.Drawing.Size(331, 312);
             this.groupBox1.TabIndex = 11;
             this.groupBox1.TabStop = false;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(16, 210);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(108, 17);
+            this.label6.TabIndex = 11;
+            this.label6.Text = "Default to MMS:";
+            // 
+            // chkMMS
+            // 
+            this.chkMMS.AutoSize = true;
+            this.chkMMS.Location = new System.Drawing.Point(146, 210);
+            this.chkMMS.Name = "chkMMS";
+            this.chkMMS.Size = new System.Drawing.Size(18, 17);
+            this.chkMMS.TabIndex = 12;
+            this.chkMMS.UseVisualStyleBackColor = true;
             // 
             // Form2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(348, 301);
+            this.ClientSize = new System.Drawing.Size(343, 325);
             this.Controls.Add(this.groupBox1);
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "Form2";
@@ -198,5 +220,7 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.CheckBox chkBitrate;
         private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.CheckBox chkMMS;
+        private System.Windows.Forms.Label label6;
     }
 }

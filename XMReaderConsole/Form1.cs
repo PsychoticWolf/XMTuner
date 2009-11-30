@@ -20,6 +20,7 @@ namespace XMReaderConsole
         String bitrate;
         bool highbit = true;
         bool autologin = false;
+        bool isMMS = false;
         int i = 0;
         double sec = 0;
         double minute = 0;
@@ -84,9 +85,10 @@ namespace XMReaderConsole
             outputbox.Text = outputbox.Text+"Please wait... logging in\n";
             outputbox.Refresh();
             if (highbit) { bitrate = "high"; } else { bitrate = "low"; }
-            self = new XMTuner(txtUser.Text, txtPassword.Text, ref outputbox, bitrate);
+            self = new XMTuner(txtUser.Text, txtPassword.Text, ref outputbox, bitrate, isMMS);
             timer2.Enabled = true;
             xmServer = new WebListner(self, port);
+            i = 0;
             serverRunning = true;
             self.OutputData = outputbox.Text + self.OutputData;
             //outputbox.Text = self.OutputData;
@@ -116,7 +118,7 @@ namespace XMReaderConsole
 
         private void button4_Click(object sender, EventArgs e)
         {
-            Form2 form2 = new Form2(txtUser.Text, txtPassword.Text, port, highbit, autologin);
+            Form2 form2 = new Form2(txtUser.Text, txtPassword.Text, port, highbit, autologin, isMMS);
             form2.ShowDialog();
             refreshConfig();
         }
@@ -134,8 +136,10 @@ namespace XMReaderConsole
                 port = configArray[3];
                 highbit = Convert.ToBoolean(configArray[4]);
                 autologin = Convert.ToBoolean(configArray[5]);
+                isMMS = Convert.ToBoolean(configArray[6]);
 
                 outputbox.AppendText("Configuration Loaded\n");
+                if (isMMS) { outputbox.AppendText("URLs default to MMS\n"); }
                 return true;
             }
             else
@@ -172,9 +176,6 @@ namespace XMReaderConsole
                 else { runTime += sec.ToString(); }
 
                 lblClock.Text = runTime;
-
-
-
             }
         }
         private void Form1_FormClosing(Object sender, FormClosingEventArgs e)
@@ -187,20 +188,12 @@ namespace XMReaderConsole
             string path = @"XMTuner.log";
             FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write);
             StreamWriter textOut = new StreamWriter(fs);
-            if (loggedIn)
-            {
-                DateTime datetime = DateTime.Now;
-                String header = "XMTuner Output\n";
-                header += datetime.ToString()+"\n\n";
-                textOut.Write(header+self.theLog + "\nTime: " + i);
-            }
-            else
-            {
-                DateTime datetime = DateTime.Now;
-                String header = "XMTuner Output\n";
-                header += datetime.ToString() + "\n\n";
-                textOut.Write(header+outputbox.Text);
-            }
+
+            DateTime datetime = DateTime.Now;
+            String header = "XMTuner Output\n";
+            header += datetime.ToString() + "\n\n";
+            textOut.Write(header+outputbox.Text+"\nTime: "+i);
+            
             textOut.Close();
         }
 
@@ -245,6 +238,9 @@ namespace XMReaderConsole
         private void button5_Click(object sender, EventArgs e)
         {
             xmServer.stop();
+            serverRunning = false;
+            button1.Enabled = true;
+            button5.Enabled = false;
             
         }
 
@@ -257,7 +253,7 @@ namespace XMReaderConsole
                 if (i == 0) { channelBox.SelectedItem = chan.ToSimpleString(); }
                 i++;
             }
-            protocolBox.SelectedItem = "HTTP";
+            if (isMMS) { protocolBox.SelectedItem = "MMS"; } else { protocolBox.SelectedItem = "HTTP"; }
             addressBox.Text = getChannelAddress((String)channelBox.SelectedItem, (String)protocolBox.SelectedItem);
             
         }

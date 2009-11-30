@@ -12,22 +12,24 @@ namespace XMReaderConsole
         //static String[] newConfig;
         String path = "config.txt";
         public bool isConfig = false;
+        public bool protocolMMS = false;
 
         public String[] getConfig()
         {
             //readConfig();
             return config;
         }
-        public void writeConfig(String username, String password, String port, bool bitrate, bool autologin)
+        public void writeConfig(String username, String password, String port, bool bitrate, bool autologin, bool isMMS)
         {
             FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write);
             StreamWriter textOut = new StreamWriter(fs);
-            textOut.WriteLine("XMReader");
+            textOut.WriteLine("XMTuner Configuration");
             textOut.WriteLine(username);
             textOut.WriteLine(password);
             textOut.WriteLine(port);
             textOut.WriteLine(bitrate);
             textOut.WriteLine(autologin.ToString());
+            textOut.WriteLine(isMMS.ToString());
             textOut.Close();
         }
         public void readConfig()

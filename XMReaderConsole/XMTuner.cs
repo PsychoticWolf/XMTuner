@@ -14,6 +14,7 @@ namespace XMReaderConsole
         String user;
         String password;
         RichTextBox outputbox;
+        public bool isMMS = false;
         String cookies;
         String contentURL;
         bool isLoggedIn;
@@ -30,13 +31,14 @@ namespace XMReaderConsole
         {
         }
 
-        public XMTuner(String username, String passw, ref RichTextBox box1, String rbitrate)
+        public XMTuner(String username, String passw, ref RichTextBox box1, String rbitrate, bool MMSON)
         {
 
             user = username;
             password = passw;
             outputbox = box1;
             bitrate = rbitrate;
+            isMMS = MMSON;
            
             System.Timers.Timer loginTimer = new System.Timers.Timer();
             loginTimer.Interval  = 3600;
