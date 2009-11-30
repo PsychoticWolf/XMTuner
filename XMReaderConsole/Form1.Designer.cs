@@ -58,6 +58,11 @@
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.restoreToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitXMTunerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.viewServerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.loginToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.cpyToClip = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -116,7 +121,7 @@
             // button4
             // 
             this.button4.Location = new System.Drawing.Point(412, 11);
-            this.button4.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.button4.Margin = new System.Windows.Forms.Padding(5);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(80, 28);
             this.button4.TabIndex = 10;
@@ -142,7 +147,7 @@
             // button2
             // 
             this.button2.Location = new System.Drawing.Point(502, 11);
-            this.button2.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.button2.Margin = new System.Windows.Forms.Padding(5);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(80, 28);
             this.button2.TabIndex = 13;
@@ -157,6 +162,7 @@
             // 
             // notifyIcon1
             // 
+            this.notifyIcon1.ContextMenuStrip = this.contextMenuStrip1;
             this.notifyIcon1.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon1.Icon")));
             this.notifyIcon1.Text = "XMTuner";
             this.notifyIcon1.Visible = true;
@@ -180,7 +186,7 @@
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage2);
             this.tabControl1.Location = new System.Drawing.Point(16, 66);
-            this.tabControl1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabControl1.Margin = new System.Windows.Forms.Padding(4);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
             this.tabControl1.Size = new System.Drawing.Size(717, 230);
@@ -193,7 +199,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 25);
             this.tabPage1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(4);
             this.tabPage1.Size = new System.Drawing.Size(709, 201);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Output";
@@ -214,6 +220,7 @@
             // tabPage2
             // 
             this.tabPage2.BackColor = System.Drawing.SystemColors.Control;
+            this.tabPage2.Controls.Add(this.cpyToClip);
             this.tabPage2.Controls.Add(this.ipName);
             this.tabPage2.Controls.Add(this.label7);
             this.tabPage2.Controls.Add(this.protocolBox);
@@ -225,15 +232,15 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 25);
             this.tabPage2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(4);
             this.tabPage2.Size = new System.Drawing.Size(709, 201);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Channels";
             // 
             // ipName
             // 
-            this.ipName.Location = new System.Drawing.Point(101, 73);
-            this.ipName.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.ipName.Location = new System.Drawing.Point(97, 56);
+            this.ipName.Margin = new System.Windows.Forms.Padding(4);
             this.ipName.Name = "ipName";
             this.ipName.Size = new System.Drawing.Size(601, 22);
             this.ipName.TabIndex = 7;
@@ -243,7 +250,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(19, 76);
+            this.label7.Location = new System.Drawing.Point(15, 59);
             this.label7.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(69, 17);
@@ -256,8 +263,8 @@
             this.protocolBox.Items.AddRange(new object[] {
             "HTTP",
             "MMS"});
-            this.protocolBox.Location = new System.Drawing.Point(101, 110);
-            this.protocolBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.protocolBox.Location = new System.Drawing.Point(97, 93);
+            this.protocolBox.Margin = new System.Windows.Forms.Padding(4);
             this.protocolBox.Name = "protocolBox";
             this.protocolBox.Size = new System.Drawing.Size(601, 24);
             this.protocolBox.TabIndex = 5;
@@ -266,7 +273,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(19, 113);
+            this.label6.Location = new System.Drawing.Point(15, 96);
             this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(64, 17);
@@ -275,8 +282,8 @@
             // 
             // addressBox
             // 
-            this.addressBox.Location = new System.Drawing.Point(101, 150);
-            this.addressBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.addressBox.Location = new System.Drawing.Point(97, 133);
+            this.addressBox.Margin = new System.Windows.Forms.Padding(4);
             this.addressBox.Name = "addressBox";
             this.addressBox.Size = new System.Drawing.Size(601, 22);
             this.addressBox.TabIndex = 3;
@@ -284,7 +291,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(19, 153);
+            this.label4.Location = new System.Drawing.Point(15, 136);
             this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(64, 17);
@@ -294,7 +301,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(19, 31);
+            this.label3.Location = new System.Drawing.Point(15, 14);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(64, 17);
             this.label3.TabIndex = 1;
@@ -303,7 +310,7 @@
             // channelBox
             // 
             this.channelBox.FormattingEnabled = true;
-            this.channelBox.Location = new System.Drawing.Point(101, 28);
+            this.channelBox.Location = new System.Drawing.Point(97, 11);
             this.channelBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.channelBox.Name = "channelBox";
             this.channelBox.Size = new System.Drawing.Size(601, 24);
@@ -323,24 +330,66 @@
             // contextMenuStrip1
             // 
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.loginToolStripMenuItem,
+            this.viewServerToolStripMenuItem,
+            this.aboutToolStripMenuItem,
             this.restoreToolStripMenuItem,
+            this.toolStripSeparator1,
             this.exitXMTunerToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(153, 70);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(166, 130);
             // 
             // restoreToolStripMenuItem
             // 
             this.restoreToolStripMenuItem.Name = "restoreToolStripMenuItem";
-            this.restoreToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.restoreToolStripMenuItem.Size = new System.Drawing.Size(165, 24);
             this.restoreToolStripMenuItem.Text = "Restore";
             this.restoreToolStripMenuItem.Click += new System.EventHandler(this.restoreToolStripMenuItem_Click);
             // 
             // exitXMTunerToolStripMenuItem
             // 
             this.exitXMTunerToolStripMenuItem.Name = "exitXMTunerToolStripMenuItem";
-            this.exitXMTunerToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.exitXMTunerToolStripMenuItem.Size = new System.Drawing.Size(165, 24);
             this.exitXMTunerToolStripMenuItem.Text = "Exit XMTuner";
             this.exitXMTunerToolStripMenuItem.Click += new System.EventHandler(this.exitXMTunerToolStripMenuItem_Click);
+            // 
+            // viewServerToolStripMenuItem
+            // 
+            this.viewServerToolStripMenuItem.Enabled = false;
+            this.viewServerToolStripMenuItem.Name = "viewServerToolStripMenuItem";
+            this.viewServerToolStripMenuItem.Size = new System.Drawing.Size(165, 24);
+            this.viewServerToolStripMenuItem.Text = "What\'s On...";
+            this.viewServerToolStripMenuItem.Click += new System.EventHandler(this.viewServerToolStripMenuItem_Click);
+            // 
+            // aboutToolStripMenuItem
+            // 
+            this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(165, 24);
+            this.aboutToolStripMenuItem.Text = "About...";
+            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // loginToolStripMenuItem
+            // 
+            this.loginToolStripMenuItem.Enabled = false;
+            this.loginToolStripMenuItem.Name = "loginToolStripMenuItem";
+            this.loginToolStripMenuItem.Size = new System.Drawing.Size(165, 24);
+            this.loginToolStripMenuItem.Text = "Login";
+            this.loginToolStripMenuItem.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(162, 6);
+            // 
+            // cpyToClip
+            // 
+            this.cpyToClip.Location = new System.Drawing.Point(560, 162);
+            this.cpyToClip.Name = "cpyToClip";
+            this.cpyToClip.Size = new System.Drawing.Size(138, 28);
+            this.cpyToClip.TabIndex = 8;
+            this.cpyToClip.Text = "Copy to Clipboard";
+            this.cpyToClip.UseVisualStyleBackColor = true;
+            this.cpyToClip.Click += new System.EventHandler(this.cpyToClip_Click);
             // 
             // Form1
             // 
@@ -405,6 +454,11 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.TextBox ipName;
+        private System.Windows.Forms.ToolStripMenuItem viewServerToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem loginToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.Button cpyToClip;
     }
 }
 
