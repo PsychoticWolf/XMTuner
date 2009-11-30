@@ -8,7 +8,7 @@ namespace XMReaderConsole
 {
     class XMLWorker
     {
-        public MemoryStream CreateXMFeed(List<XMChannel> list, String bitrate, String serverHost, Boolean UseMMS)
+        public MemoryStream CreateXMFeed(List<XMChannel> list, String bitrate, String serverHost, String type)
         {
             String link = "http://" + serverHost + "/feeds/?bandwidth=" + bitrate;
 
@@ -77,7 +77,9 @@ namespace XMReaderConsole
             foreach (XMChannel chan in list)
             {
                 String media;
-                if (UseMMS) {
+                if (type.Equals("rtsp")) {
+                    media = "rtsp://";
+                } else if (type.Equals("mms")) {
                     media = "mms://";
                 } else {
                     media = "http://";
