@@ -16,12 +16,14 @@ namespace XMReaderConsole
         public String port;
         public bool bitrate;
         public bool autologin;
+        public bool isMMS;
 
-        public Form2(String usertxt, String userpass, String usrport, bool bitRate, bool autolog)
+        public Form2(String usertxt, String userpass, String usrport, bool bitRate, bool autolog, bool MMSON)
         {
             user = usertxt;
             pass = userpass;
             port = usrport;
+            isMMS = MMSON;
             bitrate = bitRate;
             autologin = autolog;
             InitializeComponent();
@@ -34,6 +36,7 @@ namespace XMReaderConsole
             txtPort.Text = port;
             chkBitrate.Checked = bitrate;
             chkAutologin.Checked = autologin;
+            chkMMS.Checked = isMMS;
         }
 
         private void label3_Click(object sender, EventArgs e)
@@ -44,7 +47,7 @@ namespace XMReaderConsole
         private void button1_Click(object sender, EventArgs e)
         {
             configMan configuration = new configMan();
-            configuration.writeConfig(txtUser.Text, txtPassword.Text, txtPort.Text, chkBitrate.Checked, chkAutologin.Checked);
+            configuration.writeConfig(txtUser.Text, txtPassword.Text, txtPort.Text, chkBitrate.Checked, chkAutologin.Checked, chkMMS.Checked);
             Close();
         }
 
