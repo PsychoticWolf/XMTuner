@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-//using System.Timers;
 using System.Net;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-//using System.Drawing;
 
 namespace XMReaderConsole
 {
@@ -22,9 +20,9 @@ namespace XMReaderConsole
         bool isLive = true;
         public String OutputData = "";
         public String theLog = "";
-        public int cookieCount = 0;
-        
+        int cookieCount = 0;
         public String bitrate = "high";
+
         List<XMChannel> channels = new List<XMChannel>();
 
         public XMTuner()
@@ -33,21 +31,17 @@ namespace XMReaderConsole
 
         public XMTuner(String username, String passw, ref RichTextBox box1, String rbitrate, bool MMSON)
         {
-
             user = username;
             password = passw;
             outputbox = box1;
             bitrate = rbitrate;
             isMMS = MMSON;
            
-            System.Timers.Timer loginTimer = new System.Timers.Timer();
-            loginTimer.Interval  = 3600;
-            loginTimer.Start();
             login();
           
         }
 
-        public void login()
+        private void login()
         {
             String XMURL;
             if (isLive) 
@@ -98,19 +92,7 @@ namespace XMReaderConsole
             loginURL.close();
         }
 
-        //public bool isLoggedIn()
-        //{
-            //if (cookies != null && cookieCount > 1)
-            //{
-                //return true;
-            //}
-            //else
-            //{
-                //return false;
-            //}
-        //}
-
-        public bool loadChannelData()
+        private bool loadChannelData()
         {
             output("Loading channel lineup...", "info");
             bool goodData = false;
@@ -146,7 +128,7 @@ namespace XMReaderConsole
             return false;
         }
 
-        public void setChannelData(String rawchanneldata)
+        private void setChannelData(String rawchanneldata)
         {
             XMChannel tempChannel;
 
@@ -226,7 +208,7 @@ namespace XMReaderConsole
             simpleDelegate.BeginInvoke(null, null);
         }
 
-        public void loadWhatsOn()
+        private void loadWhatsOn()
         {
             output("Update What's On Data...", "debug");
             String whatsOnURL;
@@ -249,7 +231,7 @@ namespace XMReaderConsole
             whatsOn.close();
         }
 
-        public void setWhatsonData(String rawdata)
+        private void setWhatsonData(String rawdata)
         {
             rawdata = rawdata.Trim();
             rawdata = rawdata.Replace("\n", ""); // No new lines please
@@ -278,20 +260,12 @@ namespace XMReaderConsole
             	
                 //channels.Find(Find(Convert.ToInt32(channel[0])));
                 Find(Convert.ToInt32(channel[0])).addPlayingInfo(channel);
-
-                // XXX -- Need to write these values to some object (XMChannel?) so they're usable.
-
-
-	            String[] whatson = channel;
-
-
-
             }
 
         }
 
 
-        public String setCookies(CookieCollection cookies)
+        private String setCookies(CookieCollection cookies)
         {
             cookieCount = cookies.Count;
             String[] cookieStr = new String[cookieCount];
@@ -350,7 +324,7 @@ namespace XMReaderConsole
             return URL;
          }
 
-        public string playChannel(URL url)
+        private string playChannel(URL url)
         {
             String contentURL;
             String pattern = "<PARAM NAME=\"FileName\" VALUE=\"(.*?)\">";

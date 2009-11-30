@@ -59,6 +59,7 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -87,8 +88,8 @@
     </Compile>
     <Compile Include="URL.cs" />
     <Compile Include="WebListner.cs" />
+    <Compile Include="WebWorker.cs" />
     <Compile Include="XMChannel.cs" />
-    <Compile Include="XMLWorker.cs" />
     <Compile Include="XMTuner.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
