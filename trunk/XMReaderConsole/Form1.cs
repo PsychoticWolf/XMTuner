@@ -86,19 +86,32 @@ namespace XMReaderConsole
             outputbox.Refresh();
             if (highbit) { bitrate = "high"; } else { bitrate = "low"; }
             self = new XMTuner(txtUser.Text, txtPassword.Text, ref outputbox, bitrate, isMMS);
-            timer2.Enabled = true;
-            xmServer = new WebListner(self, port);
-            i = 0;
-            viewServerToolStripMenuItem.Enabled = true;
-            serverRunning = true;
-            loginToolStripMenuItem.Enabled = false;
+            if (self.isLoggedIn == false)
+            {
+                //Not logged in successfully.. Bail!
+                return;
+            }
             self.OutputData = outputbox.Text + self.OutputData;
-            //outputbox.Text = self.OutputData;
+            i = 0;
+
+            xmServer = new WebListner(self, port);
+            serverRunning = true;
             xmServer.start();
-            
-            //outputbox.Text = self.OutputData;
+            if (xmServer.isRunning == false)
+            {
+                serverRunning = false;
+                //Server failed to start.
+                return;
+            }
+            viewServerToolStripMenuItem.Enabled = true;
+            loginToolStripMenuItem.Enabled = false;
+            timer2.Enabled = true;
+
             loggedIn = true;
-            if (loggedIn) {button1.Enabled = false; button5.Enabled = true;}
+            if (loggedIn) {
+                button1.Enabled = false;
+                button5.Enabled = true;
+            }
             
             loadChannels();
             self.writeLog();
