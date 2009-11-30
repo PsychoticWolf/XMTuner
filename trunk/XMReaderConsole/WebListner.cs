@@ -90,7 +90,6 @@ namespace XMReaderConsole
             catch (ObjectDisposedException)
             {
                 listenForNextRequest.Set();
-                listenForNextRequest.Close();
                 return;
             }
 
@@ -110,7 +109,7 @@ namespace XMReaderConsole
             String requestURL = request.Url.PathAndQuery;
             myTuner.output("Incoming Request: (Source: " + request.RemoteEndPoint + ") " + request.HttpMethod + " - " + requestURL, "debug");
 
-            char[] seperator = new char[] { '/' };
+            char[] seperator = new char[] {'/'};
             String[] parsedURL = requestURL.Split(seperator, 2, StringSplitOptions.RemoveEmptyEntries);
             int sizeofURL = parsedURL.Length;
 
@@ -123,6 +122,12 @@ namespace XMReaderConsole
             else
             {
                 baseURL = parsedURL[0];
+                if (baseURL.StartsWith("?"))
+                {
+                    methodURL = baseURL;
+                    baseURL = "/";
+                }
+
                 if (sizeofURL > 1)
                 {
                     methodURL = parsedURL[1];
@@ -131,8 +136,10 @@ namespace XMReaderConsole
 
             if (baseURL.Equals("/"))
             {
-                String responseString = "Not Yet";
-                responseString = DoNowPlaying();
+                String responseString;
+                NameValueCollection URLParams = request.QueryString;
+                myTuner.output("Incoming 'What's On' Request", "info");
+                responseString = DoNowPlaying(serverHost, URLParams);
                 SendRequest(context, null, responseString, "text/html", false, HttpStatusCode.OK);
 
             }
@@ -177,17 +184,7 @@ namespace XMReaderConsole
                 }
                 //Do Action for Feeds
                 NameValueCollection URLParams = request.QueryString;
-                Boolean useMMS;
-                if (request.UserAgent.Contains("TVersity"))
-                {
-                    useMMS = true;
-                }
-                else
-                {
-                    useMMS = false;
-                }
-
-                MemoryStream stream = DoFeed(methodURL, URLParams, useMMS);
+                MemoryStream stream = DoFeed(methodURL, URLParams, request.UserAgent);
                 SendRequest(context, stream, null, "text/xml;charset=UTF-8", false, HttpStatusCode.OK);
             }
             else
@@ -316,8 +313,39 @@ namespace XMReaderConsole
             return channelURL;
         }
 
-        public MemoryStream DoFeed(string methodURL, NameValueCollection URLparams, bool UseMMS)
+        public MemoryStream DoFeed(string methodURL, NameValueCollection URLparams, String useragent)
         {
+            Boolean UseMMS = myTuner.isMMS;
+            Boolean UseRTSP = false;
+            if (useragent.Contains("TVersity"))
+            {
+                UseRTSP = true;
+            }
+
+            if (URLparams.Get("type") != null)
+            {
+                if (URLparams.Get("type").ToLower().Equals("mms"))
+                {
+                    UseMMS = true;
+                }
+                else if (URLparams.Get("type").ToLower().Equals("http"))
+                {
+                    UseMMS = false;
+                }
+            }
+            String type = "http";
+            if (UseRTSP)
+            {
+                type = "rtsp";
+            }
+            else
+            {
+                if (UseMMS)
+                {
+                    type = "mms";
+                }
+            }
+
             String bitrate = myTuner.bitrate;
             if (URLparams.Get("bitrate") != null) 
             {
@@ -342,21 +370,107 @@ namespace XMReaderConsole
 
             List <XMChannel> list = myTuner.getChannels();
             XMLWorker myLittleWorker = new XMLWorker();
-            MemoryStream OutputStream = myLittleWorker.CreateXMFeed(list, bitrate, serverHost, UseMMS);
+            MemoryStream OutputStream = myLittleWorker.CreateXMFeed(list, bitrate, serverHost, type);
 
             return OutputStream;
         }
 
-        public String DoNowPlaying()
+        public String DoNowPlaying(String serverHost, NameValueCollection URLparams)
         {
+            Boolean UseMMS = myTuner.isMMS;
+            String bitrate = myTuner.bitrate; //Get default bitrate
+            int nowPlayingNum = myTuner.lastChannelPlayed;
+            List<XMChannel> list = myTuner.getChannels();
+
+            if (URLparams.Get("bitrate") != null)
+            {
+                if (URLparams["bitrate"].ToLower().Equals("high") ||
+                    URLparams["bitrate"].ToLower().Equals("low"))
+                {
+                    bitrate = URLparams["bitrate"].ToLower();
+                }
+            }
+            if (URLparams.Get("type") != null)
+            {
+                if (URLparams.Get("type").ToLower().Equals("mms"))
+                {
+                    UseMMS = true;
+                }
+                else if (URLparams.Get("type").ToLower().Equals("http"))
+                {
+                    UseMMS = false;
+                }
+            }
             String NowPlayingPage = "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html401/loose.dtd\">";
-            NowPlayingPage += "<html>\n<head>\n\t<title>XM Tuner - What's On</title>\n</head>\n<body>";
+            NowPlayingPage += "<html>\n<head>\n\t<title>XM Tuner - What's On</title>\n";
+            NowPlayingPage += "<link rel=\"alternate\" type=\"application/rss+xml\" title=\"RSS\" href=\"/feeds/\" />\n";
+            NowPlayingPage += "</head>\n<body style=\"margin: 0px; font-family: Arial; font-size: 10pt;\">\n";
+            NowPlayingPage += "<style type=\"text/css\">a , a:visited { color: blue; text-decoration: none; } a:hover { color: orange; }</style>\n";
+            //NowPlaying
+            XMChannel npChannel = myTuner.Find(nowPlayingNum);
 
-            NowPlayingPage += "<h1>XM Tuner - What's On</h1>";
+            NowPlayingPage += "<div style=\"float: right;\">\n<table style=\"min-width: 300px; border: 1px solid #666; margin: 5px; padding: 3px; -moz-border-radius: 10px;\">";
+            NowPlayingPage += "<tr><td style=\"border-bottom: 1px solid blue; font-size: 18pt; font-weight: bold;\">Now Playing<br></td></tr>\n";
+            if (npChannel.num != 0)
+            {
+                NowPlayingPage += "<tr><td style=\"padding-left: 5px;\">XM " + npChannel.num + " - " + npChannel.name + "</td></tr>";
+                NowPlayingPage += "<tr><td style=\"padding-left: 5px;\">" + npChannel.artist + " - " + npChannel.song + "</td></tr>";
+                if (!npChannel.album.Equals(""))
+                {
+                    NowPlayingPage += "<tr><td style=\"padding-left: 25px; color: #666;\">" + npChannel.album + "</td></tr>\n";
+                }
+            }
+            else
+            {
+                NowPlayingPage += "<tr><td style=\"color: #666; text-align: center;\"><p>Nothing Yet... Play a Channel</p></td></tr>\n";
+            }
+            NowPlayingPage += "</table>\n</div>";
 
+            NowPlayingPage += "<h1 style=\"margin: 0px; padding: 25px; font-size: 26pt;\">XM Tuner - What's On</h1>";
 
-            NowPlayingPage += "<table>";
-            NowPlayingPage += "<tr><th></th><th>Channel</th><th>Artist</th><th>Song</th><th>Album</th></tr>\n";
+            //Full Channel List
+            NowPlayingPage += "<table align=\"center\" style=\"width: 95%; border: 1px solid black;\">";
+            NowPlayingPage += "<tr><td colspan=6 style=\"border-bottom: 1px solid blue; font-size: 18pt; font-weight: bold;\">";
+            NowPlayingPage += "<div style=\"float: right; font-size: 10pt;\">";
+            NowPlayingPage += "<a style=\"text-decoration: none;\" href=\"/feeds/\" title=\"RSS 2.0 Feed for TVersity Media Server\"><img border=\"0\" width=\"16\" height=\"16\" alt=\"\" src=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAKOSURBVHjadJNNSFRRGIbfc+6dO6OOOplDykSZaRCtnKRc+ANRUBFEm0gicxG0bGoVhERRYIvIjRAtW+UmW5QQQS6qRWQSWJRaUcjkT0LiVWfm/pzTd869M5LShe+eufC973m+n2Fj55KJymTt9ZgVy3AGMHoxvvEs/qZgDL4AlhbsAfv34g1TiRPxRMZbWwU3GQzO9clNhGcYBpkY4UlGiWRd5scnMvx5tUWano9IMoXy1pOUBPgz4xC/xv8r1hSexNKiB1Nhq6RIbQoVhy6i+MiCDffDEPyJITBvZZPYLwiQFFzVZ0Q45Moc8q8fwP34FGJ5FixaCevgBZT1DMNs7Nok9iikL8GyfWkZ3VgvhbljP6yOy2BbmzWR/+o2vM/PSmLfkchTaAIlsHa1ourSS5Sfvg8r3Q38mYb7+DzE9Ig2MDquAan2kth3AgKu0JSBapLCNranEWnPIHp2GDzZDEE3+1OBiXW4D4LHtViZCB/rBHJuHPmHp+CO3oK0Zyk7DvP4IGR1EwrPb673JX0mELslgvVRYW0O8usIvCe9AboyOdIPn1Ug9+Kupihr69ZiZSJFsYRwztbRO4icGARv6IT3ZkCTsKp68J2dyE2MQuZtsFgllbZHTyMsAVqsaldCVt8CtvsYPHsZzvtH+tZIc5e+sfBtLOhFYytRFAlYuGGED2clGNn8lO62m53U37y6XmM7M8E3onEIIpCSLp/vPyC31Bp6SUSsjmIbnO9jpVEZqbROzn15F5RDZs5CFs58FmaNBTZ5Ze+9hn11Genl/1mS0qjChumaCVvo2iViNXHkuD1g9Daxt7lVEQPMNpcSdah1pQb5kqho4yVXQc2iacHiMMpNFPia/jv/FWAAUTVTOunExzkAAAAASUVORK5CYII%3D\">";
+                NowPlayingPage += "&nbsp;RSS Feed</a></div>";
+                NowPlayingPage +="XM Channel Guide";
+                
+                NowPlayingPage += "</td></tr>\n";
+            NowPlayingPage += "<tr><th></th><th>Channel</th><th>Artist</th><th>Song</th><th>Album</th><th></th></tr>\n";
+            String mediaurl = "";
+            int i = 0;
+            foreach (XMChannel channel in list)
+            {
+                String row_color;
+                if (i % 2 == 0)  { row_color = "#FFFFC0"; } else { row_color = "#FFFFFF"; }
+                //XXX need to respect the useMMS code here
+                if (UseMMS)
+                {
+                    mediaurl = "mms://";
+                }
+                else
+                {
+                    mediaurl = "http://";
+                }
+                mediaurl += serverHost + "/streams/" + channel.num + "/" + bitrate;
+                if (nowPlayingNum == channel.num)
+                {
+                    NowPlayingPage += "<tr style=\"background-color: #FFFF00; border-bottom: 1px solid black;\">\n";
+                }
+                else
+                {
+                    NowPlayingPage += "<tr bgcolor=\"" + row_color + "\" onMouseOver=\"this.bgColor = '#CCE3E9'\" onMouseOut =\"this.bgColor = '" + row_color + "'\">\n";
+                }
+                NowPlayingPage += "\t<td style=\"text-align: center;\" nowrap><a href=\"" + mediaurl + "\">XM " + channel.num + "</a></td>\n";
+                NowPlayingPage += "\t<td>" + channel.name + "</td>\n";
+                NowPlayingPage += "\t<td>" + channel.artist + "</td>\n";
+                NowPlayingPage += "\t<td>" + channel.song + "</td>\n";
+                NowPlayingPage += "\t<td>" + channel.album + "</td>\n";
+                NowPlayingPage += "\t<td><strong><a href=\"" + mediaurl + "\">Play!</a></strong></td>\n";
+                NowPlayingPage += "</tr>\n";
+                i++;
+            }
             NowPlayingPage += "</table>";
 
             NowPlayingPage += "<hr noshade>\n";

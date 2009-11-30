@@ -16,7 +16,7 @@ namespace XMReaderConsole
         RichTextBox outputbox;
         public bool isMMS = false;
         String cookies;
-        String contentURL;
+        public int lastChannelPlayed;
         bool isLoggedIn;
         bool isDebug = false;
         bool isLive = true;
@@ -88,6 +88,7 @@ namespace XMReaderConsole
                     else { output("Logged in as " + user, "info"); }
                     isLoggedIn = true;
                     loadChannelData();
+                    doWhatsOn();
                 }
             }
             else 
@@ -244,13 +245,14 @@ namespace XMReaderConsole
 
             int responseCode = whatsOn.getStatus();
             output("Server Response: " + responseCode.ToString(), "debug");
+            setWhatsonData(whatsOn.response());
             whatsOn.close();
         }
 
         public void setWhatsonData(String rawdata)
         {
             rawdata = rawdata.Trim();
-            rawdata = rawdata.Replace("\r\n", ""); // No new lines please
+            rawdata = rawdata.Replace("\n", ""); // No new lines please
             rawdata = rawdata.Replace("\t", ""); // No tabs...
             rawdata = rawdata.Replace("xms.sendRPCDone(\"whatson\",[ {", ""); // Remove preamble
             rawdata = rawdata.Replace("}            ]);", ""); //suffix
@@ -344,11 +346,13 @@ namespace XMReaderConsole
             playerURL.fetch();
             string URL = playChannel(playerURL);
             //response is closed in playChannel();
+            lastChannelPlayed = channelnum;
             return URL;
          }
 
         public string playChannel(URL url)
         {
+            String contentURL;
             String pattern = "<PARAM NAME=\"FileName\" VALUE=\"(.*?)\">";
             String m = Regex.Match(url.response(),pattern).ToString();
             m = m.Replace("<PARAM NAME=\"FileName\" VALUE=\"", "");
