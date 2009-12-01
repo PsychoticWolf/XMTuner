@@ -22,6 +22,7 @@ namespace XMReaderConsole
         public String theLog = "";
         int cookieCount = 0;
         public String bitrate = "high";
+        public String tversityHost = "";
 
         List<XMChannel> channels = new List<XMChannel>();
 

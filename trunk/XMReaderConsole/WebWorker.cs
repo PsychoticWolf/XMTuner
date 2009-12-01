@@ -147,14 +147,17 @@ namespace XMReaderConsole
         {
             NameValueCollection streamCollection = new NameValueCollection();
             String msg;
-            String tversityHost = ""; //XXX
+            String tversityHost = myTuner.tversityHost;
             String isErr = "false";
             int ChanNum = Convert.ToInt32(streamParams["num"]);
             String bitrate = getBitRate(streamParams);
             if (streamParams.Get("streamtype") != null)
             {
+                fullurl = fullurl.Replace("/mp3","");
                 String redirectURL = HttpUtility.UrlEncode("rtsp://" + serverHost + fullurl);
+                myTuner.output("MP3 Request forwarding to" + redirectURL, "debug");
                 msg = "http://" + tversityHost + "/geturl/stream.mp3?type=audio/x-ms-wma&ttype=audio/mpeg&url=" + redirectURL+"&ext=.mp3";
+                myTuner.output(msg, "debug");
             }
             else
             {
