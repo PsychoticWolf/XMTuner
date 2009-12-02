@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Collections.Specialized;
 
 namespace XMReaderConsole
 {
@@ -53,7 +54,18 @@ namespace XMReaderConsole
         private void button1_Click(object sender, EventArgs e)
         {
             configMan configuration = new configMan();
-            configuration.writeConfig(txtUser.Text, txtPassword.Text, txtPort.Text, chkBitrate.Checked, chkAutologin.Checked, chkMMS.Checked, txtTversity.Text, txtHostname.Text);
+            NameValueCollection configOut = new NameValueCollection();
+            configOut.Add("username", txtUser.Text);
+            configOut.Add("password", txtPassword.Text);
+            configOut.Add("port", txtPort.Text);
+            configOut.Add("bitrate", chkBitrate.Checked.ToString());
+            configOut.Add("autologin", chkAutologin.Checked.ToString());
+            configOut.Add("isMMS", chkMMS.Checked.ToString());
+            configOut.Add("Tversity", txtTversity.Text);
+            configOut.Add("hostname", txtHostname.Text);
+                        
+            configuration.writeConfig(configOut);
+
             Close();
         }
 
