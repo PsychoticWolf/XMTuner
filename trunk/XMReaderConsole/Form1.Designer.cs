@@ -308,8 +308,7 @@
             this.protocolBox.FormattingEnabled = true;
             this.protocolBox.Items.AddRange(new object[] {
             "HTTP",
-            "MMS",
-            "MP3"});
+            "MMS"});
             this.protocolBox.Location = new System.Drawing.Point(97, 48);
             this.protocolBox.Margin = new System.Windows.Forms.Padding(4);
             this.protocolBox.Name = "protocolBox";
@@ -329,7 +328,7 @@
             // 
             // addressBox
             // 
-            this.addressBox.Location = new System.Drawing.Point(97, 88);
+            this.addressBox.Location = new System.Drawing.Point(97, 113);
             this.addressBox.Margin = new System.Windows.Forms.Padding(4);
             this.addressBox.Name = "addressBox";
             this.addressBox.Size = new System.Drawing.Size(601, 22);
@@ -338,7 +337,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(15, 91);
+            this.label4.Location = new System.Drawing.Point(15, 116);
             this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(64, 17);
@@ -495,7 +494,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(15, 123);
+            this.label7.Location = new System.Drawing.Point(15, 84);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(53, 17);
             this.label7.TabIndex = 9;
@@ -508,7 +507,7 @@
             this.bitRateBox.Items.AddRange(new object[] {
             "High",
             "Low"});
-            this.bitRateBox.Location = new System.Drawing.Point(97, 120);
+            this.bitRateBox.Location = new System.Drawing.Point(97, 81);
             this.bitRateBox.Name = "bitRateBox";
             this.bitRateBox.Size = new System.Drawing.Size(601, 24);
             this.bitRateBox.TabIndex = 10;
