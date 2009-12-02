@@ -119,6 +119,7 @@ namespace XMReaderConsole
                 button1.Enabled = false;
                 button5.Enabled = true;
                 channelBox.Enabled = true;
+                if (!tversityHost.Equals("")) { protocolBox.Items.Add("MP3"); }
             }
             
             loadChannels();
