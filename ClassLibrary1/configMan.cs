@@ -4,7 +4,7 @@ using System.Collections.Specialized;
 using System.Text;
 using System.IO;
 
-namespace XMReaderConsole
+namespace XMTunerService
 {
     class configMan
     {

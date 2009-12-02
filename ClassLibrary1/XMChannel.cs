@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 
 
-namespace XMReaderConsole
+namespace XMTunerService
 {
     class XMChannel : IComparable<XMChannel>, IEquatable<XMChannel>
     {

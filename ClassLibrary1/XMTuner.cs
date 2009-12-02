@@ -5,13 +5,13 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
-namespace XMReaderConsole
+namespace XMTunerService
 {
     class XMTuner
     {
         String user;
         String password;
-        RichTextBox outputbox;
+        //RichTextBox outputbox;
         public bool isMMS = false;
         String cookies;
         public int lastChannelPlayed;
@@ -22,7 +22,6 @@ namespace XMReaderConsole
         public String theLog = "";
         int cookieCount = 0;
         public String bitrate = "high";
-        public String tversityHost = "";
 
         List<XMChannel> channels = new List<XMChannel>();
 
@@ -30,11 +29,11 @@ namespace XMReaderConsole
         {
         }
 
-        public XMTuner(String username, String passw, ref RichTextBox box1, String rbitrate, bool MMSON)
+        public XMTuner(String username, String passw, String rbitrate, bool MMSON)
         {
             user = username;
             password = passw;
-            outputbox = box1;
+            //outputbox = box1;
             bitrate = rbitrate;
             isMMS = MMSON;
            
@@ -201,7 +200,6 @@ namespace XMReaderConsole
             if (isLoggedIn == false)
             {
                 output("Not logged in. Reconnecting...", "info");
-                channels.Clear(); //Basic Cleanup, probably need to do more here.
                 login();
                 return;
             }
@@ -363,7 +361,7 @@ namespace XMReaderConsole
 
 
             //Tell the Form to write to the messagebox in the UI
-            Form1.output(output, level, ref outputbox);
+            //Form1.output(output, level, ref outputbox);
 
         }
 
