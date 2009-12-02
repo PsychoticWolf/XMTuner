@@ -155,15 +155,15 @@ namespace XMReaderConsole
             ip = getLocalIP();
             if (configuration.isConfig)
             {
-                String[] configArray = configuration.getConfig();
-                username = configArray[1];
-                password = configArray[2];
-                port = configArray[3];
-                highbit = Convert.ToBoolean(configArray[4]);
-                autologin = Convert.ToBoolean(configArray[5]);
-                isMMS = Convert.ToBoolean(configArray[6]);
-                tversityHost = configArray[7];
-                hostname = configArray[8];
+                NameValueCollection configIn = configuration.getConfig();
+                username = configIn.Get("username") ;
+                password = configIn.Get("password");
+                port = configIn.Get("port");
+                highbit = Convert.ToBoolean(configIn.Get("bitrate"));
+                autologin = Convert.ToBoolean(configIn.Get("autologin"));
+                isMMS = Convert.ToBoolean(configIn.Get("isMMS"));
+                tversityHost = configIn.Get("Tversity"); ;
+                hostname = configIn.Get("hostname"); ;
                 if (hostname.Equals("")) { hostname = ip; }
                 loginToolStripMenuItem.Enabled = true;
                 outputbox.AppendText("Configuration Loaded\n");
@@ -176,8 +176,9 @@ namespace XMReaderConsole
                 {
                     port = "19081";
                 }
-                
-                outputbox.AppendText("No Configuration\nClick Configure.");
+
+                button1.Enabled = false;
+                outputbox.AppendText("No Configuration\nClick Configure.\n");
                 return false;
             }
 
