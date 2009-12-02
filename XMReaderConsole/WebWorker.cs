@@ -9,10 +9,16 @@ namespace XMReaderConsole
 {
     class WebWorker
     {
+        NameValueCollection config = new NameValueCollection();
         XMTuner myTuner;
         public WebWorker(XMTuner xmTuner)
         {
             myTuner = xmTuner;
+
+            //Set up configuration values
+            NameValueCollection config = new NameValueCollection();
+            config.Add("isMMS", myTuner.isMMS.ToString());
+            config.Add("bitrate", myTuner.bitrate);
         }
 
         public NameValueCollection parseStreamURL(string methodURL)
@@ -49,20 +55,6 @@ namespace XMReaderConsole
 
         }
 
-        private String getBitRate(NameValueCollection URLparams)
-        {
-            String bitrate = myTuner.bitrate;
-            if (URLparams.Get("bitrate") != null)
-            {
-                if (URLparams["bitrate"].ToLower().Equals("high") ||
-                    URLparams["bitrate"].ToLower().Equals("low"))
-                {
-                    bitrate = URLparams["bitrate"].ToLower();
-                }
-            }
-            return bitrate;
-        }
-
         private String getBitrateDesc(String bitrate)
         {
             String bitrate_desc = "";
@@ -77,72 +69,6 @@ namespace XMReaderConsole
             return bitrate_desc;
         }
 
-        private String getStreamType(String useragent, NameValueCollection URLparams) {
-            if (useragent == null) { useragent = ""; }
-            Boolean UseMMS = myTuner.isMMS;
-            Boolean UseRTSP = false;
-            if (useragent.Contains("TVersity"))
-            {
-                UseRTSP = true;
-            }
-
-            if (URLparams.Get("type") != null)
-            {
-                if (URLparams.Get("type").ToLower().Equals("mms"))
-                {
-                    UseMMS = true;
-                }
-                else if (URLparams.Get("type").ToLower().Equals("http"))
-                {
-                    UseMMS = false;
-                }
-            }
-            String type = "http";
-            if (UseRTSP)
-            {
-                type = "rtsp";
-            }
-            else
-            {
-                if (UseMMS)
-                {
-                    type = "mms";
-                }
-            }
-            return type;
-        }
-
-        public String buildLink(String linkType, String serverHost, NameValueCollection URLparams, String useragent, Int32 num)
-        {
-            String link;
-            //Linktype: stream or feed
-            //XXX Support null serverhost
-            if (linkType.Equals("stream"))
-            {
-                String type = getStreamType(useragent, URLparams);
-                String bitrate = getBitRate(URLparams);
-                String streamtype = "";
-                if (URLparams.Get("streamtype") != null)
-                {
-                    streamtype = URLparams["streamtype"] + "/";
-                }
-                if (num == 0)
-                {
-                    num = Convert.ToInt32(URLparams["num"]);
-                }
-                
-                //if needed it'll be "streamtype/"
-                link = type + "://" + serverHost + "/streams/" + num + "/" + streamtype + bitrate;
-
-            } else {
-                String category = ""; //XXX not implemented yet.
-                String type = getStreamType(null, URLparams);
-                String bitrate = getBitRate(URLparams);
-                link = "http://" + serverHost + "/feeds/" + category + "?type=" + type + "&bitrate=" + bitrate;
-            }
-            return link;
-        }
-
         public NameValueCollection DoStream(NameValueCollection streamParams, String fullurl, String serverHost)
         {
             NameValueCollection streamCollection = new NameValueCollection();
@@ -150,7 +76,7 @@ namespace XMReaderConsole
             String tversityHost = myTuner.tversityHost;
             String isErr = "false";
             int ChanNum = Convert.ToInt32(streamParams["num"]);
-            String bitrate = getBitRate(streamParams);
+            String bitrate = TheConstructor.getBitRate(streamParams, config);
             if (streamParams.Get("streamtype") != null)
             {
                 fullurl = fullurl.Replace("/mp3","");
@@ -177,7 +103,7 @@ namespace XMReaderConsole
 
         public MemoryStream DoFeed(string methodURL, NameValueCollection URLparams, String useragent, String serverHost)
         {
-            String bitrate_desc = getBitrateDesc(getBitRate(URLparams));
+            String bitrate_desc = getBitrateDesc(TheConstructor.getBitRate(URLparams, config));
             myTuner.output("Incoming Feed Request: XM Channels (All - " + bitrate_desc + ")", "info");
             List<XMChannel> list = myTuner.getChannels();
             MemoryStream OutputStream = CreateXMFeed(list, URLparams, serverHost, useragent);
@@ -189,7 +115,7 @@ namespace XMReaderConsole
         {
             Boolean UseMMS = myTuner.isMMS;
 
-            String bitrate = getBitRate(URLparams);
+            String bitrate = TheConstructor.getBitRate(URLparams, config);
 
             int nowPlayingNum = myTuner.lastChannelPlayed;
             List<XMChannel> list = myTuner.getChannels();
@@ -249,7 +175,7 @@ namespace XMReaderConsole
                 }
                 mediaurl += serverHost + "/streams/" + channel.num + "/" + bitrate; */
 
-                mediaurl = buildLink("stream", serverHost, URLparams, null, channel.num);
+                mediaurl = TheConstructor.buildLink("stream", serverHost, URLparams, null, channel.num, config);
 
                 if (nowPlayingNum == channel.num)
                 {
@@ -277,9 +203,9 @@ namespace XMReaderConsole
 
         private MemoryStream CreateXMFeed(List<XMChannel> list, NameValueCollection URLparams, String serverHost, String useragent)
         {
-            String link = buildLink("feed", serverHost, URLparams, useragent, 0);
+            String link = TheConstructor.buildLink("feed", serverHost, URLparams, useragent, 0, config);
             //String link = "http://" + serverHost + "/feeds/?bitrate=" + bitrate;
-            String bitrate_desc = getBitrateDesc(getBitRate(URLparams));
+            String bitrate_desc = getBitrateDesc(TheConstructor.getBitRate(URLparams, config));
             
             MemoryStream MemoryStream = new MemoryStream();
 
@@ -335,7 +261,7 @@ namespace XMReaderConsole
             //Channels
             foreach (XMChannel chan in list)
             {
-                String media = buildLink("stream", serverHost, URLparams, useragent, chan.num);
+                String media = TheConstructor.buildLink("stream", serverHost, URLparams, useragent, chan.num, config);
 
                 //<item>
                 writer.WriteStartElement("item");
