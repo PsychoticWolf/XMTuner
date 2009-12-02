@@ -202,6 +202,7 @@ namespace XMReaderConsole
                                     "<style type=\"text/css\">a , a:visited { color: blue; text-decoration: none; } a:hover { color: orange; }</style>\n";
             //NowPlaying
             XMChannel npChannel = myTuner.Find(nowPlayingNum);
+            if (npChannel.album == null) { npChannel.album = ""; }
 
             NowPlayingPage += "<div style=\"float: right;\">\n<table style=\"min-width: 300px; border: 1px solid #666; margin: 5px; padding: 3px; -moz-border-radius: 10px;\">" +
                               "<tr><td style=\"border-bottom: 1px solid blue; font-size: 18pt; font-weight: bold;\">Now Playing<br></td></tr>\n";

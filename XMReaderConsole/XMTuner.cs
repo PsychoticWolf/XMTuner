@@ -201,6 +201,7 @@ namespace XMReaderConsole
             if (isLoggedIn == false)
             {
                 output("Not logged in. Reconnecting...", "info");
+                channels.Clear(); //Basic Cleanup, probably need to do more here.
                 login();
                 return;
             }
