@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.IO;
 
@@ -19,7 +18,8 @@ namespace XMReaderConsole
             //readConfig();
             return config;
         }
-        public void writeConfig(String username, String password, String port, bool bitrate, bool autologin, bool isMMS)
+        public void writeConfig(String username, String password, String port,
+                bool bitrate, bool autologin, bool isMMS, String tversityHost, String hostname)
         {
             FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write);
             StreamWriter textOut = new StreamWriter(fs);
@@ -30,6 +30,8 @@ namespace XMReaderConsole
             textOut.WriteLine(bitrate);
             textOut.WriteLine(autologin.ToString());
             textOut.WriteLine(isMMS.ToString());
+            textOut.WriteLine(tversityHost);
+            textOut.WriteLine(hostname);
             textOut.Close();
         }
         public void readConfig()

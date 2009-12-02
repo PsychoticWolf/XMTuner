@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
-using System.Linq;
+using System.Net;
 using System.Text;
 using System.Windows.Forms;
 using System.IO;
+using System.Collections.Specialized;
 
 namespace XMReaderConsole
 {
@@ -21,11 +22,15 @@ namespace XMReaderConsole
         bool highbit = true;
         bool autologin = false;
         bool isMMS = false;
+        String tversityHost;
+        String hostname;
+
         int i = 0;
         double sec = 0;
         double minute = 0;
         double hour = 0;
         String runTime = "";
+        String ip = "";
 
         public Form1()
         {
@@ -84,7 +89,9 @@ namespace XMReaderConsole
         {
             outputbox.Text = outputbox.Text+"Please wait... logging in\n";
             outputbox.Refresh();
+            
             if (highbit) { bitrate = "high"; } else { bitrate = "low"; }
+
             self = new XMTuner(txtUser.Text, txtPassword.Text, ref outputbox, bitrate, isMMS);
             if (self.isLoggedIn == false)
             {
@@ -111,6 +118,7 @@ namespace XMReaderConsole
             if (loggedIn) {
                 button1.Enabled = false;
                 button5.Enabled = true;
+                channelBox.Enabled = true;
             }
             
             loadChannels();
@@ -132,7 +140,7 @@ namespace XMReaderConsole
 
         private void button4_Click(object sender, EventArgs e)
         {
-            Form2 form2 = new Form2(txtUser.Text, txtPassword.Text, port, highbit, autologin, isMMS);
+            Form2 form2 = new Form2(txtUser.Text, txtPassword.Text, port, highbit, autologin, isMMS, tversityHost, hostname);
             form2.ShowDialog();
             refreshConfig();
         }
@@ -141,7 +149,7 @@ namespace XMReaderConsole
         {
             configMan configuration = new configMan();
             configuration.readConfig();
-            //outputbox.SelectionColor = Color.Blue;
+            ip = getLocalIP();
             if (configuration.isConfig)
             {
                 String[] configArray = configuration.getConfig();
@@ -151,6 +159,9 @@ namespace XMReaderConsole
                 highbit = Convert.ToBoolean(configArray[4]);
                 autologin = Convert.ToBoolean(configArray[5]);
                 isMMS = Convert.ToBoolean(configArray[6]);
+                tversityHost = configArray[7];
+                hostname = configArray[8];
+                if (hostname.Equals("")) { hostname = ip; }
                 loginToolStripMenuItem.Enabled = true;
                 outputbox.AppendText("Configuration Loaded\n");
                 if (isMMS) { outputbox.AppendText("URLs default to MMS\n"); }
@@ -167,6 +178,34 @@ namespace XMReaderConsole
                 return false;
             }
 
+        }
+
+        private String getLocalIP()
+        {
+            String localIP = null;
+            IPAddress[] IP;
+            try
+            {
+                IP = Dns.GetHostAddresses("");
+                foreach (IPAddress ip in IP)
+                {
+                    if (ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+                    {
+                        localIP = ip.ToString();
+                        break;
+                    }
+                }
+            }
+            catch (System.Net.Sockets.SocketException e)
+            {
+                outputbox.SelectionColor = Color.Red;
+                outputbox.AppendText(e.Message);
+            }
+            if (localIP == null)
+            {
+                localIP = "localhost";
+            }
+            return localIP;
         }
 
         private void timer1_Tick(object sender, EventArgs e)
@@ -268,27 +307,41 @@ namespace XMReaderConsole
                 i++;
             }
             if (isMMS) { protocolBox.SelectedItem = "MMS"; } else { protocolBox.SelectedItem = "HTTP"; }
-            addressBox.Text = getChannelAddress((String)channelBox.SelectedItem, (String)protocolBox.SelectedItem);
+            if (bitrate.Equals("high")) { bitRateBox.SelectedItem = "High"; } else { bitRateBox.SelectedItem = "Low"; }
+            addressBox.Text = getChannelAddress((String)channelBox.SelectedItem, (String)protocolBox.SelectedItem, (String)bitRateBox.SelectedItem);
             
         }
 
-        private String getChannelAddress(String channelString, String protocol)
+        private String getChannelAddress(String channelString, String protocol, String altBitrate)
         {
             String[] tmp1 = channelString.Split('[');
             String[] tmp2 = tmp1[1].Split(']');
             String channelNum = tmp2[0];
-            String channelAddress = protocol.ToLower()+"://"+ipName.Text+":"+port+"/streams/"+channelNum+"/"+bitrate;
+            String channelAddress = protocol.ToLower()+"://"+hostname+":"+port+"/streams/"+channelNum+"/"+bitrate;
 
-            return channelAddress;
+            if (bitRateBox.SelectedIndex == -1) { altBitrate = bitrate; }
+            //if (protocol.Equals("MP3")){streamtype = "MP3";}
+            NameValueCollection collectionForAdd = new NameValueCollection();
+            collectionForAdd.Add("type", protocol.ToLower());
+            collectionForAdd.Add("bitrate", altBitrate.ToLower());
+
+            NameValueCollection config = new NameValueCollection();
+            config.Add("bitrate", bitrate);
+            config.Add("isMMS", isMMS.ToString());
+            String address1 = TheConstructor.buildLink("stream", hostname, collectionForAdd, null, Convert.ToInt32(channelNum), config);
+            
+            return address1;
         }
 
         private void makeAddress(object sender, EventArgs e)
         {
             String protocol;
             String channel;
+            String altBitrate; 
             protocol = (String) protocolBox.SelectedItem;
-            channel = (String)channelBox.SelectedItem; 
-            addressBox.Text = getChannelAddress(channel, protocol);
+            channel = (String)channelBox.SelectedItem;
+            altBitrate = (String)bitRateBox.SelectedItem;
+            addressBox.Text = getChannelAddress(channel, protocol, altBitrate);
         }
 
         private void channelBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -309,7 +362,7 @@ namespace XMReaderConsole
 
         private void viewServerToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("http://localhost:" + port);
+            System.Diagnostics.Process.Start("http://"+getLocalIP()+":" + port);
         }
 
         private void cpyToClip_Click(object sender, EventArgs e)

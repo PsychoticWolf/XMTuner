@@ -62,6 +62,7 @@
             this.textBox1.TabIndex = 1;
             this.textBox1.Text = "0.2";
             this.textBox1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             // 
             // label2
             // 
@@ -85,6 +86,7 @@
             this.label3.Size = new System.Drawing.Size(95, 17);
             this.label3.TabIndex = 3;
             this.label3.Text = "Developers:";
+            this.label3.Click += new System.EventHandler(this.label3_Click);
             // 
             // label4
             // 
@@ -95,6 +97,7 @@
             this.label4.Size = new System.Drawing.Size(82, 17);
             this.label4.TabIndex = 4;
             this.label4.Text = "Chris Crews";
+            this.label4.Click += new System.EventHandler(this.label4_Click);
             // 
             // label5
             // 
@@ -105,6 +108,7 @@
             this.label5.Size = new System.Drawing.Size(117, 17);
             this.label5.TabIndex = 5;
             this.label5.Text = "Curtis M. Kularski";
+            this.label5.Click += new System.EventHandler(this.label5_Click);
             // 
             // label6
             // 
@@ -115,6 +119,7 @@
             this.label6.Size = new System.Drawing.Size(77, 17);
             this.label6.TabIndex = 6;
             this.label6.Text = "Build Date:";
+            this.label6.Click += new System.EventHandler(this.label6_Click);
             // 
             // textBox2
             // 
@@ -127,6 +132,7 @@
             this.textBox2.TabIndex = 7;
             this.textBox2.Text = "20091129";
             this.textBox2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.textBox2.TextChanged += new System.EventHandler(this.textBox2_TextChanged);
             // 
             // button1
             // 
