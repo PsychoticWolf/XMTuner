@@ -17,6 +17,8 @@ namespace XMReaderConsole
         WebListner xmServer;
         bool loggedIn = false;
         bool serverRunning = false;
+        String username = "";
+        String password = "";
         String port = "";
         String bitrate;
         bool highbit = true;
@@ -92,7 +94,7 @@ namespace XMReaderConsole
             
             if (highbit) { bitrate = "high"; } else { bitrate = "low"; }
 
-            self = new XMTuner(txtUser.Text, txtPassword.Text, ref outputbox, bitrate, isMMS);
+            self = new XMTuner(username, password, ref outputbox, bitrate, isMMS);
             if (self.isLoggedIn == false)
             {
                 //Not logged in successfully.. Bail!
@@ -141,7 +143,7 @@ namespace XMReaderConsole
 
         private void button4_Click(object sender, EventArgs e)
         {
-            Form2 form2 = new Form2(txtUser.Text, txtPassword.Text, port, highbit, autologin, isMMS, tversityHost, hostname);
+            Form2 form2 = new Form2(username, password, port, highbit, autologin, isMMS, tversityHost, hostname);
             form2.ShowDialog();
             refreshConfig();
         }
@@ -154,8 +156,8 @@ namespace XMReaderConsole
             if (configuration.isConfig)
             {
                 String[] configArray = configuration.getConfig();
-                txtUser.Text = configArray[1];
-                txtPassword.Text = configArray[2];
+                username = configArray[1];
+                password = configArray[2];
                 port = configArray[3];
                 highbit = Convert.ToBoolean(configArray[4]);
                 autologin = Convert.ToBoolean(configArray[5]);
@@ -175,7 +177,7 @@ namespace XMReaderConsole
                     port = "19081";
                 }
                 
-                outputbox.AppendText("No Configuration\n");
+                outputbox.AppendText("No Configuration\nClick Configure.");
                 return false;
             }
 
@@ -249,12 +251,6 @@ namespace XMReaderConsole
             textOut.Write(header+outputbox.Text+"\nTime: "+i);
             
             textOut.Close();
-        }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-            about aboutBox = new about();
-            aboutBox.ShowDialog();
         }
 
         private void timer2_Tick(object sender, EventArgs e)
