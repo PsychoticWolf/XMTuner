@@ -38,7 +38,14 @@ namespace XMReaderConsole
         public void fetch()
         {
             TheRequest.Timeout = 30000;
-            TheReply = (HttpWebResponse)TheRequest.GetResponse();
+            try
+            {
+                TheReply = (HttpWebResponse)TheRequest.GetResponse();
+            }
+            catch (WebException e)
+            {
+                TheReply = (HttpWebResponse)e.Response;
+            }
         }
 
         public void fetch(String postdata)
@@ -53,7 +60,13 @@ namespace XMReaderConsole
             PostData.Write(buffer, 0, buffer.Length);
             PostData.Close();
 
-            TheReply = (HttpWebResponse)TheRequest.GetResponse();
+            try
+            {
+                TheReply = (HttpWebResponse)TheRequest.GetResponse();
+            }
+            catch (WebException e) {
+                TheReply = (HttpWebResponse)e.Response;
+            }
         }
 
         public int getStatus()

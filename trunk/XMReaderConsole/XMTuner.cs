@@ -16,8 +16,8 @@ namespace XMReaderConsole
         String cookies;
         public int lastChannelPlayed;
         public bool isLoggedIn;
-        bool isDebug = true;
-        bool isLive = false;
+        bool isDebug = false;
+        bool isLive = true;
         public String OutputData = "";
         public String theLog = "";
         int cookieCount = 0;
