@@ -170,7 +170,6 @@ namespace XMReaderConsole
                 }
                 loginToolStripMenuItem.Enabled = true;
                 outputbox.AppendText("Configuration Loaded\n");
-                if (isMMS) { outputbox.AppendText("URLs default to MMS\n"); }
                 return true;
             }
             else
