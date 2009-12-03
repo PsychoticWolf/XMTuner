@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
+//using System.Collections.Generic;
+//using System.ComponentModel;
+//using System.Data;
+//using System.Drawing;
+using System.IO;
 using System.Text;
 using System.Windows.Forms;
 using System.Collections.Specialized;
@@ -20,8 +20,9 @@ namespace XMReaderConsole
         public bool isMMS;
         public String tversityHost;
         public String hostname;
+        bool isLoggedIn = false;
 
-        public Form2(String usertxt, String userpass, String usrport, bool bitRate, bool autolog, bool MMSON, String tTversityHost, String tHostname)
+        public Form2(String usertxt, String userpass, String usrport, bool bitRate, bool autolog, bool MMSON, String tTversityHost, String tHostname, Boolean tLoggedIn)
         {
             user = usertxt;
             pass = userpass;
@@ -31,6 +32,7 @@ namespace XMReaderConsole
             autologin = autolog;
             tversityHost = tTversityHost;
             hostname = tHostname;
+            isLoggedIn = tLoggedIn;
             InitializeComponent();
         }
 
@@ -44,11 +46,10 @@ namespace XMReaderConsole
             chkMMS.Checked = isMMS;
             txtHostname.Text = hostname;
             txtTversity.Text = tversityHost;
-        }
-
-        private void label3_Click(object sender, EventArgs e)
-        {
-
+            if (isLoggedIn)
+            {
+                bUpdateLineup.Enabled = true;
+            }
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -69,16 +70,17 @@ namespace XMReaderConsole
             Close();
         }
 
-        
-
-        private void txtBitrate_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             System.Diagnostics.Process.Start("http://tversity.com/");
+        }
+
+        private void bUpdateLineup_Click(object sender, EventArgs e)
+        {
+            String path = @"channellineup.cache";
+            File.Delete(path);
+            bUpdateLineup.Enabled = false;
+            bUpdateLineup.Text = "Update Pending...";
         }
     }
 }

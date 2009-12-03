@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 
@@ -32,7 +31,7 @@ namespace XMReaderConsole
 
         public String ToSimpleString()
         {
-            String theString = "[" + num + "] " + name;
+            String theString = "XM " + num + " - " + name;
             return theString;
         }
 

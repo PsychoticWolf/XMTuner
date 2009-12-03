@@ -17,7 +17,7 @@ namespace XMReaderConsole
         public int lastChannelPlayed;
         public bool isLoggedIn;
         bool isDebug = false;
-        bool isLive = true;
+        bool isLive = false;
         public String OutputData = "";
         public String theLog = "";
         int cookieCount = 0;
@@ -93,9 +93,53 @@ namespace XMReaderConsole
             loginURL.close();
         }
 
+        private bool isChannelDataCurrent()
+        {
+            String path = @"channellineup.cache";
+            DateTime dt = File.GetLastWriteTime(path);
+            DateTime maxage = DateTime.Now;
+            maxage = maxage.AddDays(-1);
+            if (dt > maxage)
+            {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
         private bool loadChannelData()
         {
             output("Loading channel lineup...", "info");
+            if (isChannelDataCurrent())
+            {
+                //Load from file
+                try
+                {
+                    String path = @"channellineup.cache";
+                    FileStream fs = new FileStream(path, FileMode.OpenOrCreate, FileAccess.Read);
+                    StreamReader textIn = new StreamReader(fs);
+                    String rawchanneldata = textIn.ReadToEnd();
+                    textIn.Close();
+                    setChannelData(rawchanneldata);
+                    output("Channel lineup loaded successfully.", "info");
+                }
+                catch
+                {
+                    output("Failed to load channel lineup.", "error");
+                    return false;
+                }
+                return true;
+            }
+            else
+            {
+                //Reload from server
+                return dnldChannelData();
+            }
+        }
+
+        private bool dnldChannelData()
+        {
+            output("Downloading channel lineup...", "info");
             bool goodData = false;
             int j;
             for (j = 0; j < 60; j++)
@@ -118,6 +162,7 @@ namespace XMReaderConsole
                 {
                     goodData = true;
                     setChannelData(resultStr);
+                    saveChannelData(resultStr);
                 }
                 if (goodData)
                 {
@@ -131,6 +176,10 @@ namespace XMReaderConsole
 
         private void setChannelData(String rawchanneldata)
         {
+            if (channels != null)
+            {
+                channels.Clear();
+            }
             XMChannel tempChannel;
 
             //digest info into usable bits
@@ -184,6 +233,15 @@ namespace XMReaderConsole
             }
         }
 
+        private void saveChannelData(String rawchanneldata)
+        {
+            String path = @"channellineup.cache";
+            FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write);
+            StreamWriter textOut = new StreamWriter(fs);
+            textOut.Write(rawchanneldata);
+            textOut.Close();
+        }
+
         public List<XMChannel> getChannels()
         {
             channels.Sort();
@@ -201,9 +259,14 @@ namespace XMReaderConsole
             if (isLoggedIn == false)
             {
                 output("Not logged in. Reconnecting...", "info");
-                channels.Clear(); //Basic Cleanup, probably need to do more here.
+                //channels.Clear(); //Basic Cleanup, probably need to do more here.
                 login();
                 return;
+            }
+
+            if (!isChannelDataCurrent())
+            {
+                dnldChannelData();
             }
 
             MethodInvoker simpleDelegate = new MethodInvoker(loadWhatsOn);
