@@ -16,9 +16,10 @@ namespace XMReaderConsole
             myTuner = xmTuner;
 
             //Set up configuration values
-            NameValueCollection config = new NameValueCollection();
+            config = new NameValueCollection();
             config.Add("isMMS", myTuner.isMMS.ToString());
             config.Add("bitrate", myTuner.bitrate);
+            config.Add("hostname", myTuner.hostname);
         }
 
         public NameValueCollection parseStreamURL(string methodURL)
@@ -69,6 +70,20 @@ namespace XMReaderConsole
             return bitrate_desc;
         }
 
+        private String getHostName(String serverHost)
+        {
+            String hostname;
+            if (config.Get("hostname") != null && config.Get("hostname").Contains(":"))
+            {
+                hostname = config["hostname"];
+            }
+            else
+            {
+                hostname = serverHost;
+            }
+            return hostname;
+        }
+
         public NameValueCollection DoStream(NameValueCollection streamParams, String fullurl, String serverHost)
         {
             NameValueCollection streamCollection = new NameValueCollection();
@@ -77,6 +92,7 @@ namespace XMReaderConsole
             String isErr = "false";
             int ChanNum = Convert.ToInt32(streamParams["num"]);
             String bitrate = TheConstructor.getBitRate(streamParams, config);
+            serverHost = getHostName(serverHost);
             if (streamParams.Get("streamtype") != null)
             {
                 fullurl = fullurl.Replace("/mp3","");
@@ -104,6 +120,7 @@ namespace XMReaderConsole
         public MemoryStream DoFeed(string methodURL, NameValueCollection URLparams, String useragent, String serverHost)
         {
             String bitrate_desc = getBitrateDesc(TheConstructor.getBitRate(URLparams, config));
+            serverHost = getHostName(serverHost);
             myTuner.output("Incoming Feed Request: XM Channels (All - " + bitrate_desc + ")", "info");
             List<XMChannel> list = myTuner.getChannels();
             MemoryStream OutputStream = CreateXMFeed(list, URLparams, serverHost, useragent);
@@ -114,7 +131,7 @@ namespace XMReaderConsole
         public String DoNowPlaying(String serverHost, NameValueCollection URLparams)
         {
             Boolean UseMMS = myTuner.isMMS;
-
+            serverHost = getHostName(serverHost);
             String bitrate = TheConstructor.getBitRate(URLparams, config);
 
             int nowPlayingNum = myTuner.lastChannelPlayed;

@@ -1,3 +1,13 @@
+FIX!
+
+Crash when loading feed (null bitrate)
+Broken default mms:// on whatson (and feed?!?)
+Missing bitrate in generated URLs on whatsOn
+
+
+====
+
+
 Things from uXM:
 * (WONTFIX) ASX - fetch URL and return the file w/ type
 	--> Probably safe to exclude this given XMTuner's support for http urls. uXM only did mms

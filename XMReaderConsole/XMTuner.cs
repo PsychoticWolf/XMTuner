@@ -23,6 +23,7 @@ namespace XMReaderConsole
         int cookieCount = 0;
         public String bitrate = "high";
         public String tversityHost = "";
+        public String hostname;
 
         List<XMChannel> channels = new List<XMChannel>();
 
@@ -30,13 +31,15 @@ namespace XMReaderConsole
         {
         }
 
-        public XMTuner(String username, String passw, ref RichTextBox box1, String rbitrate, bool MMSON)
+        public XMTuner(String username, String passw, ref RichTextBox box1, String rbitrate, bool MMSON, String rTversityHost, String rHostname)
         {
             user = username;
             password = passw;
             outputbox = box1;
             bitrate = rbitrate;
             isMMS = MMSON;
+            hostname = rHostname;
+            tversityHost = rTversityHost;
            
             login();
           

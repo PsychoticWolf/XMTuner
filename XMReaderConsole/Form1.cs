@@ -93,8 +93,9 @@ namespace XMReaderConsole
             outputbox.Refresh();
             
             if (highbit) { bitrate = "high"; } else { bitrate = "low"; }
-
-            self = new XMTuner(username, password, ref outputbox, bitrate, isMMS);
+            String hostport = "";
+            if (hostname != "") { hostport = hostname + ":" + port; }
+            self = new XMTuner(username, password, ref outputbox, bitrate, isMMS, tversityHost, hostport);
             if (self.isLoggedIn == false)
             {
                 //Not logged in successfully.. Bail!
@@ -164,7 +165,7 @@ namespace XMReaderConsole
                 isMMS = Convert.ToBoolean(configIn.Get("isMMS"));
                 tversityHost = configIn.Get("Tversity"); ;
                 hostname = configIn.Get("hostname"); ;
-                if (hostname.Equals("")) { hostname = ip; }
+                //if (hostname.Equals("")) { hostname = ip; }
                 if (!serverRunning) {
                     button1.Enabled = true;
                 }
@@ -330,7 +331,10 @@ namespace XMReaderConsole
             NameValueCollection config = new NameValueCollection();
             config.Add("bitrate", bitrate);
             config.Add("isMMS", isMMS.ToString());
-            String address1 = TheConstructor.buildLink("stream", hostname+":"+port, collectionForAdd, null, Convert.ToInt32(channelNum), config);
+            String useHost;
+            if (hostname.Equals("")) { useHost = ip; } else { useHost = hostname; }
+            useHost = useHost + ":" + port;
+            String address1 = TheConstructor.buildLink("stream", useHost, collectionForAdd, null, Convert.ToInt32(channelNum), config);
             
             return address1;
         }
