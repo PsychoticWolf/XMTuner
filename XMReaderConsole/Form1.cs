@@ -100,7 +100,7 @@ namespace XMReaderConsole
                 //Not logged in successfully.. Bail!
                 return;
             }
-            self.OutputData = outputbox.Text + self.OutputData;
+            //self.OutputData = outputbox.Text + self.OutputData;
             i = 0;
 
             xmServer = new WebListner(self, port);
@@ -143,7 +143,7 @@ namespace XMReaderConsole
 
         private void button4_Click(object sender, EventArgs e)
         {
-            Form2 form2 = new Form2(username, password, port, highbit, autologin, isMMS, tversityHost, hostname);
+            Form2 form2 = new Form2(username, password, port, highbit, autologin, isMMS, tversityHost, hostname, loggedIn);
             form2.ShowDialog();
             refreshConfig();
         }
@@ -165,6 +165,9 @@ namespace XMReaderConsole
                 tversityHost = configIn.Get("Tversity"); ;
                 hostname = configIn.Get("hostname"); ;
                 if (hostname.Equals("")) { hostname = ip; }
+                if (!serverRunning) {
+                    button1.Enabled = true;
+                }
                 loginToolStripMenuItem.Enabled = true;
                 outputbox.AppendText("Configuration Loaded\n");
                 if (isMMS) { outputbox.AppendText("URLs default to MMS\n"); }
@@ -312,13 +315,15 @@ namespace XMReaderConsole
 
         private String getChannelAddress(String channelString, String protocol, String altBitrate)
         {
-            String[] tmp1 = channelString.Split('[');
-            String[] tmp2 = tmp1[1].Split(']');
-            String channelNum = tmp2[0];
+            if (channelString == null) {
+                return "";
+            }
+
+            String[] tmp1 = channelString.Split('-');
+            String channelNum = tmp1[0].Replace("XM","").Trim();
             String channelAddress = protocol.ToLower()+"://"+hostname+":"+port+"/streams/"+channelNum+"/"+bitrate;
 
             if (bitRateBox.SelectedIndex == -1) { altBitrate = bitrate; }
-            //if (protocol.Equals("MP3")){streamtype = "MP3";}
             NameValueCollection collectionForAdd = new NameValueCollection();
             collectionForAdd.Add("type", protocol.ToLower());
             collectionForAdd.Add("bitrate", altBitrate.ToLower());
@@ -326,7 +331,7 @@ namespace XMReaderConsole
             NameValueCollection config = new NameValueCollection();
             config.Add("bitrate", bitrate);
             config.Add("isMMS", isMMS.ToString());
-            String address1 = TheConstructor.buildLink("stream", hostname, collectionForAdd, null, Convert.ToInt32(channelNum), config);
+            String address1 = TheConstructor.buildLink("stream", hostname+":"+port, collectionForAdd, null, Convert.ToInt32(channelNum), config);
             
             return address1;
         }
@@ -365,7 +370,36 @@ namespace XMReaderConsole
 
         private void cpyToClip_Click(object sender, EventArgs e)
         {
-            Clipboard.SetText(addressBox.Text);
+            if (addressBox.Text != "")
+            {
+                Clipboard.SetText(addressBox.Text);
+            }
+        }
+
+        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("http://www.pcfire.net/XMTuner/"); 
+        }
+
+        private void tabcontrol1_Selected(object sender, TabControlEventArgs e)
+        {
+            if (e.TabPage.Equals(tabPage1))
+            {
+                outputbox.Focus();
+                outputbox.SelectionStart = outputbox.Text.Length;
+                outputbox.ScrollToCaret();
+            }
+        }
+
+        private void outputbox_Layout(object sender, LayoutEventArgs e)
+        {
+            outputbox.Focus();
+        }
+
+        private void outputbox_TextChanged_1(object sender, EventArgs e)
+        {
+            //outputbox.Focus();
+            outputbox.ScrollToCaret();
         }
 
     }

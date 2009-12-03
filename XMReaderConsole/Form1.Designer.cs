@@ -78,10 +78,10 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(17, 299);
-            this.button1.Margin = new System.Windows.Forms.Padding(4, 2, 4, 2);
+            this.button1.Location = new System.Drawing.Point(13, 243);
+            this.button1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(80, 28);
+            this.button1.Size = new System.Drawing.Size(60, 23);
             this.button1.TabIndex = 3;
             this.button1.Text = "Login";
             this.button1.UseVisualStyleBackColor = true;
@@ -89,10 +89,10 @@
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(106, 299);
-            this.button4.Margin = new System.Windows.Forms.Padding(5);
+            this.button4.Location = new System.Drawing.Point(80, 243);
+            this.button4.Margin = new System.Windows.Forms.Padding(4);
             this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(80, 28);
+            this.button4.Size = new System.Drawing.Size(60, 23);
             this.button4.TabIndex = 10;
             this.button4.Text = "Configure";
             this.button4.UseVisualStyleBackColor = true;
@@ -107,10 +107,9 @@
             // lblClock
             // 
             this.lblClock.AutoSize = true;
-            this.lblClock.Location = new System.Drawing.Point(668, 307);
-            this.lblClock.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblClock.Location = new System.Drawing.Point(501, 249);
             this.lblClock.Name = "lblClock";
-            this.lblClock.Size = new System.Drawing.Size(0, 17);
+            this.lblClock.Size = new System.Drawing.Size(0, 13);
             this.lblClock.TabIndex = 12;
             // 
             // timer2
@@ -136,13 +135,13 @@
             this.toolStripSeparator1,
             this.exitXMTunerToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(166, 130);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(145, 120);
             // 
             // loginToolStripMenuItem
             // 
             this.loginToolStripMenuItem.Enabled = false;
             this.loginToolStripMenuItem.Name = "loginToolStripMenuItem";
-            this.loginToolStripMenuItem.Size = new System.Drawing.Size(165, 24);
+            this.loginToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
             this.loginToolStripMenuItem.Text = "Login";
             this.loginToolStripMenuItem.Click += new System.EventHandler(this.button1_Click);
             // 
@@ -150,31 +149,31 @@
             // 
             this.viewServerToolStripMenuItem.Enabled = false;
             this.viewServerToolStripMenuItem.Name = "viewServerToolStripMenuItem";
-            this.viewServerToolStripMenuItem.Size = new System.Drawing.Size(165, 24);
+            this.viewServerToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
             this.viewServerToolStripMenuItem.Text = "What\'s On...";
             this.viewServerToolStripMenuItem.Click += new System.EventHandler(this.viewServerToolStripMenuItem_Click);
             // 
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(165, 24);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
             // 
             // restoreToolStripMenuItem
             // 
             this.restoreToolStripMenuItem.Name = "restoreToolStripMenuItem";
-            this.restoreToolStripMenuItem.Size = new System.Drawing.Size(165, 24);
+            this.restoreToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
             this.restoreToolStripMenuItem.Text = "Restore";
             this.restoreToolStripMenuItem.Click += new System.EventHandler(this.restoreToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(162, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(141, 6);
             // 
             // exitXMTunerToolStripMenuItem
             // 
             this.exitXMTunerToolStripMenuItem.Name = "exitXMTunerToolStripMenuItem";
-            this.exitXMTunerToolStripMenuItem.Size = new System.Drawing.Size(165, 24);
+            this.exitXMTunerToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
             this.exitXMTunerToolStripMenuItem.Text = "Exit XMTuner";
             this.exitXMTunerToolStripMenuItem.Click += new System.EventHandler(this.exitXMTunerToolStripMenuItem_Click);
             // 
@@ -182,10 +181,10 @@
             // 
             this.button5.Enabled = false;
             this.button5.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button5.Location = new System.Drawing.Point(194, 299);
-            this.button5.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.button5.Location = new System.Drawing.Point(146, 243);
+            this.button5.Margin = new System.Windows.Forms.Padding(2);
             this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(95, 28);
+            this.button5.Size = new System.Drawing.Size(71, 23);
             this.button5.TabIndex = 15;
             this.button5.Text = "Stop Server";
             this.button5.UseVisualStyleBackColor = true;
@@ -193,25 +192,27 @@
             // 
             // tabcontrol1
             // 
+            this.tabcontrol1.AccessibleRole = System.Windows.Forms.AccessibleRole.None;
             this.tabcontrol1.Controls.Add(this.tabPage1);
             this.tabcontrol1.Controls.Add(this.tabPage2);
             this.tabcontrol1.Controls.Add(this.tabPage3);
-            this.tabcontrol1.Location = new System.Drawing.Point(13, 13);
-            this.tabcontrol1.Margin = new System.Windows.Forms.Padding(4);
+            this.tabcontrol1.HotTrack = true;
+            this.tabcontrol1.Location = new System.Drawing.Point(10, 11);
             this.tabcontrol1.Name = "tabcontrol1";
             this.tabcontrol1.SelectedIndex = 0;
-            this.tabcontrol1.Size = new System.Drawing.Size(717, 283);
+            this.tabcontrol1.Size = new System.Drawing.Size(538, 230);
             this.tabcontrol1.TabIndex = 16;
+            this.tabcontrol1.Selected += new System.Windows.Forms.TabControlEventHandler(this.tabcontrol1_Selected);
             // 
             // tabPage1
             // 
             this.tabPage1.BackColor = System.Drawing.SystemColors.Control;
             this.tabPage1.Controls.Add(this.outputbox);
-            this.tabPage1.Location = new System.Drawing.Point(4, 25);
-            this.tabPage1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.tabPage1.Location = new System.Drawing.Point(4, 22);
+            this.tabPage1.Margin = new System.Windows.Forms.Padding(2);
             this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(4);
-            this.tabPage1.Size = new System.Drawing.Size(709, 254);
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Size = new System.Drawing.Size(530, 204);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Log";
             // 
@@ -219,14 +220,17 @@
             // 
             this.outputbox.BackColor = System.Drawing.Color.White;
             this.outputbox.Cursor = System.Windows.Forms.Cursors.Default;
-            this.outputbox.Location = new System.Drawing.Point(5, 6);
-            this.outputbox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.outputbox.Location = new System.Drawing.Point(4, 5);
+            this.outputbox.Margin = new System.Windows.Forms.Padding(2);
             this.outputbox.Name = "outputbox";
             this.outputbox.ReadOnly = true;
-            this.outputbox.Size = new System.Drawing.Size(697, 242);
+            this.outputbox.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
+            this.outputbox.Size = new System.Drawing.Size(524, 197);
             this.outputbox.TabIndex = 6;
             this.outputbox.Text = "";
             this.outputbox.WordWrap = false;
+            this.outputbox.Layout += new System.Windows.Forms.LayoutEventHandler(this.outputbox_Layout);
+            this.outputbox.TextChanged += new System.EventHandler(this.outputbox_TextChanged_1);
             // 
             // tabPage2
             // 
@@ -240,11 +244,11 @@
             this.tabPage2.Controls.Add(this.label4);
             this.tabPage2.Controls.Add(this.label3);
             this.tabPage2.Controls.Add(this.channelBox);
-            this.tabPage2.Location = new System.Drawing.Point(4, 25);
-            this.tabPage2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.tabPage2.Location = new System.Drawing.Point(4, 22);
+            this.tabPage2.Margin = new System.Windows.Forms.Padding(2);
             this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(4);
-            this.tabPage2.Size = new System.Drawing.Size(709, 254);
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Size = new System.Drawing.Size(530, 204);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Channels";
             // 
@@ -255,26 +259,29 @@
             this.bitRateBox.Items.AddRange(new object[] {
             "High",
             "Low"});
-            this.bitRateBox.Location = new System.Drawing.Point(402, 67);
+            this.bitRateBox.Location = new System.Drawing.Point(302, 54);
+            this.bitRateBox.Margin = new System.Windows.Forms.Padding(2);
             this.bitRateBox.Name = "bitRateBox";
-            this.bitRateBox.Size = new System.Drawing.Size(288, 24);
+            this.bitRateBox.Size = new System.Drawing.Size(217, 21);
             this.bitRateBox.TabIndex = 10;
             this.bitRateBox.SelectedIndexChanged += new System.EventHandler(this.makeAddress);
             // 
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(343, 70);
+            this.label7.Location = new System.Drawing.Point(257, 57);
+            this.label7.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(53, 17);
+            this.label7.Size = new System.Drawing.Size(40, 13);
             this.label7.TabIndex = 9;
             this.label7.Text = "Bitrate:";
             // 
             // cpyToClip
             // 
-            this.cpyToClip.Location = new System.Drawing.Point(552, 185);
+            this.cpyToClip.Location = new System.Drawing.Point(414, 150);
+            this.cpyToClip.Margin = new System.Windows.Forms.Padding(2);
             this.cpyToClip.Name = "cpyToClip";
-            this.cpyToClip.Size = new System.Drawing.Size(138, 28);
+            this.cpyToClip.Size = new System.Drawing.Size(104, 23);
             this.cpyToClip.TabIndex = 8;
             this.cpyToClip.Text = "Copy to Clipboard";
             this.cpyToClip.UseVisualStyleBackColor = true;
@@ -287,47 +294,44 @@
             this.protocolBox.Items.AddRange(new object[] {
             "HTTP",
             "MMS"});
-            this.protocolBox.Location = new System.Drawing.Point(89, 67);
-            this.protocolBox.Margin = new System.Windows.Forms.Padding(4);
+            this.protocolBox.Location = new System.Drawing.Point(67, 54);
             this.protocolBox.Name = "protocolBox";
-            this.protocolBox.Size = new System.Drawing.Size(226, 24);
+            this.protocolBox.Size = new System.Drawing.Size(170, 21);
             this.protocolBox.TabIndex = 5;
             this.protocolBox.SelectedIndexChanged += new System.EventHandler(this.makeAddress);
             // 
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(7, 70);
-            this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label6.Location = new System.Drawing.Point(5, 57);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(64, 17);
+            this.label6.Size = new System.Drawing.Size(49, 13);
             this.label6.TabIndex = 4;
             this.label6.Text = "Protocol:";
             // 
             // addressBox
             // 
-            this.addressBox.Location = new System.Drawing.Point(89, 103);
-            this.addressBox.Margin = new System.Windows.Forms.Padding(4);
+            this.addressBox.Location = new System.Drawing.Point(67, 84);
             this.addressBox.Name = "addressBox";
-            this.addressBox.Size = new System.Drawing.Size(601, 22);
+            this.addressBox.Size = new System.Drawing.Size(452, 20);
             this.addressBox.TabIndex = 3;
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(7, 106);
-            this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label4.Location = new System.Drawing.Point(5, 86);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(64, 17);
+            this.label4.Size = new System.Drawing.Size(48, 13);
             this.label4.TabIndex = 2;
             this.label4.Text = "Address:";
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(7, 33);
+            this.label3.Location = new System.Drawing.Point(5, 27);
+            this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(64, 17);
+            this.label3.Size = new System.Drawing.Size(49, 13);
             this.label3.TabIndex = 1;
             this.label3.Text = "Channel:";
             // 
@@ -336,10 +340,10 @@
             this.channelBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.channelBox.Enabled = false;
             this.channelBox.FormattingEnabled = true;
-            this.channelBox.Location = new System.Drawing.Point(89, 30);
-            this.channelBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.channelBox.Location = new System.Drawing.Point(67, 24);
+            this.channelBox.Margin = new System.Windows.Forms.Padding(2);
             this.channelBox.Name = "channelBox";
-            this.channelBox.Size = new System.Drawing.Size(601, 24);
+            this.channelBox.Size = new System.Drawing.Size(452, 21);
             this.channelBox.TabIndex = 0;
             this.channelBox.SelectionChangeCommitted += new System.EventHandler(this.makeAddress);
             this.channelBox.SelectedIndexChanged += new System.EventHandler(this.channelBox_SelectedIndexChanged);
@@ -357,31 +361,33 @@
             this.tabPage3.Controls.Add(this.textBox1);
             this.tabPage3.Controls.Add(this.label13);
             this.tabPage3.Controls.Add(this.groupBox1);
-            this.tabPage3.Location = new System.Drawing.Point(4, 25);
+            this.tabPage3.Location = new System.Drawing.Point(4, 22);
+            this.tabPage3.Margin = new System.Windows.Forms.Padding(2);
             this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(709, 254);
+            this.tabPage3.Padding = new System.Windows.Forms.Padding(2);
+            this.tabPage3.Size = new System.Drawing.Size(530, 204);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "About";
             // 
             // linkLabel1
             // 
             this.linkLabel1.AutoSize = true;
-            this.linkLabel1.Location = new System.Drawing.Point(255, 193);
+            this.linkLabel1.Location = new System.Drawing.Point(191, 157);
+            this.linkLabel1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.linkLabel1.Name = "linkLabel1";
-            this.linkLabel1.Size = new System.Drawing.Size(200, 17);
+            this.linkLabel1.Size = new System.Drawing.Size(163, 13);
             this.linkLabel1.TabIndex = 18;
             this.linkLabel1.TabStop = true;
             this.linkLabel1.Text = "http://www.pcfire.net/XMTuner/";
+            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
             // 
             // textBox2
             // 
             this.textBox2.Enabled = false;
-            this.textBox2.Location = new System.Drawing.Point(481, 95);
-            this.textBox2.Margin = new System.Windows.Forms.Padding(4);
+            this.textBox2.Location = new System.Drawing.Point(361, 77);
             this.textBox2.Name = "textBox2";
             this.textBox2.ReadOnly = true;
-            this.textBox2.Size = new System.Drawing.Size(81, 22);
+            this.textBox2.Size = new System.Drawing.Size(62, 20);
             this.textBox2.TabIndex = 17;
             this.textBox2.Text = "200912XX";
             this.textBox2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -389,30 +395,27 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(394, 100);
-            this.label8.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label8.Location = new System.Drawing.Point(296, 81);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(77, 17);
+            this.label8.Size = new System.Drawing.Size(59, 13);
             this.label8.TabIndex = 16;
             this.label8.Text = "Build Date:";
             // 
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(182, 142);
-            this.label9.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label9.Location = new System.Drawing.Point(136, 115);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(117, 17);
+            this.label9.Size = new System.Drawing.Size(88, 13);
             this.label9.TabIndex = 15;
             this.label9.Text = "Curtis M. Kularski";
             // 
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(182, 121);
-            this.label10.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label10.Location = new System.Drawing.Point(136, 98);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(82, 17);
+            this.label10.Size = new System.Drawing.Size(62, 13);
             this.label10.TabIndex = 14;
             this.label10.Text = "Chris Crews";
             // 
@@ -420,10 +423,9 @@
             // 
             this.label11.AutoSize = true;
             this.label11.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label11.Location = new System.Drawing.Point(158, 100);
-            this.label11.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label11.Location = new System.Drawing.Point(118, 81);
             this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(95, 17);
+            this.label11.Size = new System.Drawing.Size(75, 13);
             this.label11.TabIndex = 13;
             this.label11.Text = "Developers:";
             // 
@@ -431,21 +433,19 @@
             // 
             this.label12.AutoSize = true;
             this.label12.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label12.Location = new System.Drawing.Point(154, 48);
-            this.label12.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label12.Location = new System.Drawing.Point(116, 39);
             this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(164, 39);
+            this.label12.Size = new System.Drawing.Size(132, 31);
             this.label12.TabIndex = 12;
             this.label12.Text = "XMTuner";
             // 
             // textBox1
             // 
             this.textBox1.Enabled = false;
-            this.textBox1.Location = new System.Drawing.Point(481, 58);
-            this.textBox1.Margin = new System.Windows.Forms.Padding(4);
+            this.textBox1.Location = new System.Drawing.Point(361, 47);
             this.textBox1.Name = "textBox1";
             this.textBox1.ReadOnly = true;
-            this.textBox1.Size = new System.Drawing.Size(81, 22);
+            this.textBox1.Size = new System.Drawing.Size(62, 20);
             this.textBox1.TabIndex = 11;
             this.textBox1.Text = "0.3";
             this.textBox1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -453,43 +453,44 @@
             // label13
             // 
             this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(409, 63);
-            this.label13.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label13.Location = new System.Drawing.Point(307, 51);
             this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(64, 17);
+            this.label13.Size = new System.Drawing.Size(48, 13);
             this.label13.TabIndex = 10;
             this.label13.Text = "Version: ";
             // 
             // groupBox1
             // 
             this.groupBox1.BackColor = System.Drawing.SystemColors.Control;
-            this.groupBox1.Location = new System.Drawing.Point(140, 32);
+            this.groupBox1.Location = new System.Drawing.Point(105, 26);
+            this.groupBox1.Margin = new System.Windows.Forms.Padding(2);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(440, 189);
+            this.groupBox1.Padding = new System.Windows.Forms.Padding(2);
+            this.groupBox1.Size = new System.Drawing.Size(330, 154);
             this.groupBox1.TabIndex = 19;
             this.groupBox1.TabStop = false;
             // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(815, 263);
-            this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label5.Location = new System.Drawing.Point(611, 214);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(0, 17);
+            this.label5.Size = new System.Drawing.Size(0, 13);
             this.label5.TabIndex = 12;
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(746, 333);
+            this.ClientSize = new System.Drawing.Size(560, 271);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.lblClock);
             this.Controls.Add(this.button5);
             this.Controls.Add(this.tabcontrol1);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.button4);
-            this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.MaximizeBox = false;
             this.Name = "Form1";
             this.Text = "XMTuner";
