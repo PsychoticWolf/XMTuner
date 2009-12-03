@@ -233,7 +233,17 @@ namespace XMReaderConsole
                 NameValueCollection streamParams = worker.parseStreamURL(methodURL);
 
                 //Validate Channel
-                String chanName = myTuner.checkChannel(Convert.ToInt32(streamParams[0]));
+                Int32 num = 0;
+                try
+                {
+                    num = Convert.ToInt32(streamParams[0]);
+                }
+                catch (FormatException e)
+                {
+                    myTuner.output("Failed to read XM channel number requested. ("+e.Message+")", "debug");
+                }
+
+                String chanName = myTuner.checkChannel(num);
                 if (!chanName.Equals(""))
                 {
                     myTuner.output("Incoming Stream Request for XM" + streamParams[0] + " - " + chanName + "", "info");
