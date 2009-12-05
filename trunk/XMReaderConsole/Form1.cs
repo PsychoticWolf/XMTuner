@@ -170,7 +170,10 @@ namespace XMReaderConsole
                     button1.Enabled = true;
                 }
                 loginToolStripMenuItem.Enabled = true;
-                outputbox.AppendText("Configuration Loaded\n");
+
+                DateTime currentTime = DateTime.Now;
+                String ct = currentTime.ToString("%H:") + currentTime.ToString("mm:") + currentTime.ToString("ss");
+                outputbox.AppendText(ct + "  Configuration Loaded\n");
                 return true;
             }
             else
@@ -293,6 +296,7 @@ namespace XMReaderConsole
         {
             xmServer.stop();
             serverRunning = false;
+            timer2.Enabled = false;
             button1.Enabled = true;
             button5.Enabled = false;
             

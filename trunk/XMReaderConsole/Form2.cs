@@ -78,7 +78,8 @@ namespace XMReaderConsole
         private void bUpdateLineup_Click(object sender, EventArgs e)
         {
             String path = @"channellineup.cache";
-            File.Delete(path);
+            //File.Delete(path);
+            File.SetLastWriteTime(path, new DateTime(1985, 1, 1));
             bUpdateLineup.Enabled = false;
             bUpdateLineup.Text = "Update Pending...";
         }

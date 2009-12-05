@@ -82,9 +82,21 @@ namespace XMReaderConsole
                     else
                     {
                         output("Logged in as " + user, "info");
-                        isLoggedIn = true;
-                        loadChannelData();
-                        doWhatsOn();
+                        Boolean cd = loadChannelData();
+                        if (cd)
+                        {
+                            //We're logged in and have valid channel information, set login flag to true
+                            isLoggedIn = true;
+
+                            //Continue to preloading whatsOn data
+                            doWhatsOn();
+                        }
+                        else
+                        {
+                            //If we don't have chanData, consider ourselves not-logged-in
+                            isLoggedIn = false;
+                            output("Login failed: Unable to retrieve channel data.", "error");
+                        }
                     }
                     
                 }
@@ -112,25 +124,33 @@ namespace XMReaderConsole
 
         private bool loadChannelData()
         {
+            Boolean lineupLoaded;
             output("Loading channel lineup...", "info");
             if (isChannelDataCurrent())
             {
                 //Load from file
+                String path = @"channellineup.cache";
                 try
                 {
-                    String path = @"channellineup.cache";
                     FileStream fs = new FileStream(path, FileMode.OpenOrCreate, FileAccess.Read);
                     StreamReader textIn = new StreamReader(fs);
                     String rawchanneldata = textIn.ReadToEnd();
                     textIn.Close();
-                    setChannelData(rawchanneldata);
-                    output("Channel lineup loaded successfully.", "info");
+                    lineupLoaded = setChannelData(rawchanneldata);
+
                 }
                 catch
                 {
+                    lineupLoaded = false;
+                }
+                if (!lineupLoaded)
+                {
+                    //Force expiration of bad data. (Don't delete it in case something useful is in the file for debugging)
+                    File.SetLastWriteTime(path, new DateTime(1985, 1, 1)); 
                     output("Failed to load channel lineup.", "error");
                     return false;
                 }
+                output("Channel lineup loaded successfully (from cache).", "info");
                 return true;
             }
             else
@@ -143,9 +163,10 @@ namespace XMReaderConsole
         private bool dnldChannelData()
         {
             output("Downloading channel lineup...", "info");
-            bool goodData = false;
+            Boolean goodData = false;
             int j;
-            for (j = 0; j < 60; j++)
+            //We try 5 times...
+            for (j = 1; j <= 5; j++)
             {
                 string url;
                 if (isLive)
@@ -163,22 +184,40 @@ namespace XMReaderConsole
                 String resultStr = channelURL.response();
                 if (channelURL.getStatus() >= 200 && channelURL.getStatus() < 300 && resultStr.IndexOf(":[],") == -1)
                 {
-                    goodData = true;
-                    setChannelData(resultStr);
-                    saveChannelData(resultStr);
+                    //Returns Bool; False if invalid (null) channel data, true on success
+                    goodData = setChannelData(resultStr);
+
+                    //Try to catch the need to relogin because of dead channel data without retrying 5 times...
+                    if (!goodData && isLoggedIn)
+                    {
+                        isLoggedIn = false;
+                        output("Downloaded channel data had no stations. Scheduling relogin (Wait a few seconds...)", "info");
+                        return false;
+                    }
                 }
                 if (goodData)
                 {
+                    saveChannelData(resultStr);
+                    isLoggedIn = true;
                     output("Channel lineup loaded successfully.", "info");
                     return true;
                 }
+                isLoggedIn = false;
+                output("Error downloading channel data.. Will try again in 5 seconds (Attempt " + j + " of 5, Error " + channelURL.getStatus().ToString() + ")", "error");
+                System.Threading.Thread.Sleep(5000);
             }
+
             output("Failed to load channel lineup", "error");
             return false;
         }
 
-        private void setChannelData(String rawchanneldata)
+        private Boolean setChannelData(String rawchanneldata)
         {
+            if (rawchanneldata.Contains("\"allchannels\",null")) {
+                //isLoggedIn = false;
+                return false;
+            }
+
             if (channels != null)
             {
                 channels.Clear();
@@ -234,15 +273,20 @@ namespace XMReaderConsole
 
                 }
             }
+            return true;
         }
 
         private void saveChannelData(String rawchanneldata)
         {
             String path = @"channellineup.cache";
+            try {
             FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write);
             StreamWriter textOut = new StreamWriter(fs);
             textOut.Write(rawchanneldata);
             textOut.Close();
+            } catch (IOException e) {
+                output("Error encountered saving channel lineup to cache. ("+e.Message+")", "error");
+            }
         }
 
         public List<XMChannel> getChannels()
@@ -261,8 +305,7 @@ namespace XMReaderConsole
         {
             if (isLoggedIn == false)
             {
-                output("Not logged in. Reconnecting...", "info");
-                //channels.Clear(); //Basic Cleanup, probably need to do more here.
+                output("XM Session Timed-out. Reconnecting...", "info");
                 login();
                 return;
             }
