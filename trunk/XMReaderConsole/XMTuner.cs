@@ -9,23 +9,27 @@ namespace XMReaderConsole
 {
     class XMTuner
     {
-        String user;
-        String password;
-        RichTextBox outputbox;
-        public bool isMMS = false;
-        String cookies;
-        public int lastChannelPlayed;
-        public bool isLoggedIn;
+        //Flags
         bool isDebug = false;
         bool isLive = false;
-        public String OutputData = "";
-        public String theLog = "";
-        int cookieCount = 0;
+
+        //Config options...
+        String user;
+        String password;
+        public bool isMMS = false;
         public String bitrate = "high";
         public String tversityHost = "";
         public String hostname;
 
         List<XMChannel> channels = new List<XMChannel>();
+        RichTextBox outputbox;
+        String cookies;
+        public int lastChannelPlayed;
+        public bool isLoggedIn;
+        public String OutputData = "";
+        public String theLog = "";
+        int cookieCount = 0;
+
 
         public XMTuner()
         {
@@ -106,6 +110,15 @@ namespace XMReaderConsole
                 output("Login Failed: " + loginURL.getStatus(), "error"); 
             }
             loginURL.close();
+        }
+
+        private void logout()
+        {
+            cookieCount = 0;
+            cookies = null;
+            channels.Clear();
+            lastChannelPlayed = 0;
+            isLoggedIn = false;
         }
 
         private bool isChannelDataCurrent()
@@ -325,7 +338,7 @@ namespace XMReaderConsole
             String whatsOnURL;
             if (isLive)
             {
-                whatsOnURL = "http://www.xmradio.com/padData/pad_data_servlet.jsp?all_channels=true&remote=true";
+                whatsOnURL = "http://www.xmradio.com/padData/pad_data_servlet.jsp?all_channels=true&remote=true&rpc=XMROUS";
             }
             else
             {
@@ -469,7 +482,6 @@ namespace XMReaderConsole
             {
                 return;
             }
-
 
             //Tell the Form to write to the messagebox in the UI
             Form1.output(output, level, ref outputbox);
