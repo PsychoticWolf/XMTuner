@@ -7,15 +7,7 @@ namespace XMTunerService
 {
     public class XMTunerService : ServiceBase
     {
-        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.ComponentModel.IContainer components;
-        private System.Windows.Forms.ToolStripMenuItem loginToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem viewServerToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem restoreToolStripMenuItem;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-        private System.Windows.Forms.ToolStripMenuItem exitXMTunerToolStripMenuItem;
-        public System.Windows.Forms.NotifyIcon notifyIcon1;
         
         XMReader reader;
         bool serviceStarted = false;
@@ -35,6 +27,7 @@ namespace XMTunerService
 
             this.ServiceName = "XMTunerService";
             this.EventLog.Log = "Application";
+           
             
             // These Flags set whether or not to handle that specific
 
@@ -247,81 +240,10 @@ namespace XMTunerService
 
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(XMTunerService));
-            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.loginToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.viewServerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.restoreToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.exitXMTunerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
-            this.contextMenuStrip1.SuspendLayout();
-            // 
-            // contextMenuStrip1
-            // 
-            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.loginToolStripMenuItem,
-            this.viewServerToolStripMenuItem,
-            this.aboutToolStripMenuItem,
-            this.restoreToolStripMenuItem,
-            this.toolStripSeparator1,
-            this.exitXMTunerToolStripMenuItem});
-            this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(149, 120);
-            this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
-            // 
-            // loginToolStripMenuItem
-            // 
-            this.loginToolStripMenuItem.Enabled = false;
-            this.loginToolStripMenuItem.Name = "loginToolStripMenuItem";
-            this.loginToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
-            this.loginToolStripMenuItem.Text = "Login";
-            // 
-            // viewServerToolStripMenuItem
-            // 
-            this.viewServerToolStripMenuItem.Enabled = false;
-            this.viewServerToolStripMenuItem.Name = "viewServerToolStripMenuItem";
-            this.viewServerToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
-            this.viewServerToolStripMenuItem.Text = "What\'s On...";
-            // 
-            // aboutToolStripMenuItem
-            // 
-            this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
-            this.aboutToolStripMenuItem.Text = "About...";
-            // 
-            // restoreToolStripMenuItem
-            // 
-            this.restoreToolStripMenuItem.Name = "restoreToolStripMenuItem";
-            this.restoreToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
-            this.restoreToolStripMenuItem.Text = "Restore";
-            // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(145, 6);
-            // 
-            // exitXMTunerToolStripMenuItem
-            // 
-            this.exitXMTunerToolStripMenuItem.Name = "exitXMTunerToolStripMenuItem";
-            this.exitXMTunerToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
-            this.exitXMTunerToolStripMenuItem.Text = "Exit XMTuner";
-            // 
-            // notifyIcon1
-            // 
-            this.notifyIcon1.BalloonTipText = "XMTuner";
-            this.notifyIcon1.ContextMenuStrip = this.contextMenuStrip1;
-            this.notifyIcon1.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon1.Icon")));
-            this.notifyIcon1.Text = "XMTuner";
-            this.notifyIcon1.Visible = true;
-            this.notifyIcon1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon1_MouseDoubleClick);
             // 
             // XMTunerService
             // 
             this.ServiceName = "XMTuner";
-            this.contextMenuStrip1.ResumeLayout(false);
 
         }
 

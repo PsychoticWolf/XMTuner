@@ -9,33 +9,41 @@ namespace XMTunerService
 {
     class XMTuner
     {
+        //Flags
+        bool isDebug = false;
+        bool isLive = false;
+
+        //Config options...
         String user;
         String password;
-        //RichTextBox outputbox;
         public bool isMMS = false;
+        public String bitrate = "high";
+        public String tversityHost = "";
+        public String hostname;
+
+        List<XMChannel> channels = new List<XMChannel>();
+        //RichTextBox outputbox;
         String cookies;
         public int lastChannelPlayed;
         public bool isLoggedIn;
-        bool isDebug = false;
-        bool isLive = true;
         public String OutputData = "";
         public String theLog = "";
         int cookieCount = 0;
-        public String bitrate = "high";
 
-        List<XMChannel> channels = new List<XMChannel>();
 
         public XMTuner()
         {
         }
 
-        public XMTuner(String username, String passw, String rbitrate, bool MMSON)
+        public XMTuner(String username, String passw, String rbitrate, bool MMSON, String rTversityHost, String rHostname)
         {
             user = username;
             password = passw;
             //outputbox = box1;
             bitrate = rbitrate;
             isMMS = MMSON;
+            hostname = rHostname;
+            tversityHost = rTversityHost;
            
             login();
           
@@ -78,9 +86,21 @@ namespace XMTunerService
                     else
                     {
                         output("Logged in as " + user, "info");
-                        isLoggedIn = true;
-                        loadChannelData();
-                        doWhatsOn();
+                        Boolean cd = loadChannelData();
+                        if (cd)
+                        {
+                            //We're logged in and have valid channel information, set login flag to true
+                            isLoggedIn = true;
+
+                            //Continue to preloading whatsOn data
+                            doWhatsOn();
+                        }
+                        else
+                        {
+                            //If we don't have chanData, consider ourselves not-logged-in
+                            isLoggedIn = false;
+                            output("Login failed: Unable to retrieve channel data.", "error");
+                        }
                     }
                     
                 }
@@ -92,12 +112,74 @@ namespace XMTunerService
             loginURL.close();
         }
 
+        private void logout()
+        {
+            cookieCount = 0;
+            cookies = null;
+            channels.Clear();
+            lastChannelPlayed = 0;
+            isLoggedIn = false;
+        }
+
+        private bool isChannelDataCurrent()
+        {
+            String path = @"channellineup.cache";
+            DateTime dt = File.GetLastWriteTime(path);
+            DateTime maxage = DateTime.Now;
+            maxage = maxage.AddDays(-1);
+            if (dt > maxage)
+            {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
         private bool loadChannelData()
         {
+            Boolean lineupLoaded;
             output("Loading channel lineup...", "info");
-            bool goodData = false;
+            if (isChannelDataCurrent())
+            {
+                //Load from file
+                String path = @"channellineup.cache";
+                try
+                {
+                    FileStream fs = new FileStream(path, FileMode.OpenOrCreate, FileAccess.Read);
+                    StreamReader textIn = new StreamReader(fs);
+                    String rawchanneldata = textIn.ReadToEnd();
+                    textIn.Close();
+                    lineupLoaded = setChannelData(rawchanneldata);
+
+                }
+                catch
+                {
+                    lineupLoaded = false;
+                }
+                if (!lineupLoaded)
+                {
+                    //Force expiration of bad data. (Don't delete it in case something useful is in the file for debugging)
+                    File.SetLastWriteTime(path, new DateTime(1985, 1, 1)); 
+                    output("Failed to load channel lineup.", "error");
+                    return false;
+                }
+                output("Channel lineup loaded successfully (from cache).", "info");
+                return true;
+            }
+            else
+            {
+                //Reload from server
+                return dnldChannelData();
+            }
+        }
+
+        private bool dnldChannelData()
+        {
+            output("Downloading channel lineup...", "info");
+            Boolean goodData = false;
             int j;
-            for (j = 0; j < 60; j++)
+            //We try 5 times...
+            for (j = 1; j <= 5; j++)
             {
                 string url;
                 if (isLive)
@@ -115,21 +197,44 @@ namespace XMTunerService
                 String resultStr = channelURL.response();
                 if (channelURL.getStatus() >= 200 && channelURL.getStatus() < 300 && resultStr.IndexOf(":[],") == -1)
                 {
-                    goodData = true;
-                    setChannelData(resultStr);
+                    //Returns Bool; False if invalid (null) channel data, true on success
+                    goodData = setChannelData(resultStr);
+
+                    //Try to catch the need to relogin because of dead channel data without retrying 5 times...
+                    if (!goodData && isLoggedIn)
+                    {
+                        isLoggedIn = false;
+                        output("Downloaded channel data had no stations. Scheduling relogin (Wait a few seconds...)", "info");
+                        return false;
+                    }
                 }
                 if (goodData)
                 {
+                    saveChannelData(resultStr);
+                    isLoggedIn = true;
                     output("Channel lineup loaded successfully.", "info");
                     return true;
                 }
+                isLoggedIn = false;
+                output("Error downloading channel data.. Will try again in 5 seconds (Attempt " + j + " of 5, Error " + channelURL.getStatus().ToString() + ")", "error");
+                System.Threading.Thread.Sleep(5000);
             }
+
             output("Failed to load channel lineup", "error");
             return false;
         }
 
-        private void setChannelData(String rawchanneldata)
+        private Boolean setChannelData(String rawchanneldata)
         {
+            if (rawchanneldata.Contains("\"allchannels\",null")) {
+                //isLoggedIn = false;
+                return false;
+            }
+
+            if (channels != null)
+            {
+                channels.Clear();
+            }
             XMChannel tempChannel;
 
             //digest info into usable bits
@@ -181,6 +286,20 @@ namespace XMTunerService
 
                 }
             }
+            return true;
+        }
+
+        private void saveChannelData(String rawchanneldata)
+        {
+            String path = @"channellineup.cache";
+            try {
+            FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write);
+            StreamWriter textOut = new StreamWriter(fs);
+            textOut.Write(rawchanneldata);
+            textOut.Close();
+            } catch (IOException e) {
+                output("Error encountered saving channel lineup to cache. ("+e.Message+")", "error");
+            }
         }
 
         public List<XMChannel> getChannels()
@@ -199,9 +318,14 @@ namespace XMTunerService
         {
             if (isLoggedIn == false)
             {
-                output("Not logged in. Reconnecting...", "info");
+                output("XM Session Timed-out. Reconnecting...", "info");
                 login();
                 return;
+            }
+
+            if (!isChannelDataCurrent())
+            {
+                dnldChannelData();
             }
 
             MethodInvoker simpleDelegate = new MethodInvoker(loadWhatsOn);
@@ -214,7 +338,7 @@ namespace XMTunerService
             String whatsOnURL;
             if (isLive)
             {
-                whatsOnURL = "http://www.xmradio.com/padData/pad_data_servlet.jsp?all_channels=true&remote=true";
+                whatsOnURL = "http://www.xmradio.com/padData/pad_data_servlet.jsp?all_channels=true&remote=true&rpc=XMROUS";
             }
             else
             {
@@ -358,7 +482,6 @@ namespace XMTunerService
             {
                 return;
             }
-
 
             //Tell the Form to write to the messagebox in the UI
             //Form1.output(output, level, ref outputbox);

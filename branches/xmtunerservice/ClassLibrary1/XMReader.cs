@@ -3,6 +3,7 @@ using System.IO;
 using System.Diagnostics;
 using System.Collections.Specialized;
 using System.Net;
+using System.Timers;
 
 namespace XMTunerService
 {
@@ -25,11 +26,7 @@ namespace XMTunerService
         bool autologin = false;
         bool isMMS = false;
         int i = 0;
-        double sec = 0;
-        double minute = 0;
-        double hour = 0;
-        String runTime = "";
-        
+        System.Timers.Timer theTimer = new System.Timers.Timer(30000);
 
         public XMReader()
         {
@@ -41,15 +38,32 @@ namespace XMTunerService
 
             if (refreshConfig())
             {
-                self = new XMTuner(user, password, bitrate, isMMS);
+                if (highbit) { bitrate = "high"; } else { bitrate = "low"; }
+                String hostport = "";
+                if (hostname != "") { hostport = hostname + ":" + port; }
+                self = new XMTuner(user, password, bitrate, isMMS, tversityHost, hostport);
+                if (self.isLoggedIn == false)
+                {
+                    //Not logged in successfully.. Bail!
+                    return;
+                }
+                //self.OutputData = outputbox.Text + self.OutputData;
+                i = 0;
+
                 xmServer = new WebListner(self, port);
-                //self.OutputData = output + self.OutputData;
-                addOutput(self.OutputData);
+                serverRunning = true;
                 xmServer.start();
-                loggedIn = true;
-                //output = self.OutputData;
-                
+                if (xmServer.isRunning == false)
+                {
+                    serverRunning = false;
+                    //Server failed to start.
+                    return;
+                }
                 log();
+
+                theTimer.Elapsed += new ElapsedEventHandler(OnTimedEvent);
+                theTimer.AutoReset = true;
+                theTimer.Enabled = true;
 
             }
             else
@@ -108,6 +122,16 @@ namespace XMTunerService
                 //outputbox.AppendText("No Configuration\n");
                 return false;
             }
+        }
+
+        public void OnTimedEvent(object source, ElapsedEventArgs e)
+        {
+            if (loggedIn)
+            {
+                self.doWhatsOn();
+            }
+
+            log();
         }
         private String getLocalIP()
         {

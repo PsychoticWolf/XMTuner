@@ -38,6 +38,8 @@ namespace XMTunerService
 
             serviceInstall.DisplayName = "XMTuner Service";
             serviceInstall.StartType = ServiceStartMode.Automatic;
+            serviceInstall.Context = new System.Configuration.Install.InstallContext();
+            
 
             //# This must be identical to the WindowsService.ServiceBase name
 
