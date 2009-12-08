@@ -21,8 +21,9 @@ namespace XMReaderConsole
         public String tversityHost;
         public String hostname;
         bool isLoggedIn = false;
+        bool isDebug = false;
 
-        public Form2(String usertxt, String userpass, String usrport, bool bitRate, bool autolog, bool MMSON, String tTversityHost, String tHostname, Boolean tLoggedIn)
+        public Form2(String usertxt, String userpass, String usrport, bool bitRate, bool autolog, bool MMSON, String tTversityHost, String tHostname, Boolean tLoggedIn, Boolean isDebug)
         {
             user = usertxt;
             pass = userpass;
@@ -33,6 +34,7 @@ namespace XMReaderConsole
             tversityHost = tTversityHost;
             hostname = tHostname;
             isLoggedIn = tLoggedIn;
+            this.isDebug = isDebug;
             InitializeComponent();
         }
 
@@ -54,7 +56,7 @@ namespace XMReaderConsole
 
         private void button1_Click(object sender, EventArgs e)
         {
-            configMan configuration = new configMan();
+            configMan configuration = new configMan(isDebug);
             NameValueCollection configOut = new NameValueCollection();
             configOut.Add("username", txtUser.Text);
             configOut.Add("password", txtPassword.Text);

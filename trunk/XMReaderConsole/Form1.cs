@@ -15,6 +15,9 @@ namespace XMReaderConsole
 {
     public partial class Form1 : Form
     {
+
+        bool isDebug = false;
+
         XMTuner self;
         WebListner xmServer;
         bool loggedIn = false;
@@ -148,14 +151,14 @@ namespace XMReaderConsole
 
         private void button4_Click(object sender, EventArgs e)
         {
-            Form2 form2 = new Form2(username, password, port, highbit, autologin, isMMS, tversityHost, hostname, loggedIn);
+            Form2 form2 = new Form2(username, password, port, highbit, autologin, isMMS, tversityHost, hostname, loggedIn, isDebug);
             form2.ShowDialog();
             refreshConfig();
         }
 
         private bool refreshConfig()
         {
-            configMan configuration = new configMan();
+            configMan configuration = new configMan(isDebug);
             configuration.readConfig();
             ip = getLocalIP();
             if (configuration.isConfig)

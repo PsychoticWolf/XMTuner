@@ -23,6 +23,19 @@ namespace XMReaderConsole
             if (!Directory.Exists(directory)) { Directory.CreateDirectory(directory); } 
             path = directory + "\\" + file;
         }
+
+        public configMan(bool debug)
+        {
+            if (debug)
+            {
+                path = "config.txt";
+            }
+            else
+            {
+                if (!Directory.Exists(directory)) { Directory.CreateDirectory(directory); }
+                path = directory + "\\" + file;
+            }
+        }
         public NameValueCollection getConfig()
         {
             //readConfig();
