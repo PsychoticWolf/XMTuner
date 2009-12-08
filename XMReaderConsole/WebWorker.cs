@@ -205,7 +205,7 @@ namespace XMReaderConsole
                     NowPlayingPage += "<div style=\"overflow: hidden; height: 25px; float: left;\"><img src=\"" + channel.logo_small + "\" border=\"0\" width=\"45\" height=\"40\" style=\"position: relative; top: -5px;\"></div>";
                 }
                 NowPlayingPage += "<span style=\"position: relative; top: 6px; font-size: 8pt;\">" + channel.num + "</span></a></td>\n" +
-                                    "\t<td>" + channel.name + "</td>\n" +
+                                    "\t<td title=\""+channel.desc+"\">" + channel.name + "</td>\n" +
                                     "\t<td>" + channel.artist + "</td>\n" +
                                     "\t<td>" + channel.song + "</td>\n" +
                                     "\t<td>" + channel.album + "</td>\n" +
