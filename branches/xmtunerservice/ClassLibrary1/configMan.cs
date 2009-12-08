@@ -8,13 +8,34 @@ namespace XMTunerService
 {
     class configMan
     {
-        //String[] config = new String[10];
+        //collection to store configuration variables
         NameValueCollection config = new NameValueCollection();
-        //static String[] newConfig;
-        String path = "config.txt";
+
+        //path to Application Data folder
+        String directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "XMTuner");
+        String file = "config.txt";
+        String path;
         public bool isConfig = false;
         public bool protocolMMS = false;
 
+        public configMan()
+        {
+            if (!Directory.Exists(directory)) { Directory.CreateDirectory(directory); } 
+            path = directory + "\\" + file;
+        }
+
+        public configMan(bool debug)
+        {
+            if (debug)
+            {
+                path = "config.txt";
+            }
+            else
+            {
+                if (!Directory.Exists(directory)) { Directory.CreateDirectory(directory); }
+                path = directory + "\\" + file;
+            }
+        }
         public NameValueCollection getConfig()
         {
             //readConfig();

@@ -81,7 +81,13 @@ namespace XMTunerService
 
         public void log()
         {
-            string path = @"XMReader.log";
+            String directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "XMTuner");
+            String file = "XMReader.log";
+            String path;
+            if (!Directory.Exists(directory)) { Directory.CreateDirectory(directory); }
+            path = directory + "\\" + file;
+            
+            
             FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write);
             StreamWriter textOut = new StreamWriter(fs);
             textOut.Write(output);

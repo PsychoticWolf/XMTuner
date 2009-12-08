@@ -16,9 +16,10 @@ namespace XMTunerService
             myTuner = xmTuner;
 
             //Set up configuration values
-            NameValueCollection config = new NameValueCollection();
+            config = new NameValueCollection();
             config.Add("isMMS", myTuner.isMMS.ToString());
             config.Add("bitrate", myTuner.bitrate);
+            config.Add("hostname", myTuner.hostname);
         }
 
         public NameValueCollection parseStreamURL(string methodURL)
@@ -69,6 +70,20 @@ namespace XMTunerService
             return bitrate_desc;
         }
 
+        private String getHostName(String serverHost)
+        {
+            String hostname;
+            if (config.Get("hostname") != null && config.Get("hostname").Contains(":"))
+            {
+                hostname = config["hostname"];
+            }
+            else
+            {
+                hostname = serverHost;
+            }
+            return hostname;
+        }
+
         public NameValueCollection DoStream(NameValueCollection streamParams, String fullurl, String serverHost)
         {
             NameValueCollection streamCollection = new NameValueCollection();
@@ -77,6 +92,7 @@ namespace XMTunerService
             String isErr = "false";
             int ChanNum = Convert.ToInt32(streamParams["num"]);
             String bitrate = TheConstructor.getBitRate(streamParams, config);
+            serverHost = getHostName(serverHost);
             if (streamParams.Get("streamtype") != null)
             {
                 fullurl = fullurl.Replace("/mp3","");
@@ -104,6 +120,7 @@ namespace XMTunerService
         public MemoryStream DoFeed(string methodURL, NameValueCollection URLparams, String useragent, String serverHost)
         {
             String bitrate_desc = getBitrateDesc(TheConstructor.getBitRate(URLparams, config));
+            serverHost = getHostName(serverHost);
             myTuner.output("Incoming Feed Request: XM Channels (All - " + bitrate_desc + ")", "info");
             List<XMChannel> list = myTuner.getChannels();
             MemoryStream OutputStream = CreateXMFeed(list, URLparams, serverHost, useragent);
@@ -114,7 +131,7 @@ namespace XMTunerService
         public String DoNowPlaying(String serverHost, NameValueCollection URLparams)
         {
             Boolean UseMMS = myTuner.isMMS;
-
+            serverHost = getHostName(serverHost);
             String bitrate = TheConstructor.getBitRate(URLparams, config);
 
             int nowPlayingNum = myTuner.lastChannelPlayed;
@@ -130,12 +147,17 @@ namespace XMTunerService
             XMChannel npChannel = myTuner.Find(nowPlayingNum);
             if (npChannel.album == null) { npChannel.album = ""; }
 
-            NowPlayingPage += "<div style=\"float: right;\">\n<table style=\"min-width: 300px; border: 1px solid #666; margin: 5px; padding: 3px; -moz-border-radius: 10px;\">" +
-                              "<tr><td style=\"border-bottom: 1px solid blue; font-size: 18pt; font-weight: bold;\">Now Playing<br></td></tr>\n";
+            NowPlayingPage += "<div style=\"float: right;\">\n<table style=\"min-width: 300px; border: 1px solid #666; margin: 5px; padding: 0px 3px; -moz-border-radius: 10px;\">" +
+                              "<tr><td style=\"border-bottom: 1px solid blue; font-size: 18pt; font-weight: bold;\" colspan=\"2\">Now Playing<br></td></tr>\n";
             if (npChannel.num != 0)
             {
-                NowPlayingPage += "<tr><td style=\"padding-left: 5px;\">XM " + npChannel.num + " - " + npChannel.name + "</td></tr>" +
-                                  "<tr><td style=\"padding-left: 5px;\">" + npChannel.artist + " - " + npChannel.song + "</td></tr>";
+                NowPlayingPage += "<tr><td style=\"height: 1em; padding-left: 5px;\">XM " + npChannel.num + " - " + npChannel.name + "</td>";
+                    
+                        if (npChannel.logo != null) {
+                            NowPlayingPage += "<td rowspan=3 width=\"138\"><a href=\""+npChannel.url+"\" target=\"_blank\"><img src=\"" + npChannel.logo + "\" border=0 alt=\"\" width=\"138\" height=\"50\" align=\"right\"></a></td>";
+                        }
+                        NowPlayingPage += "</tr>" +
+                                  "<tr><td style=\"padding-left: 5px;\" valign=\"top\">" + npChannel.artist + " - " + npChannel.song + "</td></tr>";
                 if (!npChannel.album.Equals(""))
                 {
                     NowPlayingPage += "<tr><td style=\"padding-left: 25px; color: #666;\">" + npChannel.album + "</td></tr>\n";
@@ -143,7 +165,7 @@ namespace XMTunerService
             }
             else
             {
-                NowPlayingPage += "<tr><td style=\"color: #666; text-align: center;\"><p>Nothing Yet... Play a Channel</p></td></tr>\n";
+                NowPlayingPage += "<tr><td colspan=\"2\" style=\"color: #666; text-align: center;\"><p>Nothing Yet... Play a Channel</p></td></tr>\n";
             }
             NowPlayingPage += "</table>\n</div>" +
                               "<h1 style=\"margin: 0px; padding: 25px; font-size: 26pt;\">XM Tuner - What's On</h1>";
@@ -164,19 +186,7 @@ namespace XMTunerService
             {
                 String row_color;
                 if (i % 2 == 0) { row_color = "#FFFFC0"; } else { row_color = "#FFFFFF"; }
-                //XXX need to respect the useMMS code here
-                /* if (UseMMS)
-                {
-                    mediaurl = "mms://";
-                }
-                else
-                {
-                    mediaurl = "http://";
-                }
-                mediaurl += serverHost + "/streams/" + channel.num + "/" + bitrate; */
-
                 mediaurl = TheConstructor.buildLink("stream", serverHost, URLparams, null, channel.num, config);
-
                 if (nowPlayingNum == channel.num)
                 {
                     NowPlayingPage += "<tr style=\"background-color: #FFFF00; border-bottom: 1px solid black;\">\n";
@@ -185,8 +195,17 @@ namespace XMTunerService
                 {
                     NowPlayingPage += "<tr bgcolor=\"" + row_color + "\" onMouseOver=\"this.bgColor = '#CCE3E9'\" onMouseOut =\"this.bgColor = '" + row_color + "'\">\n";
                 }
-                NowPlayingPage += "\t<td style=\"text-align: center;\" nowrap><a href=\"" + mediaurl + "\">XM " + channel.num + "</a></td>\n" +
-                                    "\t<td>" + channel.name + "</td>\n" +
+                NowPlayingPage += "\t<td style=\"text-align: center;\" nowrap><a href=\"" + channel.url + "\" target=\"_blank\">";
+                if (channel.category.ToLower().Contains("talk") || channel.category.ToLower().Contains("sports"))
+                {
+                    NowPlayingPage += "<div style=\"float: left;\"><img src=\"" + channel.logo_small + "\" border=\"0\" width=\"45\" height=\"40\"></div>";
+                }
+                else
+                {
+                    NowPlayingPage += "<div style=\"overflow: hidden; height: 25px; float: left;\"><img src=\"" + channel.logo_small + "\" border=\"0\" width=\"45\" height=\"40\" style=\"position: relative; top: -5px;\"></div>";
+                }
+                NowPlayingPage += "<span style=\"position: relative; top: 6px; font-size: 8pt;\">" + channel.num + "</span></a></td>\n" +
+                                    "\t<td title=\""+channel.desc+"\">" + channel.name + "</td>\n" +
                                     "\t<td>" + channel.artist + "</td>\n" +
                                     "\t<td>" + channel.song + "</td>\n" +
                                     "\t<td>" + channel.album + "</td>\n" +

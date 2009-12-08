@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 
@@ -15,6 +14,9 @@ namespace XMTunerService
         public String artist;
         public String song;
         public String album;
+        public String url;
+        public String logo;
+        public String logo_small;
 
         public XMChannel(String cat, int nu, String na, String d)
         {
@@ -32,7 +34,7 @@ namespace XMTunerService
 
         public String ToSimpleString()
         {
-            String theString = "[" + num + "] " + name;
+            String theString = "XM " + num + " - " + name;
             return theString;
         }
 
@@ -41,6 +43,14 @@ namespace XMTunerService
             artist = stringyInfo[1];
             song = stringyInfo[2];
             album = stringyInfo[3];
+        }
+
+        public void addChannelMetadata(String[] stringyInfo)
+        {
+            url = stringyInfo[1];
+            logo_small = stringyInfo[2];
+            logo = stringyInfo[3];
+
         }
 
         #region IComparable<XMChannel> Members
