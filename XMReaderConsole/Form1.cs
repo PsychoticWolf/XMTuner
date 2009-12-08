@@ -443,6 +443,7 @@ namespace XMReaderConsole
         private void button3_Click_1(object sender, EventArgs e)
         {
             serviceControl.Stop();
+            service_button_reset();
 
         }
 
@@ -464,7 +465,7 @@ namespace XMReaderConsole
         private void btnSerStart_Click(object sender, EventArgs e)
         {
             serviceControl.Start();
-            lblServiceStat.Text = serviceControl.Status.ToString();
+            service_button_reset();
 
         }
 
@@ -472,6 +473,7 @@ namespace XMReaderConsole
         {
             serviceControl.Stop();
             serviceControl.Start();
+            service_button_reset();
         }
 
         private void btnSerInstall_Click(object sender, EventArgs e)
