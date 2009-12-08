@@ -147,12 +147,17 @@ namespace XMReaderConsole
             XMChannel npChannel = myTuner.Find(nowPlayingNum);
             if (npChannel.album == null) { npChannel.album = ""; }
 
-            NowPlayingPage += "<div style=\"float: right;\">\n<table style=\"min-width: 300px; border: 1px solid #666; margin: 5px; padding: 3px; -moz-border-radius: 10px;\">" +
-                              "<tr><td style=\"border-bottom: 1px solid blue; font-size: 18pt; font-weight: bold;\">Now Playing<br></td></tr>\n";
+            NowPlayingPage += "<div style=\"float: right;\">\n<table style=\"min-width: 300px; border: 1px solid #666; margin: 5px; padding: 0px 3px; -moz-border-radius: 10px;\">" +
+                              "<tr><td style=\"border-bottom: 1px solid blue; font-size: 18pt; font-weight: bold;\" colspan=\"2\">Now Playing<br></td></tr>\n";
             if (npChannel.num != 0)
             {
-                NowPlayingPage += "<tr><td style=\"padding-left: 5px;\">XM " + npChannel.num + " - " + npChannel.name + "</td></tr>" +
-                                  "<tr><td style=\"padding-left: 5px;\">" + npChannel.artist + " - " + npChannel.song + "</td></tr>";
+                NowPlayingPage += "<tr><td style=\"height: 1em; padding-left: 5px;\">XM " + npChannel.num + " - " + npChannel.name + "</td>";
+                    
+                        if (npChannel.logo != null) {
+                            NowPlayingPage += "<td rowspan=3 width=\"138\"><a href=\""+npChannel.url+"\" target=\"_blank\"><img src=\"" + npChannel.logo + "\" border=0 alt=\"\" width=\"138\" height=\"50\" align=\"right\"></a></td>";
+                        }
+                        NowPlayingPage += "</tr>" +
+                                  "<tr><td style=\"padding-left: 5px;\" valign=\"top\">" + npChannel.artist + " - " + npChannel.song + "</td></tr>";
                 if (!npChannel.album.Equals(""))
                 {
                     NowPlayingPage += "<tr><td style=\"padding-left: 25px; color: #666;\">" + npChannel.album + "</td></tr>\n";
@@ -160,7 +165,7 @@ namespace XMReaderConsole
             }
             else
             {
-                NowPlayingPage += "<tr><td style=\"color: #666; text-align: center;\"><p>Nothing Yet... Play a Channel</p></td></tr>\n";
+                NowPlayingPage += "<tr><td colspan=\"2\" style=\"color: #666; text-align: center;\"><p>Nothing Yet... Play a Channel</p></td></tr>\n";
             }
             NowPlayingPage += "</table>\n</div>" +
                               "<h1 style=\"margin: 0px; padding: 25px; font-size: 26pt;\">XM Tuner - What's On</h1>";
@@ -181,19 +186,7 @@ namespace XMReaderConsole
             {
                 String row_color;
                 if (i % 2 == 0) { row_color = "#FFFFC0"; } else { row_color = "#FFFFFF"; }
-                //XXX need to respect the useMMS code here
-                /* if (UseMMS)
-                {
-                    mediaurl = "mms://";
-                }
-                else
-                {
-                    mediaurl = "http://";
-                }
-                mediaurl += serverHost + "/streams/" + channel.num + "/" + bitrate; */
-
                 mediaurl = TheConstructor.buildLink("stream", serverHost, URLparams, null, channel.num, config);
-
                 if (nowPlayingNum == channel.num)
                 {
                     NowPlayingPage += "<tr style=\"background-color: #FFFF00; border-bottom: 1px solid black;\">\n";
@@ -202,7 +195,16 @@ namespace XMReaderConsole
                 {
                     NowPlayingPage += "<tr bgcolor=\"" + row_color + "\" onMouseOver=\"this.bgColor = '#CCE3E9'\" onMouseOut =\"this.bgColor = '" + row_color + "'\">\n";
                 }
-                NowPlayingPage += "\t<td style=\"text-align: center;\" nowrap><a href=\"" + mediaurl + "\">XM " + channel.num + "</a></td>\n" +
+                NowPlayingPage += "\t<td style=\"text-align: center;\" nowrap><a href=\"" + channel.url + "\" target=\"_blank\">";
+                if (channel.category.ToLower().Contains("talk") || channel.category.ToLower().Contains("sports"))
+                {
+                    NowPlayingPage += "<div style=\"float: left;\"><img src=\"" + channel.logo_small + "\" border=\"0\" width=\"45\" height=\"40\"></div>";
+                }
+                else
+                {
+                    NowPlayingPage += "<div style=\"overflow: hidden; height: 25px; float: left;\"><img src=\"" + channel.logo_small + "\" border=\"0\" width=\"45\" height=\"40\" style=\"position: relative; top: -5px;\"></div>";
+                }
+                NowPlayingPage += "<span style=\"position: relative; top: 6px; font-size: 8pt;\">" + channel.num + "</span></a></td>\n" +
                                     "\t<td>" + channel.name + "</td>\n" +
                                     "\t<td>" + channel.artist + "</td>\n" +
                                     "\t<td>" + channel.song + "</td>\n" +
