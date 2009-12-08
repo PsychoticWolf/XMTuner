@@ -8,6 +8,8 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO;
 using System.Collections.Specialized;
+using System.ServiceProcess;
+
 
 namespace XMReaderConsole
 {
@@ -26,6 +28,8 @@ namespace XMReaderConsole
         bool isMMS = false;
         String tversityHost;
         String hostname;
+        ServiceController serviceControl = new ServiceController();
+        bool serviceRunning = false;
 
         int i = 0;
         double sec = 0;
@@ -162,6 +166,10 @@ namespace XMReaderConsole
                 port = configIn.Get("port");
                 highbit = Convert.ToBoolean(configIn.Get("bitrate"));
                 autologin = Convert.ToBoolean(configIn.Get("autologin"));
+                if (autologin && serviceRunning)
+                {
+                    outputbox.AppendText("Autologin skipped - Service running\n");
+                }
                 isMMS = Convert.ToBoolean(configIn.Get("isMMS"));
                 tversityHost = configIn.Get("Tversity"); ;
                 hostname = configIn.Get("hostname"); ;
@@ -248,7 +256,12 @@ namespace XMReaderConsole
 
         public void log()
         {
-            string path = @"XMTuner.log";
+            String directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "XMTuner");
+            String file = "XMReader.log";
+            String path;
+            if (!Directory.Exists(directory)) { Directory.CreateDirectory(directory); }
+            path = directory + "\\" + file;
+
             FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write);
             StreamWriter textOut = new StreamWriter(fs);
 
@@ -285,11 +298,16 @@ namespace XMReaderConsole
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            if (refreshConfig() && autologin)
+            serviceControl.ServiceName = "XMTunerService";
+
+            service_button_reset();
+            
+            if (refreshConfig() && autologin && !serviceRunning)
             {
                 button1_Click(sender, e);
             }
             lblClock.Text = "0:00:00";
+
         }
 
         private void button5_Click(object sender, EventArgs e)
@@ -407,6 +425,106 @@ namespace XMReaderConsole
         {
             //outputbox.Focus();
             outputbox.ScrollToCaret();
+        }
+
+        private void label2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label15_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button3_Click_1(object sender, EventArgs e)
+        {
+            serviceControl.Stop();
+
+        }
+
+        private void tabPage4_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+
+            servicemanager sm = new servicemanager("XMTunerService", "Provides XM RO to Devices", "XM Tuner");
+            bool sucess = sm.Uninstall();
+            service_button_reset();
+            btnSerUninstall.Enabled = false;
+            btnSerStart.Enabled = false;
+        }
+
+        private void btnSerStart_Click(object sender, EventArgs e)
+        {
+            serviceControl.Start();
+            lblServiceStat.Text = serviceControl.Status.ToString();
+
+        }
+
+        private void btnSerRestart_Click(object sender, EventArgs e)
+        {
+            serviceControl.Stop();
+            serviceControl.Start();
+        }
+
+        private void btnSerInstall_Click(object sender, EventArgs e)
+        {
+            servicemanager sm = new servicemanager("XMTunerService", "Provides XM RO to Devices", "XM Tuner");
+            bool sucess = sm.Install(ServiceStartMode.Automatic);
+            service_button_reset();
+
+        }
+
+        private void service_button_reset()
+        {
+            try
+            {
+                lblServiceStat.Text = serviceControl.Status.ToString();
+                lblServiceInst.Text = "installed";
+                if (serviceControl.Status.ToString().ToLower().Equals("stopped"))
+                {
+                    btnSerInstall.Enabled = false;
+                    btnSerUninstall.Enabled = true;
+                    btnSerStart.Enabled = true;
+                    btnSerStop.Enabled = false;
+                    btnSerRestart.Enabled = false;
+                    serviceRunning = false;
+                }
+                else if (serviceControl.Status.ToString().ToLower().Equals("running"))
+                {
+                    btnSerInstall.Enabled = false;
+                    btnSerUninstall.Enabled = true;
+                    btnSerStart.Enabled = false;
+                    btnSerStop.Enabled = true;
+                    btnSerRestart.Enabled = true;
+                    serviceRunning = true;
+                }
+                else
+                {
+                    btnSerInstall.Enabled = false;
+                    btnSerUninstall.Enabled = true;
+                    btnSerStart.Enabled = true;
+                    btnSerStop.Enabled = false;
+                    btnSerRestart.Enabled = false;
+                    serviceRunning = false;
+                }
+
+            }
+            catch
+            {
+                lblServiceStat.Text = "NOT INSTALLED";
+                lblServiceInst.Text = "not installed";
+                btnSerStop.Enabled = false;
+                btnSerStart.Enabled = false;
+                btnSerRestart.Enabled = false;
+                btnSerUninstall.Enabled = false;
+                btnSerInstall.Enabled = true;
+            }
+
         }
 
     }
