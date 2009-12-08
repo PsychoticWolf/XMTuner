@@ -126,7 +126,11 @@ namespace XMReaderConsole
 
         private bool isChannelDataCurrent()
         {
-            String path = @"channellineup.cache";
+            String directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "XMTuner");
+            String file = "channellineup.cache";
+            if (!Directory.Exists(directory)) { Directory.CreateDirectory(directory); }
+            String path = directory + "\\" + file;
+
             DateTime dt = File.GetLastWriteTime(path);
             DateTime maxage = DateTime.Now;
             maxage = maxage.AddDays(-1);
@@ -145,7 +149,11 @@ namespace XMReaderConsole
             if (isChannelDataCurrent())
             {
                 //Load from file
-                String path = @"channellineup.cache";
+                String directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "XMTuner");
+                String file = "channellineup.cache";
+                if (!Directory.Exists(directory)) { Directory.CreateDirectory(directory); }
+                String path = directory + "\\" + file;
+               
                 try
                 {
                     FileStream fs = new FileStream(path, FileMode.OpenOrCreate, FileAccess.Read);
@@ -294,7 +302,11 @@ namespace XMReaderConsole
 
         private void saveChannelData(String rawchanneldata)
         {
-            String path = @"channellineup.cache";
+            String directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "XMTuner");
+            String file = "channellineup.cache";
+            if (!Directory.Exists(directory)) { Directory.CreateDirectory(directory); }
+            String path = directory + "\\" + file;
+
             try {
             FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write);
             StreamWriter textOut = new StreamWriter(fs);
