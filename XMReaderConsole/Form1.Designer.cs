@@ -59,15 +59,16 @@
             this.channelBox = new System.Windows.Forms.ComboBox();
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.lblServiceInst = new System.Windows.Forms.Label();
             this.label14 = new System.Windows.Forms.Label();
-            this.button8 = new System.Windows.Forms.Button();
-            this.button7 = new System.Windows.Forms.Button();
+            this.btnSerUninstall = new System.Windows.Forms.Button();
+            this.btnSerInstall = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.label2 = new System.Windows.Forms.Label();
+            this.lblServiceStat = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.button6 = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
+            this.btnSerRestart = new System.Windows.Forms.Button();
+            this.btnSerStop = new System.Windows.Forms.Button();
+            this.btnSerStart = new System.Windows.Forms.Button();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.textBox2 = new System.Windows.Forms.TextBox();
@@ -104,7 +105,7 @@
             // button4
             // 
             this.button4.Location = new System.Drawing.Point(80, 243);
-            this.button4.Margin = new System.Windows.Forms.Padding(4);
+            this.button4.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(60, 23);
             this.button4.TabIndex = 10;
@@ -149,13 +150,13 @@
             this.toolStripSeparator1,
             this.exitXMTunerToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(145, 120);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(149, 120);
             // 
             // loginToolStripMenuItem
             // 
             this.loginToolStripMenuItem.Enabled = false;
             this.loginToolStripMenuItem.Name = "loginToolStripMenuItem";
-            this.loginToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.loginToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
             this.loginToolStripMenuItem.Text = "Login";
             this.loginToolStripMenuItem.Click += new System.EventHandler(this.button1_Click);
             // 
@@ -163,31 +164,31 @@
             // 
             this.viewServerToolStripMenuItem.Enabled = false;
             this.viewServerToolStripMenuItem.Name = "viewServerToolStripMenuItem";
-            this.viewServerToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.viewServerToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
             this.viewServerToolStripMenuItem.Text = "What\'s On...";
             this.viewServerToolStripMenuItem.Click += new System.EventHandler(this.viewServerToolStripMenuItem_Click);
             // 
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
             // 
             // restoreToolStripMenuItem
             // 
             this.restoreToolStripMenuItem.Name = "restoreToolStripMenuItem";
-            this.restoreToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.restoreToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
             this.restoreToolStripMenuItem.Text = "Restore";
             this.restoreToolStripMenuItem.Click += new System.EventHandler(this.restoreToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(141, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(145, 6);
             // 
             // exitXMTunerToolStripMenuItem
             // 
             this.exitXMTunerToolStripMenuItem.Name = "exitXMTunerToolStripMenuItem";
-            this.exitXMTunerToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.exitXMTunerToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
             this.exitXMTunerToolStripMenuItem.Text = "Exit XMTuner";
             this.exitXMTunerToolStripMenuItem.Click += new System.EventHandler(this.exitXMTunerToolStripMenuItem_Click);
             // 
@@ -196,7 +197,7 @@
             this.button5.Enabled = false;
             this.button5.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button5.Location = new System.Drawing.Point(146, 243);
-            this.button5.Margin = new System.Windows.Forms.Padding(2);
+            this.button5.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(71, 23);
             this.button5.TabIndex = 15;
@@ -224,9 +225,9 @@
             this.tabPage1.BackColor = System.Drawing.SystemColors.Control;
             this.tabPage1.Controls.Add(this.outputbox);
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
-            this.tabPage1.Margin = new System.Windows.Forms.Padding(2);
+            this.tabPage1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
             this.tabPage1.Size = new System.Drawing.Size(530, 204);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Log";
@@ -236,7 +237,7 @@
             this.outputbox.BackColor = System.Drawing.Color.White;
             this.outputbox.Cursor = System.Windows.Forms.Cursors.Default;
             this.outputbox.Location = new System.Drawing.Point(4, 5);
-            this.outputbox.Margin = new System.Windows.Forms.Padding(2);
+            this.outputbox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.outputbox.Name = "outputbox";
             this.outputbox.ReadOnly = true;
             this.outputbox.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
@@ -260,9 +261,9 @@
             this.tabPage2.Controls.Add(this.label3);
             this.tabPage2.Controls.Add(this.channelBox);
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
-            this.tabPage2.Margin = new System.Windows.Forms.Padding(2);
+            this.tabPage2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
             this.tabPage2.Size = new System.Drawing.Size(530, 204);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Channels";
@@ -275,7 +276,7 @@
             "High",
             "Low"});
             this.bitRateBox.Location = new System.Drawing.Point(302, 54);
-            this.bitRateBox.Margin = new System.Windows.Forms.Padding(2);
+            this.bitRateBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.bitRateBox.Name = "bitRateBox";
             this.bitRateBox.Size = new System.Drawing.Size(217, 21);
             this.bitRateBox.TabIndex = 10;
@@ -294,7 +295,7 @@
             // cpyToClip
             // 
             this.cpyToClip.Location = new System.Drawing.Point(414, 150);
-            this.cpyToClip.Margin = new System.Windows.Forms.Padding(2);
+            this.cpyToClip.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.cpyToClip.Name = "cpyToClip";
             this.cpyToClip.Size = new System.Drawing.Size(104, 23);
             this.cpyToClip.TabIndex = 8;
@@ -356,7 +357,7 @@
             this.channelBox.Enabled = false;
             this.channelBox.FormattingEnabled = true;
             this.channelBox.Location = new System.Drawing.Point(67, 24);
-            this.channelBox.Margin = new System.Windows.Forms.Padding(2);
+            this.channelBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.channelBox.Name = "channelBox";
             this.channelBox.Size = new System.Drawing.Size(452, 21);
             this.channelBox.TabIndex = 0;
@@ -370,17 +371,18 @@
             this.tabPage4.Controls.Add(this.groupBox2);
             this.tabPage4.Location = new System.Drawing.Point(4, 22);
             this.tabPage4.Name = "tabPage4";
-            this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage4.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
             this.tabPage4.Size = new System.Drawing.Size(530, 204);
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "Service";
+            this.tabPage4.Click += new System.EventHandler(this.tabPage4_Click);
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.lblServiceInst);
             this.groupBox3.Controls.Add(this.label14);
-            this.groupBox3.Controls.Add(this.button8);
-            this.groupBox3.Controls.Add(this.button7);
-            this.groupBox3.Enabled = false;
+            this.groupBox3.Controls.Add(this.btnSerUninstall);
+            this.groupBox3.Controls.Add(this.btnSerInstall);
             this.groupBox3.Location = new System.Drawing.Point(7, 114);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(257, 84);
@@ -388,44 +390,53 @@
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Installation";
             // 
+            // lblServiceInst
+            // 
+            this.lblServiceInst.AutoSize = true;
+            this.lblServiceInst.Location = new System.Drawing.Point(56, 27);
+            this.lblServiceInst.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblServiceInst.Name = "lblServiceInst";
+            this.lblServiceInst.Size = new System.Drawing.Size(65, 13);
+            this.lblServiceInst.TabIndex = 3;
+            this.lblServiceInst.Text = "UNKNOWN";
+            this.lblServiceInst.Click += new System.EventHandler(this.label15_Click);
+            // 
             // label14
             // 
             this.label14.AutoSize = true;
-            this.label14.Enabled = false;
             this.label14.Location = new System.Drawing.Point(6, 27);
             this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(111, 13);
+            this.label14.Size = new System.Drawing.Size(53, 13);
             this.label14.TabIndex = 2;
-            this.label14.Text = "Service is Installed (X)";
+            this.label14.Text = "Service is";
             // 
-            // button8
+            // btnSerUninstall
             // 
-            this.button8.Enabled = false;
-            this.button8.Location = new System.Drawing.Point(88, 55);
-            this.button8.Name = "button8";
-            this.button8.Size = new System.Drawing.Size(75, 23);
-            this.button8.TabIndex = 1;
-            this.button8.Text = "Uninstall";
-            this.button8.UseVisualStyleBackColor = true;
+            this.btnSerUninstall.Location = new System.Drawing.Point(88, 55);
+            this.btnSerUninstall.Name = "btnSerUninstall";
+            this.btnSerUninstall.Size = new System.Drawing.Size(75, 23);
+            this.btnSerUninstall.TabIndex = 1;
+            this.btnSerUninstall.Text = "Uninstall";
+            this.btnSerUninstall.UseVisualStyleBackColor = true;
+            this.btnSerUninstall.Click += new System.EventHandler(this.button8_Click);
             // 
-            // button7
+            // btnSerInstall
             // 
-            this.button7.Enabled = false;
-            this.button7.Location = new System.Drawing.Point(6, 55);
-            this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(75, 23);
-            this.button7.TabIndex = 0;
-            this.button7.Text = "Install";
-            this.button7.UseVisualStyleBackColor = true;
+            this.btnSerInstall.Location = new System.Drawing.Point(6, 55);
+            this.btnSerInstall.Name = "btnSerInstall";
+            this.btnSerInstall.Size = new System.Drawing.Size(75, 23);
+            this.btnSerInstall.TabIndex = 0;
+            this.btnSerInstall.Text = "Install";
+            this.btnSerInstall.UseVisualStyleBackColor = true;
+            this.btnSerInstall.Click += new System.EventHandler(this.btnSerInstall_Click);
             // 
             // groupBox2
             // 
-            this.groupBox2.Controls.Add(this.label2);
+            this.groupBox2.Controls.Add(this.lblServiceStat);
             this.groupBox2.Controls.Add(this.label1);
-            this.groupBox2.Controls.Add(this.button6);
-            this.groupBox2.Controls.Add(this.button3);
-            this.groupBox2.Controls.Add(this.button2);
-            this.groupBox2.Enabled = false;
+            this.groupBox2.Controls.Add(this.btnSerRestart);
+            this.groupBox2.Controls.Add(this.btnSerStop);
+            this.groupBox2.Controls.Add(this.btnSerStart);
             this.groupBox2.Location = new System.Drawing.Point(7, 7);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(257, 100);
@@ -433,15 +444,15 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Service Control";
             // 
-            // label2
+            // lblServiceStat
             // 
-            this.label2.AutoSize = true;
-            this.label2.Enabled = false;
-            this.label2.Location = new System.Drawing.Point(52, 33);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(35, 13);
-            this.label2.TabIndex = 4;
-            this.label2.Text = "label2";
+            this.lblServiceStat.AutoSize = true;
+            this.lblServiceStat.Location = new System.Drawing.Point(52, 33);
+            this.lblServiceStat.Name = "lblServiceStat";
+            this.lblServiceStat.Size = new System.Drawing.Size(53, 13);
+            this.lblServiceStat.TabIndex = 4;
+            this.lblServiceStat.Text = "Unknown";
+            this.lblServiceStat.Click += new System.EventHandler(this.label2_Click);
             // 
             // label1
             // 
@@ -452,35 +463,35 @@
             this.label1.TabIndex = 3;
             this.label1.Text = "Status:";
             // 
-            // button6
+            // btnSerRestart
             // 
-            this.button6.Enabled = false;
-            this.button6.Location = new System.Drawing.Point(170, 71);
-            this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(75, 23);
-            this.button6.TabIndex = 2;
-            this.button6.Text = "Restart";
-            this.button6.UseVisualStyleBackColor = true;
+            this.btnSerRestart.Location = new System.Drawing.Point(170, 71);
+            this.btnSerRestart.Name = "btnSerRestart";
+            this.btnSerRestart.Size = new System.Drawing.Size(75, 23);
+            this.btnSerRestart.TabIndex = 2;
+            this.btnSerRestart.Text = "Restart";
+            this.btnSerRestart.UseVisualStyleBackColor = true;
+            this.btnSerRestart.Click += new System.EventHandler(this.btnSerRestart_Click);
             // 
-            // button3
+            // btnSerStop
             // 
-            this.button3.Enabled = false;
-            this.button3.Location = new System.Drawing.Point(88, 71);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(75, 23);
-            this.button3.TabIndex = 1;
-            this.button3.Text = "Stop";
-            this.button3.UseVisualStyleBackColor = true;
+            this.btnSerStop.Location = new System.Drawing.Point(88, 71);
+            this.btnSerStop.Name = "btnSerStop";
+            this.btnSerStop.Size = new System.Drawing.Size(75, 23);
+            this.btnSerStop.TabIndex = 1;
+            this.btnSerStop.Text = "Stop";
+            this.btnSerStop.UseVisualStyleBackColor = true;
+            this.btnSerStop.Click += new System.EventHandler(this.button3_Click_1);
             // 
-            // button2
+            // btnSerStart
             // 
-            this.button2.Enabled = false;
-            this.button2.Location = new System.Drawing.Point(6, 71);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
-            this.button2.TabIndex = 0;
-            this.button2.Text = "Start";
-            this.button2.UseVisualStyleBackColor = true;
+            this.btnSerStart.Location = new System.Drawing.Point(6, 71);
+            this.btnSerStart.Name = "btnSerStart";
+            this.btnSerStart.Size = new System.Drawing.Size(75, 23);
+            this.btnSerStart.TabIndex = 0;
+            this.btnSerStart.Text = "Start";
+            this.btnSerStart.UseVisualStyleBackColor = true;
+            this.btnSerStart.Click += new System.EventHandler(this.btnSerStart_Click);
             // 
             // tabPage3
             // 
@@ -496,9 +507,9 @@
             this.tabPage3.Controls.Add(this.label13);
             this.tabPage3.Controls.Add(this.groupBox1);
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
-            this.tabPage3.Margin = new System.Windows.Forms.Padding(2);
+            this.tabPage3.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Padding = new System.Windows.Forms.Padding(2);
+            this.tabPage3.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.tabPage3.Size = new System.Drawing.Size(530, 204);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "About";
@@ -597,9 +608,9 @@
             // 
             this.groupBox1.BackColor = System.Drawing.SystemColors.Control;
             this.groupBox1.Location = new System.Drawing.Point(105, 26);
-            this.groupBox1.Margin = new System.Windows.Forms.Padding(2);
+            this.groupBox1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Padding = new System.Windows.Forms.Padding(2);
+            this.groupBox1.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.groupBox1.Size = new System.Drawing.Size(330, 154);
             this.groupBox1.TabIndex = 19;
             this.groupBox1.TabStop = false;
@@ -624,7 +635,7 @@
             this.Controls.Add(this.button4);
             this.Controls.Add(this.tabcontrol1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(2);
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.MaximizeBox = false;
             this.Name = "Form1";
             this.Text = "XMTuner";
@@ -692,14 +703,15 @@
         private System.Windows.Forms.TabPage tabPage4;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.Label label14;
-        private System.Windows.Forms.Button button8;
-        private System.Windows.Forms.Button button7;
+        private System.Windows.Forms.Button btnSerUninstall;
+        private System.Windows.Forms.Button btnSerInstall;
         private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label lblServiceStat;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Button button6;
-        private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button btnSerRestart;
+        private System.Windows.Forms.Button btnSerStop;
+        private System.Windows.Forms.Button btnSerStart;
+        private System.Windows.Forms.Label lblServiceInst;
     }
 }
 
