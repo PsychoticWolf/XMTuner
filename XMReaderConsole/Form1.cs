@@ -475,7 +475,9 @@ namespace XMReaderConsole
         private void btnSerRestart_Click(object sender, EventArgs e)
         {
             serviceControl.Stop();
+            serviceControl.WaitForStatus(System.ServiceProcess.ServiceControllerStatus.Stopped);
             serviceControl.Start();
+            serviceControl.WaitForStatus(System.ServiceProcess.ServiceControllerStatus.Running);
             service_button_reset();
         }
 
