@@ -443,6 +443,7 @@ namespace XMReaderConsole
         private void button3_Click_1(object sender, EventArgs e)
         {
             serviceControl.Stop();
+            serviceControl.WaitForStatus(System.ServiceProcess.ServiceControllerStatus.Stopped);
             service_button_reset();
 
         }
@@ -466,6 +467,7 @@ namespace XMReaderConsole
         private void btnSerStart_Click(object sender, EventArgs e)
         {
             serviceControl.Start();
+            serviceControl.WaitForStatus(System.ServiceProcess.ServiceControllerStatus.Running);
             service_button_reset();
 
         }
