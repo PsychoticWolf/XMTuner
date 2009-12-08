@@ -21,12 +21,10 @@ Release Comments:
 	- The target framework of this applicaiton is .NET Framework 3.5
 
 Changes from 0.2
-	- Ability to run server as a service (no need to stay logged in)
+	- Ability to run server as a service (no need to stay logged in to Windows)
+	- Service control mechanism in the user interface
 	- Cleaner UI
-	- Fixed several errors 
-
-Potential Future Features:
-	-Run as a service in Windows (no need to login)
+	- Fixed several crash-worthy bugs
 	
 
 Special Notes for TVersity Users:
