@@ -49,7 +49,7 @@ namespace XMTunerService
                 }
                 //self.OutputData = outputbox.Text + self.OutputData;
                 i = 0;
-
+                loggedIn = true;
                 xmServer = new WebListner(self, port);
                 serverRunning = true;
                 xmServer.start();
@@ -139,6 +139,7 @@ namespace XMTunerService
 
             log();
         }
+
         private String getLocalIP()
         {
             String localIP = null;
