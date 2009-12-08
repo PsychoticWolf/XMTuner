@@ -94,6 +94,9 @@ namespace XMTunerService
 
                             //Continue to preloading whatsOn data
                             doWhatsOn();
+
+                            //Temporary? Load Channel Metadata...
+                            loadChannelMetadata();
                         }
                         else
                         {
@@ -503,9 +506,56 @@ namespace XMTunerService
 
             textOut.Close();
         }
-        
 
+        private void loadChannelMetadata()
+        {
+            output("Load Channel Metadata...", "debug");
+            String channelMetaURL;
+            if (isLive)
+            {
+                channelMetaURL = "http://www.xmradio.com/onxm/index.xmc";
+            }
+            else
+            {
+                channelMetaURL = "http://users.pcfire.net/~wolf/XMReader/epg/index.xmc";
+            }
+            URL channelMetaData = new URL(channelMetaURL);
+            output("Fetching: " + channelMetaURL, "debug");
+            channelMetaData.setRequestHeader("Cookie", cookies);
+            channelMetaData.fetch();
 
+            int responseCode = channelMetaData.getStatus();
+            output("Server Response: " + responseCode.ToString(), "debug");
+            setChannelMetadata(channelMetaData.response());
+            channelMetaData.close();
+        }
+
+        private void setChannelMetadata(String rawData)
+        {
+            rawData = rawData.Replace("//rig.addChannel","");
+            int start = rawData.IndexOf("rig.addChannel")+15;
+            int length = rawData.IndexOf("// position of the tooltip")-start;
+            rawData = rawData.Trim().Substring(start, length);
+            rawData = rawData.Replace("\t","");
+            rawData = rawData.Replace(");","");
+            rawData = rawData.Replace("\r\n","");
+            rawData = rawData.Replace("\\\"","");
+
+            //data = rawData.Split("rig.addChannel(");
+            String[] data = rawData.Split(new string[] { "rig.addChannel(" }, StringSplitOptions.None);
+            String baseurl = "http://www.xmradio.com";
+            foreach(String _value in data) {
+                String[] value = _value.Split(new string[] { "\"," }, StringSplitOptions.None);
+            	          
+                String[] newdata = new String[4];
+                newdata[0] = value[2].Replace("\"", ""); //Num
+                newdata[1] = baseurl + value[5].Replace("\"", ""); //URL for channel
+                newdata[2] = baseurl + value[6].Replace("\"", ""); // Logo (45x40)
+                newdata[3] = baseurl + value[10].Replace("\"", ""); // Logo (138x50)
+
+                Find(Convert.ToInt32(newdata[0])).addChannelMetadata(newdata);
+            }
+        }
 
 
     }
