@@ -457,9 +457,10 @@ namespace XMReaderConsole
 
             servicemanager sm = new servicemanager("XMTunerService", "Provides XM RO to Devices", "XM Tuner");
             bool sucess = sm.Uninstall();
-            service_button_reset();
             btnSerUninstall.Enabled = false;
             btnSerStart.Enabled = false;
+            service_button_reset();
+
         }
 
         private void btnSerStart_Click(object sender, EventArgs e)
