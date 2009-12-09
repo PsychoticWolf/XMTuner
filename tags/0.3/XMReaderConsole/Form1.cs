@@ -458,11 +458,13 @@ namespace XMReaderConsole
         private void button8_Click(object sender, EventArgs e)
         {
 
-            servicemanager sm = new servicemanager("XMTunerService", "Provides XM RO to Devices", "XM Tuner");
+            servicemanager sm = new servicemanager("XMTunerService", "Provides XMRO to Devices", "XM Tuner");
             bool sucess = sm.Uninstall();
+            service_button_reset();
+            MessageBox.Show("If you wish to reinstall the service, please restart XMTuner");
             btnSerUninstall.Enabled = false;
             btnSerStart.Enabled = false;
-            service_button_reset();
+            
 
         }
 
@@ -490,7 +492,7 @@ namespace XMReaderConsole
 
         private void btnSerInstall_Click(object sender, EventArgs e)
         {
-            servicemanager sm = new servicemanager("XMTunerService", "Provides XM RO to Devices", "XM Tuner");
+            servicemanager sm = new servicemanager("XMTunerService", "Provides XMRO to Devices", "XM Tuner");
             bool sucess = sm.Install(ServiceStartMode.Automatic);
             service_button_reset();
 
