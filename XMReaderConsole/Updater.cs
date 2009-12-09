@@ -43,7 +43,7 @@ namespace XMReaderConsole
             {
                  // provide the XmlTextReader with the URL of
                  // our xml document
-                    string xmlURL = "http://users.pcfire.net/~wolf/XMReader/update.xml";
+                    string xmlURL = "http://www.pcfire.net/XMTuner/update.xml";
                  reader = new XmlTextReader(xmlURL);
                  // simply (and easily) skip the junk at the beginning
                  reader.MoveToContent();
