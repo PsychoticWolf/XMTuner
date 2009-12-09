@@ -311,6 +311,8 @@ namespace XMReaderConsole
             }
             lblClock.Text = "0:00:00";
 
+            Updater update = new Updater(outputbox);
+
         }
 
         private void button5_Click(object sender, EventArgs e)
@@ -472,6 +474,11 @@ namespace XMReaderConsole
 
         }
 
+        protected void Link_Clicked(object sender, LinkClickedEventArgs e)
+        {
+            System.Diagnostics.Process.Start(e.LinkText);
+        }
+
         private void btnSerRestart_Click(object sender, EventArgs e)
         {
             serviceControl.Stop();
@@ -535,6 +542,17 @@ namespace XMReaderConsole
                 btnSerInstall.Enabled = true;
             }
 
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            //do...
+            Updater update = new Updater();
+        }
+
+        private void timer3_Tick(object sender, EventArgs e)
+        {
+            Updater update = new Updater(outputbox);
         }
 
     }
