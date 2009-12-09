@@ -532,16 +532,22 @@ namespace XMTunerService
 
         private void setChannelMetadata(String rawData)
         {
-            rawData = rawData.Replace("//rig.addChannel","");
-            int start = rawData.IndexOf("rig.addChannel")+15;
-            int length = rawData.IndexOf("// position of the tooltip")-start;
-            rawData = rawData.Trim().Substring(start, length);
-            rawData = rawData.Replace("\t","");
-            rawData = rawData.Replace(");","");
-            rawData = rawData.Replace("\r\n","");
-            rawData = rawData.Replace("\\\"","");
+            try
+            {
+                rawData = rawData.Replace("//rig.addChannel", "");
+                int start = rawData.IndexOf("rig.addChannel") + 15;
+                int length = rawData.IndexOf("loadPage();") - start;
+                rawData = rawData.Trim().Substring(start, length);
+                rawData = rawData.Replace("\t", "");
+                rawData = rawData.Replace(");", "");
+                rawData = rawData.Replace("\r\n", "");
+                rawData = rawData.Replace("\\\"", "");
+            }
+            catch (Exception)
+            {
+                return;
+            }
 
-            //data = rawData.Split("rig.addChannel(");
             String[] data = rawData.Split(new string[] { "rig.addChannel(" }, StringSplitOptions.None);
             String baseurl = "http://www.xmradio.com";
             foreach(String _value in data) {
