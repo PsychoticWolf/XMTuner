@@ -11,7 +11,7 @@ namespace XMReaderConsole
     {
         //Flags
         bool isDebug = false;
-        bool isLive = false;
+        bool isLive = true;
 
         //Config options...
         String user;
