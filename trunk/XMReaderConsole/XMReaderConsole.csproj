@@ -82,6 +82,7 @@
     </Compile>
     <Compile Include="servicemanager.cs" />
     <Compile Include="TheConstructor.cs" />
+    <Compile Include="Updater.cs" />
     <Compile Include="URL.cs" />
     <Compile Include="WebListner.cs" />
     <Compile Include="WebWorker.cs" />
