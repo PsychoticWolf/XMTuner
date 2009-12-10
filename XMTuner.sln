@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XMReaderConsole", "XMReaderConsole\XMReaderConsole.csproj", "{F86D5C78-600F-45B7-9496-DC1EAC2DB95A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XMTunerConsole", "XMReaderConsole\XMTunerConsole.csproj", "{F86D5C78-600F-45B7-9496-DC1EAC2DB95A}"
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "XMTunerInstall", "XMTunerInstall\XMTunerIntsall.vdproj", "{6EA869CA-8D37-4DA8-944F-842987477852}"
 	ProjectSection(ProjectDependencies) = postProject

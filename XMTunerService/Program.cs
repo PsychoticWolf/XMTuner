@@ -4,7 +4,7 @@ using System.Linq;
 using System.ServiceProcess;
 using System.Text;
 
-namespace XMTunerService
+namespace XMTuner
 {
     static class Program
     {

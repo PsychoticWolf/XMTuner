@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.ServiceProcess;
 using System.Threading;
 
-namespace XMTunerService
+namespace XMTuner
 {
     public class XMTunerService : ServiceBase
     {

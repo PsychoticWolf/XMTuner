@@ -1,4 +1,4 @@
-﻿namespace XMReaderConsole
+﻿namespace XMTuner
 {
     partial class Form2
     {

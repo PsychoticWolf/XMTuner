@@ -11,7 +11,7 @@ using System.Collections.Specialized;
 using System.ServiceProcess;
 
 
-namespace XMReaderConsole
+namespace XMTuner
 {
     public partial class Form1 : Form
     {
