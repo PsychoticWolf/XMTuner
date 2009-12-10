@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 
 
-namespace XMTunerService
+namespace XMTuner
 {
     class XMChannel : IComparable<XMChannel>, IEquatable<XMChannel>
     {

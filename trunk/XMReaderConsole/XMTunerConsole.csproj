@@ -8,7 +8,7 @@
     <ProjectGuid>{F86D5C78-600F-45B7-9496-DC1EAC2DB95A}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>XMReaderConsole</RootNamespace>
+    <RootNamespace>XMTuner</RootNamespace>
     <AssemblyName>XMTuner</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

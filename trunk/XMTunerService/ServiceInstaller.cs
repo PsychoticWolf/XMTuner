@@ -4,7 +4,7 @@ using System.Configuration.Install;
 using System.ServiceProcess;
 
 
-namespace XMTunerService
+namespace XMTuner
 {
     [RunInstaller(true)]
     //[RunInstallerAttribute(true)]

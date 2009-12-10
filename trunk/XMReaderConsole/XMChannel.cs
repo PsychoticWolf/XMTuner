@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 
 
-namespace XMReaderConsole
+namespace XMTuner
 {
     class XMChannel : IComparable<XMChannel>, IEquatable<XMChannel>
     {

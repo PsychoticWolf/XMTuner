@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Collections.Specialized;
 
-namespace XMReaderConsole
+namespace XMTuner
 {
     static class TheConstructor
     {

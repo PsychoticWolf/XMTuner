@@ -4,7 +4,7 @@ using System.Xml;
 using System.Windows.Forms;
 using System.Drawing;
 
-namespace XMReaderConsole
+namespace XMTuner
 {
     class Updater
     {

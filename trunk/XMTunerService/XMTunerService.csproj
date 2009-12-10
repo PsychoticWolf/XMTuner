@@ -8,11 +8,11 @@
     <ProjectGuid>{E89AD9D6-C082-46C6-8856-C4C07508DD99}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>XMTunerService</RootNamespace>
+    <RootNamespace>XMTuner</RootNamespace>
     <AssemblyName>XMTunerService</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <StartupObject>XMTunerService.XMTunerService</StartupObject>
+    <StartupObject>XMTuner.XMTunerService</StartupObject>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>

@@ -5,7 +5,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Configuration.Install;
 
-namespace XMReaderConsole
+namespace XMTuner
 {
     class servicemanager
     {

@@ -5,7 +5,7 @@ using System.Collections.Specialized;
 using System.Net;
 using System.Timers;
 
-namespace XMTunerService
+namespace XMTuner
 {
     public class XMReader
     {

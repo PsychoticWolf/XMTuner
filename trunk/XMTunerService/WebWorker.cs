@@ -5,7 +5,7 @@ using System.IO;
 using System.Xml;
 using System.Web;
 
-namespace XMTunerService
+namespace XMTuner
 {
     class WebWorker
     {

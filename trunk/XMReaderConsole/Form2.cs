@@ -8,7 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Collections.Specialized;
 
-namespace XMReaderConsole
+namespace XMTuner
 {
     public partial class Form2 : Form
     {

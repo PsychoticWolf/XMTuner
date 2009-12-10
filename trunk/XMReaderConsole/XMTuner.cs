@@ -5,7 +5,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
-namespace XMReaderConsole
+namespace XMTuner
 {
     class XMTuner
     {

@@ -6,7 +6,7 @@ using System.Xml;
 using System.IO;
 using System.Text;
 
-namespace XMTunerService
+namespace XMTuner
 {
     class WebListner
     {
