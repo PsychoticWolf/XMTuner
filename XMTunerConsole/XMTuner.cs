@@ -10,24 +10,18 @@ namespace XMTuner
     class XMTuner
     {
         //Flags
-        bool isDebug = false;
         bool isLive = false;
+        //isDebug is now in Log.cs
 
         //Config options...
         String user;
         String password;
-        public bool isMMS = false;
-        public String bitrate = "high";
-        public String tversityHost = "";
-        public String hostname;
 
         List<XMChannel> channels = new List<XMChannel>();
-        RichTextBox outputbox;
+        Log log;
         String cookies;
         public int lastChannelPlayed;
         public bool isLoggedIn;
-        public String OutputData = "";
-        public String theLog = "";
         int cookieCount = 0;
 
 
@@ -35,15 +29,11 @@ namespace XMTuner
         {
         }
 
-        public XMTuner(String username, String passw, ref RichTextBox box1, String rbitrate, bool MMSON, String rTversityHost, String rHostname)
+        public XMTuner(String username, String passw, Log logging)
         {
             user = username;
             password = passw;
-            outputbox = box1;
-            bitrate = rbitrate;
-            isMMS = MMSON;
-            hostname = rHostname;
-            tversityHost = rTversityHost;
+            log = logging;
            
             login();
           
@@ -486,37 +476,10 @@ namespace XMTuner
             return (contentURL);
         }
 
+        //Helper method so we don't have to pass log around everywhere....
         public void output(String output, String level)
         {
-            DateTime currentTime = DateTime.Now;
-            output = currentTime.ToString("%H:") + currentTime.ToString("mm:") + currentTime.ToString("ss") + "  " + output + "\n";
-            OutputData = OutputData + output;
-            log(output);
-
-            if (level.Equals("debug") && !isDebug)
-            {
-                return;
-            }
-
-            //Tell the Form to write to the messagebox in the UI
-            Form1.output(output, level, ref outputbox);
-
-        }
-
-        public void log(String logentry)
-        {
-            theLog = theLog + logentry;
-        }
-
-        public void writeLog()
-        {
-            string path = @"log.txt";
-            FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write);
-
-            StreamWriter textOut = new StreamWriter(fs);
-            textOut.Write(theLog);
-
-            textOut.Close();
+            log.output(output, level);
         }
 
         private void loadChannelMetadata()
