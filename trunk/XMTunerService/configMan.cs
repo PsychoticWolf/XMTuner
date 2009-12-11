@@ -38,7 +38,10 @@ namespace XMTuner
         }
         public NameValueCollection getConfig()
         {
-            //readConfig();
+            if (config.Count == 0)
+            {
+                readConfig();
+            }
             return config;
         }
         public void writeConfig(NameValueCollection newConfig)
@@ -79,6 +82,13 @@ namespace XMTuner
             textIn.Close();
         }
 
+        public NameValueCollection getConfig(Boolean interpreted)
+        {
+            NameValueCollection sConfig = getConfig();
+            if (Convert.ToBoolean(sConfig["bitrate"])) { sConfig["bitrate"] = "high"; } else { sConfig["bitrate"] = "low"; }
+            if (sConfig["hostname"] != "") { sConfig["hostname"] = sConfig["hostname"] + ":" + sConfig["port"]; }
+            return sConfig;
+        }
 
     }
 }

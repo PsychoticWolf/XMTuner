@@ -10,24 +10,18 @@ namespace XMTuner
     class XMTuner
     {
         //Flags
-        bool isDebug = false;
         bool isLive = false;
+        //isDebug is now in Log.cs
 
         //Config options...
         String user;
         String password;
-        public bool isMMS = false;
-        public String bitrate = "high";
-        public String tversityHost = "";
-        public String hostname;
 
         List<XMChannel> channels = new List<XMChannel>();
-        //RichTextBox outputbox;
+        Log log;
         String cookies;
         public int lastChannelPlayed;
         public bool isLoggedIn;
-        public String OutputData = "";
-        public String theLog = "";
         int cookieCount = 0;
 
 
@@ -35,15 +29,11 @@ namespace XMTuner
         {
         }
 
-        public XMTuner(String username, String passw, String rbitrate, bool MMSON, String rTversityHost, String rHostname)
+        public XMTuner(String username, String passw, Log logging)
         {
             user = username;
             password = passw;
-            //outputbox = box1;
-            bitrate = rbitrate;
-            isMMS = MMSON;
-            hostname = rHostname;
-            tversityHost = rTversityHost;
+            log = logging;
            
             login();
           
@@ -126,7 +116,11 @@ namespace XMTuner
 
         private bool isChannelDataCurrent()
         {
-            String path = @"channellineup.cache";
+            String directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "XMTuner");
+            String file = "channellineup.cache";
+            if (!Directory.Exists(directory)) { Directory.CreateDirectory(directory); }
+            String path = directory + "\\" + file;
+
             DateTime dt = File.GetLastWriteTime(path);
             DateTime maxage = DateTime.Now;
             maxage = maxage.AddDays(-1);
@@ -145,7 +139,11 @@ namespace XMTuner
             if (isChannelDataCurrent())
             {
                 //Load from file
-                String path = @"channellineup.cache";
+                String directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "XMTuner");
+                String file = "channellineup.cache";
+                if (!Directory.Exists(directory)) { Directory.CreateDirectory(directory); }
+                String path = directory + "\\" + file;
+               
                 try
                 {
                     FileStream fs = new FileStream(path, FileMode.OpenOrCreate, FileAccess.Read);
@@ -294,7 +292,11 @@ namespace XMTuner
 
         private void saveChannelData(String rawchanneldata)
         {
-            String path = @"channellineup.cache";
+            String directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "XMTuner");
+            String file = "channellineup.cache";
+            if (!Directory.Exists(directory)) { Directory.CreateDirectory(directory); }
+            String path = directory + "\\" + file;
+
             try {
             FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write);
             StreamWriter textOut = new StreamWriter(fs);
@@ -474,37 +476,10 @@ namespace XMTuner
             return (contentURL);
         }
 
+        //Helper method so we don't have to pass log around everywhere....
         public void output(String output, String level)
         {
-            DateTime currentTime = DateTime.Now;
-            output = currentTime.ToString("%H:") + currentTime.ToString("mm:") + currentTime.ToString("ss") + "  " + output + "\n";
-            OutputData = OutputData + output;
-            log(output);
-
-            if (level.Equals("debug") && !isDebug)
-            {
-                return;
-            }
-
-            //Tell the Form to write to the messagebox in the UI
-            //Form1.output(output, level, ref outputbox);
-
-        }
-
-        public void log(String logentry)
-        {
-            theLog = theLog + logentry;
-        }
-
-        public void writeLog()
-        {
-            string path = @"log.txt";
-            FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write);
-
-            StreamWriter textOut = new StreamWriter(fs);
-            textOut.Write(theLog);
-
-            textOut.Close();
+            log.output(output, level);
         }
 
         private void loadChannelMetadata()
@@ -536,7 +511,7 @@ namespace XMTuner
             {
                 rawData = rawData.Replace("//rig.addChannel", "");
                 int start = rawData.IndexOf("rig.addChannel") + 15;
-                int length = rawData.IndexOf("loadPage();") - start;
+                int length = rawData.IndexOf("//loadPage();") - start;
                 rawData = rawData.Trim().Substring(start, length);
                 rawData = rawData.Replace("\t", "");
                 rawData = rawData.Replace(");", "");
@@ -545,7 +520,7 @@ namespace XMTuner
             }
             catch (Exception)
             {
-                return;
+               return;
             }
 
             String[] data = rawData.Split(new string[] { "rig.addChannel(" }, StringSplitOptions.None);
