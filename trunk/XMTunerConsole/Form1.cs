@@ -16,9 +16,10 @@ namespace XMTuner
     public partial class Form1 : Form
     {
 
-        bool isDebug = false;
+        bool useLocalDatapath = false;
 
         XMTuner self;
+        Log logging;
         WebListner xmServer;
         bool loggedIn = false;
         bool serverRunning = false;
@@ -43,7 +44,9 @@ namespace XMTuner
 
         public Form1()
         {
-           
+#if DEBUG
+            useLocalDatapath = true;
+#endif
             InitializeComponent();
         }
 
@@ -96,19 +99,15 @@ namespace XMTuner
 
         private void button1_Click(object sender, EventArgs e)
         {
-            outputbox.Text = outputbox.Text+"Please wait... logging in\n";
+            outputbox.AppendText("Please wait... logging in\n");
             outputbox.Refresh();
-            
-            if (highbit) { bitrate = "high"; } else { bitrate = "low"; }
-            String hostport = "";
-            if (hostname != "") { hostport = hostname + ":" + port; }
-            self = new XMTuner(username, password, ref outputbox, bitrate, isMMS, tversityHost, hostport);
+            logging = new Log(ref outputbox, useLocalDatapath);
+            self = new XMTuner(username, password, logging);
             if (self.isLoggedIn == false)
             {
                 //Not logged in successfully.. Bail!
                 return;
             }
-            //self.OutputData = outputbox.Text + self.OutputData;
             i = 0;
 
             xmServer = new WebListner(self, port);
@@ -133,7 +132,6 @@ namespace XMTuner
             }
             
             loadChannels();
-            self.writeLog();
         }
 
 
@@ -151,14 +149,14 @@ namespace XMTuner
 
         private void button4_Click(object sender, EventArgs e)
         {
-            Form2 form2 = new Form2(username, password, port, highbit, autologin, isMMS, tversityHost, hostname, loggedIn, isDebug);
+            Form2 form2 = new Form2(username, password, port, highbit, autologin, isMMS, tversityHost, hostname, loggedIn, useLocalDatapath);
             form2.ShowDialog();
             refreshConfig();
         }
 
         private bool refreshConfig()
         {
-            configMan configuration = new configMan(isDebug);
+            configMan configuration = new configMan(useLocalDatapath);
             configuration.readConfig();
             ip = getLocalIP();
             if (configuration.isConfig)
@@ -168,6 +166,7 @@ namespace XMTuner
                 password = configIn.Get("password");
                 port = configIn.Get("port");
                 highbit = Convert.ToBoolean(configIn.Get("bitrate"));
+                if (highbit) { bitrate = "high"; } else { bitrate = "low"; } 
                 autologin = Convert.ToBoolean(configIn.Get("autologin"));
                 if (autologin && serviceRunning)
                 {
@@ -233,8 +232,6 @@ namespace XMTuner
         {
             if (serverRunning)
             {
-                //outputbox.Text = self.OutputData;
-                //outputbox.Refresh();
                 i++;
                 sec = i;
 
@@ -254,26 +251,7 @@ namespace XMTuner
         }
         private void Form1_FormClosing(Object sender, FormClosingEventArgs e)
         {
-            log();
-        }
-
-        public void log()
-        {
-            String directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "XMTuner");
-            String file = "XMReader.log";
-            String path;
-            if (!Directory.Exists(directory)) { Directory.CreateDirectory(directory); }
-            path = directory + "\\" + file;
-
-            FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write);
-            StreamWriter textOut = new StreamWriter(fs);
-
-            DateTime datetime = DateTime.Now;
-            String header = "XMTuner Output\n";
-            header += datetime.ToString() + "\n\n";
-            textOut.Write(header+outputbox.Text+"\nTime: "+i);
-            
-            textOut.Close();
+            logging.log(i);
         }
 
         private void timer2_Tick(object sender, EventArgs e)
@@ -282,10 +260,8 @@ namespace XMTuner
             {
                 self.doWhatsOn();
             }
-            log();
+            logging.log(i);
         }
-
-
 
         private void notifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
         {
@@ -311,7 +287,10 @@ namespace XMTuner
             }
             lblClock.Text = "0:00:00";
 
-            Updater update = new Updater(outputbox);
+            if (!useLocalDatapath) 
+            {
+                Updater update = new Updater(outputbox);
+            }
 
         }
 
