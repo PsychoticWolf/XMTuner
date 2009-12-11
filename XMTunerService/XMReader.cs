@@ -11,21 +11,22 @@ namespace XMTuner
     {
         
         XMTuner self;
+        public Log logging;
         WebListner xmServer;
         bool loggedIn = false;
         bool serverRunning = false;
         String user;
         String password;
         String port = "";
-        String bitrate = "high";
+        //String bitrate;
+        bool highbit = true;
         String hostname = "";
         String tversityHost = "";
         String ip = "";
         public String output;
-        bool highbit = true;
         bool autologin = false;
         bool isMMS = false;
-        int i = 0;
+        public int i = 0;
         System.Timers.Timer theTimer = new System.Timers.Timer(30000);
 
         public XMReader()
@@ -38,16 +39,14 @@ namespace XMTuner
 
             if (refreshConfig())
             {
-                if (highbit) { bitrate = "high"; } else { bitrate = "low"; }
-                String hostport = "";
-                if (hostname != "") { hostport = hostname + ":" + port; }
-                self = new XMTuner(user, password, bitrate, isMMS, tversityHost, hostport);
+                logging = new Log();
+                self = new XMTuner(user, password, logging);
                 if (self.isLoggedIn == false)
                 {
                     //Not logged in successfully.. Bail!
                     return;
                 }
-                //self.OutputData = outputbox.Text + self.OutputData;
+
                 i = 0;
                 loggedIn = true;
                 xmServer = new WebListner(self, port);
@@ -59,7 +58,8 @@ namespace XMTuner
                     //Server failed to start.
                     return;
                 }
-                log();
+
+                logging.log(i);
 
                 theTimer.Elapsed += new ElapsedEventHandler(OnTimedEvent);
                 theTimer.AutoReset = true;
@@ -70,29 +70,13 @@ namespace XMTuner
             {
                 addOutput("No Configuration");
                 
-                log();
+                logging.log(i);
 
             }
         }
         public void addOutput(String outtxt)
         {
             output = output + "\n" + outtxt;
-        }
-
-        public void log()
-        {
-            String directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "XMTuner");
-            String file = "XMReader.log";
-            String path;
-            if (!Directory.Exists(directory)) { Directory.CreateDirectory(directory); }
-            path = directory + "\\" + file;
-            
-            
-            FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write);
-            StreamWriter textOut = new StreamWriter(fs);
-            textOut.Write(output);
-            textOut.Close();
-            return;
         }
 
         public String test()
@@ -103,7 +87,6 @@ namespace XMTuner
         {
             configMan configuration = new configMan();
             configuration.readConfig();
-            //outputbox.SelectionColor = Color.Blue;
             if (configuration.isConfig)
             {
                 NameValueCollection configIn = configuration.getConfig();
@@ -137,7 +120,7 @@ namespace XMTuner
                 self.doWhatsOn();
             }
 
-            log();
+            logging.log(i);
         }
 
         private String getLocalIP()

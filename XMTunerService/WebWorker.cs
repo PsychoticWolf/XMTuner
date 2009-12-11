@@ -9,17 +9,15 @@ namespace XMTuner
 {
     class WebWorker
     {
-        NameValueCollection config = new NameValueCollection();
+        NameValueCollection config;
         XMTuner myTuner;
         public WebWorker(XMTuner xmTuner)
         {
             myTuner = xmTuner;
 
             //Set up configuration values
-            config = new NameValueCollection();
-            config.Add("isMMS", myTuner.isMMS.ToString());
-            config.Add("bitrate", myTuner.bitrate);
-            config.Add("hostname", myTuner.hostname);
+            configMan gConfig = new configMan();
+            config = gConfig.getConfig(true);
         }
 
         public NameValueCollection parseStreamURL(string methodURL)
@@ -88,7 +86,7 @@ namespace XMTuner
         {
             NameValueCollection streamCollection = new NameValueCollection();
             String msg;
-            String tversityHost = myTuner.tversityHost;
+            String tversityHost = config["Tversity"];
             String isErr = "false";
             int ChanNum = Convert.ToInt32(streamParams["num"]);
             String bitrate = TheConstructor.getBitRate(streamParams, config);
@@ -130,7 +128,7 @@ namespace XMTuner
 
         public String DoNowPlaying(String serverHost, NameValueCollection URLparams)
         {
-            Boolean UseMMS = myTuner.isMMS;
+            Boolean UseMMS = Convert.ToBoolean(config["isMMS"]);
             serverHost = getHostName(serverHost);
             String bitrate = TheConstructor.getBitRate(URLparams, config);
 

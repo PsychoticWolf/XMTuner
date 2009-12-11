@@ -7,7 +7,7 @@ namespace XMTuner
 {
     public class XMTunerService : ServiceBase
     {
-        private System.ComponentModel.IContainer components;
+        //private System.ComponentModel.IContainer components;
         
         XMReader reader;
         bool serviceStarted = false;
@@ -125,7 +125,7 @@ namespace XMTuner
         protected override void OnStop()
         {
             base.OnStop();
-            reader.log();
+            reader.logging.log(reader.i);
         }
 
         /// <summary>
