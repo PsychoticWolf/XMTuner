@@ -22,6 +22,7 @@ namespace XMTuner
         String cookies;
         public int lastChannelPlayed;
         public bool isLoggedIn;
+        Boolean loadedExtendedChannelData = false;
         int cookieCount = 0;
 
 
@@ -71,7 +72,7 @@ namespace XMTuner
                     
                     if (cookieCount <= 1)
                     {
-                        output("Login failed: Bad Us/Ps", "error");
+                        output("Login failed: Bad Username or Password", "error");
                     }
                     else
                     {
@@ -84,9 +85,6 @@ namespace XMTuner
 
                             //Continue to preloading whatsOn data
                             doWhatsOn();
-
-                            //Temporary? Load Channel Metadata...
-                            loadChannelMetadata();
                         }
                         else
                         {
@@ -110,6 +108,7 @@ namespace XMTuner
             cookieCount = 0;
             cookies = null;
             channels.Clear();
+            loadedExtendedChannelData = false;
             lastChannelPlayed = 0;
             isLoggedIn = false;
         }
@@ -235,6 +234,7 @@ namespace XMTuner
             if (channels != null)
             {
                 channels.Clear();
+                loadedExtendedChannelData = false;
             }
             XMChannel tempChannel;
 
@@ -333,6 +333,12 @@ namespace XMTuner
                 dnldChannelData();
             }
 
+            if (loadedExtendedChannelData == false)
+            {
+                //Load Channel Metadata...
+                loadChannelMetadata();
+            }
+
             MethodInvoker simpleDelegate = new MethodInvoker(loadWhatsOn);
             simpleDelegate.BeginInvoke(null, null);
         }
@@ -362,6 +368,10 @@ namespace XMTuner
 
         private void setWhatsonData(String rawdata)
         {
+            if (rawdata.Equals(""))
+            {
+                return;
+            }
             rawdata = rawdata.Trim();
             rawdata = rawdata.Replace("\n", ""); // No new lines please
             rawdata = rawdata.Replace("\t", ""); // No tabs...
@@ -501,17 +511,17 @@ namespace XMTuner
 
             int responseCode = channelMetaData.getStatus();
             output("Server Response: " + responseCode.ToString(), "debug");
-            setChannelMetadata(channelMetaData.response());
+            loadedExtendedChannelData = setChannelMetadata(channelMetaData.response());
             channelMetaData.close();
         }
 
-        private void setChannelMetadata(String rawData)
+        private Boolean setChannelMetadata(String rawData)
         {
             try
             {
                 rawData = rawData.Replace("//rig.addChannel", "");
                 int start = rawData.IndexOf("rig.addChannel") + 15;
-                int length = rawData.IndexOf("//loadPage();") - start;
+                int length = rawData.IndexOf("loadPage();") - start;
                 rawData = rawData.Trim().Substring(start, length);
                 rawData = rawData.Replace("\t", "");
                 rawData = rawData.Replace(");", "");
@@ -520,7 +530,7 @@ namespace XMTuner
             }
             catch (Exception)
             {
-               return;
+               return false;
             }
 
             String[] data = rawData.Split(new string[] { "rig.addChannel(" }, StringSplitOptions.None);
@@ -536,6 +546,7 @@ namespace XMTuner
 
                 Find(Convert.ToInt32(newdata[0])).addChannelMetadata(newdata);
             }
+            return true;
         }
 
 

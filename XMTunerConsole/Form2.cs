@@ -79,9 +79,17 @@ namespace XMTuner
 
         private void bUpdateLineup_Click(object sender, EventArgs e)
         {
-            String path = @"channellineup.cache";
-            //File.Delete(path);
-            File.SetLastWriteTime(path, new DateTime(1985, 1, 1));
+            String directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "XMTuner");
+            String file = "channellineup.cache";
+            String path = directory + "\\" + file;
+            try
+            {
+                File.SetLastWriteTime(path, new DateTime(1985, 1, 1));
+            }
+            catch (FileNotFoundException)
+            {
+
+            }
             bUpdateLineup.Enabled = false;
             bUpdateLineup.Text = "Update Pending...";
         }
