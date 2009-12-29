@@ -55,13 +55,12 @@ namespace XMTuner
             byte[] buffer = Encoding.ASCII.GetBytes(postdata);
             TheRequest.ContentType = "application/x-www-form-urlencoded";
             TheRequest.ContentLength = buffer.Length;
-            Stream PostData = TheRequest.GetRequestStream();
-
-            PostData.Write(buffer, 0, buffer.Length);
-            PostData.Close();
 
             try
             {
+                Stream PostData = TheRequest.GetRequestStream();
+                PostData.Write(buffer, 0, buffer.Length);
+                PostData.Close();
                 TheReply = (HttpWebResponse)TheRequest.GetResponse();
             }
             catch (WebException e) {
@@ -71,12 +70,20 @@ namespace XMTuner
 
         public int getStatus()
         {
+            if (TheReply == null)
+            {
+                return 0;
+            }
             int statusCode = (int) TheReply.StatusCode;
             return statusCode;
         }
 
         public String response()
         {
+            if (TheReply == null)
+            {
+                return "";
+            }
             StreamReader Stream = new StreamReader(TheReply.GetResponseStream());
             String result = Stream.ReadToEnd();
             TheReply.Close();
@@ -86,7 +93,10 @@ namespace XMTuner
 
         public void close()
         {
-            TheReply.Close();
+            if (TheReply != null)
+            {
+                TheReply.Close();
+            }
         }
 
         public CookieCollection getCookies()
