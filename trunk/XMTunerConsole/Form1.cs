@@ -10,7 +10,6 @@ using System.IO;
 using System.Collections.Specialized;
 using System.ServiceProcess;
 
-
 namespace XMTuner
 {
     public partial class Form1 : Form
@@ -41,6 +40,8 @@ namespace XMTuner
         double hour = 0;
         String runTime = "";
         String ip = "";
+
+        int playerNum;
 
         public Form1()
         {
@@ -534,6 +535,90 @@ namespace XMTuner
         private void timer3_Tick(object sender, EventArgs e)
         {
             Updater update = new Updater(outputbox);
+        }
+
+        private void bTune_Click(object sender, EventArgs e)
+        {
+            pLogoBox.ImageLocation = "";
+            pLabel1.Text = "Channel:";
+            pLabel2.Text = "Title:";
+            pLabel3.Text = "Artist:";
+            pLabel4.Text = "Album:";
+            pLabel5.Text = "";
+            pLabel6.Text = "";
+
+            int num = Convert.ToInt32(txtChannel.Text);
+
+            XMChannel npChannel = self.Find(num);
+            pLabel1.Text = "XM " + npChannel.num + " - " + npChannel.name;
+            pLabel2.Text = npChannel.song;
+            pLabel3.Text = npChannel.artist;
+            pLabel4.Text = npChannel.album;
+            pLogoBox.ImageLocation = npChannel.logo;
+
+            axWindowsMediaPlayer1.URL = self.play(num, "high");
+            playerNum = num;
+        }
+
+        private void axWindowsMediaPlayer1_StatusChange(object sender, EventArgs e)
+        {
+            if (axWindowsMediaPlayer1.playState != WMPLib.WMPPlayState.wmppsReady &&
+                axWindowsMediaPlayer1.playState != WMPLib.WMPPlayState.wmppsStopped)
+            {
+                String status = axWindowsMediaPlayer1.status;
+                if (status.Contains("Playing"))
+                {
+                    String[] temp = status.Replace("reflector:", "").Split(':');
+                    status = "Playing (" + temp[1].Trim()+")";
+                }
+                pLabel5.Text = status;
+            }
+        }
+
+        private void axWindowsMediaPlayer1_PlayStateChange(object sender, AxWMPLib._WMPOCXEvents_PlayStateChangeEvent e)
+        {
+            // If Windows Media Player is in the playing state, enable the data update timer. 
+            if (axWindowsMediaPlayer1.playState == WMPLib.WMPPlayState.wmppsPlaying)
+            {
+                pTimer.Enabled = true;
+            }
+            else
+            {
+                pTimer.Enabled = false;
+            }
+
+            if (axWindowsMediaPlayer1.playState == WMPLib.WMPPlayState.wmppsStopped)
+            {
+                pLogoBox.ImageLocation = "";
+                pLabel1.Text = "Channel:";
+                pLabel2.Text = "Title:";
+                pLabel3.Text = "Artist:";
+                pLabel4.Text = "Album:";
+                pLabel5.Text = "";
+                pLabel6.Text = "";
+
+            }
+
+        }
+
+        private void pTimer_Tick(object sender, EventArgs e)
+        {
+            XMChannel npChannel = self.Find(playerNum);
+            if (pLogoBox.ImageLocation.Equals("")) {
+                pLogoBox.ImageLocation = npChannel.logo;
+            }
+            pLabel1.Text = "XM " + npChannel.num + " - " + npChannel.name;
+            pLabel2.Text = npChannel.song;
+            pLabel3.Text = npChannel.artist;
+            pLabel4.Text = npChannel.album;
+            pLabel6.Text = axWindowsMediaPlayer1.Ctlcontrols.currentPositionString;
+        }
+
+        private void txtChannel_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Return) {
+                bTune_Click(sender, e);
+            }
         }
 
     }

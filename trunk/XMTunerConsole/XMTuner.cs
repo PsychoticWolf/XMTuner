@@ -10,7 +10,7 @@ namespace XMTuner
     class XMTuner
     {
         //Flags
-        bool isLive = false;
+        bool isLive = true;
         //isDebug is now in Log.cs
 
         //Config options...

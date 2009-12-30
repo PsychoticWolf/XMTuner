@@ -81,8 +81,21 @@
             this.label13 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
+            this.tabPage5 = new System.Windows.Forms.TabPage();
+            this.pLabel4 = new System.Windows.Forms.Label();
+            this.pLabel3 = new System.Windows.Forms.Label();
+            this.pLabel2 = new System.Windows.Forms.Label();
+            this.pLabel1 = new System.Windows.Forms.Label();
+            this.pLogoBox = new System.Windows.Forms.PictureBox();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.txtChannel = new System.Windows.Forms.TextBox();
+            this.bTune = new System.Windows.Forms.Button();
+            this.axWindowsMediaPlayer1 = new AxWMPLib.AxWindowsMediaPlayer();
             this.label5 = new System.Windows.Forms.Label();
             this.timer3 = new System.Windows.Forms.Timer(this.components);
+            this.pLabel5 = new System.Windows.Forms.Label();
+            this.pTimer = new System.Windows.Forms.Timer(this.components);
+            this.pLabel6 = new System.Windows.Forms.Label();
             this.contextMenuStrip1.SuspendLayout();
             this.tabcontrol1.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -92,6 +105,10 @@
             this.groupBox2.SuspendLayout();
             this.tabPage3.SuspendLayout();
             this.groupBox1.SuspendLayout();
+            this.tabPage5.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pLogoBox)).BeginInit();
+            this.groupBox4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.axWindowsMediaPlayer1)).BeginInit();
             this.SuspendLayout();
             // 
             // button1
@@ -215,6 +232,7 @@
             this.tabcontrol1.Controls.Add(this.tabPage2);
             this.tabcontrol1.Controls.Add(this.tabPage4);
             this.tabcontrol1.Controls.Add(this.tabPage3);
+            this.tabcontrol1.Controls.Add(this.tabPage5);
             this.tabcontrol1.HotTrack = true;
             this.tabcontrol1.Location = new System.Drawing.Point(10, 12);
             this.tabcontrol1.Name = "tabcontrol1";
@@ -631,6 +649,109 @@
             this.linkLabel1.Text = "http://www.pcfire.net/XMTuner/";
             this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
             // 
+            // tabPage5
+            // 
+            this.tabPage5.Controls.Add(this.pLabel6);
+            this.tabPage5.Controls.Add(this.pLabel5);
+            this.tabPage5.Controls.Add(this.pLabel4);
+            this.tabPage5.Controls.Add(this.pLabel3);
+            this.tabPage5.Controls.Add(this.pLabel2);
+            this.tabPage5.Controls.Add(this.pLabel1);
+            this.tabPage5.Controls.Add(this.pLogoBox);
+            this.tabPage5.Controls.Add(this.groupBox4);
+            this.tabPage5.Controls.Add(this.axWindowsMediaPlayer1);
+            this.tabPage5.Location = new System.Drawing.Point(4, 22);
+            this.tabPage5.Name = "tabPage5";
+            this.tabPage5.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage5.Size = new System.Drawing.Size(530, 204);
+            this.tabPage5.TabIndex = 4;
+            this.tabPage5.Text = "Player";
+            this.tabPage5.UseVisualStyleBackColor = true;
+            // 
+            // pLabel4
+            // 
+            this.pLabel4.AutoSize = true;
+            this.pLabel4.Location = new System.Drawing.Point(147, 43);
+            this.pLabel4.Name = "pLabel4";
+            this.pLabel4.Size = new System.Drawing.Size(39, 13);
+            this.pLabel4.TabIndex = 9;
+            this.pLabel4.Text = "Album:";
+            // 
+            // pLabel3
+            // 
+            this.pLabel3.AutoSize = true;
+            this.pLabel3.Location = new System.Drawing.Point(147, 29);
+            this.pLabel3.Name = "pLabel3";
+            this.pLabel3.Size = new System.Drawing.Size(33, 13);
+            this.pLabel3.TabIndex = 8;
+            this.pLabel3.Text = "Artist:";
+            // 
+            // pLabel2
+            // 
+            this.pLabel2.AutoSize = true;
+            this.pLabel2.Location = new System.Drawing.Point(147, 16);
+            this.pLabel2.Name = "pLabel2";
+            this.pLabel2.Size = new System.Drawing.Size(30, 13);
+            this.pLabel2.TabIndex = 7;
+            this.pLabel2.Text = "Title:";
+            // 
+            // pLabel1
+            // 
+            this.pLabel1.AutoSize = true;
+            this.pLabel1.Location = new System.Drawing.Point(147, 3);
+            this.pLabel1.Name = "pLabel1";
+            this.pLabel1.Size = new System.Drawing.Size(49, 13);
+            this.pLabel1.TabIndex = 6;
+            this.pLabel1.Text = "Channel:";
+            // 
+            // pLogoBox
+            // 
+            this.pLogoBox.Location = new System.Drawing.Point(3, 6);
+            this.pLogoBox.Name = "pLogoBox";
+            this.pLogoBox.Size = new System.Drawing.Size(138, 50);
+            this.pLogoBox.TabIndex = 3;
+            this.pLogoBox.TabStop = false;
+            // 
+            // groupBox4
+            // 
+            this.groupBox4.Controls.Add(this.txtChannel);
+            this.groupBox4.Controls.Add(this.bTune);
+            this.groupBox4.Location = new System.Drawing.Point(6, 149);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(155, 49);
+            this.groupBox4.TabIndex = 5;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "Tune Channel";
+            // 
+            // txtChannel
+            // 
+            this.txtChannel.Location = new System.Drawing.Point(6, 19);
+            this.txtChannel.Name = "txtChannel";
+            this.txtChannel.Size = new System.Drawing.Size(47, 20);
+            this.txtChannel.TabIndex = 2;
+            this.txtChannel.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtChannel_KeyPress);
+            // 
+            // bTune
+            // 
+            this.bTune.Location = new System.Drawing.Point(59, 17);
+            this.bTune.Name = "bTune";
+            this.bTune.Size = new System.Drawing.Size(75, 23);
+            this.bTune.TabIndex = 1;
+            this.bTune.Text = "Tune";
+            this.bTune.UseVisualStyleBackColor = true;
+            this.bTune.Click += new System.EventHandler(this.bTune_Click);
+            // 
+            // axWindowsMediaPlayer1
+            // 
+            this.axWindowsMediaPlayer1.Enabled = true;
+            this.axWindowsMediaPlayer1.Location = new System.Drawing.Point(357, 153);
+            this.axWindowsMediaPlayer1.Name = "axWindowsMediaPlayer1";
+            this.axWindowsMediaPlayer1.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("axWindowsMediaPlayer1.OcxState")));
+            this.axWindowsMediaPlayer1.Size = new System.Drawing.Size(157, 45);
+            this.axWindowsMediaPlayer1.TabIndex = 4;
+            this.axWindowsMediaPlayer1.PlayStateChange += new AxWMPLib._WMPOCXEvents_PlayStateChangeEventHandler(this.axWindowsMediaPlayer1_PlayStateChange);
+            this.axWindowsMediaPlayer1.StatusChange += new System.EventHandler(this.axWindowsMediaPlayer1_StatusChange);
+            // 
             // label5
             // 
             this.label5.AutoSize = true;
@@ -644,6 +765,29 @@
             this.timer3.Enabled = true;
             this.timer3.Interval = 86400000;
             this.timer3.Tick += new System.EventHandler(this.timer3_Tick);
+            // 
+            // pLabel5
+            // 
+            this.pLabel5.AutoSize = true;
+            this.pLabel5.Location = new System.Drawing.Point(9, 59);
+            this.pLabel5.Name = "pLabel5";
+            this.pLabel5.Size = new System.Drawing.Size(96, 13);
+            this.pLabel5.TabIndex = 10;
+            this.pLabel5.Text = "Select a channel...";
+            // 
+            // pTimer
+            // 
+            this.pTimer.Interval = 1000;
+            this.pTimer.Tick += new System.EventHandler(this.pTimer_Tick);
+            // 
+            // pLabel6
+            // 
+            this.pLabel6.AutoSize = true;
+            this.pLabel6.Location = new System.Drawing.Point(490, 3);
+            this.pLabel6.Name = "pLabel6";
+            this.pLabel6.Size = new System.Drawing.Size(34, 13);
+            this.pLabel6.TabIndex = 11;
+            this.pLabel6.Text = "00:00";
             // 
             // Form1
             // 
@@ -678,6 +822,12 @@
             this.tabPage3.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            this.tabPage5.ResumeLayout(false);
+            this.tabPage5.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pLogoBox)).EndInit();
+            this.groupBox4.ResumeLayout(false);
+            this.groupBox4.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.axWindowsMediaPlayer1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -738,6 +888,19 @@
         private System.Windows.Forms.Label lblServiceInst;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Timer timer3;
+        private System.Windows.Forms.TabPage tabPage5;
+        private System.Windows.Forms.GroupBox groupBox4;
+        private System.Windows.Forms.TextBox txtChannel;
+        private System.Windows.Forms.Button bTune;
+        private AxWMPLib.AxWindowsMediaPlayer axWindowsMediaPlayer1;
+        private System.Windows.Forms.Label pLabel4;
+        private System.Windows.Forms.Label pLabel3;
+        private System.Windows.Forms.Label pLabel2;
+        private System.Windows.Forms.Label pLabel1;
+        private System.Windows.Forms.PictureBox pLogoBox;
+        private System.Windows.Forms.Label pLabel5;
+        private System.Windows.Forms.Timer pTimer;
+        private System.Windows.Forms.Label pLabel6;
     }
 }
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Web;
 
 
 namespace XMTuner
@@ -40,9 +41,9 @@ namespace XMTuner
 
         public void addPlayingInfo(String[] stringyInfo)
         {
-            artist = stringyInfo[1];
-            song = stringyInfo[2];
-            album = stringyInfo[3];
+            artist = HttpUtility.HtmlDecode(stringyInfo[1]);
+            song = HttpUtility.HtmlDecode(stringyInfo[2]);
+            album = HttpUtility.HtmlDecode(stringyInfo[3]);
         }
 
         public void addChannelMetadata(String[] stringyInfo)
