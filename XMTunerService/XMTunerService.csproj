@@ -105,7 +105,9 @@
   <ItemGroup>
     <Compile Include="configMan.cs" />
     <Compile Include="Form1.cs" />
-    <Compile Include="Log.cs" />
+    <Compile Include="Log.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="ServiceInstaller.cs">
       <SubType>Component</SubType>

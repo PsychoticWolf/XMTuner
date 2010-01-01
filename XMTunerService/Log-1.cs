@@ -7,19 +7,16 @@ namespace XMTuner
     public class Log
     {
         RichTextBox outputbox;
-        String theLog = "";
-        String logFile = "applicaiton.log";
         Boolean isDebug = true;
         Boolean useLocalDatapath = false;
+        String theLog = "";
 
         public Log()
         {
-            logFile = "XMTunerService.log";
         }
 
         public Log(ref RichTextBox box1, Boolean bUseLocalDataPath)
         {
-            logFile = "XMTuner.log";
             outputbox = box1;
             useLocalDatapath = bUseLocalDataPath;
         }
@@ -31,8 +28,7 @@ namespace XMTuner
                 return;
             }
             DateTime currentTime = DateTime.Now;
-            output = currentTime.ToString("%H:") + currentTime.ToString("mm:") + currentTime.ToString("ss") + "  " + output + "\n";
-            theLog = theLog + output;
+            theLog = currentTime.ToString("%H:") + currentTime.ToString("mm:") + currentTime.ToString("ss") + "  " + output + "\n";
 
             //Tell the Form to write to the messagebox in the UI
             if (outputbox != null) {
@@ -45,7 +41,7 @@ namespace XMTuner
         {
             String directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "XMTuner");
             if (!Directory.Exists(directory)) { Directory.CreateDirectory(directory); }
-            String file = logFile;
+            String file = "XMTunerService.log";
             String path;
             path = directory + "\\" + file;
             if (!useLocalDatapath)
@@ -59,14 +55,7 @@ namespace XMTuner
             DateTime datetime = DateTime.Now;
             String header = "XMTuner Output\n";
             header += datetime.ToString() + "\n\n";
-            if (outputbox != null)
-            {
-                textOut.Write(header + outputbox.Text + "\nTime: " + i);
-            }
-            else
-            {
-                textOut.Write(header + theLog + "\nTime: " + i);
-            }
+            textOut.Write(header + theLog + "\nTime: " + i);
 
             textOut.Close();
         }
