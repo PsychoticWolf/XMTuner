@@ -47,26 +47,26 @@ namespace XMTuner
             if (!Directory.Exists(directory)) { Directory.CreateDirectory(directory); }
             String file = logFile;
             String path;
+            //output(directory, "message");
             path = directory + "\\" + file;
-            if (!useLocalDatapath)
-            {
-                path = file;
-            }
+            //path = file;
 
             FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write);
             StreamWriter textOut = new StreamWriter(fs);
 
             DateTime datetime = DateTime.Now;
             String header = "XMTuner Output\n";
+            header = header + "Build: 0.4 \n";
             header += datetime.ToString() + "\n\n";
             if (outputbox != null)
             {
-                textOut.Write(header + outputbox.Text + "\nTime: " + i);
+                textOut.Write(header + outputbox.Text);
             }
             else
             {
-                textOut.Write(header + theLog + "\nTime: " + i);
+                textOut.Write(header + theLog);
             }
+            
 
             textOut.Close();
         }

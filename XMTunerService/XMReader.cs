@@ -31,19 +31,26 @@ namespace XMTuner
 
         public XMReader()
         {
-            
+            logging = new Log();
         }
 
         public void run()
         {
-
+            logging.output("XMTuner Service started", "message");
+            logging.log(i);
             if (refreshConfig())
             {
-                logging = new Log();
+                logging.output("Reading configuration", "debug");
+                logging.log(i);
                 self = new XMTuner(user, password, logging);
+                logging.output("XMTuner created, Attempting Login", "debug");
+                logging.log(i);
+
                 if (self.isLoggedIn == false)
                 {
                     //Not logged in successfully.. Bail!
+                    logging.output("Failed Login", "message");
+                    logging.log(i);
                     return;
                 }
 
@@ -55,10 +62,12 @@ namespace XMTuner
                 if (xmServer.isRunning == false)
                 {
                     serverRunning = false;
-                    //Server failed to start.
+                    logging.output("Server failed to start.", "message");
+                    logging.log(i);
                     return;
                 }
 
+                logging.output("Services are Up!", "message");
                 logging.log(i);
 
                 theTimer.Elapsed += new ElapsedEventHandler(OnTimedEvent);
@@ -77,6 +86,7 @@ namespace XMTuner
         public void addOutput(String outtxt)
         {
             output = output + "\n" + outtxt;
+            logging.output(outtxt, "message");
         }
 
         public String test()
