@@ -139,14 +139,18 @@ namespace XMTuner
             String NowPlayingPage = "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html401/loose.dtd\">" +
                                     "<html>\n<head>\n\t<title>XM Tuner - What's On</title>\n" +
                                     "<link rel=\"alternate\" type=\"application/rss+xml\" title=\"RSS\" href=\"/feeds/\" />\n" +
+                                    "<link rel=\"shortcut icon\" href=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAACpUlEQVR42n2TX0hTURzHf9fNud3SHprNzIc0BbVpGGaUpqv5YJSzSSKFScMeHMJE6qHCoMKn8DXpuRH0kkX0lIRaKkilsB4qnBNbpnO7M7fp7r9zb79zU9FSf/C958A553N+v+/vHgbW4qnXy9ba7RdMJraQKITheeGnf2rq08jIhy/d3d0q7BAM/QwPv8/LL8gfNRqNWYqigEIUIHRUCESjS8Hp6cCbeDx2v/Vay+K2gK/fvj/LyTl0lcgyMCkpQAhBKSBJIkQ4DgKBGTiSl5fQ6XQ9AwNvezs9HrIF8Hli8vXR4qJ6QRRBlmRIQQgvCLiiQjgchvT0DG2zSNdlecjv9zsbHPW/NwCP+560tLa2eBmGwVslSCRWIM1gAEVVIR6PA5amZbUGoFmOj42N2tpcLl4DXKxvYDwez6uTFeUOUZRAp9eBIIgwv7AA+zIywGBI1Uqih3meByyFetRjLS66x6zXct3VZqo7X/e8pvqMg26gyc3O/gAVs1BVPIwZ7GFZMKEELA/LnENADrPZ0YZLjczlpqau0hLrA7N5/17akb9mStrN+tRUDUZkQoFzZcdKtwLWo7n5ittaYu07Z7dD9sEsYBjsDLZUay/RDhMEusqPl3n/A9hsZx049KIUNDX7REXFnVOnKzEbkhtbXjagkUEEvOhwt/s2uvBvVFfXdGCNt3H6MRrl3D6fL4kw2kuCnqzgSEV2A7gR8BA3+wOB6bvBYJC6SvvOoZZQ8V0BVZVVj3R6/S2cvpucnHDGYrHDODehImuABEreFlBUWJhmsWSNYwdyQ4uhLo7jciORyCAuzaB+oSTqz5ZfeXM0Ohtrk8nkTZZlC/pf9nfaamw3BocG23EptONr3ByZmZnG1dVVA4vvmotGQ5YDFvP8wnwYdog/nl9LIIQqVnIAAAAASUVORK5CYII=\" type=\"image/x-icon\">"+
                                     "</head>\n<body style=\"margin: 0px; font-family: Arial; font-size: 10pt;\">\n" +
                                     "<style type=\"text/css\">a , a:visited { color: blue; text-decoration: none; } a:hover { color: orange; }</style>\n";
             //NowPlaying
             XMChannel npChannel = myTuner.Find(nowPlayingNum);
             if (npChannel.album == null) { npChannel.album = ""; }
 
-            NowPlayingPage += "<div style=\"float: right;\">\n<table style=\"min-width: 300px; border: 1px solid #666; margin: 5px; padding: 0px 3px; -moz-border-radius: 10px;\">" +
-                              "<tr><td style=\"border-bottom: 1px solid blue; font-size: 18pt; font-weight: bold;\" colspan=\"2\">Now Playing<br></td></tr>\n";
+            NowPlayingPage += "<div style=\"float: right;\">\n<table id=\"nowplaying\" style=\"min-width: 442px; border: 1px solid #666; margin: 5px; padding: 0px 3px; -moz-border-radius: 10px;\">" +
+                              "<tr><td style=\"border-bottom: 1px solid blue; font-size: 18pt; font-weight: bold;\" colspan=\"2\">"+
+                                  "<div id=\"rpHeader\" style=\"text-align:center; float: right; font-size: 8pt;\" onclick=\"runAnimation(recentlyPlayed, this)\">Recently Played</div>" +
+                                  "Now Playing<br>"+
+                              "</td></tr>\n";
             if (npChannel.num != 0)
             {
                 NowPlayingPage += "<tr><td style=\"height: 1em; padding-left: 5px;\">XM " + npChannel.num + " - " + npChannel.name + "</td>";
@@ -165,11 +169,13 @@ namespace XMTuner
             {
                 NowPlayingPage += "<tr><td colspan=\"2\" style=\"color: #666; text-align: center;\"><p>Nothing Yet... Play a Channel</p></td></tr>\n";
             }
-            NowPlayingPage += "</table>\n</div>" +
-                              "<h1 style=\"margin: 0px; padding: 25px; font-size: 26pt;\">XM Tuner - What's On</h1>";
+            NowPlayingPage += "</table>\n" + CreateRecentlyPlayedPanel() + "</div>" +
+                              "<h1 style=\"margin: 0px; padding: 25px 10px; font-size: 26pt;\">"+
+                              "<img width=\"48\" height=\"48\" alt=\"\" src=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAL/0lEQVR42tVZCXBV1Rk+5+1bkpcYSMxGErIvZCEbSAAdlVaITkeooG3HjnWcqVRxOnW07Wi11Y5OO1anLQqCiAKO4op7a0mCDq2IoCUNoAkBkph9e3n7cvr99933uO/lxYZARnsm/7vn3Xvevf/3/9+/nBvO/s8Hn+nC8fEJq2CiXAhRwARLxTwecw6xCcFGmBDdOPclvp9KmT/f8a0A0NPbq7GYzeu5SnULFKuH4kZBAxPpU+D3InyGy1M7PtohH0E+ECLwj/S0tDkDFBPA0aNHudPpujE3N/delUpVqlzFOVf8VEgzIR2CoJj0J4GTQQqH3+9/1+12vTA0NPz++MSEbdVVVwbmFEBfX98yyAeZWVlaWQkuArClCEhHf8AvrfP5/FzFufD5/QSMBwJ+wYJOkbxBawKBgIR0bGyMeTxez4TNdgbzP9y04YYtcwLgzNnuecmXJB2GnpmjIyMiKSmJjCrTQ1ZMhC3MBZMpJEIUClLr3Fzwjo4O0d7ezkwmC/d6vcLucLAFWZl70tPTHqyuqjxxUQF89vm/txYW5P+EFPR43GxycpJZrdYQ55nM9xA9FMKmnCMyeb0+1tvby/bte5PFxcWxlNRUBkqxnJxsdklSkk+r1e6AG+8rLiz86oIBvPX2O0lZWVld+Xl5FiYHpcvlYk6Xi8fHxYtzgRpWMhS4LMI78jrEEQB4udlsEkgI7PPPPudcpRYTE+OscdkyDuWFVqfjHrd71GAw3Ofz+TaXlhT7Zw3gtTf21VdWVBy8NDUlQjmny8ndLpeIi48PA2AxqKLIUNxmmxRqtZrp9ToFyABHHEixgWvc4XDQnOv0ejFpszEkjFaVWnVzaXFx1+wAvL5veVlZaUtmRsYUmkiecDhZQkL8VLoo1iJo2djYODObzaQkKc2OHjkinaurr2M6nT7it+Pj48yEtSoVZ16PlzmczlF45pby0pJXzxvACy/uzcvJXnCyqrIiKiiDc7fHA8vahDXBKq2PtjoUEDbETDw8JV2VwkBwpFDR3NzCCgoLeEZGZrTH+OjIqEiwJsgeDQiHwxlAdnsY3rgf3hAzBvDcrj1avV5/6rqm1WmMxaAHHuDz+8TY6CgDnZhapQ4DwEOlDGOxmCPop6I8iwWgIdOoNbEox/0+vwQcQS4B8CHwkZKZWqP5K259R1FhQWBGAGhsfurpxy9f2XhHTnZ2jEwj04RcD0potBpmNBrZxPgEPYwZDPopmYky0fiEDZQyBYvcNNRzIeCJfnqDAVR1SEf52mbcZGPxNCCmAHjsT08UIvcfveH7aw1C5oEiwyhzPazu4EPDQyI5OZnptLoIOoXW2eEZFC6RmpISk5ZSxgoEf2ebsHFkI+HxeAiAMmE8UFxU+MCMANB4auu2xy5bsmTTwoU5cncgIgoZnQRdyPI8PiFe4MFMo9FweCMCADIO++LLL3lWZqYwGg3TZa0wADpH8WCxWJhKrVaupXFdaXHRmzMC8OzOXWYE7OFr11xTGB8fd65QyS532B2MrBSnuIZcTh5hBiiKLAI6CNbT08v6BwZYZUX5tMUumk72STu1KMwSZ4le04ePRagTg/8TAI0dO5+vQhpsuea7qywI7DCFkA6FxH2DUemZsEWdTieB42TUgwc/ZkuX1HMTChmbpvApvYoeC0XNI4VOwB/geoMueu3mspLi22cEgMYzzz7XZNAb9q66+kodKT08PCy1A6BLZEBG1Qyy/uFPjzAUP1ZeXopiZgAlVHLxm771UAbvJDyBIkhUUq5x4qOgrLSke0YAaDy5Zds6JgLP5+ct1FYvrkbbolLsByItKoc8aDPIW1s/FEsa6hgSgpReKS3iEke2EmQAFCzpPLIs1+l0ggACMAfYsEfReos4xIOITOn3oMg9OmMANO67/4HV6RkZu5c21KNGxQudTitZik2pFUEIaJn58fbjyP1SauRGZBYzFLGYTRy0RC80ISmlVqmguIYDENoOlQSWhSog7ueHK6mZRFAj0ANyXRQfAMBV5wWAxpant1fiHi/X19XmpqWlMuI6PQj9C2qBiXHOptCDrE4NHSmBQsfk+GBwI9oMjdRqAIT0nRRJQaqlGylpRev9Ph9DvxSkIDp+AFhw3gDkmLCi4GzJyMxYu7i6iunRSWIzI4i7ZOlQ6YJykqWpvwnucEL1JMDRSou+vn6JQkRHWJ6jIxUWs4VCV/KoBE6jDnuU6g11rmQsfO9dVFaaMSsANLZuewa/4Tfh4w+VVRUplOODm0tljfCFeY8cHy5w8vMkRVRoQwIU7WRzFRdMkW2oxnh9Xgm4BimZdnvUg1GDiMutALBy1gBCY/uOnfNQqH4rAv5bli27TDN//vzwJmZKpgnvl2NkHxY7KzG5ZfEShfzBLQJqEzMZTXdWLCp74oIBhMamu36+ApbZX714MS8oyBfYZUn3DVtdEdwionsNv9E4lwhYzDohzclbANOOS7U11VXhtxwXDGDNmqYFcO+pxMQkXlxSIhYtqmA5udkcvY+ULoW8b56yATqnrLLnUVyPzHDwwiRkZXVlxWHl8y8IwMqVl6M6se9B9obOoRljCxfmscKiIpZfUMCs2AAlz5OavQi6sCk0mkohIdPI7XYP+P2B9XU11fujdZgVgBUrVs7D4U7E1s14SJp0I87Dr1JC88TExK8qKqueyMnJ/U5y8iU1qCFINmaBukD9krSMsSivSK9tAgy1giPYR7FP3oGM9vuGutrBWLrMFsAjOPxC1rMT83TMjTIAG+YaTI2Y+9BHffL+++8tfX73CxbEyiIoVYXzxTjmQLFLcbR2nepU5+QupPZp3O/3dUPpNsw/NJnM+6++8orJr9NlVgBAHVQV9jhkPeR6yMOQOsgeyK2Qv0MaICOQrubm/Yu/7n7rN9wIjvso5VKm4S4UPIBgtPs70No68y3lLIBsgKUopSXC6mrMP8L8QczfpXSOeW5LS3NPrN8iwCl+1DQVdBRCFazeUm2g3ZdfITPfUp7vAJ3ScdgNpZfLFArIYD6E8o0xnodWlhG9sMdkehkE/c4ni1choXNzB0D2xEs4rI06Td44CCCa8fGxNzo6OltttokEnEuGWGTFQwp7osSruBbywpx5gNrSHlh9UND/DlhERhI0HxgY2HD8ePt+0CNXVp4UcsvKuhXzbwQA0aQFer4HnVcpAGwlZdFNPtvZ2fFRf39/Nr4vkJVRKq4EEvJGNIXmFMBDONwLnQ9A6UYFgH9hutTlchWdOHGia2xsNAvfs+VnxlI+2gNzD6CxcTkVGyrtPuhM+V0jXwq+ERLiMgTyQeR/brfb43GKQCRCVAprxwKhpNDcAWiob8jGzuwYepS7kRb/oqjEb2G6GpzffeBA6w/opQDaAVKasg91e1TJ9bKC0dafzgMx68EFAahdXHOb0Wz+MTY0hwBko7TZD1qeCtdrkPltbcfKh4aGJmXvkFDQUyBrowC4ZFEqrkyjcwLgFaPJdAr0uAlWT8G+V8rn2JCY8H0TAD169uyZJzs7O1+RFWayNe0KS9PcCXHIElJWKRe/DqxoXK4BdYZ0BsNOp92+EXNuAgDQpr2vr68M+9952dnZxz1ut+fQJ4duw3mdbE1SdlK29hgLtht2Gcx5//Nv1gCarlndiCTfir3hab/HPQjNa4RKzUZHR1//9NPDP0Uvk5KfX/DLjPT0tSdPnvhzT28vFTaiSz9kQFbYpvCGmI0eswZw8w9/9DtfIPArp9vdZxsbewwbmEfsLpdAwXqxra2N3mGasDdIoDSr5rzj7Xff+TULUqQd0iMrPG1wzjmAuzZtOoRH1xw+cuSlgf6+o02r1zw0ODIimpub93R1nfoYS4YhZ+rrGzbW19Zc//Irr97d09tzAOf+w4IUuihjVgCubWrKqq2t+0KtUmmfenrrb0CfyZ/dvvGPQyMjbPv2bfcMDg4SXU7rdLrhzMzMknVr1/2zu7v7b7t277oVwd0boH8EfJMAVixfbu3t7S33eL1atAgnQRVVcVHRFT6f33Os7VgLstAwYoD4LvLy8rRGo2kdveU+ffr0XgDxXCzlZw0gNKxWq/TPC5qnpqaq6E1bT0/PFOtmZWVRa8HOnj17QXy/6AC+DeO/WCfbuBFblQUAAAAASUVORK5CYII%3D\" style=\"padding-right: 5px;\">" +
+                              "XM Tuner - What's On</h1>";
 
             //Full Channel List
-            NowPlayingPage += "<table align=\"center\" style=\"width: 95%; border: 1px solid black;\">" +
+            NowPlayingPage += "<table align=\"center\" style=\"width: 98%; border: 1px solid black;\">" +
                                 "<tr><td colspan=6 style=\"border-bottom: 1px solid blue; font-size: 18pt; font-weight: bold;\">" +
                                 "<div style=\"float: right; font-size: 10pt;\">" +
                                 "<a style=\"text-decoration: none;\" href=\"/feeds/\" title=\"RSS 2.0 Feed for TVersity Media Server\"><img border=\"0\" width=\"16\" height=\"16\" alt=\"\" src=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAKOSURBVHjadJNNSFRRGIbfc+6dO6OOOplDykSZaRCtnKRc+ANRUBFEm0gicxG0bGoVhERRYIvIjRAtW+UmW5QQQS6qRWQSWJRaUcjkT0LiVWfm/pzTd869M5LShe+eufC973m+n2Fj55KJymTt9ZgVy3AGMHoxvvEs/qZgDL4AlhbsAfv34g1TiRPxRMZbWwU3GQzO9clNhGcYBpkY4UlGiWRd5scnMvx5tUWano9IMoXy1pOUBPgz4xC/xv8r1hSexNKiB1Nhq6RIbQoVhy6i+MiCDffDEPyJITBvZZPYLwiQFFzVZ0Q45Moc8q8fwP34FGJ5FixaCevgBZT1DMNs7Nok9iikL8GyfWkZ3VgvhbljP6yOy2BbmzWR/+o2vM/PSmLfkchTaAIlsHa1ourSS5Sfvg8r3Q38mYb7+DzE9Ig2MDquAan2kth3AgKu0JSBapLCNranEWnPIHp2GDzZDEE3+1OBiXW4D4LHtViZCB/rBHJuHPmHp+CO3oK0Zyk7DvP4IGR1EwrPb673JX0mELslgvVRYW0O8usIvCe9AboyOdIPn1Ug9+Kupihr69ZiZSJFsYRwztbRO4icGARv6IT3ZkCTsKp68J2dyE2MQuZtsFgllbZHTyMsAVqsaldCVt8CtvsYPHsZzvtH+tZIc5e+sfBtLOhFYytRFAlYuGGED2clGNn8lO62m53U37y6XmM7M8E3onEIIpCSLp/vPyC31Bp6SUSsjmIbnO9jpVEZqbROzn15F5RDZs5CFs58FmaNBTZ5Ze+9hn11Genl/1mS0qjChumaCVvo2iViNXHkuD1g9Daxt7lVEQPMNpcSdah1pQb5kqho4yVXQc2iacHiMMpNFPia/jv/FWAAUTVTOunExzkAAAAASUVORK5CYII%3D\">" +
@@ -202,13 +208,29 @@ namespace XMTuner
                 {
                     NowPlayingPage += "<div style=\"overflow: hidden; height: 25px; float: left;\"><img src=\"" + channel.logo_small + "\" border=\"0\" width=\"45\" height=\"40\" style=\"position: relative; top: -5px;\"></div>";
                 }
+
+                String[] currentProgram = myTuner.getCurrentProgram(channel.programData);
+                String[] nextProgram = myTuner.getNextProgram(channel.programData);
+
+                String program = ""; 
+                if (currentProgram != null) {
+                    program = "<div style=\"padding-left: 0px; font-size: 8pt; color: #999;\" title=\"";
+                    program += "On Now: " + HttpUtility.HtmlEncode(currentProgram[2]) + " (" + DateTime.Parse(currentProgram[4]).ToShortTimeString() + " - " + DateTime.Parse(currentProgram[5]).ToShortTimeString() + ")";
+
+                    if (nextProgram != null)
+                    {
+                        program += "\n | Next: " + HttpUtility.HtmlEncode(nextProgram[2]) + " (" + DateTime.Parse(nextProgram[4]).ToShortTimeString() + " - " + DateTime.Parse(nextProgram[5]).ToShortTimeString() + ")";
+                    }
+                    program += "\">Now: " + currentProgram[2] + "</div>";
+                }
                 NowPlayingPage += "<span style=\"position: relative; top: 6px; font-size: 8pt;\">" + channel.num + "</span></a></td>\n" +
-                                    "\t<td title=\""+channel.desc+"\">" + channel.name + "</td>\n" +
+                                    "\t<td title=\"" + channel.desc + "\">" + channel.name + program + "</td>\n" +
                                     "\t<td>" + channel.artist + "</td>\n" +
                                     "\t<td>" + channel.song + "</td>\n" +
                                     "\t<td>" + channel.album + "</td>\n" +
                                     "\t<td><strong><a href=\"" + mediaurl + "\">Play!</a></strong></td>\n" +
                                     "</tr>\n";
+
                 i++;
             }
             NowPlayingPage += "</table>" +
@@ -218,10 +240,91 @@ namespace XMTuner
             return (NowPlayingPage);
         }
 
+        private String CreateRecentlyPlayedPanel()
+        {
+            String animationJavascript = "ZnVuY3Rpb24gQW5pbWF0aW9uRnJhbWUobGVmdCwgdG9wLCB3aWR0aCwgaGVpZ2h0LCB0aW1lKQ0Kew0KICB0aGlzLkxlZnQgPSBsZWZ0Ow0KICB0aGlzLlRvcCA9IHRvcDsNCiAgdGhpcy5XaWR0aCA9IHdpZHRoOw0KICB0aGlzLkhlaWdodCA9IGhlaWdodDsNCiAgdGhpcy5UaW1lID0gdGltZTsNCiANCiAgdGhpcy5Db3B5ID0gZnVuY3Rpb24oZnJhbWUpDQogIHsNCiAgICB0aGlzLkxlZnQgPSBmcmFtZS5MZWZ0Ow0KICAgIHRoaXMuVG9wID0gZnJhbWUuVG9wOw0KICAgIHRoaXMuV2lkdGggPSBmcmFtZS5XaWR0aDsNCiAgICB0aGlzLkhlaWdodCA9IGZyYW1lLkhlaWdodDsNCiAgICB0aGlzLlRpbWUgPSBmcmFtZS5UaW1lOw0KICB9DQogDQogIHRoaXMuQXBwbHkgPSBmdW5jdGlvbihlbGVtZW50KQ0KICB7DQogICAgZWxlbWVudC5zdHlsZS5sZWZ0ID0gTWF0aC5yb3VuZCh0aGlzLkxlZnQpICsgJ3B4JzsNCiAgICBlbGVtZW50LnN0eWxlLnRvcCA9IE1hdGgucm91bmQodGhpcy5Ub3ApICsgJ3B4JzsNCiAgICBlbGVtZW50LnN0eWxlLndpZHRoID0gTWF0aC5yb3VuZCh0aGlzLldpZHRoKSArICdweCc7DQogICAgZWxlbWVudC5zdHlsZS5oZWlnaHQgPSBNYXRoLnJvdW5kKHRoaXMuSGVpZ2h0KSArICdweCc7DQogIH0NCn0NCg0KZnVuY3Rpb24gQW5pbWF0aW9uT2JqZWN0KGVsZW1lbnQpDQp7DQogIGlmKHR5cGVvZihlbGVtZW50KSA9PSAic3RyaW5nIikNCiAgICBlbGVtZW50ID0gZG9jdW1lbnQuZ2V0RWxl"+
+                                            "bWVudEJ5SWQoZWxlbWVudCk7DQogDQogIHZhciBmcmFtZXMgPSBudWxsOyANCiAgdmFyIHRpbWVvdXRJRCA9IC0xOw0KICB2YXIgcnVubmluZyA9IDA7DQogIHZhciBjdXJyZW50RkkgPSAwOw0KICB2YXIgY3VycmVudERhdGEgPSBudWxsOw0KICB2YXIgbGFzdFRpY2sgPSAtMTsNCiAgdmFyIGNhbGxiYWNrID0gbnVsbDsNCiANCiAgdmFyIHByZXZEaXIgPSAwOw0KIA0KICB0aGlzLkFkZEZyYW1lID0gZnVuY3Rpb24oZnJhbWUpDQogIHsNCiAgICBmcmFtZXMucHVzaChmcmFtZSk7DQogIH0NCiANCiAgdGhpcy5TZXRDYWxsYmFjayA9IGZ1bmN0aW9uKGNiKQ0KICB7DQogICAgY2FsbGJhY2sgPSBjYjsNCiAgfQ0KIA0KICB0aGlzLkNsZWFyRnJhbWVzID0gZnVuY3Rpb24oKQ0KICB7DQogICAgaWYocnVubmluZyAhPSAwKQ0KICAgICAgdGhpcy5TdG9wKCk7DQogICAgZnJhbWVzID0gbmV3IEFycmF5KCk7DQogICAgZnJhbWVzLnB1c2gobmV3IEFuaW1hdGlvbkZyYW1lKDAsMCwwLDAsMCkpOw0KICAgIGZyYW1lc1swXS5UaW1lID0gMDsNCiAgICBmcmFtZXNbMF0uTGVmdCA9IHBhcnNlSW50KGVsZW1lbnQuc3R5bGUubGVmdCk7DQogICAgZnJhbWVzWzBdLlRvcCA9IHBhcnNlSW50KGVsZW1lbnQuc3R5bGUudG9wKTsNCiAgICBmcmFtZXNbMF0uV2lkdGggPSBwYXJzZUludChlbGVtZW50LnN0eWxlLndpZHRoKTsNCiAgICBmcmFtZXNbMF0uSGVpZ2h0ID0gcGFyc2VJbnQoZWxlbWVudC5zdHlsZS5oZWlnaHQpOw0K"+
+                                            "ICAgIGN1cnJlbnRGSSA9IDA7DQogICAgcHJldkRpciA9IDA7DQogICAgY3VycmVudERhdGEgPSBuZXcgQW5pbWF0aW9uRnJhbWUoMCwwLDAsMCwwKTsgICANCiAgfQ0KIA0KICB0aGlzLlJlc2V0VG9TdGFydCA9IGZ1bmN0aW9uKCkNCiAgew0KICAgIGlmKHJ1bm5pbmcgIT0gMCkNCiAgICAgIHRoaXMuU3RvcCgpOw0KICAgIGN1cnJlbnRGSSA9IDA7DQogICAgcHJldkRpciA9IDA7DQogICAgY3VycmVudERhdGEgPSBuZXcgQW5pbWF0aW9uRnJhbWUoMCwwLDAsMCwwKTsNCiAgICBmcmFtZXNbMF0uQXBwbHkoZWxlbWVudCk7DQogIH0NCiANCiAgdGhpcy5SZXNldFRvRW5kID0gZnVuY3Rpb24oKQ0KICB7DQogICAgaWYocnVubmluZyAhPSAwKQ0KICAgICAgdGhpcy5TdG9wKCk7DQogICAgY3VycmVudEZJID0gMDsNCiAgICBwcmV2RGlyID0gMDsNCiAgICBjdXJyZW50RGF0YSA9IG5ldyBBbmltYXRpb25GcmFtZSgwLDAsMCwwLDApOw0KICAgIGZyYW1lc1tmcmFtZXMubGVuZ3RoIC0gMV0uQXBwbHkoZWxlbWVudCk7DQogIH0NCiANCiAgdGhpcy5TdG9wID0gZnVuY3Rpb24oKQ0KICB7DQogICAgaWYocnVubmluZyA9PSAwKQ0KICAgICAgcmV0dXJuOw0KICAgIGlmKHRpbWVvdXRJRCAhPSAtMSkNCiAgICAgIGNsZWFyVGltZW91dCh0aW1lb3V0SUQpOw0KICAgIHByZXZEaXIgPSBydW5uaW5nOw0KICAgIHJ1bm5pbmcgPSAwOw0KICB9DQogDQogIHRoaXMuUnVuRm9yd2FyZCA9IGZ1bmN0aW9uKCkNCiAgew0KICAg"+
+                                            "IGlmKHJ1bm5pbmcgPT0gMSkNCiAgICAgIHJldHVybjsNCiAgICBpZihydW5uaW5nID09IC0xKQ0KICAgICAgdGhpcy5TdG9wKCk7DQogICAgaWYoZnJhbWVzLmxlbmd0aCA9PSAxIHx8IGVsZW1lbnQgPT0gbnVsbCkNCiAgICAgIHJldHVybjsgDQogICAgIA0KICAgIGxhc3RUaWNrID0gbmV3IERhdGUoKS5nZXRUaW1lKCk7DQoNCiAgICAvL1N0YXJ0IGZyb20gdGhlIGJlZ2luaW5nDQogICAgaWYocHJldkRpciA9PSAwKQ0KICAgIHsNCiAgICAgIGN1cnJlbnRGSSA9IDE7DQogICAgICBjdXJyZW50RGF0YS5UaW1lID0gMDsNCiAgICAgIGN1cnJlbnREYXRhLkxlZnQgPSBwYXJzZUludChlbGVtZW50LnN0eWxlLmxlZnQpOw0KICAgICAgY3VycmVudERhdGEuVG9wID0gcGFyc2VJbnQoZWxlbWVudC5zdHlsZS50b3ApOw0KICAgICAgY3VycmVudERhdGEuV2lkdGggPSBwYXJzZUludChlbGVtZW50LnN0eWxlLndpZHRoKTsNCiAgICAgIGN1cnJlbnREYXRhLkhlaWdodCA9IHBhcnNlSW50KGVsZW1lbnQuc3R5bGUuaGVpZ2h0KTsNCiAgICAgIGZyYW1lc1swXS5Db3B5KGN1cnJlbnREYXRhKTsNCiAgICB9DQogICAgZWxzZSBpZihwcmV2RGlyICE9IDEpDQogICAgew0KICAgICAgY3VycmVudEZJKys7DQogICAgICBjdXJyZW50RGF0YS5UaW1lID0NCiAgICAgICAgICBmcmFtZXNbY3VycmVudEZJXS5UaW1lIC0gY3VycmVudERhdGEuVGltZTsNCiAgICB9DQogICAgIA0KICAgIHJ1bm5pbmcgPSAxOw0KICAgIGFuaW1h"+
+                                            "dGUoKTsNCiAgfQ0KIA0KICB0aGlzLlJ1bkJhY2t3YXJkID0gZnVuY3Rpb24oKQ0KICB7DQogICAgaWYocnVubmluZyA9PSAtMSkNCiAgICAgIHJldHVybjsNCiAgICBpZihydW5uaW5nID09IDEpDQogICAgICB0aGlzLlN0b3AoKTsNCiAgICBpZihmcmFtZXMubGVuZ3RoID09IDEgfHwgZWxlbWVudCA9PSBudWxsKQ0KICAgICAgcmV0dXJuOw0KICAgICAgIA0KICAgIGxhc3RUaWNrID0gbmV3IERhdGUoKS5nZXRUaW1lKCk7DQogICANCiAgICAvL1N0YXJ0IGZyb20gdGhlIGVuZA0KICAgIGlmKHByZXZEaXIgPT0gMCkNCiAgICB7DQogICAgICBjdXJyZW50RkkgPSBmcmFtZXMubGVuZ3RoLTI7DQogICAgICBjdXJyZW50RGF0YS5MZWZ0ID0gcGFyc2VJbnQoZWxlbWVudC5zdHlsZS5sZWZ0KTsNCiAgICAgIGN1cnJlbnREYXRhLlRvcCA9IHBhcnNlSW50KGVsZW1lbnQuc3R5bGUudG9wKTsNCiAgICAgIGN1cnJlbnREYXRhLldpZHRoID0gcGFyc2VJbnQoZWxlbWVudC5zdHlsZS53aWR0aCk7DQogICAgICBjdXJyZW50RGF0YS5IZWlnaHQgPSBwYXJzZUludChlbGVtZW50LnN0eWxlLmhlaWdodCk7DQogICAgICBjdXJyZW50RGF0YS5UaW1lID0gZnJhbWVzW2ZyYW1lcy5sZW5ndGgtMV0uVGltZTsNCiAgICAgIGZyYW1lc1tmcmFtZXMubGVuZ3RoLTFdLkNvcHkoY3VycmVudERhdGEpOw0KICAgICAgY3VycmVudERhdGEuVGltZSA9IDA7DQogICAgfQ0KICAgIGVsc2UgaWYocHJldkRpciAhPSAtMSkNCiAgICB7DQog"+
+                                            "ICAgICBjdXJyZW50RGF0YS5UaW1lID0NCiAgICAgICAgICBmcmFtZXNbY3VycmVudEZJXS5UaW1lIC0gY3VycmVudERhdGEuVGltZTsNCiAgICAgIGN1cnJlbnRGSS0tOw0KICAgIH0NCiAgICAgDQogICAgcnVubmluZyA9IC0xOw0KICAgIGFuaW1hdGUoKTsNCiAgfQ0KICAgDQogIGZ1bmN0aW9uIGFuaW1hdGUoKQ0KICB7DQogICAgaWYocnVubmluZyA9PSAwKQ0KICAgICAgcmV0dXJuOw0KICAgIHZhciBjdXJUaWNrID0gbmV3IERhdGUoKS5nZXRUaW1lKCk7DQogICAgdmFyIHRpY2tDb3VudCA9IGN1clRpY2sgLSBsYXN0VGljazsNCiAgICBsYXN0VGljayA9IGN1clRpY2s7DQogICANCiAgICB2YXIgdGltZUxlZnQgPQ0KICAgICAgIGZyYW1lc1soKHJ1bm5pbmcgPT0gLTEpID8gY3VycmVudEZJKzEgOiBjdXJyZW50RkkpXS5UaW1lDQogICAgICAgLSBjdXJyZW50RGF0YS5UaW1lOw0KICAgDQogICAgd2hpbGUodGltZUxlZnQgPD0gdGlja0NvdW50KQ0KICAgIHsNCiAgICAgIGN1cnJlbnREYXRhLkNvcHkoZnJhbWVzW2N1cnJlbnRGSV0pOw0KICAgICAgY3VycmVudERhdGEuVGltZSA9IDA7DQogICAgICBjdXJyZW50RkkgKz0gcnVubmluZzsNCiAgICAgIGlmKGN1cnJlbnRGST49IGZyYW1lcy5sZW5ndGggfHwgY3VycmVudEZJIDwwKQ0KICAgICAgew0KICAgICAgICBjdXJyZW50RGF0YS5BcHBseShlbGVtZW50KTsNCiAgICAgICAgbGFzdFRpY2sgPSAtMTsNCiAgICAgICAgcnVubmluZyA9IDA7DQogICAg"+
+                                            "ICAgIHByZXZEaXIgPSAwOw0KICAgICAgICBpZihjYWxsYmFjayAhPSBudWxsKQ0KICAgICAgICAgIGNhbGxiYWNrKCk7DQogICAgICAgIHJldHVybjsNCiAgICAgIH0NCiAgICAgIHRpY2tDb3VudCA9IHRpY2tDb3VudCAtIHRpbWVMZWZ0Ow0KICAgICAgdGltZUxlZnQgPQ0KICAgICAgICBmcmFtZXNbKChydW5uaW5nID09IC0xKSA/IGN1cnJlbnRGSSsxIDogY3VycmVudEZJKV0uVGltZQ0KICAgICAgICAtIGN1cnJlbnREYXRhLlRpbWU7DQogICAgfQ0KICAgDQogICAgaWYodGlja0NvdW50ICE9IDApDQogICAgew0KICAgICAgY3VycmVudERhdGEuVGltZSArPSB0aWNrQ291bnQ7DQogICAgICB2YXIgcmF0aW8gPSBjdXJyZW50RGF0YS5UaW1lLw0KICAgICAgICBmcmFtZXNbKChydW5uaW5nID09IC0xKSA/IGN1cnJlbnRGSSsxIDogY3VycmVudEZJKV0uVGltZTsNCg0KICAgICAgY3VycmVudERhdGEuTGVmdCA9IGZyYW1lc1tjdXJyZW50RkktcnVubmluZ10uTGVmdCArDQogICAgICAgICAoZnJhbWVzW2N1cnJlbnRGSV0uTGVmdA0KICAgICAgICAgLSBmcmFtZXNbY3VycmVudEZJLXJ1bm5pbmddLkxlZnQpDQogICAgICAgICAqIHJhdGlvOw0KDQogICAgICBjdXJyZW50RGF0YS5Ub3AgPSBmcmFtZXNbY3VycmVudEZJLXJ1bm5pbmddLlRvcCArDQogICAgICAgICAoZnJhbWVzW2N1cnJlbnRGSV0uVG9wDQogICAgICAgICAtIGZyYW1lc1tjdXJyZW50RkktcnVubmluZ10uVG9wKQ0KICAgICAgICAgKiByYXRp"+
+                                            "bzsNCiAgICAgIGN1cnJlbnREYXRhLldpZHRoID0gZnJhbWVzW2N1cnJlbnRGSS1ydW5uaW5nXS5XaWR0aCArDQogICAgICAgICAoZnJhbWVzW2N1cnJlbnRGSV0uV2lkdGgNCiAgICAgICAgIC0gZnJhbWVzW2N1cnJlbnRGSS1ydW5uaW5nXS5XaWR0aCkNCiAgICAgICAgICogcmF0aW87DQoNCiAgICAgIGN1cnJlbnREYXRhLkhlaWdodCA9IGZyYW1lc1tjdXJyZW50RkktcnVubmluZ10uSGVpZ2h0ICsNCiAgICAgICAgIChmcmFtZXNbY3VycmVudEZJXS5IZWlnaHQNCiAgICAgICAgIC0gZnJhbWVzW2N1cnJlbnRGSS1ydW5uaW5nXS5IZWlnaHQpDQogICAgICAgICAqIHJhdGlvOw0KICAgIH0NCiAgIA0KICAgIGN1cnJlbnREYXRhLkFwcGx5KGVsZW1lbnQpOw0KDQogICAgdGltZW91dElEID0gc2V0VGltZW91dChhbmltYXRlLCAzMyk7DQogIH0NCiANCiAgdGhpcy5DbGVhckZyYW1lcygpOw0KfQ==";
+
+            String panel;
+            panel = "<script type=\"text/javascript\" src=\"data:text/javascript;base64," + animationJavascript + "\"></script>" +
+
+                "<div id=\"rpPanelParent\" style=\"position:relative; width: auto; /* height:250px; */ top:0px; left:0px; z-index: 1;\">" +
+                //"<div id=\"rpHeader\" style=\"position:absolute; width:450px; height:20px; top:0px; left:0px; background:#3b587a; text-align:center; color:#FFFFFF;\" onclick=\"runAnimation(recentlyPlayed, this)\">" +
+                //"Recently Played" +
+                //"</div>" +
+
+                    "<div id=\"rpPanel\" style=\"position:absolute; width:440px; height:0px; top:-8px; left:5px; background:#FFF; border: 0px solid black; overflow:hidden; -moz-border-radius: 0px 0px 10px 10px;\">" +
+                        "<table id=\"rpTable\" border=0 cellspacing=2 cellpadding=0 width=\"100%\">\n<tr><td colspan=2 style=\"font-size: 12pt; font-weight: bold; border-bottom: 1px solid black;\">Recently Played:</td></tr>\n";
+                        int i = 0;
+                        foreach (String _item in myTuner.recentlyPlayed.AsReadOnly()) {
+                            i++;
+                            String row_color;
+                            if (i % 2 == 0) { row_color = "#EEEEEE"; } else { row_color = "#FFFFFF"; }
+
+                            String[] item = _item.Split(new char[]{'-'}, 2);
+                            panel += "<tr bgcolor=\"" + row_color + "\"><td valign=\"top\" nowrap>" + item[0] + "</td><td style=\"padding-left: 2px;\">" + item[1] + "</td></tr>\n";
+                        }
+                        panel += "</table></div>"+
+                "</div>";
+
+            panel += "<script type=\"text/javascript\">"+
+                "var recentlyPlayed = new AnimationObject('rpPanel');"+
+                "var width = 440;"+
+                "if (document.getElementById('nowplaying').clientWidth > 440) {"+
+                    "width = document.getElementById('nowplaying').clientWidth; "+
+                    "document.getElementById('rpPanel').style.width = document.getElementById('nowplaying').offsetWidth-2+\"px\"; " +
+                "}"+
+                //Pos X, Y, Width, Height, Duration of Animation in MS
+                "recentlyPlayed.AddFrame(new AnimationFrame(5, -8, width, document.getElementById('rpTable').clientHeight+5, 500));" +
+
+                "function runAnimation(animation, header)"+
+                "{"+
+                  "if(header.animationObject)"+
+                  "{"+
+                    "animation.RunBackward();"+
+                    "header.animationObject = null;"+
+                    "setTimeout(\"updateElements(1)\", 500);" +
+                  "}"+
+                  "else"+
+                  "{"+
+                    "setTimeout(\"updateElements(0)\", 25);" +
+                    "animation.RunForward();"+
+                    "header.animationObject = animation;"+
+                  "}"+
+                "}\n"+
+                "function updateElements(header) {"+
+                 "if(header) {"+
+                    "d = document.getElementById('nowplaying');" +
+                    "e = document.getElementById('rpPanel');" +
+                    "d.style.width=\"\";" +
+                    "d.style.MozBorderRadiusBottomleft=\"10px\";" +
+                    "d.style.MozBorderRadiusBottomright=\"10px\";" +
+                    "e.style.border='0px solid #FFF';" +
+                   "}"+
+                  "else"+
+                  "{"+
+                    "d = document.getElementById('nowplaying');" +
+                    "e = document.getElementById('rpPanel');"+
+                    "d.style.MozBorderRadiusBottomleft=\"0px\";" +
+                    "d.style.MozBorderRadiusBottomright=\"0px\";" +
+                    "e.style.border='1px solid #666';" +
+                    "e.style.borderTop='0px solid #FFF';" +
+                  "}"+
+                "}" +
+            "</script>";
+
+            return panel;
+        }
+
         private MemoryStream CreateXMFeed(List<XMChannel> list, NameValueCollection URLparams, String serverHost, String useragent)
         {
             String link = TheConstructor.buildLink("feed", serverHost, URLparams, useragent, 0, config);
-            //String link = "http://" + serverHost + "/feeds/?bitrate=" + bitrate;
             String bitrate_desc = getBitrateDesc(TheConstructor.getBitRate(URLparams, config));
             
             MemoryStream MemoryStream = new MemoryStream();

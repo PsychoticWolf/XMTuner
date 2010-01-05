@@ -42,6 +42,7 @@ namespace XMTuner
         String ip = "";
 
         int playerNum;
+        int p;
 
         public Form1()
         {
@@ -537,27 +538,73 @@ namespace XMTuner
             Updater update = new Updater(outputbox);
         }
 
+        private void updateNowPlayingData(Boolean useDefault, Int32 num)
+        {
+            if (useDefault == true)
+            {
+                pLogoBox.ImageLocation = "";
+                pLabel1.Text = "Channel:";
+                pLabel2.Text = "Title:";
+                pLabel3.Text = "Artist:";
+                pLabel4.Text = "Album:";
+                pLabel5.Text = "";
+                pLabel6.Text = "";
+                pLabel7.Text = "";
+                pLabel8.Text = "";
+            }
+            else
+            {
+                if (num == 0)
+                {
+                    num = playerNum;
+                }
+
+                XMChannel npChannel = self.Find(num);
+
+                if (pLogoBox.ImageLocation.Equals(""))
+                {
+                    pLogoBox.ImageLocation = npChannel.logo;
+                }
+                pLabel1.Text = "XM " + npChannel.num + " - " + npChannel.name;
+                pLabel2.Text = npChannel.song;
+                pLabel3.Text = npChannel.artist;
+                //pLabel5 is Player status (Handled in axWindowsMediaPlayer1_StatusChange)
+                pLabel6.Text = axWindowsMediaPlayer1.Ctlcontrols.currentPositionString; //pLabel6 is Player timer
+
+                //pLabel4: Tri-mode Artist/Program Now/Next Text
+                if (p <= 5)
+                {
+                    if (npChannel.album.Equals("")) { p = 5; p++; return; }
+                    pLabel4.Text = npChannel.album;
+                }
+                else if (p <= 10 && p > 5)
+                {
+                    String[] program = self.getCurrentProgram(npChannel.programData);
+                    if (program == null) { p = 10; p++; return; }
+                    pLabel4.Text = "Now: " + program[2];
+                }
+                else if (p > 10)
+                {
+                    String[] nextProgram = self.getNextProgram(npChannel.programData);
+                    if (nextProgram == null) { p = 0; p++; return; }
+                    pLabel4.Text = "Next: " + DateTime.Parse(nextProgram[4]).ToShortTimeString() + ": " + nextProgram[2];
+                    if (p >= 15) { p = 0; }
+                }
+                p++;
+            }
+        }
+
         private void bTune_Click(object sender, EventArgs e)
         {
-            pLogoBox.ImageLocation = "";
-            pLabel1.Text = "Channel:";
-            pLabel2.Text = "Title:";
-            pLabel3.Text = "Artist:";
-            pLabel4.Text = "Album:";
-            pLabel5.Text = "";
-            pLabel6.Text = "";
+            updateNowPlayingData(true, 0);
 
             int num = Convert.ToInt32(txtChannel.Text);
 
-            XMChannel npChannel = self.Find(num);
-            pLabel1.Text = "XM " + npChannel.num + " - " + npChannel.name;
-            pLabel2.Text = npChannel.song;
-            pLabel3.Text = npChannel.artist;
-            pLabel4.Text = npChannel.album;
-            pLogoBox.ImageLocation = npChannel.logo;
+            updateNowPlayingData(false, num);
 
             axWindowsMediaPlayer1.URL = self.play(num, "high");
             playerNum = num;
+            updateRecentlyPlayedBox();
         }
 
         private void axWindowsMediaPlayer1_StatusChange(object sender, EventArgs e)
@@ -589,29 +636,14 @@ namespace XMTuner
 
             if (axWindowsMediaPlayer1.playState == WMPLib.WMPPlayState.wmppsStopped)
             {
-                pLogoBox.ImageLocation = "";
-                pLabel1.Text = "Channel:";
-                pLabel2.Text = "Title:";
-                pLabel3.Text = "Artist:";
-                pLabel4.Text = "Album:";
-                pLabel5.Text = "";
-                pLabel6.Text = "";
-
+                updateNowPlayingData(true, 0);
             }
 
         }
 
         private void pTimer_Tick(object sender, EventArgs e)
         {
-            XMChannel npChannel = self.Find(playerNum);
-            if (pLogoBox.ImageLocation.Equals("")) {
-                pLogoBox.ImageLocation = npChannel.logo;
-            }
-            pLabel1.Text = "XM " + npChannel.num + " - " + npChannel.name;
-            pLabel2.Text = npChannel.song;
-            pLabel3.Text = npChannel.artist;
-            pLabel4.Text = npChannel.album;
-            pLabel6.Text = axWindowsMediaPlayer1.Ctlcontrols.currentPositionString;
+            updateNowPlayingData(false, 0);
         }
 
         private void txtChannel_KeyPress(object sender, KeyPressEventArgs e)
@@ -619,6 +651,39 @@ namespace XMTuner
             if (e.KeyChar == (char)Keys.Return) {
                 bTune_Click(sender, e);
             }
+        }
+
+        private void updateRecentlyPlayedBox()
+        {
+            recentlyPlayedBox.Clear();
+            recentlyPlayedBox.SelectionFont = new Font(recentlyPlayedBox.SelectionFont, FontStyle.Bold);
+            recentlyPlayedBox.SelectionColor = Color.Blue;
+            recentlyPlayedBox.AppendText("Recently Played:\n");
+
+            recentlyPlayedBox.SelectionColor = Color.Black;
+            recentlyPlayedBox.SelectionFont = new Font(recentlyPlayedBox.SelectionFont, FontStyle.Regular);
+            if (self.recentlyPlayed.Count == 0)
+            {
+                recentlyPlayedBox.AppendText("Nothing yet.. Play a channel...");
+                return;
+            }
+
+            try
+            {
+                foreach (String entry in self.recentlyPlayed)
+                {
+                    recentlyPlayedBox.AppendText(entry + "\n");
+                }
+            }
+            catch (InvalidOperationException)
+            {
+                recentlyPlayedBox.AppendText("Recently Played List Temporarily Not Available\n");
+            }
+        }
+
+        private void pLabel2_TextChanged(object sender, EventArgs e)
+        {
+            updateRecentlyPlayedBox();
         }
 
     }

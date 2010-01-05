@@ -18,6 +18,7 @@ namespace XMTuner
         public String url;
         public String logo;
         public String logo_small;
+        public List<String[]> programData = new List<string[]>();
 
         public XMChannel(String cat, int nu, String na, String d)
         {
@@ -52,6 +53,16 @@ namespace XMTuner
             logo_small = stringyInfo[2];
             logo = stringyInfo[3];
 
+        }
+
+        public void addProgram(String[] program)
+        {
+            programData.Add(program);
+        }
+
+        public void clearProgram()
+        {
+            programData.Clear();
         }
 
         #region IComparable<XMChannel> Members
