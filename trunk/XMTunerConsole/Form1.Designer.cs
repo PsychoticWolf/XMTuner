@@ -82,20 +82,24 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.tabPage5 = new System.Windows.Forms.TabPage();
+            this.recentlyPlayedBox = new System.Windows.Forms.RichTextBox();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.txtChannel = new System.Windows.Forms.TextBox();
+            this.bTune = new System.Windows.Forms.Button();
+            this.pLabel6 = new System.Windows.Forms.Label();
+            this.pLabel5 = new System.Windows.Forms.Label();
             this.pLabel4 = new System.Windows.Forms.Label();
             this.pLabel3 = new System.Windows.Forms.Label();
             this.pLabel2 = new System.Windows.Forms.Label();
             this.pLabel1 = new System.Windows.Forms.Label();
             this.pLogoBox = new System.Windows.Forms.PictureBox();
-            this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.txtChannel = new System.Windows.Forms.TextBox();
-            this.bTune = new System.Windows.Forms.Button();
             this.axWindowsMediaPlayer1 = new AxWMPLib.AxWindowsMediaPlayer();
             this.label5 = new System.Windows.Forms.Label();
             this.timer3 = new System.Windows.Forms.Timer(this.components);
-            this.pLabel5 = new System.Windows.Forms.Label();
             this.pTimer = new System.Windows.Forms.Timer(this.components);
-            this.pLabel6 = new System.Windows.Forms.Label();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.pLabel7 = new System.Windows.Forms.Label();
+            this.pLabel8 = new System.Windows.Forms.Label();
             this.contextMenuStrip1.SuspendLayout();
             this.tabcontrol1.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -106,14 +110,15 @@
             this.tabPage3.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.tabPage5.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pLogoBox)).BeginInit();
             this.groupBox4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pLogoBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.axWindowsMediaPlayer1)).BeginInit();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(13, 243);
+            this.button1.Location = new System.Drawing.Point(6, 239);
             this.button1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(60, 23);
@@ -124,7 +129,7 @@
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(80, 243);
+            this.button4.Location = new System.Drawing.Point(71, 239);
             this.button4.Margin = new System.Windows.Forms.Padding(4);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(60, 23);
@@ -216,7 +221,7 @@
             // 
             this.button5.Enabled = false;
             this.button5.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button5.Location = new System.Drawing.Point(146, 243);
+            this.button5.Location = new System.Drawing.Point(137, 239);
             this.button5.Margin = new System.Windows.Forms.Padding(2);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(71, 23);
@@ -234,10 +239,10 @@
             this.tabcontrol1.Controls.Add(this.tabPage3);
             this.tabcontrol1.Controls.Add(this.tabPage5);
             this.tabcontrol1.HotTrack = true;
-            this.tabcontrol1.Location = new System.Drawing.Point(10, 12);
+            this.tabcontrol1.Location = new System.Drawing.Point(1, 6);
             this.tabcontrol1.Name = "tabcontrol1";
             this.tabcontrol1.SelectedIndex = 0;
-            this.tabcontrol1.Size = new System.Drawing.Size(538, 230);
+            this.tabcontrol1.Size = new System.Drawing.Size(558, 230);
             this.tabcontrol1.TabIndex = 16;
             this.tabcontrol1.Selected += new System.Windows.Forms.TabControlEventHandler(this.tabcontrol1_Selected);
             // 
@@ -249,7 +254,7 @@
             this.tabPage1.Margin = new System.Windows.Forms.Padding(2);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(530, 204);
+            this.tabPage1.Size = new System.Drawing.Size(550, 204);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Log";
             // 
@@ -262,7 +267,7 @@
             this.outputbox.Name = "outputbox";
             this.outputbox.ReadOnly = true;
             this.outputbox.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
-            this.outputbox.Size = new System.Drawing.Size(524, 197);
+            this.outputbox.Size = new System.Drawing.Size(540, 197);
             this.outputbox.TabIndex = 6;
             this.outputbox.Text = "";
             this.outputbox.WordWrap = false;
@@ -286,7 +291,7 @@
             this.tabPage2.Margin = new System.Windows.Forms.Padding(2);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(530, 204);
+            this.tabPage2.Size = new System.Drawing.Size(550, 204);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Channels";
             // 
@@ -394,7 +399,7 @@
             this.tabPage4.Location = new System.Drawing.Point(4, 22);
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage4.Size = new System.Drawing.Size(530, 204);
+            this.tabPage4.Size = new System.Drawing.Size(550, 204);
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "Service";
             this.tabPage4.Click += new System.EventHandler(this.tabPage4_Click);
@@ -532,7 +537,7 @@
             this.tabPage3.Margin = new System.Windows.Forms.Padding(2);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(2);
-            this.tabPage3.Size = new System.Drawing.Size(530, 204);
+            this.tabPage3.Size = new System.Drawing.Size(550, 204);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "About";
             // 
@@ -651,72 +656,34 @@
             // 
             // tabPage5
             // 
-            this.tabPage5.Controls.Add(this.pLabel6);
-            this.tabPage5.Controls.Add(this.pLabel5);
-            this.tabPage5.Controls.Add(this.pLabel4);
-            this.tabPage5.Controls.Add(this.pLabel3);
-            this.tabPage5.Controls.Add(this.pLabel2);
-            this.tabPage5.Controls.Add(this.pLabel1);
-            this.tabPage5.Controls.Add(this.pLogoBox);
+            this.tabPage5.Controls.Add(this.recentlyPlayedBox);
             this.tabPage5.Controls.Add(this.groupBox4);
-            this.tabPage5.Controls.Add(this.axWindowsMediaPlayer1);
             this.tabPage5.Location = new System.Drawing.Point(4, 22);
             this.tabPage5.Name = "tabPage5";
             this.tabPage5.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage5.Size = new System.Drawing.Size(530, 204);
+            this.tabPage5.Size = new System.Drawing.Size(550, 204);
             this.tabPage5.TabIndex = 4;
             this.tabPage5.Text = "Player";
             this.tabPage5.UseVisualStyleBackColor = true;
             // 
-            // pLabel4
+            // recentlyPlayedBox
             // 
-            this.pLabel4.AutoSize = true;
-            this.pLabel4.Location = new System.Drawing.Point(147, 43);
-            this.pLabel4.Name = "pLabel4";
-            this.pLabel4.Size = new System.Drawing.Size(39, 13);
-            this.pLabel4.TabIndex = 9;
-            this.pLabel4.Text = "Album:";
-            // 
-            // pLabel3
-            // 
-            this.pLabel3.AutoSize = true;
-            this.pLabel3.Location = new System.Drawing.Point(147, 29);
-            this.pLabel3.Name = "pLabel3";
-            this.pLabel3.Size = new System.Drawing.Size(33, 13);
-            this.pLabel3.TabIndex = 8;
-            this.pLabel3.Text = "Artist:";
-            // 
-            // pLabel2
-            // 
-            this.pLabel2.AutoSize = true;
-            this.pLabel2.Location = new System.Drawing.Point(147, 16);
-            this.pLabel2.Name = "pLabel2";
-            this.pLabel2.Size = new System.Drawing.Size(30, 13);
-            this.pLabel2.TabIndex = 7;
-            this.pLabel2.Text = "Title:";
-            // 
-            // pLabel1
-            // 
-            this.pLabel1.AutoSize = true;
-            this.pLabel1.Location = new System.Drawing.Point(147, 3);
-            this.pLabel1.Name = "pLabel1";
-            this.pLabel1.Size = new System.Drawing.Size(49, 13);
-            this.pLabel1.TabIndex = 6;
-            this.pLabel1.Text = "Channel:";
-            // 
-            // pLogoBox
-            // 
-            this.pLogoBox.Location = new System.Drawing.Point(3, 6);
-            this.pLogoBox.Name = "pLogoBox";
-            this.pLogoBox.Size = new System.Drawing.Size(138, 50);
-            this.pLogoBox.TabIndex = 3;
-            this.pLogoBox.TabStop = false;
+            this.recentlyPlayedBox.BackColor = System.Drawing.Color.White;
+            this.recentlyPlayedBox.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this.recentlyPlayedBox.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.recentlyPlayedBox.Location = new System.Drawing.Point(3, 65);
+            this.recentlyPlayedBox.Name = "recentlyPlayedBox";
+            this.recentlyPlayedBox.ReadOnly = true;
+            this.recentlyPlayedBox.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
+            this.recentlyPlayedBox.Size = new System.Drawing.Size(544, 136);
+            this.recentlyPlayedBox.TabIndex = 6;
+            this.recentlyPlayedBox.Text = "Recently Played:";
             // 
             // groupBox4
             // 
             this.groupBox4.Controls.Add(this.txtChannel);
             this.groupBox4.Controls.Add(this.bTune);
-            this.groupBox4.Location = new System.Drawing.Point(6, 149);
+            this.groupBox4.Location = new System.Drawing.Point(8, 6);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(155, 49);
             this.groupBox4.TabIndex = 5;
@@ -741,13 +708,86 @@
             this.bTune.UseVisualStyleBackColor = true;
             this.bTune.Click += new System.EventHandler(this.bTune_Click);
             // 
+            // pLabel6
+            // 
+            this.pLabel6.ForeColor = System.Drawing.Color.White;
+            this.pLabel6.Location = new System.Drawing.Point(504, 2);
+            this.pLabel6.Name = "pLabel6";
+            this.pLabel6.Size = new System.Drawing.Size(54, 15);
+            this.pLabel6.TabIndex = 11;
+            this.pLabel6.Text = "00:00:00";
+            this.pLabel6.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // pLabel5
+            // 
+            this.pLabel5.AutoSize = true;
+            this.pLabel5.ForeColor = System.Drawing.Color.White;
+            this.pLabel5.Location = new System.Drawing.Point(2, 68);
+            this.pLabel5.Name = "pLabel5";
+            this.pLabel5.Size = new System.Drawing.Size(96, 13);
+            this.pLabel5.TabIndex = 10;
+            this.pLabel5.Text = "Select a channel...";
+            // 
+            // pLabel4
+            // 
+            this.pLabel4.AutoSize = true;
+            this.pLabel4.ForeColor = System.Drawing.Color.White;
+            this.pLabel4.Location = new System.Drawing.Point(133, 53);
+            this.pLabel4.Name = "pLabel4";
+            this.pLabel4.Size = new System.Drawing.Size(39, 13);
+            this.pLabel4.TabIndex = 9;
+            this.pLabel4.Text = "Album:";
+            // 
+            // pLabel3
+            // 
+            this.pLabel3.AutoSize = true;
+            this.pLabel3.ForeColor = System.Drawing.Color.White;
+            this.pLabel3.Location = new System.Drawing.Point(133, 37);
+            this.pLabel3.Name = "pLabel3";
+            this.pLabel3.Size = new System.Drawing.Size(33, 13);
+            this.pLabel3.TabIndex = 8;
+            this.pLabel3.Text = "Artist:";
+            // 
+            // pLabel2
+            // 
+            this.pLabel2.AutoSize = true;
+            this.pLabel2.ForeColor = System.Drawing.Color.White;
+            this.pLabel2.Location = new System.Drawing.Point(133, 22);
+            this.pLabel2.Name = "pLabel2";
+            this.pLabel2.Size = new System.Drawing.Size(30, 13);
+            this.pLabel2.TabIndex = 7;
+            this.pLabel2.Text = "Title:";
+            this.pLabel2.TextChanged += new System.EventHandler(this.pLabel2_TextChanged);
+            // 
+            // pLabel1
+            // 
+            this.pLabel1.AutoSize = true;
+            this.pLabel1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.pLabel1.ForeColor = System.Drawing.Color.White;
+            this.pLabel1.Location = new System.Drawing.Point(133, 3);
+            this.pLabel1.Name = "pLabel1";
+            this.pLabel1.Size = new System.Drawing.Size(72, 17);
+            this.pLabel1.TabIndex = 6;
+            this.pLabel1.Text = "Channel:";
+            // 
+            // pLogoBox
+            // 
+            this.pLogoBox.BackColor = System.Drawing.Color.Transparent;
+            this.pLogoBox.Location = new System.Drawing.Point(3, 9);
+            this.pLogoBox.Name = "pLogoBox";
+            this.pLogoBox.Size = new System.Drawing.Size(128, 50);
+            this.pLogoBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+            this.pLogoBox.TabIndex = 3;
+            this.pLogoBox.TabStop = false;
+            // 
             // axWindowsMediaPlayer1
             // 
             this.axWindowsMediaPlayer1.Enabled = true;
-            this.axWindowsMediaPlayer1.Location = new System.Drawing.Point(357, 153);
+            this.axWindowsMediaPlayer1.Location = new System.Drawing.Point(390, 48);
+            this.axWindowsMediaPlayer1.Margin = new System.Windows.Forms.Padding(0);
             this.axWindowsMediaPlayer1.Name = "axWindowsMediaPlayer1";
             this.axWindowsMediaPlayer1.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("axWindowsMediaPlayer1.OcxState")));
-            this.axWindowsMediaPlayer1.Size = new System.Drawing.Size(157, 45);
+            this.axWindowsMediaPlayer1.Size = new System.Drawing.Size(168, 34);
             this.axWindowsMediaPlayer1.TabIndex = 4;
             this.axWindowsMediaPlayer1.PlayStateChange += new AxWMPLib._WMPOCXEvents_PlayStateChangeEventHandler(this.axWindowsMediaPlayer1_PlayStateChange);
             this.axWindowsMediaPlayer1.StatusChange += new System.EventHandler(this.axWindowsMediaPlayer1_StatusChange);
@@ -766,40 +806,62 @@
             this.timer3.Interval = 86400000;
             this.timer3.Tick += new System.EventHandler(this.timer3_Tick);
             // 
-            // pLabel5
-            // 
-            this.pLabel5.AutoSize = true;
-            this.pLabel5.Location = new System.Drawing.Point(9, 59);
-            this.pLabel5.Name = "pLabel5";
-            this.pLabel5.Size = new System.Drawing.Size(96, 13);
-            this.pLabel5.TabIndex = 10;
-            this.pLabel5.Text = "Select a channel...";
-            // 
             // pTimer
             // 
             this.pTimer.Interval = 1000;
             this.pTimer.Tick += new System.EventHandler(this.pTimer_Tick);
             // 
-            // pLabel6
+            // panel1
             // 
-            this.pLabel6.AutoSize = true;
-            this.pLabel6.Location = new System.Drawing.Point(490, 3);
-            this.pLabel6.Name = "pLabel6";
-            this.pLabel6.Size = new System.Drawing.Size(34, 13);
-            this.pLabel6.TabIndex = 11;
-            this.pLabel6.Text = "00:00";
+            this.panel1.BackColor = System.Drawing.Color.Black;
+            this.panel1.Controls.Add(this.pLabel8);
+            this.panel1.Controls.Add(this.pLabel7);
+            this.panel1.Controls.Add(this.axWindowsMediaPlayer1);
+            this.panel1.Controls.Add(this.pLabel6);
+            this.panel1.Controls.Add(this.pLabel5);
+            this.panel1.Controls.Add(this.pLogoBox);
+            this.panel1.Controls.Add(this.pLabel4);
+            this.panel1.Controls.Add(this.pLabel1);
+            this.panel1.Controls.Add(this.pLabel3);
+            this.panel1.Controls.Add(this.pLabel2);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panel1.Location = new System.Drawing.Point(0, 265);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(560, 84);
+            this.panel1.TabIndex = 17;
+            // 
+            // pLabel7
+            // 
+            this.pLabel7.AutoSize = true;
+            this.pLabel7.ForeColor = System.Drawing.Color.White;
+            this.pLabel7.Location = new System.Drawing.Point(343, 13);
+            this.pLabel7.Name = "pLabel7";
+            this.pLabel7.Size = new System.Drawing.Size(46, 13);
+            this.pLabel7.TabIndex = 12;
+            this.pLabel7.Text = "Program";
+            // 
+            // pLabel8
+            // 
+            this.pLabel8.AutoSize = true;
+            this.pLabel8.ForeColor = System.Drawing.Color.White;
+            this.pLabel8.Location = new System.Drawing.Point(345, 30);
+            this.pLabel8.Name = "pLabel8";
+            this.pLabel8.Size = new System.Drawing.Size(32, 13);
+            this.pLabel8.TabIndex = 13;
+            this.pLabel8.Text = "Next:";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(560, 271);
+            this.ClientSize = new System.Drawing.Size(560, 349);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.lblClock);
             this.Controls.Add(this.button5);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.tabcontrol1);
+            this.Controls.Add(this.panel1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(2);
             this.MaximizeBox = false;
@@ -823,11 +885,12 @@
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.tabPage5.ResumeLayout(false);
-            this.tabPage5.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pLogoBox)).EndInit();
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pLogoBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.axWindowsMediaPlayer1)).EndInit();
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -901,6 +964,10 @@
         private System.Windows.Forms.Label pLabel5;
         private System.Windows.Forms.Timer pTimer;
         private System.Windows.Forms.Label pLabel6;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.RichTextBox recentlyPlayedBox;
+        private System.Windows.Forms.Label pLabel7;
+        private System.Windows.Forms.Label pLabel8;
     }
 }
 

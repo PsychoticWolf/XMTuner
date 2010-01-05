@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using System.Web;
 
 namespace XMTuner
 {
@@ -24,6 +26,7 @@ namespace XMTuner
         public bool isLoggedIn;
         Boolean loadedExtendedChannelData = false;
         int cookieCount = 0;
+        public List<String> recentlyPlayed = new List<String>();
 
 
         public XMTuner()
@@ -92,6 +95,7 @@ namespace XMTuner
                             isLoggedIn = false;
                             output("Login failed: Unable to retrieve channel data.", "error");
                         }
+
                     }
                     
                 }
@@ -335,12 +339,19 @@ namespace XMTuner
 
             if (loadedExtendedChannelData == false)
             {
-                //Load Channel Metadata...
-                loadChannelMetadata();
+                MethodInvoker extendedChannelDataDelegate = new MethodInvoker(loadExtendedChannelData);
+                extendedChannelDataDelegate.BeginInvoke(null, null);
             }
 
             MethodInvoker simpleDelegate = new MethodInvoker(loadWhatsOn);
             simpleDelegate.BeginInvoke(null, null);
+
+        }
+
+        private void loadExtendedChannelData()
+        {
+            loadChannelMetadata();
+            loadProgramGuideData();
         }
 
         private void loadWhatsOn()
@@ -364,6 +375,8 @@ namespace XMTuner
             output("Server Response: " + responseCode.ToString(), "debug");
             setWhatsonData(whatsOn.response());
             whatsOn.close();
+
+            setRecentlyPlayed();
         }
 
         private void setWhatsonData(String rawdata)
@@ -460,6 +473,7 @@ namespace XMTuner
             string URL = playChannel(playerURL);
             //response is closed in playChannel();
             lastChannelPlayed = channelnum;
+            setRecentlyPlayed();
             return URL;
          }
 
@@ -549,6 +563,146 @@ namespace XMTuner
             return true;
         }
 
+        private void setRecentlyPlayed()
+        {
+            XMChannel npChannel = Find(lastChannelPlayed);
+            if (npChannel.num == 0 || npChannel.song.Equals(""))
+            { 
+                return;
+            }
+            String currentTime = DateTime.Now.ToString("T");
+            String entry = "XM " + npChannel.num + " - " + npChannel.artist + " - " + npChannel.song;
 
+            if (recentlyPlayed.Count > 0)
+            {
+                String[] lastEntry = recentlyPlayed.FirstOrDefault().Split(':');
+                if (lastEntry[3].Trim() == entry) {
+                    return;
+                }
+            }
+
+            recentlyPlayed.Insert(0, currentTime + ": " + entry);
+            if (recentlyPlayed.Count > 25)
+            {
+                recentlyPlayed.RemoveRange(25, recentlyPlayed.Count - 25);
+            }
+        }
+
+        private void loadProgramGuideData()
+        {
+            output("Local program data...", "debug");
+
+            //XXX Need to convert this to something enumerated
+            String channums="2,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,20,21,22,23,24,25,26,27,28,29,30,32,33,34,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,62,64,65,66,67,68,70,71,72,73,74,75,76,77,78,79,80,81,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,192,193,194,195,196,197,198,199,200,201,202,203,204,205,206,207,208,209,210,211,212,213,214,215,216,217,218,219,221,222,225,226,227,231,232,233,234,235,236,237,238,239,241,242,243,244,245,246,247";
+            channums = HttpUtility.UrlEncode(channums);
+
+            //endDate	11122009030000 (date("dmYHis", time()+86400);)
+            String enddate = DateTime.Now.AddDays(1).ToString("ddMMyyyyHHmmss");
+
+            //startDate	11122009000000 (date("dmYHis", time());)
+            String startdate = DateTime.Now.ToString("ddMMyyyyHHmmss");
+
+            String programGuideURL = "http://www.xmradio.com/epg.program_schedules.xmc?channelNums="+channums+"&endDate="+enddate+"&startDate="+startdate;
+            URL programGuideData = new URL(programGuideURL);
+            output("Fetching: " + programGuideURL, "debug");
+            programGuideData.setRequestHeader("Cookie", cookies);
+            programGuideData.fetch();
+
+            int responseCode = programGuideData.getStatus();
+            output("Server Response: " + responseCode.ToString(), "debug");
+            Boolean loadedProgramGuideData = setProgramGuideData(programGuideData.response());
+            programGuideData.close();
+        }
+
+        private Boolean setProgramGuideData(String rawData)
+        {
+            rawData = rawData.Replace("{\"programScheduleList\":[{","");
+            rawData = rawData.Replace("\"repeat\":\"","");
+            rawData = rawData.Replace("\",\"class\":\"com.xm.epg.domain.EpgSchedule\",\"scheduleId\":","");
+
+
+            rawData = rawData.Replace("\"class\":\"com.xm.epg.domain.EpgProgram\",\"programId\":","");
+
+
+            int start = rawData.IndexOf("\"epgProgram\":{")+14;
+
+            String[] rawProgramData = rawData.Substring(start).Split(new string[] {"\"epgProgram\":{"}, StringSplitOptions.None);
+
+
+            String sep = "::XMTUNER-SEPERATOR::";
+            foreach(String _rPData in rawProgramData) {
+
+	            //Program ID, Program Name, Unique ID, StartTime, Last Occurence, Unique ID, First Occurance, Duration, ChannelNum, EndTime, JUNK
+	            String rPData = _rPData.Replace(",\"name\":\"",sep);
+	            rPData = rPData.Replace("\",\"~unique-id~\":\"",sep);
+	            rPData = rPData.Replace("\"},\"startTime\":\"",sep);
+	            rPData = rPData.Replace("\",\"lastOccurence\":\"",sep);
+	            rPData = rPData.Replace("\",\"firstOccurence\":\"",sep);
+	            rPData = rPData.Replace("\",\"duration\":",sep);
+	            rPData = rPData.Replace(",\"channelNum\":",sep);
+	            rPData = rPData.Replace(",\"endTime\":\"",sep);
+	            rPData = rPData.Replace("\"},{",sep); //Break off leftover junk
+	            rPData = rPData.Replace("\"}],",sep); //Break off leftover junk (Final Line)
+            	
+	            String[] PData = rPData.Split(new String[] { sep }, StringSplitOptions.None);
+            	
+	            //ChannelNum, Program ID, Program Name, Duration, Start Time, End Time
+	            Int32 num = Convert.ToInt32(PData[8]);
+                XMChannel channel = Find(num);
+                String[] program = new String[6];
+                        program[0] = PData[8];
+                        program[1] = PData[0];
+                        program[2] = PData[1];
+                        program[3] = PData[7];
+                        program[4] = PData[3];
+                        program[5] = PData[9];
+                
+                channel.addProgram(program);
+            }
+            return true;
+        }
+
+        private String[] getProgram(List<String[]> programs, Boolean getNext)
+        {
+            String[] program = null;
+            Boolean foundFirstValidProgram = false;
+            foreach (String[] _program in programs)
+            {
+                if (validateProgram(_program) == true)
+                {
+                    program = _program;
+                    if (getNext == false)
+                    {
+                        break;
+                    }
+                    if (getNext && foundFirstValidProgram)
+                    {
+                        break;
+                    }
+                    foundFirstValidProgram = true;
+                }
+            }
+            return program;
+        }
+
+        public String[] getCurrentProgram(List<String[]> programs)
+        {
+            return getProgram(programs, false);
+        }
+        public String[] getNextProgram(List<String[]> programs)
+        {
+            return getProgram(programs, true);
+        }
+
+        private Boolean validateProgram(String[] program)
+        {
+            DateTime pEndDate = DateTime.Parse(program[5]);
+            if (DateTime.Now > pEndDate)
+            {
+                return false;
+                //Reconstruct program data...
+            }
+            return true;
+        }
     }
 }
