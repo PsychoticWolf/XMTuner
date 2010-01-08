@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using System.IO;
 using System.Collections.Specialized;
 using System.ServiceProcess;
+using System.Reflection;
 
 namespace XMTuner
 {
@@ -50,6 +51,7 @@ namespace XMTuner
             useLocalDatapath = true;
 #endif
             InitializeComponent();
+            initPlayer();
         }
 
         // This delegate enables asynchronous calls for setting
@@ -132,7 +134,7 @@ namespace XMTuner
                 channelBox.Enabled = true;
                 if (!tversityHost.Equals("")) { protocolBox.Items.Add("MP3"); }
             }
-            
+            syncStatusLabel();
             loadChannels();
         }
 
@@ -253,6 +255,7 @@ namespace XMTuner
         }
         private void Form1_FormClosing(Object sender, FormClosingEventArgs e)
         {
+            if (logging == null) { return; }
             logging.log(i);
         }
 
@@ -543,14 +546,14 @@ namespace XMTuner
             if (useDefault == true)
             {
                 pLogoBox.ImageLocation = "";
-                pLabel1.Text = "Channel:";
-                pLabel2.Text = "Title:";
-                pLabel3.Text = "Artist:";
-                pLabel4.Text = "Album:";
+                showLogo();
+                syncStatusLabel();
+                pLabel1.Text = ""; //"Channel:";
+                pLabel2.Text = ""; //"Title:";
+                pLabel3.Text = ""; //"Artist:";
+                pLabel4.Text = ""; //"Album:";
                 pLabel5.Text = "";
                 pLabel6.Text = "";
-                pLabel7.Text = "";
-                pLabel8.Text = "";
             }
             else
             {
@@ -561,8 +564,12 @@ namespace XMTuner
 
                 XMChannel npChannel = self.Find(num);
 
+                syncStatusLabel();
+                
                 if (pLogoBox.ImageLocation.Equals(""))
                 {
+                    //pLogoBox.SizeMode = PictureBoxSizeMode.CenterImage;
+                    pLogoBox.ClientSize = new Size(128, 50);
                     pLogoBox.ImageLocation = npChannel.logo;
                 }
                 pLabel1.Text = "XM " + npChannel.num + " - " + npChannel.name;
@@ -594,16 +601,39 @@ namespace XMTuner
             }
         }
 
+        private void syncStatusLabel()
+        {
+            pStatusLabel.Visible = true;
+            if (loggedIn == false)
+            {
+                pStatusLabel.Text = "Log in to begin...";
+            }
+            else
+            {
+                if (playerNum != 0)
+                {
+                    pStatusLabel.Text = "";
+                    pStatusLabel.Visible = false;
+                }
+                else
+                {
+
+                    pStatusLabel.Text = "Select a channel...";
+                }
+            }
+        }
+
         private void bTune_Click(object sender, EventArgs e)
         {
             updateNowPlayingData(true, 0);
 
             int num = Convert.ToInt32(txtChannel.Text);
 
-            updateNowPlayingData(false, num);
 
             axWindowsMediaPlayer1.URL = self.play(num, "high");
             playerNum = num;
+            updateNowPlayingData(false, num);
+
             updateRecentlyPlayedBox();
         }
 
@@ -618,6 +648,7 @@ namespace XMTuner
                     String[] temp = status.Replace("reflector:", "").Split(':');
                     status = "Playing (" + temp[1].Trim()+")";
                 }
+                pLabel5.Visible = true;
                 pLabel5.Text = status;
             }
         }
@@ -627,7 +658,9 @@ namespace XMTuner
             // If Windows Media Player is in the playing state, enable the data update timer. 
             if (axWindowsMediaPlayer1.playState == WMPLib.WMPPlayState.wmppsPlaying)
             {
+                axWindowsMediaPlayer1.enableContextMenu = true;
                 pTimer.Enabled = true;
+                showWMPPlayerUI();
             }
             else
             {
@@ -636,6 +669,10 @@ namespace XMTuner
 
             if (axWindowsMediaPlayer1.playState == WMPLib.WMPPlayState.wmppsStopped)
             {
+                axWindowsMediaPlayer1.enableContextMenu = false;
+                //Tell the app we're done playing so history stops being built.
+                playerNum = 0;
+                self.lastChannelPlayed = 0;
                 updateNowPlayingData(true, 0);
             }
 
@@ -683,8 +720,76 @@ namespace XMTuner
 
         private void pLabel2_TextChanged(object sender, EventArgs e)
         {
+            if (pLabel2.Text.Equals("Title:") || pLabel2.Text.Equals(""))
+            {
+                return;
+            }
+            String dummy = pLabel2.Text;
             updateRecentlyPlayedBox();
+            doNotification();
         }
 
+        private void doNotification()
+        {
+            if (playerNum == 0) { return; } //Bail early if we have no work to do.
+            XMChannel npChannel = self.Find(playerNum);
+            String title = "XM "+npChannel.num+" - "+npChannel.name;
+            String nptext = npChannel.artist + " - " + npChannel.song;
+            NotifyWindow nw = new NotifyWindow(title, "Now Playing:\n"+nptext);
+            nw.TitleFont = new Font("Tahoma", 8.25F, FontStyle.Bold);
+            nw.Font = new Font("Tahoma", 10F);
+            nw.TextColor = Color.White;
+            nw.BackColor = Color.Black;
+            nw.SetDimensions(300, 120);
+            nw.WaitTime = 5000;
+            nw.Notify();
+        }
+
+        private void button3_Click_2(object sender, EventArgs e)
+        {
+            doNotification();
+        }
+
+        private void initPlayer()
+        {
+            showLogo();
+            axWindowsMediaPlayer1.uiMode = "none";
+
+            pLabel5.Visible = false;
+            updateNowPlayingData(true, 0);
+
+            syncStatusLabel();
+
+        }
+
+        private void showLogo()
+        {
+            Image xmtunerLogo = Image.FromStream(Assembly.GetExecutingAssembly().GetManifestResourceStream("XMTuner.xmtuner64.png"));
+            pLogoBox.ClientSize = new Size(64, 64);
+            pLogoBox.Image = xmtunerLogo;
+        }
+
+        private void axWindowsMediaPlayer1_MouseMoveEvent(object sender, AxWMPLib._WMPOCXEvents_MouseMoveEvent e)
+        {
+            if (axWindowsMediaPlayer1.uiMode.Equals("mini") || axWindowsMediaPlayer1.playState != WMPLib.WMPPlayState.wmppsPlaying)
+            {
+                return;
+            }
+            showWMPPlayerUI();
+        }
+
+        private void showWMPPlayerUI()
+        {
+            axWindowsMediaPlayer1.uiMode = "mini";
+            axWindowsMediaPlayer1.Size = new Size(165, 35);
+            pHoverTimer.Start();
+        }
+
+        private void pHoverTimer_Tick(object sender, EventArgs e)
+        {
+            pHoverTimer.Stop();
+            axWindowsMediaPlayer1.uiMode = "none";
+            axWindowsMediaPlayer1.Size = new Size(165,50);
+        }
     }
 }
