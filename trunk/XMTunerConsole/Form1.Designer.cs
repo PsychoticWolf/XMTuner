@@ -82,6 +82,7 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.tabPage5 = new System.Windows.Forms.TabPage();
+            this.button3 = new System.Windows.Forms.Button();
             this.recentlyPlayedBox = new System.Windows.Forms.RichTextBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.txtChannel = new System.Windows.Forms.TextBox();
@@ -98,8 +99,8 @@
             this.timer3 = new System.Windows.Forms.Timer(this.components);
             this.pTimer = new System.Windows.Forms.Timer(this.components);
             this.panel1 = new System.Windows.Forms.Panel();
-            this.pLabel7 = new System.Windows.Forms.Label();
-            this.pLabel8 = new System.Windows.Forms.Label();
+            this.pHoverTimer = new System.Windows.Forms.Timer(this.components);
+            this.pStatusLabel = new System.Windows.Forms.Label();
             this.contextMenuStrip1.SuspendLayout();
             this.tabcontrol1.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -656,6 +657,7 @@
             // 
             // tabPage5
             // 
+            this.tabPage5.Controls.Add(this.button3);
             this.tabPage5.Controls.Add(this.recentlyPlayedBox);
             this.tabPage5.Controls.Add(this.groupBox4);
             this.tabPage5.Location = new System.Drawing.Point(4, 22);
@@ -665,6 +667,18 @@
             this.tabPage5.TabIndex = 4;
             this.tabPage5.Text = "Player";
             this.tabPage5.UseVisualStyleBackColor = true;
+            // 
+            // button3
+            // 
+            this.button3.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button3.ForeColor = System.Drawing.Color.Firebrick;
+            this.button3.Location = new System.Drawing.Point(451, 23);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(23, 23);
+            this.button3.TabIndex = 7;
+            this.button3.Text = "!";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click_2);
             // 
             // recentlyPlayedBox
             // 
@@ -711,12 +725,13 @@
             // pLabel6
             // 
             this.pLabel6.ForeColor = System.Drawing.Color.White;
-            this.pLabel6.Location = new System.Drawing.Point(504, 2);
+            this.pLabel6.Location = new System.Drawing.Point(506, 69);
             this.pLabel6.Name = "pLabel6";
             this.pLabel6.Size = new System.Drawing.Size(54, 15);
             this.pLabel6.TabIndex = 11;
             this.pLabel6.Text = "00:00:00";
             this.pLabel6.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.pLabel6.UseMnemonic = false;
             // 
             // pLabel5
             // 
@@ -724,55 +739,61 @@
             this.pLabel5.ForeColor = System.Drawing.Color.White;
             this.pLabel5.Location = new System.Drawing.Point(2, 68);
             this.pLabel5.Name = "pLabel5";
-            this.pLabel5.Size = new System.Drawing.Size(96, 13);
+            this.pLabel5.Size = new System.Drawing.Size(38, 13);
             this.pLabel5.TabIndex = 10;
-            this.pLabel5.Text = "Select a channel...";
+            this.pLabel5.Text = "Ready";
+            this.pLabel5.UseMnemonic = false;
             // 
             // pLabel4
             // 
-            this.pLabel4.AutoSize = true;
+            this.pLabel4.AutoEllipsis = true;
             this.pLabel4.ForeColor = System.Drawing.Color.White;
             this.pLabel4.Location = new System.Drawing.Point(133, 53);
             this.pLabel4.Name = "pLabel4";
-            this.pLabel4.Size = new System.Drawing.Size(39, 13);
+            this.pLabel4.Size = new System.Drawing.Size(415, 13);
             this.pLabel4.TabIndex = 9;
             this.pLabel4.Text = "Album:";
+            this.pLabel4.UseMnemonic = false;
             // 
             // pLabel3
             // 
-            this.pLabel3.AutoSize = true;
+            this.pLabel3.AutoEllipsis = true;
             this.pLabel3.ForeColor = System.Drawing.Color.White;
             this.pLabel3.Location = new System.Drawing.Point(133, 37);
             this.pLabel3.Name = "pLabel3";
-            this.pLabel3.Size = new System.Drawing.Size(33, 13);
+            this.pLabel3.Size = new System.Drawing.Size(258, 13);
             this.pLabel3.TabIndex = 8;
             this.pLabel3.Text = "Artist:";
+            this.pLabel3.UseMnemonic = false;
             // 
             // pLabel2
             // 
-            this.pLabel2.AutoSize = true;
+            this.pLabel2.AutoEllipsis = true;
             this.pLabel2.ForeColor = System.Drawing.Color.White;
             this.pLabel2.Location = new System.Drawing.Point(133, 22);
             this.pLabel2.Name = "pLabel2";
-            this.pLabel2.Size = new System.Drawing.Size(30, 13);
+            this.pLabel2.Size = new System.Drawing.Size(258, 13);
             this.pLabel2.TabIndex = 7;
             this.pLabel2.Text = "Title:";
+            this.pLabel2.UseMnemonic = false;
             this.pLabel2.TextChanged += new System.EventHandler(this.pLabel2_TextChanged);
             // 
             // pLabel1
             // 
-            this.pLabel1.AutoSize = true;
+            this.pLabel1.AutoEllipsis = true;
             this.pLabel1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.pLabel1.ForeColor = System.Drawing.Color.White;
             this.pLabel1.Location = new System.Drawing.Point(133, 3);
             this.pLabel1.Name = "pLabel1";
-            this.pLabel1.Size = new System.Drawing.Size(72, 17);
+            this.pLabel1.Size = new System.Drawing.Size(258, 17);
             this.pLabel1.TabIndex = 6;
             this.pLabel1.Text = "Channel:";
+            this.pLabel1.UseMnemonic = false;
             // 
             // pLogoBox
             // 
             this.pLogoBox.BackColor = System.Drawing.Color.Transparent;
+            this.pLogoBox.InitialImage = null;
             this.pLogoBox.Location = new System.Drawing.Point(3, 9);
             this.pLogoBox.Name = "pLogoBox";
             this.pLogoBox.Size = new System.Drawing.Size(128, 50);
@@ -783,14 +804,15 @@
             // axWindowsMediaPlayer1
             // 
             this.axWindowsMediaPlayer1.Enabled = true;
-            this.axWindowsMediaPlayer1.Location = new System.Drawing.Point(390, 48);
+            this.axWindowsMediaPlayer1.Location = new System.Drawing.Point(394, 2);
             this.axWindowsMediaPlayer1.Margin = new System.Windows.Forms.Padding(0);
             this.axWindowsMediaPlayer1.Name = "axWindowsMediaPlayer1";
             this.axWindowsMediaPlayer1.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("axWindowsMediaPlayer1.OcxState")));
-            this.axWindowsMediaPlayer1.Size = new System.Drawing.Size(168, 34);
+            this.axWindowsMediaPlayer1.Size = new System.Drawing.Size(165, 35);
             this.axWindowsMediaPlayer1.TabIndex = 4;
             this.axWindowsMediaPlayer1.PlayStateChange += new AxWMPLib._WMPOCXEvents_PlayStateChangeEventHandler(this.axWindowsMediaPlayer1_PlayStateChange);
             this.axWindowsMediaPlayer1.StatusChange += new System.EventHandler(this.axWindowsMediaPlayer1_StatusChange);
+            this.axWindowsMediaPlayer1.MouseMoveEvent += new AxWMPLib._WMPOCXEvents_MouseMoveEventHandler(this.axWindowsMediaPlayer1_MouseMoveEvent);
             // 
             // label5
             // 
@@ -814,8 +836,7 @@
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.Color.Black;
-            this.panel1.Controls.Add(this.pLabel8);
-            this.panel1.Controls.Add(this.pLabel7);
+            this.panel1.Controls.Add(this.pStatusLabel);
             this.panel1.Controls.Add(this.axWindowsMediaPlayer1);
             this.panel1.Controls.Add(this.pLabel6);
             this.panel1.Controls.Add(this.pLabel5);
@@ -830,25 +851,22 @@
             this.panel1.Size = new System.Drawing.Size(560, 84);
             this.panel1.TabIndex = 17;
             // 
-            // pLabel7
+            // pHoverTimer
             // 
-            this.pLabel7.AutoSize = true;
-            this.pLabel7.ForeColor = System.Drawing.Color.White;
-            this.pLabel7.Location = new System.Drawing.Point(343, 13);
-            this.pLabel7.Name = "pLabel7";
-            this.pLabel7.Size = new System.Drawing.Size(46, 13);
-            this.pLabel7.TabIndex = 12;
-            this.pLabel7.Text = "Program";
+            this.pHoverTimer.Interval = 5000;
+            this.pHoverTimer.Tick += new System.EventHandler(this.pHoverTimer_Tick);
             // 
-            // pLabel8
+            // pStatusLabel
             // 
-            this.pLabel8.AutoSize = true;
-            this.pLabel8.ForeColor = System.Drawing.Color.White;
-            this.pLabel8.Location = new System.Drawing.Point(345, 30);
-            this.pLabel8.Name = "pLabel8";
-            this.pLabel8.Size = new System.Drawing.Size(32, 13);
-            this.pLabel8.TabIndex = 13;
-            this.pLabel8.Text = "Next:";
+            this.pStatusLabel.AutoSize = true;
+            this.pStatusLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.pStatusLabel.ForeColor = System.Drawing.Color.White;
+            this.pStatusLabel.Location = new System.Drawing.Point(40, 52);
+            this.pStatusLabel.Name = "pStatusLabel";
+            this.pStatusLabel.Size = new System.Drawing.Size(51, 16);
+            this.pStatusLabel.TabIndex = 12;
+            this.pStatusLabel.Text = "Status";
+            this.pStatusLabel.UseMnemonic = false;
             // 
             // Form1
             // 
@@ -966,8 +984,9 @@
         private System.Windows.Forms.Label pLabel6;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.RichTextBox recentlyPlayedBox;
-        private System.Windows.Forms.Label pLabel7;
-        private System.Windows.Forms.Label pLabel8;
+        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Timer pHoverTimer;
+        private System.Windows.Forms.Label pStatusLabel;
     }
 }
 

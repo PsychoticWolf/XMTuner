@@ -118,6 +118,9 @@
       <DependentUpon>Form2.cs</DependentUpon>
     </Compile>
     <Compile Include="Log.cs" />
+    <Compile Include="NotifyWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="servicemanager.cs" />
     <Compile Include="TheConstructor.cs" />
     <Compile Include="Updater.cs" />
@@ -214,6 +217,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="satellite.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="xmtuner64.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
