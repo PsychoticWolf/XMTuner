@@ -45,19 +45,18 @@
             this.exitXMTunerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.button5 = new System.Windows.Forms.Button();
             this.tabcontrol1 = new System.Windows.Forms.TabControl();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.tLog = new System.Windows.Forms.TabPage();
             this.outputbox = new System.Windows.Forms.RichTextBox();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.tChannels = new System.Windows.Forms.TabPage();
+            this.channelBox = new System.Windows.Forms.ListView();
+            this.txtChannel = new System.Windows.Forms.TextBox();
             this.bitRateBox = new System.Windows.Forms.ComboBox();
             this.label7 = new System.Windows.Forms.Label();
             this.cpyToClip = new System.Windows.Forms.Button();
             this.protocolBox = new System.Windows.Forms.ComboBox();
             this.label6 = new System.Windows.Forms.Label();
             this.addressBox = new System.Windows.Forms.TextBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.channelBox = new System.Windows.Forms.ComboBox();
-            this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.tService = new System.Windows.Forms.TabPage();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.lblServiceInst = new System.Windows.Forms.Label();
             this.label14 = new System.Windows.Forms.Label();
@@ -69,7 +68,9 @@
             this.btnSerRestart = new System.Windows.Forms.Button();
             this.btnSerStop = new System.Windows.Forms.Button();
             this.btnSerStart = new System.Windows.Forms.Button();
-            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.tHistory = new System.Windows.Forms.TabPage();
+            this.recentlyPlayedBox = new System.Windows.Forms.RichTextBox();
+            this.tAbout = new System.Windows.Forms.TabPage();
             this.button2 = new System.Windows.Forms.Button();
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
@@ -81,12 +82,6 @@
             this.label13 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
-            this.tabPage5 = new System.Windows.Forms.TabPage();
-            this.button3 = new System.Windows.Forms.Button();
-            this.recentlyPlayedBox = new System.Windows.Forms.RichTextBox();
-            this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.txtChannel = new System.Windows.Forms.TextBox();
-            this.bTune = new System.Windows.Forms.Button();
             this.pLabel6 = new System.Windows.Forms.Label();
             this.pLabel5 = new System.Windows.Forms.Label();
             this.pLabel4 = new System.Windows.Forms.Label();
@@ -99,19 +94,19 @@
             this.timer3 = new System.Windows.Forms.Timer(this.components);
             this.pTimer = new System.Windows.Forms.Timer(this.components);
             this.panel1 = new System.Windows.Forms.Panel();
-            this.pHoverTimer = new System.Windows.Forms.Timer(this.components);
             this.pStatusLabel = new System.Windows.Forms.Label();
+            this.pHoverTimer = new System.Windows.Forms.Timer(this.components);
+            this.timer4 = new System.Windows.Forms.Timer(this.components);
             this.contextMenuStrip1.SuspendLayout();
             this.tabcontrol1.SuspendLayout();
-            this.tabPage1.SuspendLayout();
-            this.tabPage2.SuspendLayout();
-            this.tabPage4.SuspendLayout();
+            this.tLog.SuspendLayout();
+            this.tChannels.SuspendLayout();
+            this.tService.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox2.SuspendLayout();
-            this.tabPage3.SuspendLayout();
+            this.tHistory.SuspendLayout();
+            this.tAbout.SuspendLayout();
             this.groupBox1.SuspendLayout();
-            this.tabPage5.SuspendLayout();
-            this.groupBox4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pLogoBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.axWindowsMediaPlayer1)).BeginInit();
             this.panel1.SuspendLayout();
@@ -130,7 +125,7 @@
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(71, 239);
+            this.button4.Location = new System.Drawing.Point(145, 239);
             this.button4.Margin = new System.Windows.Forms.Padding(4);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(60, 23);
@@ -143,6 +138,7 @@
             // 
             this.timer1.Enabled = true;
             this.timer1.Interval = 1000;
+            this.timer1.Tag = "Server Uptime Counter";
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
             // lblClock
@@ -156,6 +152,7 @@
             // timer2
             // 
             this.timer2.Interval = 30000;
+            this.timer2.Tag = "Update What\'s On timer";
             this.timer2.Tick += new System.EventHandler(this.timer2_Tick);
             // 
             // notifyIcon1
@@ -222,7 +219,7 @@
             // 
             this.button5.Enabled = false;
             this.button5.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button5.Location = new System.Drawing.Point(137, 239);
+            this.button5.Location = new System.Drawing.Point(70, 239);
             this.button5.Margin = new System.Windows.Forms.Padding(2);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(71, 23);
@@ -234,41 +231,44 @@
             // tabcontrol1
             // 
             this.tabcontrol1.AccessibleRole = System.Windows.Forms.AccessibleRole.None;
-            this.tabcontrol1.Controls.Add(this.tabPage1);
-            this.tabcontrol1.Controls.Add(this.tabPage2);
-            this.tabcontrol1.Controls.Add(this.tabPage4);
-            this.tabcontrol1.Controls.Add(this.tabPage3);
-            this.tabcontrol1.Controls.Add(this.tabPage5);
+            this.tabcontrol1.Controls.Add(this.tLog);
+            this.tabcontrol1.Controls.Add(this.tChannels);
+            this.tabcontrol1.Controls.Add(this.tService);
+            this.tabcontrol1.Controls.Add(this.tHistory);
+            this.tabcontrol1.Controls.Add(this.tAbout);
+            this.tabcontrol1.Dock = System.Windows.Forms.DockStyle.Top;
             this.tabcontrol1.HotTrack = true;
-            this.tabcontrol1.Location = new System.Drawing.Point(1, 6);
+            this.tabcontrol1.Location = new System.Drawing.Point(0, 0);
             this.tabcontrol1.Name = "tabcontrol1";
             this.tabcontrol1.SelectedIndex = 0;
-            this.tabcontrol1.Size = new System.Drawing.Size(558, 230);
+            this.tabcontrol1.Size = new System.Drawing.Size(560, 234);
             this.tabcontrol1.TabIndex = 16;
             this.tabcontrol1.Selected += new System.Windows.Forms.TabControlEventHandler(this.tabcontrol1_Selected);
             // 
-            // tabPage1
+            // tLog
             // 
-            this.tabPage1.BackColor = System.Drawing.SystemColors.Control;
-            this.tabPage1.Controls.Add(this.outputbox);
-            this.tabPage1.Location = new System.Drawing.Point(4, 22);
-            this.tabPage1.Margin = new System.Windows.Forms.Padding(2);
-            this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(550, 204);
-            this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "Log";
+            this.tLog.BackColor = System.Drawing.Color.Transparent;
+            this.tLog.Controls.Add(this.outputbox);
+            this.tLog.Location = new System.Drawing.Point(4, 22);
+            this.tLog.Margin = new System.Windows.Forms.Padding(2);
+            this.tLog.Name = "tLog";
+            this.tLog.Padding = new System.Windows.Forms.Padding(3);
+            this.tLog.Size = new System.Drawing.Size(552, 208);
+            this.tLog.TabIndex = 0;
+            this.tLog.Text = "Log";
+            this.tLog.UseVisualStyleBackColor = true;
             // 
             // outputbox
             // 
             this.outputbox.BackColor = System.Drawing.Color.White;
             this.outputbox.Cursor = System.Windows.Forms.Cursors.Default;
-            this.outputbox.Location = new System.Drawing.Point(4, 5);
+            this.outputbox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.outputbox.Location = new System.Drawing.Point(3, 3);
             this.outputbox.Margin = new System.Windows.Forms.Padding(2);
             this.outputbox.Name = "outputbox";
             this.outputbox.ReadOnly = true;
             this.outputbox.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
-            this.outputbox.Size = new System.Drawing.Size(540, 197);
+            this.outputbox.Size = new System.Drawing.Size(546, 202);
             this.outputbox.TabIndex = 6;
             this.outputbox.Text = "";
             this.outputbox.WordWrap = false;
@@ -276,25 +276,46 @@
             this.outputbox.Layout += new System.Windows.Forms.LayoutEventHandler(this.outputbox_Layout);
             this.outputbox.TextChanged += new System.EventHandler(this.outputbox_TextChanged_1);
             // 
-            // tabPage2
+            // tChannels
             // 
-            this.tabPage2.BackColor = System.Drawing.SystemColors.Control;
-            this.tabPage2.Controls.Add(this.bitRateBox);
-            this.tabPage2.Controls.Add(this.label7);
-            this.tabPage2.Controls.Add(this.cpyToClip);
-            this.tabPage2.Controls.Add(this.protocolBox);
-            this.tabPage2.Controls.Add(this.label6);
-            this.tabPage2.Controls.Add(this.addressBox);
-            this.tabPage2.Controls.Add(this.label4);
-            this.tabPage2.Controls.Add(this.label3);
-            this.tabPage2.Controls.Add(this.channelBox);
-            this.tabPage2.Location = new System.Drawing.Point(4, 22);
-            this.tabPage2.Margin = new System.Windows.Forms.Padding(2);
-            this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(550, 204);
-            this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "Channels";
+            this.tChannels.BackColor = System.Drawing.SystemColors.Control;
+            this.tChannels.Controls.Add(this.channelBox);
+            this.tChannels.Controls.Add(this.txtChannel);
+            this.tChannels.Controls.Add(this.bitRateBox);
+            this.tChannels.Controls.Add(this.label7);
+            this.tChannels.Controls.Add(this.cpyToClip);
+            this.tChannels.Controls.Add(this.protocolBox);
+            this.tChannels.Controls.Add(this.label6);
+            this.tChannels.Controls.Add(this.addressBox);
+            this.tChannels.Location = new System.Drawing.Point(4, 22);
+            this.tChannels.Margin = new System.Windows.Forms.Padding(2);
+            this.tChannels.Name = "tChannels";
+            this.tChannels.Padding = new System.Windows.Forms.Padding(3);
+            this.tChannels.Size = new System.Drawing.Size(552, 208);
+            this.tChannels.TabIndex = 1;
+            this.tChannels.Text = "Channels";
+            // 
+            // channelBox
+            // 
+            this.channelBox.Dock = System.Windows.Forms.DockStyle.Top;
+            this.channelBox.Location = new System.Drawing.Point(3, 3);
+            this.channelBox.MultiSelect = false;
+            this.channelBox.Name = "channelBox";
+            this.channelBox.Size = new System.Drawing.Size(546, 179);
+            this.channelBox.TabIndex = 11;
+            this.channelBox.TileSize = new System.Drawing.Size(515, 30);
+            this.channelBox.UseCompatibleStateImageBehavior = false;
+            this.channelBox.View = System.Windows.Forms.View.Tile;
+            this.channelBox.SelectedIndexChanged += new System.EventHandler(this.makeAddress);
+            this.channelBox.DoubleClick += new System.EventHandler(this.channelBox_DoubleClick);
+            // 
+            // txtChannel
+            // 
+            this.txtChannel.Location = new System.Drawing.Point(521, 185);
+            this.txtChannel.Name = "txtChannel";
+            this.txtChannel.Size = new System.Drawing.Size(27, 20);
+            this.txtChannel.TabIndex = 2;
+            this.txtChannel.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtChannel_KeyPress);
             // 
             // bitRateBox
             // 
@@ -303,17 +324,17 @@
             this.bitRateBox.Items.AddRange(new object[] {
             "High",
             "Low"});
-            this.bitRateBox.Location = new System.Drawing.Point(302, 54);
+            this.bitRateBox.Location = new System.Drawing.Point(174, 184);
             this.bitRateBox.Margin = new System.Windows.Forms.Padding(2);
             this.bitRateBox.Name = "bitRateBox";
-            this.bitRateBox.Size = new System.Drawing.Size(217, 21);
+            this.bitRateBox.Size = new System.Drawing.Size(64, 21);
             this.bitRateBox.TabIndex = 10;
             this.bitRateBox.SelectedIndexChanged += new System.EventHandler(this.makeAddress);
             // 
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(257, 57);
+            this.label7.Location = new System.Drawing.Point(133, 187);
             this.label7.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(40, 13);
@@ -322,12 +343,12 @@
             // 
             // cpyToClip
             // 
-            this.cpyToClip.Location = new System.Drawing.Point(414, 150);
-            this.cpyToClip.Margin = new System.Windows.Forms.Padding(2);
+            this.cpyToClip.Location = new System.Drawing.Point(473, 184);
+            this.cpyToClip.Margin = new System.Windows.Forms.Padding(0, 2, 0, 2);
             this.cpyToClip.Name = "cpyToClip";
-            this.cpyToClip.Size = new System.Drawing.Size(104, 23);
+            this.cpyToClip.Size = new System.Drawing.Size(42, 23);
             this.cpyToClip.TabIndex = 8;
-            this.cpyToClip.Text = "Copy to Clipboard";
+            this.cpyToClip.Text = "Copy";
             this.cpyToClip.UseVisualStyleBackColor = true;
             this.cpyToClip.Click += new System.EventHandler(this.cpyToClip_Click);
             // 
@@ -338,16 +359,16 @@
             this.protocolBox.Items.AddRange(new object[] {
             "HTTP",
             "MMS"});
-            this.protocolBox.Location = new System.Drawing.Point(67, 54);
+            this.protocolBox.Location = new System.Drawing.Point(51, 184);
             this.protocolBox.Name = "protocolBox";
-            this.protocolBox.Size = new System.Drawing.Size(170, 21);
+            this.protocolBox.Size = new System.Drawing.Size(79, 21);
             this.protocolBox.TabIndex = 5;
             this.protocolBox.SelectedIndexChanged += new System.EventHandler(this.makeAddress);
             // 
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(5, 57);
+            this.label6.Location = new System.Drawing.Point(3, 187);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(49, 13);
             this.label6.TabIndex = 4;
@@ -355,55 +376,22 @@
             // 
             // addressBox
             // 
-            this.addressBox.Location = new System.Drawing.Point(67, 84);
+            this.addressBox.Location = new System.Drawing.Point(246, 185);
             this.addressBox.Name = "addressBox";
-            this.addressBox.Size = new System.Drawing.Size(452, 20);
+            this.addressBox.Size = new System.Drawing.Size(224, 20);
             this.addressBox.TabIndex = 3;
             // 
-            // label4
+            // tService
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(5, 86);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(48, 13);
-            this.label4.TabIndex = 2;
-            this.label4.Text = "Address:";
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(5, 27);
-            this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(49, 13);
-            this.label3.TabIndex = 1;
-            this.label3.Text = "Channel:";
-            // 
-            // channelBox
-            // 
-            this.channelBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.channelBox.Enabled = false;
-            this.channelBox.FormattingEnabled = true;
-            this.channelBox.Location = new System.Drawing.Point(67, 24);
-            this.channelBox.Margin = new System.Windows.Forms.Padding(2);
-            this.channelBox.Name = "channelBox";
-            this.channelBox.Size = new System.Drawing.Size(452, 21);
-            this.channelBox.TabIndex = 0;
-            this.channelBox.SelectionChangeCommitted += new System.EventHandler(this.makeAddress);
-            this.channelBox.SelectedIndexChanged += new System.EventHandler(this.channelBox_SelectedIndexChanged);
-            // 
-            // tabPage4
-            // 
-            this.tabPage4.BackColor = System.Drawing.SystemColors.Control;
-            this.tabPage4.Controls.Add(this.groupBox3);
-            this.tabPage4.Controls.Add(this.groupBox2);
-            this.tabPage4.Location = new System.Drawing.Point(4, 22);
-            this.tabPage4.Name = "tabPage4";
-            this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage4.Size = new System.Drawing.Size(550, 204);
-            this.tabPage4.TabIndex = 3;
-            this.tabPage4.Text = "Service";
-            this.tabPage4.Click += new System.EventHandler(this.tabPage4_Click);
+            this.tService.BackColor = System.Drawing.SystemColors.Control;
+            this.tService.Controls.Add(this.groupBox3);
+            this.tService.Controls.Add(this.groupBox2);
+            this.tService.Location = new System.Drawing.Point(4, 22);
+            this.tService.Name = "tService";
+            this.tService.Padding = new System.Windows.Forms.Padding(3);
+            this.tService.Size = new System.Drawing.Size(552, 208);
+            this.tService.TabIndex = 3;
+            this.tService.Text = "Service";
             // 
             // groupBox3
             // 
@@ -427,7 +415,6 @@
             this.lblServiceInst.Size = new System.Drawing.Size(65, 13);
             this.lblServiceInst.TabIndex = 3;
             this.lblServiceInst.Text = "UNKNOWN";
-            this.lblServiceInst.Click += new System.EventHandler(this.label15_Click);
             // 
             // label14
             // 
@@ -480,7 +467,6 @@
             this.lblServiceStat.Size = new System.Drawing.Size(53, 13);
             this.lblServiceStat.TabIndex = 4;
             this.lblServiceStat.Text = "Unknown";
-            this.lblServiceStat.Click += new System.EventHandler(this.label2_Click);
             // 
             // label1
             // 
@@ -521,26 +507,50 @@
             this.btnSerStart.UseVisualStyleBackColor = true;
             this.btnSerStart.Click += new System.EventHandler(this.btnSerStart_Click);
             // 
-            // tabPage3
+            // tHistory
             // 
-            this.tabPage3.BackColor = System.Drawing.SystemColors.Control;
-            this.tabPage3.Controls.Add(this.button2);
-            this.tabPage3.Controls.Add(this.textBox2);
-            this.tabPage3.Controls.Add(this.label8);
-            this.tabPage3.Controls.Add(this.label9);
-            this.tabPage3.Controls.Add(this.label10);
-            this.tabPage3.Controls.Add(this.label11);
-            this.tabPage3.Controls.Add(this.label12);
-            this.tabPage3.Controls.Add(this.textBox1);
-            this.tabPage3.Controls.Add(this.label13);
-            this.tabPage3.Controls.Add(this.groupBox1);
-            this.tabPage3.Location = new System.Drawing.Point(4, 22);
-            this.tabPage3.Margin = new System.Windows.Forms.Padding(2);
-            this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Padding = new System.Windows.Forms.Padding(2);
-            this.tabPage3.Size = new System.Drawing.Size(550, 204);
-            this.tabPage3.TabIndex = 2;
-            this.tabPage3.Text = "About";
+            this.tHistory.Controls.Add(this.recentlyPlayedBox);
+            this.tHistory.Location = new System.Drawing.Point(4, 22);
+            this.tHistory.Name = "tHistory";
+            this.tHistory.Padding = new System.Windows.Forms.Padding(3);
+            this.tHistory.Size = new System.Drawing.Size(552, 208);
+            this.tHistory.TabIndex = 4;
+            this.tHistory.Text = "History";
+            this.tHistory.UseVisualStyleBackColor = true;
+            // 
+            // recentlyPlayedBox
+            // 
+            this.recentlyPlayedBox.BackColor = System.Drawing.Color.White;
+            this.recentlyPlayedBox.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this.recentlyPlayedBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.recentlyPlayedBox.Location = new System.Drawing.Point(3, 3);
+            this.recentlyPlayedBox.Name = "recentlyPlayedBox";
+            this.recentlyPlayedBox.ReadOnly = true;
+            this.recentlyPlayedBox.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
+            this.recentlyPlayedBox.Size = new System.Drawing.Size(546, 202);
+            this.recentlyPlayedBox.TabIndex = 6;
+            this.recentlyPlayedBox.Text = "";
+            // 
+            // tAbout
+            // 
+            this.tAbout.BackColor = System.Drawing.SystemColors.Control;
+            this.tAbout.Controls.Add(this.button2);
+            this.tAbout.Controls.Add(this.textBox2);
+            this.tAbout.Controls.Add(this.label8);
+            this.tAbout.Controls.Add(this.label9);
+            this.tAbout.Controls.Add(this.label10);
+            this.tAbout.Controls.Add(this.label11);
+            this.tAbout.Controls.Add(this.label12);
+            this.tAbout.Controls.Add(this.textBox1);
+            this.tAbout.Controls.Add(this.label13);
+            this.tAbout.Controls.Add(this.groupBox1);
+            this.tAbout.Location = new System.Drawing.Point(4, 22);
+            this.tAbout.Margin = new System.Windows.Forms.Padding(2);
+            this.tAbout.Name = "tAbout";
+            this.tAbout.Padding = new System.Windows.Forms.Padding(2);
+            this.tAbout.Size = new System.Drawing.Size(552, 208);
+            this.tAbout.TabIndex = 2;
+            this.tAbout.Text = "About";
             // 
             // button2
             // 
@@ -561,7 +571,7 @@
             this.textBox2.ReadOnly = true;
             this.textBox2.Size = new System.Drawing.Size(62, 19);
             this.textBox2.TabIndex = 17;
-            this.textBox2.Text = "20091208";
+            this.textBox2.Text = "20100111";
             this.textBox2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // label8
@@ -619,7 +629,7 @@
             this.textBox1.ReadOnly = true;
             this.textBox1.Size = new System.Drawing.Size(62, 20);
             this.textBox1.TabIndex = 11;
-            this.textBox1.Text = "0.3";
+            this.textBox1.Text = "0.4";
             this.textBox1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // label13
@@ -654,73 +664,6 @@
             this.linkLabel1.TabStop = true;
             this.linkLabel1.Text = "http://www.pcfire.net/XMTuner/";
             this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
-            // 
-            // tabPage5
-            // 
-            this.tabPage5.Controls.Add(this.button3);
-            this.tabPage5.Controls.Add(this.recentlyPlayedBox);
-            this.tabPage5.Controls.Add(this.groupBox4);
-            this.tabPage5.Location = new System.Drawing.Point(4, 22);
-            this.tabPage5.Name = "tabPage5";
-            this.tabPage5.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage5.Size = new System.Drawing.Size(550, 204);
-            this.tabPage5.TabIndex = 4;
-            this.tabPage5.Text = "Player";
-            this.tabPage5.UseVisualStyleBackColor = true;
-            // 
-            // button3
-            // 
-            this.button3.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button3.ForeColor = System.Drawing.Color.Firebrick;
-            this.button3.Location = new System.Drawing.Point(451, 23);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(23, 23);
-            this.button3.TabIndex = 7;
-            this.button3.Text = "!";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click_2);
-            // 
-            // recentlyPlayedBox
-            // 
-            this.recentlyPlayedBox.BackColor = System.Drawing.Color.White;
-            this.recentlyPlayedBox.Cursor = System.Windows.Forms.Cursors.IBeam;
-            this.recentlyPlayedBox.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.recentlyPlayedBox.Location = new System.Drawing.Point(3, 65);
-            this.recentlyPlayedBox.Name = "recentlyPlayedBox";
-            this.recentlyPlayedBox.ReadOnly = true;
-            this.recentlyPlayedBox.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
-            this.recentlyPlayedBox.Size = new System.Drawing.Size(544, 136);
-            this.recentlyPlayedBox.TabIndex = 6;
-            this.recentlyPlayedBox.Text = "Recently Played:";
-            // 
-            // groupBox4
-            // 
-            this.groupBox4.Controls.Add(this.txtChannel);
-            this.groupBox4.Controls.Add(this.bTune);
-            this.groupBox4.Location = new System.Drawing.Point(8, 6);
-            this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(155, 49);
-            this.groupBox4.TabIndex = 5;
-            this.groupBox4.TabStop = false;
-            this.groupBox4.Text = "Tune Channel";
-            // 
-            // txtChannel
-            // 
-            this.txtChannel.Location = new System.Drawing.Point(6, 19);
-            this.txtChannel.Name = "txtChannel";
-            this.txtChannel.Size = new System.Drawing.Size(47, 20);
-            this.txtChannel.TabIndex = 2;
-            this.txtChannel.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtChannel_KeyPress);
-            // 
-            // bTune
-            // 
-            this.bTune.Location = new System.Drawing.Point(59, 17);
-            this.bTune.Name = "bTune";
-            this.bTune.Size = new System.Drawing.Size(75, 23);
-            this.bTune.TabIndex = 1;
-            this.bTune.Text = "Tune";
-            this.bTune.UseVisualStyleBackColor = true;
-            this.bTune.Click += new System.EventHandler(this.bTune_Click);
             // 
             // pLabel6
             // 
@@ -826,11 +769,13 @@
             // 
             this.timer3.Enabled = true;
             this.timer3.Interval = 86400000;
+            this.timer3.Tag = "Updater check";
             this.timer3.Tick += new System.EventHandler(this.timer3_Tick);
             // 
             // pTimer
             // 
             this.pTimer.Interval = 1000;
+            this.pTimer.Tag = "Player timer for WMP counter";
             this.pTimer.Tick += new System.EventHandler(this.pTimer_Tick);
             // 
             // panel1
@@ -851,11 +796,6 @@
             this.panel1.Size = new System.Drawing.Size(560, 84);
             this.panel1.TabIndex = 17;
             // 
-            // pHoverTimer
-            // 
-            this.pHoverTimer.Interval = 5000;
-            this.pHoverTimer.Tick += new System.EventHandler(this.pHoverTimer_Tick);
-            // 
             // pStatusLabel
             // 
             this.pStatusLabel.AutoSize = true;
@@ -868,6 +808,18 @@
             this.pStatusLabel.Text = "Status";
             this.pStatusLabel.UseMnemonic = false;
             // 
+            // pHoverTimer
+            // 
+            this.pHoverTimer.Interval = 5000;
+            this.pHoverTimer.Tag = "Hover timer for WMP control UI flip";
+            this.pHoverTimer.Tick += new System.EventHandler(this.pHoverTimer_Tick);
+            // 
+            // timer4
+            // 
+            this.timer4.Interval = 10000;
+            this.timer4.Tag = "Update lstChannels data";
+            this.timer4.Tick += new System.EventHandler(this.timer4_Tick);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -877,34 +829,34 @@
             this.Controls.Add(this.lblClock);
             this.Controls.Add(this.button5);
             this.Controls.Add(this.button1);
-            this.Controls.Add(this.button4);
             this.Controls.Add(this.tabcontrol1);
             this.Controls.Add(this.panel1);
+            this.Controls.Add(this.button4);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(2);
             this.MaximizeBox = false;
+            this.MaximumSize = new System.Drawing.Size(576, 387);
             this.Name = "Form1";
+            this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.Text = "XMTuner";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Resize += new System.EventHandler(this.Form1_Resize);
             this.contextMenuStrip1.ResumeLayout(false);
             this.tabcontrol1.ResumeLayout(false);
-            this.tabPage1.ResumeLayout(false);
-            this.tabPage2.ResumeLayout(false);
-            this.tabPage2.PerformLayout();
-            this.tabPage4.ResumeLayout(false);
+            this.tLog.ResumeLayout(false);
+            this.tChannels.ResumeLayout(false);
+            this.tChannels.PerformLayout();
+            this.tService.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
-            this.tabPage3.ResumeLayout(false);
-            this.tabPage3.PerformLayout();
+            this.tHistory.ResumeLayout(false);
+            this.tAbout.ResumeLayout(false);
+            this.tAbout.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            this.tabPage5.ResumeLayout(false);
-            this.groupBox4.ResumeLayout(false);
-            this.groupBox4.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pLogoBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.axWindowsMediaPlayer1)).EndInit();
             this.panel1.ResumeLayout(false);
@@ -924,13 +876,10 @@
         private System.Windows.Forms.NotifyIcon notifyIcon1;
         private System.Windows.Forms.Button button5;
         private System.Windows.Forms.TabControl tabcontrol1;
-        private System.Windows.Forms.TabPage tabPage1;
-        private System.Windows.Forms.TabPage tabPage2;
+        private System.Windows.Forms.TabPage tLog;
+        private System.Windows.Forms.TabPage tChannels;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.RichTextBox outputbox;
-        private System.Windows.Forms.ComboBox channelBox;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox addressBox;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem restoreToolStripMenuItem;
@@ -942,7 +891,7 @@
         private System.Windows.Forms.ToolStripMenuItem loginToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.Button cpyToClip;
-        private System.Windows.Forms.TabPage tabPage3;
+        private System.Windows.Forms.TabPage tAbout;
         private System.Windows.Forms.LinkLabel linkLabel1;
         private System.Windows.Forms.TextBox textBox2;
         private System.Windows.Forms.Label label8;
@@ -955,7 +904,7 @@
         private System.Windows.Forms.ComboBox bitRateBox;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.TabPage tabPage4;
+        private System.Windows.Forms.TabPage tService;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.Button btnSerUninstall;
@@ -969,10 +918,8 @@
         private System.Windows.Forms.Label lblServiceInst;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Timer timer3;
-        private System.Windows.Forms.TabPage tabPage5;
-        private System.Windows.Forms.GroupBox groupBox4;
+        private System.Windows.Forms.TabPage tHistory;
         private System.Windows.Forms.TextBox txtChannel;
-        private System.Windows.Forms.Button bTune;
         private AxWMPLib.AxWindowsMediaPlayer axWindowsMediaPlayer1;
         private System.Windows.Forms.Label pLabel4;
         private System.Windows.Forms.Label pLabel3;
@@ -984,9 +931,10 @@
         private System.Windows.Forms.Label pLabel6;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.RichTextBox recentlyPlayedBox;
-        private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Timer pHoverTimer;
         private System.Windows.Forms.Label pStatusLabel;
+        private System.Windows.Forms.Timer timer4;
+        private System.Windows.Forms.ListView channelBox;
     }
 }
 

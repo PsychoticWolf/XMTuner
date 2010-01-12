@@ -44,6 +44,7 @@ namespace XMTuner
 
         int playerNum;
         int p;
+        Boolean cbIconsLoaded;
 
         public Form1()
         {
@@ -96,11 +97,8 @@ namespace XMTuner
             outputbox.Text = output;
             outputbox.Refresh();
         }
-        private void label1_Click(object sender, EventArgs e)
-        {
 
-        }
-
+        //Start / Login
         private void button1_Click(object sender, EventArgs e)
         {
             outputbox.AppendText("Please wait... logging in\n");
@@ -138,17 +136,10 @@ namespace XMTuner
             loadChannels();
         }
 
-
-
         private void outputbox_TextChanged(object sender, EventArgs e)
         {
             outputbox.SelectionStart = outputbox.Text.Length;
             outputbox.ScrollToCaret();
-        }
-
-        private void button3_Click(object sender, EventArgs e)
-        {
-
         }
 
         private void button4_Click(object sender, EventArgs e)
@@ -299,29 +290,111 @@ namespace XMTuner
 
         }
 
+        //Stop
         private void button5_Click(object sender, EventArgs e)
         {
+            shutdownPlayer();
             xmServer.stop();
             serverRunning = false;
+            lblClock.Text = "0:00:00";
+            i = 0;
             timer2.Enabled = false;
             button1.Enabled = true;
             button5.Enabled = false;
-            
+            unloadChannels();
+            self = null;
+            xmServer = null;
+            loggedIn = false;
+            recentlyPlayedBox.Clear();
+            syncStatusLabel();
+            GC.Collect();
+        }
+
+        private Image getImageFromURL(String url)
+        {
+            URL imageURL = new URL(url);
+            imageURL.fetch();
+            Image image = imageURL.responseAsImage();
+            return image; //Note, this can be null
         }
 
         private void loadChannels()
         {
+            if (self == null || channelBox.Items.Count > 0) { return; }
+
+            channelBox.Clear();
+            channelBox.BeginUpdate();
+            ImageList imagelist = new ImageList();
+            channelBox.LargeImageList = imagelist;
+            imagelist.ImageSize = new Size(45, 40);
+            int i = 0;
+            cbIconsLoaded = true;
+            Boolean setDefaultImage = false;
+            Image defaultImage = Image.FromStream(Assembly.GetExecutingAssembly().GetManifestResourceStream("XMTuner.xmtuner64.png"));
+            channelBox.Columns.AddRange(new ColumnHeader[] { new ColumnHeader(), new ColumnHeader()});
+
+            foreach (XMChannel chan in self.getChannels())
+            {
+                Int32 imagenum;
+                if (chan.logo_small != null)
+                {
+                    Image image = getImageFromURL(chan.logo_small);
+                    if (image != null)
+                    {
+                        imagelist.Images.Add(image);
+                    }
+                    //if (channel.category.ToLower().Contains("talk") || channel.category.ToLower().Contains("sports"))
+                    // then the default image height is too small.. 
+                    imagenum = i;
+                }
+                else
+                {
+                    //Default Icon
+                    if (setDefaultImage == false)
+                    {
+                        imagelist.ImageSize = new Size(30, 30);
+                        imagelist.Images.Add(defaultImage);
+                    }
+                    cbIconsLoaded = false;
+                    imagenum = 0;
+                    setDefaultImage = true;
+                }
+                ListViewItem item = new ListViewItem(new String[] {chan.ToSimpleString(), chan.desc});
+                item.ImageIndex = imagenum;
+                item.Name = chan.num.ToString();
+                channelBox.Items.Add(item);
+                i++;
+            }
+
+            channelBox.EndUpdate();
+            timer4.Enabled = true;
+
+            if (isMMS) { protocolBox.SelectedItem = "MMS"; } else { protocolBox.SelectedItem = "HTTP"; }
+            if (bitrate.Equals("high")) { bitRateBox.SelectedItem = "High"; } else { bitRateBox.SelectedItem = "Low"; }
+
+        }
+
+        private void unloadChannels()
+        {
+            timer4.Enabled = false;
+            channelBox.Clear();
+            channelBox.LargeImageList.Dispose();
+        }
+
+        private void updateChannels()
+        {
+            if (cbIconsLoaded == false && self.loadedExtendedChannelData == true)
+            {
+                channelBox.Clear();
+                loadChannels();
+            }
+
             int i = 0;
             foreach (XMChannel chan in self.getChannels())
             {
-                channelBox.Items.Add(chan.ToSimpleString());
-                if (i == 0) { channelBox.SelectedItem = chan.ToSimpleString(); }
+                channelBox.Items[i].SubItems[1].Text = chan.artist + " - " + chan.song;
                 i++;
             }
-            if (isMMS) { protocolBox.SelectedItem = "MMS"; } else { protocolBox.SelectedItem = "HTTP"; }
-            if (bitrate.Equals("high")) { bitRateBox.SelectedItem = "High"; } else { bitRateBox.SelectedItem = "Low"; }
-            addressBox.Text = getChannelAddress((String)channelBox.SelectedItem, (String)protocolBox.SelectedItem, (String)bitRateBox.SelectedItem);
-            
         }
 
         private String getChannelAddress(String channelString, String protocol, String altBitrate)
@@ -352,18 +425,23 @@ namespace XMTuner
 
         private void makeAddress(object sender, EventArgs e)
         {
+            if (channelBox.Items.Count == 0) { return; }
+
             String protocol;
             String channel;
             String altBitrate; 
             protocol = (String) protocolBox.SelectedItem;
-            channel = (String)channelBox.SelectedItem;
+            if (channelBox.SelectedItems.Count > 0)
+            {
+
+                channel = channelBox.SelectedItems[0].Name;
+            }
+            else
+            {
+                channel = channelBox.Items[0].Name;
+            }
             altBitrate = (String)bitRateBox.SelectedItem;
             addressBox.Text = getChannelAddress(channel, protocol, altBitrate);
-        }
-
-        private void channelBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
         }
 
         private void exitXMTunerToolStripMenuItem_Click(object sender, EventArgs e)
@@ -397,7 +475,7 @@ namespace XMTuner
 
         private void tabcontrol1_Selected(object sender, TabControlEventArgs e)
         {
-            if (e.TabPage.Equals(tabPage1))
+            if (e.TabPage.Equals(tLog))
             {
                 outputbox.Focus();
                 outputbox.SelectionStart = outputbox.Text.Length;
@@ -412,18 +490,7 @@ namespace XMTuner
 
         private void outputbox_TextChanged_1(object sender, EventArgs e)
         {
-            //outputbox.Focus();
             outputbox.ScrollToCaret();
-        }
-
-        private void label2_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label15_Click(object sender, EventArgs e)
-        {
-
         }
 
         private void button3_Click_1(object sender, EventArgs e)
@@ -431,11 +498,6 @@ namespace XMTuner
             serviceControl.Stop();
             serviceControl.WaitForStatus(System.ServiceProcess.ServiceControllerStatus.Stopped);
             service_button_reset();
-
-        }
-
-        private void tabPage4_Click(object sender, EventArgs e)
-        {
 
         }
 
@@ -448,8 +510,6 @@ namespace XMTuner
             MessageBox.Show("If you wish to reinstall the service, please restart XMTuner");
             btnSerUninstall.Enabled = false;
             btnSerStart.Enabled = false;
-            
-
         }
 
         private void btnSerStart_Click(object sender, EventArgs e)
@@ -564,7 +624,10 @@ namespace XMTuner
 
                 XMChannel npChannel = self.Find(num);
 
-                syncStatusLabel();
+                if (pStatusLabel.Visible == true)
+                {
+                    syncStatusLabel();
+                }
                 
                 if (pLogoBox.ImageLocation.Equals(""))
                 {
@@ -623,12 +686,9 @@ namespace XMTuner
             }
         }
 
-        private void bTune_Click(object sender, EventArgs e)
+        private void play(int num)
         {
             updateNowPlayingData(true, 0);
-
-            int num = Convert.ToInt32(txtChannel.Text);
-
 
             axWindowsMediaPlayer1.URL = self.play(num, "high");
             playerNum = num;
@@ -685,9 +745,16 @@ namespace XMTuner
 
         private void txtChannel_KeyPress(object sender, KeyPressEventArgs e)
         {
+            if (e.KeyChar == (char)Keys.Back || e.KeyChar == (char)Keys.Delete) { return; }
+
             if (e.KeyChar == (char)Keys.Return) {
-                bTune_Click(sender, e);
+                if (txtChannel.Text.Equals("")) { return; }
+                int num = Convert.ToInt32(txtChannel.Text);
+                play(num);
+                return;
             }
+            if (!System.Text.RegularExpressions.Regex.IsMatch(e.KeyChar.ToString(), "\\d+"))
+                e.Handled = true;
         }
 
         private void updateRecentlyPlayedBox()
@@ -727,6 +794,7 @@ namespace XMTuner
             String dummy = pLabel2.Text;
             updateRecentlyPlayedBox();
             doNotification();
+            updateChannels();
         }
 
         private void doNotification()
@@ -743,11 +811,6 @@ namespace XMTuner
             nw.SetDimensions(300, 120);
             nw.WaitTime = 5000;
             nw.Notify();
-        }
-
-        private void button3_Click_2(object sender, EventArgs e)
-        {
-            doNotification();
         }
 
         private void initPlayer()
@@ -790,6 +853,24 @@ namespace XMTuner
             pHoverTimer.Stop();
             axWindowsMediaPlayer1.uiMode = "none";
             axWindowsMediaPlayer1.Size = new Size(165,50);
+        }
+
+        private void channelBox_DoubleClick(object sender, EventArgs e)
+        {
+            ListViewItem item = channelBox.SelectedItems[0];
+            if (item.Name.Equals("")) { return; }
+            int num = Convert.ToInt32(item.Name);
+            play(num);
+        }
+
+        private void timer4_Tick(object sender, EventArgs e)
+        {
+            updateChannels();
+        }
+
+        private void shutdownPlayer()
+        {
+            axWindowsMediaPlayer1.Ctlcontrols.stop();
         }
     }
 }

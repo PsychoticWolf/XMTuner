@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Net;
 using System.IO;
+using System.Drawing;
 
 namespace XMTuner
 {
@@ -89,6 +90,22 @@ namespace XMTuner
             TheReply.Close();
             Stream.Close();
             return result;
+        }
+
+        /* The placement of this method is a bit shameless (since it returns an Image 
+         * and not a more generic Stream, but its for our protection.
+         * As I want to make sure we're closing streams reliably. */
+        public Image responseAsImage()
+        {
+            if (TheReply == null)
+            {
+                return null;
+            }
+            Stream stream = TheReply.GetResponseStream();
+            Image image = Image.FromStream(stream);
+            TheReply.Close();
+            stream.Close();
+            return image;
         }
 
         public void close()
