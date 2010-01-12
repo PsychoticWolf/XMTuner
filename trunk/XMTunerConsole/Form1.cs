@@ -42,10 +42,9 @@ namespace XMTuner
         String runTime = "";
         String ip = "";
 
-        int playerNum;
-        int p;
         Boolean cbIconsLoaded;
 
+        #region Form1 Core
         public Form1()
         {
 #if DEBUG
@@ -55,51 +54,41 @@ namespace XMTuner
             initPlayer();
         }
 
-        // This delegate enables asynchronous calls for setting
-        // the text property on a TextBox control.
-        public delegate void SetTextCallback(ref RichTextBox outputbox, string text, Color color);
-
-        public static void output(String output, String level, ref RichTextBox outputbox)
+        private void Form1_Load(object sender, EventArgs e)
         {
-            Color color = Color.Black;
-            if (level.ToLower().Equals("debug") || level.ToLower().Equals("error"))
-            {
-                color = Color.Red;
-            }
+            serviceControl.ServiceName = "XMTunerService";
 
-            //We can't talk to outputbox from the server thread...
-            if (outputbox.InvokeRequired)
-            {
-                SetTextCallback d = new Form1.SetTextCallback(SetText);
-                outputbox.Invoke (d, new object[] {outputbox, output, color});
-            }
-            else
-            {
-                outputbox.SelectionColor = color;
-                outputbox.AppendText(output);
-                outputbox.Refresh();
-            }
+            service_button_reset();
 
+            if (refreshConfig() && autologin && !serviceRunning)
+            {
+                bStart_Click(sender, e);
+            }
+            lblClock.Text = "0:00:00";
+
+            if (!useLocalDatapath)
+            {
+                Updater update = new Updater(outputbox);
+            }
 
         }
 
-        // This method is passed in to the SetTextCallBack delegate
-        // to set the Text property of textBox1.
-        private static void SetText(ref RichTextBox outputbox, string text, Color color)
+        private void Form1_FormClosing(Object sender, FormClosingEventArgs e)
         {
-            outputbox.SelectionColor = color;
-            outputbox.AppendText(text);
-            outputbox.Refresh();
+            if (logging == null) { return; }
+            logging.log(i);
         }
 
-        public void refreshOutput(String output)
+        private void Form1_Resize(object sender, EventArgs e)
         {
-            outputbox.Text = output;
-            outputbox.Refresh();
+            if (FormWindowState.Minimized == WindowState)
+                Hide();
         }
+        #endregion
 
+        #region Start/Stop
         //Start / Login
-        private void button1_Click(object sender, EventArgs e)
+        private void bStart_Click(object sender, EventArgs e)
         {
             outputbox.AppendText("Please wait... logging in\n");
             outputbox.Refresh();
@@ -127,8 +116,8 @@ namespace XMTuner
 
             loggedIn = true;
             if (loggedIn) {
-                button1.Enabled = false;
-                button5.Enabled = true;
+                bStart.Enabled = false;
+                bStop.Enabled = true;
                 channelBox.Enabled = true;
                 if (!tversityHost.Equals("")) { protocolBox.Items.Add("MP3"); }
             }
@@ -136,13 +125,63 @@ namespace XMTuner
             loadChannels();
         }
 
-        private void outputbox_TextChanged(object sender, EventArgs e)
+        private void timer1_Tick(object sender, EventArgs e)
         {
-            outputbox.SelectionStart = outputbox.Text.Length;
-            outputbox.ScrollToCaret();
+            if (serverRunning)
+            {
+                i++;
+                sec = i;
+
+                if (sec >= 60) { minute = sec / 60; minute = Math.Floor(minute); sec = sec - (minute * 60); }
+                if (minute >= 60) { hour = minute / 60; hour = Math.Floor(hour); minute = minute - (hour * 60); }
+
+
+                runTime = hour.ToString() + ":";
+                if (minute < 10) { runTime += "0"+minute.ToString() + ":"; }
+                else {runTime+=minute.ToString()+":";}
+
+                if (sec < 10) { runTime += "0" + sec.ToString(); }
+                else { runTime += sec.ToString(); }
+
+                lblClock.Text = runTime;
+            }
         }
 
-        private void button4_Click(object sender, EventArgs e)
+
+        private void timer2_Tick(object sender, EventArgs e)
+        {
+            if (loggedIn)
+            {
+                self.doWhatsOn();
+            }
+            logging.log(i);
+        }
+
+
+
+        //Stop
+        private void bStop_Click(object sender, EventArgs e)
+        {
+            shutdownPlayer();
+            xmServer.stop();
+            serverRunning = false;
+            lblClock.Text = "0:00:00";
+            i = 0;
+            timer2.Enabled = false;
+            bStart.Enabled = true;
+            bStop.Enabled = false;
+            unloadChannels();
+            self = null;
+            xmServer = null;
+            loggedIn = false;
+            recentlyPlayedBox.Clear();
+            syncStatusLabel();
+            GC.Collect();
+        }
+        #endregion
+
+        #region Configuration
+        private void bConfigure_Click(object sender, EventArgs e)
         {
             Form2 form2 = new Form2(username, password, port, highbit, autologin, isMMS, tversityHost, hostname, loggedIn, useLocalDatapath);
             form2.ShowDialog();
@@ -157,11 +196,11 @@ namespace XMTuner
             if (configuration.isConfig)
             {
                 NameValueCollection configIn = configuration.getConfig();
-                username = configIn.Get("username") ;
+                username = configIn.Get("username");
                 password = configIn.Get("password");
                 port = configIn.Get("port");
                 highbit = Convert.ToBoolean(configIn.Get("bitrate"));
-                if (highbit) { bitrate = "high"; } else { bitrate = "low"; } 
+                if (highbit) { bitrate = "high"; } else { bitrate = "low"; }
                 autologin = Convert.ToBoolean(configIn.Get("autologin"));
                 if (autologin && serviceRunning)
                 {
@@ -171,8 +210,9 @@ namespace XMTuner
                 tversityHost = configIn.Get("Tversity"); ;
                 hostname = configIn.Get("hostname"); ;
                 //if (hostname.Equals("")) { hostname = ip; }
-                if (!serverRunning) {
-                    button1.Enabled = true;
+                if (!serverRunning)
+                {
+                    bStart.Enabled = true;
                 }
                 loginToolStripMenuItem.Enabled = true;
 
@@ -188,7 +228,7 @@ namespace XMTuner
                     port = "19081";
                 }
 
-                button1.Enabled = false;
+                bStart.Enabled = false;
                 outputbox.AppendText("No Configuration\nClick Configure.\n");
                 return false;
             }
@@ -222,94 +262,116 @@ namespace XMTuner
             }
             return localIP;
         }
+        #endregion
 
-        private void timer1_Tick(object sender, EventArgs e)
-        {
-            if (serverRunning)
-            {
-                i++;
-                sec = i;
-
-                if (sec >= 60) { minute = sec / 60; minute = Math.Floor(minute); sec = sec - (minute * 60); }
-                if (minute >= 60) { hour = minute / 60; hour = Math.Floor(hour); minute = minute - (hour * 60); }
-
-
-                runTime = hour.ToString() + ":";
-                if (minute < 10) { runTime += "0"+minute.ToString() + ":"; }
-                else {runTime+=minute.ToString()+":";}
-
-                if (sec < 10) { runTime += "0" + sec.ToString(); }
-                else { runTime += sec.ToString(); }
-
-                lblClock.Text = runTime;
-            }
-        }
-        private void Form1_FormClosing(Object sender, FormClosingEventArgs e)
-        {
-            if (logging == null) { return; }
-            logging.log(i);
-        }
-
-        private void timer2_Tick(object sender, EventArgs e)
-        {
-            if (loggedIn)
-            {
-                self.doWhatsOn();
-            }
-            logging.log(i);
-        }
-
+        #region Taskbar Icon
         private void notifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             Show();
             WindowState = FormWindowState.Normal;
         }
 
-        private void Form1_Resize(object sender, EventArgs e)
+        private void exitXMTunerToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (FormWindowState.Minimized == WindowState)
-                Hide();
+            Close();
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        private void restoreToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            serviceControl.ServiceName = "XMTunerService";
+            Show();
+            WindowState = FormWindowState.Normal;
+        }
 
-            service_button_reset();
-            
-            if (refreshConfig() && autologin && !serviceRunning)
+        private void viewServerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start("http://" + getLocalIP() + ":" + port);
+        }
+        #endregion
+
+        #region About Tab
+        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("http://www.pcfire.net/XMTuner/");
+        }
+        #endregion
+
+        #region Log Tab / Outputbox
+        // This delegate enables asynchronous calls for setting
+        // the text property on a TextBox control.
+        public delegate void SetTextCallback(ref RichTextBox outputbox, string text, Color color);
+
+        public static void output(String output, String level, ref RichTextBox outputbox)
+        {
+            Color color = Color.Black;
+            if (level.ToLower().Equals("debug") || level.ToLower().Equals("error"))
             {
-                button1_Click(sender, e);
+                color = Color.Red;
             }
-            lblClock.Text = "0:00:00";
 
-            if (!useLocalDatapath) 
+            //We can't talk to outputbox from the server thread...
+            if (outputbox.InvokeRequired)
             {
-                Updater update = new Updater(outputbox);
+                SetTextCallback d = new Form1.SetTextCallback(SetText);
+                outputbox.Invoke(d, new object[] { outputbox, output, color });
+            }
+            else
+            {
+                outputbox.SelectionColor = color;
+                outputbox.AppendText(output);
+                outputbox.Refresh();
             }
 
+
         }
 
-        //Stop
-        private void button5_Click(object sender, EventArgs e)
+        // This method is passed in to the SetTextCallBack delegate
+        // to set the Text property of textBox1.
+        private static void SetText(ref RichTextBox outputbox, string text, Color color)
         {
-            shutdownPlayer();
-            xmServer.stop();
-            serverRunning = false;
-            lblClock.Text = "0:00:00";
-            i = 0;
-            timer2.Enabled = false;
-            button1.Enabled = true;
-            button5.Enabled = false;
-            unloadChannels();
-            self = null;
-            xmServer = null;
-            loggedIn = false;
-            recentlyPlayedBox.Clear();
-            syncStatusLabel();
-            GC.Collect();
+            outputbox.SelectionColor = color;
+            outputbox.AppendText(text);
+            outputbox.Refresh();
         }
 
+        public void refreshOutput(String output)
+        {
+            outputbox.Text = output;
+            outputbox.Refresh();
+        }
+
+        private void outputbox_TextChanged(object sender, EventArgs e)
+        {
+            outputbox.SelectionStart = outputbox.Text.Length;
+            outputbox.ScrollToCaret();
+        }
+
+        private void outputbox_Layout(object sender, LayoutEventArgs e)
+        {
+            outputbox.Focus();
+        }
+
+        private void outputbox_TextChanged_1(object sender, EventArgs e)
+        {
+            outputbox.ScrollToCaret();
+        }
+
+        private void tabcontrol1_Selected(object sender, TabControlEventArgs e)
+        {
+            if (e.TabPage.Equals(tLog))
+            {
+                outputbox.Focus();
+                outputbox.SelectionStart = outputbox.Text.Length;
+                outputbox.ScrollToCaret();
+            }
+        }
+
+        protected void Link_Clicked(object sender, LinkClickedEventArgs e)
+        {
+            System.Diagnostics.Process.Start(e.LinkText);
+        }
+        #endregion
+
+        #region Channels Tab
         private Image getImageFromURL(String url)
         {
             URL imageURL = new URL(url);
@@ -322,8 +384,8 @@ namespace XMTuner
         {
             if (self == null || channelBox.Items.Count > 0) { return; }
 
-            channelBox.Clear();
             channelBox.BeginUpdate();
+            channelBox.Clear();
             ImageList imagelist = new ImageList();
             channelBox.LargeImageList = imagelist;
             imagelist.ImageSize = new Size(45, 40);
@@ -367,7 +429,7 @@ namespace XMTuner
             }
 
             channelBox.EndUpdate();
-            timer4.Enabled = true;
+            timerCB.Enabled = true;
 
             if (isMMS) { protocolBox.SelectedItem = "MMS"; } else { protocolBox.SelectedItem = "HTTP"; }
             if (bitrate.Equals("high")) { bitRateBox.SelectedItem = "High"; } else { bitRateBox.SelectedItem = "Low"; }
@@ -376,7 +438,7 @@ namespace XMTuner
 
         private void unloadChannels()
         {
-            timer4.Enabled = false;
+            timerCB.Enabled = false;
             channelBox.Clear();
             channelBox.LargeImageList.Dispose();
         }
@@ -444,22 +506,6 @@ namespace XMTuner
             addressBox.Text = getChannelAddress(channel, protocol, altBitrate);
         }
 
-        private void exitXMTunerToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Close();
-        }
-
-        private void restoreToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Show();
-            WindowState = FormWindowState.Normal;
-        }
-
-        private void viewServerToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            System.Diagnostics.Process.Start("http://"+getLocalIP()+":" + port);
-        }
-
         private void cpyToClip_Click(object sender, EventArgs e)
         {
             if (addressBox.Text != "")
@@ -468,80 +514,36 @@ namespace XMTuner
             }
         }
 
-        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private void txtChannel_KeyPress(object sender, KeyPressEventArgs e)
         {
-            System.Diagnostics.Process.Start("http://www.pcfire.net/XMTuner/"); 
-        }
+            if (e.KeyChar == (char)Keys.Back || e.KeyChar == (char)Keys.Delete) { return; }
 
-        private void tabcontrol1_Selected(object sender, TabControlEventArgs e)
-        {
-            if (e.TabPage.Equals(tLog))
+            if (e.KeyChar == (char)Keys.Return)
             {
-                outputbox.Focus();
-                outputbox.SelectionStart = outputbox.Text.Length;
-                outputbox.ScrollToCaret();
+                if (txtChannel.Text.Equals("")) { return; }
+                int num = Convert.ToInt32(txtChannel.Text);
+                play(num);
+                return;
             }
+            if (!System.Text.RegularExpressions.Regex.IsMatch(e.KeyChar.ToString(), "\\d+"))
+                e.Handled = true;
         }
 
-        private void outputbox_Layout(object sender, LayoutEventArgs e)
+        private void channelBox_DoubleClick(object sender, EventArgs e)
         {
-            outputbox.Focus();
+            ListViewItem item = channelBox.SelectedItems[0];
+            if (item.Name.Equals("")) { return; }
+            int num = Convert.ToInt32(item.Name);
+            play(num);
         }
 
-        private void outputbox_TextChanged_1(object sender, EventArgs e)
+        private void timerCB_Tick(object sender, EventArgs e)
         {
-            outputbox.ScrollToCaret();
+            updateChannels();
         }
+        #endregion
 
-        private void button3_Click_1(object sender, EventArgs e)
-        {
-            serviceControl.Stop();
-            serviceControl.WaitForStatus(System.ServiceProcess.ServiceControllerStatus.Stopped);
-            service_button_reset();
-
-        }
-
-        private void button8_Click(object sender, EventArgs e)
-        {
-
-            servicemanager sm = new servicemanager("XMTunerService", "Provides XMRO to Devices", "XM Tuner");
-            bool sucess = sm.Uninstall();
-            service_button_reset();
-            MessageBox.Show("If you wish to reinstall the service, please restart XMTuner");
-            btnSerUninstall.Enabled = false;
-            btnSerStart.Enabled = false;
-        }
-
-        private void btnSerStart_Click(object sender, EventArgs e)
-        {
-            serviceControl.Start();
-            serviceControl.WaitForStatus(System.ServiceProcess.ServiceControllerStatus.Running);
-            service_button_reset();
-
-        }
-
-        protected void Link_Clicked(object sender, LinkClickedEventArgs e)
-        {
-            System.Diagnostics.Process.Start(e.LinkText);
-        }
-
-        private void btnSerRestart_Click(object sender, EventArgs e)
-        {
-            serviceControl.Stop();
-            serviceControl.WaitForStatus(System.ServiceProcess.ServiceControllerStatus.Stopped);
-            serviceControl.Start();
-            serviceControl.WaitForStatus(System.ServiceProcess.ServiceControllerStatus.Running);
-            service_button_reset();
-        }
-
-        private void btnSerInstall_Click(object sender, EventArgs e)
-        {
-            servicemanager sm = new servicemanager("XMTunerService", "Provides XMRO to Devices", "XM Tuner");
-            bool sucess = sm.Install(ServiceStartMode.Automatic);
-            service_button_reset();
-
-        }
-
+        #region Service Tab
         private void service_button_reset()
         {
             try
@@ -590,173 +592,65 @@ namespace XMTuner
 
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void btnSerStart_Click(object sender, EventArgs e)
+        {
+            serviceControl.Start();
+            serviceControl.WaitForStatus(System.ServiceProcess.ServiceControllerStatus.Running);
+            service_button_reset();
+
+        }
+
+        private void btnSerStop_Click(object sender, EventArgs e)
+        {
+            serviceControl.Stop();
+            serviceControl.WaitForStatus(System.ServiceProcess.ServiceControllerStatus.Stopped);
+            service_button_reset();
+
+        }
+
+        private void btnSerRestart_Click(object sender, EventArgs e)
+        {
+            serviceControl.Stop();
+            serviceControl.WaitForStatus(System.ServiceProcess.ServiceControllerStatus.Stopped);
+            serviceControl.Start();
+            serviceControl.WaitForStatus(System.ServiceProcess.ServiceControllerStatus.Running);
+            service_button_reset();
+        }
+
+        private void btnSerInstall_Click(object sender, EventArgs e)
+        {
+            servicemanager sm = new servicemanager("XMTunerService", "Provides XMRO to Devices", "XM Tuner");
+            bool sucess = sm.Install(ServiceStartMode.Automatic);
+            service_button_reset();
+
+        }
+
+        private void btnSerUninstall_Click(object sender, EventArgs e)
+        {
+
+            servicemanager sm = new servicemanager("XMTunerService", "Provides XMRO to Devices", "XM Tuner");
+            bool sucess = sm.Uninstall();
+            service_button_reset();
+            MessageBox.Show("If you wish to reinstall the service, please restart XMTuner");
+            btnSerUninstall.Enabled = false;
+            btnSerStart.Enabled = false;
+        }
+        #endregion
+
+        #region Updater
+        private void bUpdate_Click(object sender, EventArgs e)
         {
             //do...
             Updater update = new Updater();
         }
 
-        private void timer3_Tick(object sender, EventArgs e)
+        private void timerUpdater_Tick(object sender, EventArgs e)
         {
             Updater update = new Updater(outputbox);
         }
+        #endregion
 
-        private void updateNowPlayingData(Boolean useDefault, Int32 num)
-        {
-            if (useDefault == true)
-            {
-                pLogoBox.ImageLocation = "";
-                showLogo();
-                syncStatusLabel();
-                pLabel1.Text = ""; //"Channel:";
-                pLabel2.Text = ""; //"Title:";
-                pLabel3.Text = ""; //"Artist:";
-                pLabel4.Text = ""; //"Album:";
-                pLabel5.Text = "";
-                pLabel6.Text = "";
-            }
-            else
-            {
-                if (num == 0)
-                {
-                    num = playerNum;
-                }
-
-                XMChannel npChannel = self.Find(num);
-
-                if (pStatusLabel.Visible == true)
-                {
-                    syncStatusLabel();
-                }
-                
-                if (pLogoBox.ImageLocation.Equals(""))
-                {
-                    //pLogoBox.SizeMode = PictureBoxSizeMode.CenterImage;
-                    pLogoBox.ClientSize = new Size(128, 50);
-                    pLogoBox.ImageLocation = npChannel.logo;
-                }
-                pLabel1.Text = "XM " + npChannel.num + " - " + npChannel.name;
-                pLabel2.Text = npChannel.song;
-                pLabel3.Text = npChannel.artist;
-                //pLabel5 is Player status (Handled in axWindowsMediaPlayer1_StatusChange)
-                pLabel6.Text = axWindowsMediaPlayer1.Ctlcontrols.currentPositionString; //pLabel6 is Player timer
-
-                //pLabel4: Tri-mode Artist/Program Now/Next Text
-                if (p <= 5)
-                {
-                    if (npChannel.album.Equals("")) { p = 5; p++; return; }
-                    pLabel4.Text = npChannel.album;
-                }
-                else if (p <= 10 && p > 5)
-                {
-                    String[] program = self.getCurrentProgram(npChannel.programData);
-                    if (program == null) { p = 10; p++; return; }
-                    pLabel4.Text = "Now: " + program[2];
-                }
-                else if (p > 10)
-                {
-                    String[] nextProgram = self.getNextProgram(npChannel.programData);
-                    if (nextProgram == null) { p = 0; p++; return; }
-                    pLabel4.Text = "Next: " + DateTime.Parse(nextProgram[4]).ToShortTimeString() + ": " + nextProgram[2];
-                    if (p >= 15) { p = 0; }
-                }
-                p++;
-            }
-        }
-
-        private void syncStatusLabel()
-        {
-            pStatusLabel.Visible = true;
-            if (loggedIn == false)
-            {
-                pStatusLabel.Text = "Log in to begin...";
-            }
-            else
-            {
-                if (playerNum != 0)
-                {
-                    pStatusLabel.Text = "";
-                    pStatusLabel.Visible = false;
-                }
-                else
-                {
-
-                    pStatusLabel.Text = "Select a channel...";
-                }
-            }
-        }
-
-        private void play(int num)
-        {
-            updateNowPlayingData(true, 0);
-
-            axWindowsMediaPlayer1.URL = self.play(num, "high");
-            playerNum = num;
-            updateNowPlayingData(false, num);
-
-            updateRecentlyPlayedBox();
-        }
-
-        private void axWindowsMediaPlayer1_StatusChange(object sender, EventArgs e)
-        {
-            if (axWindowsMediaPlayer1.playState != WMPLib.WMPPlayState.wmppsReady &&
-                axWindowsMediaPlayer1.playState != WMPLib.WMPPlayState.wmppsStopped)
-            {
-                String status = axWindowsMediaPlayer1.status;
-                if (status.Contains("Playing"))
-                {
-                    String[] temp = status.Replace("reflector:", "").Split(':');
-                    status = "Playing (" + temp[1].Trim()+")";
-                }
-                pLabel5.Visible = true;
-                pLabel5.Text = status;
-            }
-        }
-
-        private void axWindowsMediaPlayer1_PlayStateChange(object sender, AxWMPLib._WMPOCXEvents_PlayStateChangeEvent e)
-        {
-            // If Windows Media Player is in the playing state, enable the data update timer. 
-            if (axWindowsMediaPlayer1.playState == WMPLib.WMPPlayState.wmppsPlaying)
-            {
-                axWindowsMediaPlayer1.enableContextMenu = true;
-                pTimer.Enabled = true;
-                showWMPPlayerUI();
-            }
-            else
-            {
-                pTimer.Enabled = false;
-            }
-
-            if (axWindowsMediaPlayer1.playState == WMPLib.WMPPlayState.wmppsStopped)
-            {
-                axWindowsMediaPlayer1.enableContextMenu = false;
-                //Tell the app we're done playing so history stops being built.
-                playerNum = 0;
-                self.lastChannelPlayed = 0;
-                updateNowPlayingData(true, 0);
-            }
-
-        }
-
-        private void pTimer_Tick(object sender, EventArgs e)
-        {
-            updateNowPlayingData(false, 0);
-        }
-
-        private void txtChannel_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            if (e.KeyChar == (char)Keys.Back || e.KeyChar == (char)Keys.Delete) { return; }
-
-            if (e.KeyChar == (char)Keys.Return) {
-                if (txtChannel.Text.Equals("")) { return; }
-                int num = Convert.ToInt32(txtChannel.Text);
-                play(num);
-                return;
-            }
-            if (!System.Text.RegularExpressions.Regex.IsMatch(e.KeyChar.ToString(), "\\d+"))
-                e.Handled = true;
-        }
-
+        #region History Tab
         private void updateRecentlyPlayedBox()
         {
             recentlyPlayedBox.Clear();
@@ -784,93 +678,6 @@ namespace XMTuner
                 recentlyPlayedBox.AppendText("Recently Played List Temporarily Not Available\n");
             }
         }
-
-        private void pLabel2_TextChanged(object sender, EventArgs e)
-        {
-            if (pLabel2.Text.Equals("Title:") || pLabel2.Text.Equals(""))
-            {
-                return;
-            }
-            String dummy = pLabel2.Text;
-            updateRecentlyPlayedBox();
-            doNotification();
-            updateChannels();
-        }
-
-        private void doNotification()
-        {
-            if (playerNum == 0) { return; } //Bail early if we have no work to do.
-            XMChannel npChannel = self.Find(playerNum);
-            String title = "XM "+npChannel.num+" - "+npChannel.name;
-            String nptext = npChannel.artist + " - " + npChannel.song;
-            NotifyWindow nw = new NotifyWindow(title, "Now Playing:\n"+nptext);
-            nw.TitleFont = new Font("Tahoma", 8.25F, FontStyle.Bold);
-            nw.Font = new Font("Tahoma", 10F);
-            nw.TextColor = Color.White;
-            nw.BackColor = Color.Black;
-            nw.SetDimensions(300, 120);
-            nw.WaitTime = 5000;
-            nw.Notify();
-        }
-
-        private void initPlayer()
-        {
-            showLogo();
-            axWindowsMediaPlayer1.uiMode = "none";
-
-            pLabel5.Visible = false;
-            updateNowPlayingData(true, 0);
-
-            syncStatusLabel();
-
-        }
-
-        private void showLogo()
-        {
-            Image xmtunerLogo = Image.FromStream(Assembly.GetExecutingAssembly().GetManifestResourceStream("XMTuner.xmtuner64.png"));
-            pLogoBox.ClientSize = new Size(64, 64);
-            pLogoBox.Image = xmtunerLogo;
-        }
-
-        private void axWindowsMediaPlayer1_MouseMoveEvent(object sender, AxWMPLib._WMPOCXEvents_MouseMoveEvent e)
-        {
-            if (axWindowsMediaPlayer1.uiMode.Equals("mini") || axWindowsMediaPlayer1.playState != WMPLib.WMPPlayState.wmppsPlaying)
-            {
-                return;
-            }
-            showWMPPlayerUI();
-        }
-
-        private void showWMPPlayerUI()
-        {
-            axWindowsMediaPlayer1.uiMode = "mini";
-            axWindowsMediaPlayer1.Size = new Size(165, 35);
-            pHoverTimer.Start();
-        }
-
-        private void pHoverTimer_Tick(object sender, EventArgs e)
-        {
-            pHoverTimer.Stop();
-            axWindowsMediaPlayer1.uiMode = "none";
-            axWindowsMediaPlayer1.Size = new Size(165,50);
-        }
-
-        private void channelBox_DoubleClick(object sender, EventArgs e)
-        {
-            ListViewItem item = channelBox.SelectedItems[0];
-            if (item.Name.Equals("")) { return; }
-            int num = Convert.ToInt32(item.Name);
-            play(num);
-        }
-
-        private void timer4_Tick(object sender, EventArgs e)
-        {
-            updateChannels();
-        }
-
-        private void shutdownPlayer()
-        {
-            axWindowsMediaPlayer1.Ctlcontrols.stop();
-        }
+        #endregion
     }
 }

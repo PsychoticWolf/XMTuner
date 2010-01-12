@@ -30,8 +30,8 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            this.button1 = new System.Windows.Forms.Button();
-            this.button4 = new System.Windows.Forms.Button();
+            this.bStart = new System.Windows.Forms.Button();
+            this.bConfigure = new System.Windows.Forms.Button();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.lblClock = new System.Windows.Forms.Label();
             this.timer2 = new System.Windows.Forms.Timer(this.components);
@@ -43,7 +43,7 @@
             this.restoreToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.exitXMTunerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.button5 = new System.Windows.Forms.Button();
+            this.bStop = new System.Windows.Forms.Button();
             this.tabcontrol1 = new System.Windows.Forms.TabControl();
             this.tLog = new System.Windows.Forms.TabPage();
             this.outputbox = new System.Windows.Forms.RichTextBox();
@@ -71,7 +71,7 @@
             this.tHistory = new System.Windows.Forms.TabPage();
             this.recentlyPlayedBox = new System.Windows.Forms.RichTextBox();
             this.tAbout = new System.Windows.Forms.TabPage();
-            this.button2 = new System.Windows.Forms.Button();
+            this.bUpdate = new System.Windows.Forms.Button();
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
@@ -90,13 +90,12 @@
             this.pLabel1 = new System.Windows.Forms.Label();
             this.pLogoBox = new System.Windows.Forms.PictureBox();
             this.axWindowsMediaPlayer1 = new AxWMPLib.AxWindowsMediaPlayer();
-            this.label5 = new System.Windows.Forms.Label();
-            this.timer3 = new System.Windows.Forms.Timer(this.components);
+            this.timerUpdater = new System.Windows.Forms.Timer(this.components);
             this.pTimer = new System.Windows.Forms.Timer(this.components);
             this.panel1 = new System.Windows.Forms.Panel();
             this.pStatusLabel = new System.Windows.Forms.Label();
             this.pHoverTimer = new System.Windows.Forms.Timer(this.components);
-            this.timer4 = new System.Windows.Forms.Timer(this.components);
+            this.timerCB = new System.Windows.Forms.Timer(this.components);
             this.contextMenuStrip1.SuspendLayout();
             this.tabcontrol1.SuspendLayout();
             this.tLog.SuspendLayout();
@@ -112,27 +111,28 @@
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
-            // button1
+            // bStart
             // 
-            this.button1.Location = new System.Drawing.Point(6, 239);
-            this.button1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(60, 23);
-            this.button1.TabIndex = 3;
-            this.button1.Text = "Login";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.bStart.Location = new System.Drawing.Point(6, 239);
+            this.bStart.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.bStart.Name = "bStart";
+            this.bStart.Size = new System.Drawing.Size(60, 23);
+            this.bStart.TabIndex = 3;
+            this.bStart.Text = "Start";
+            this.bStart.UseVisualStyleBackColor = true;
+            this.bStart.Click += new System.EventHandler(this.bStart_Click);
             // 
-            // button4
+            // bConfigure
             // 
-            this.button4.Location = new System.Drawing.Point(145, 239);
-            this.button4.Margin = new System.Windows.Forms.Padding(4);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(60, 23);
-            this.button4.TabIndex = 10;
-            this.button4.Text = "Configure";
-            this.button4.UseVisualStyleBackColor = true;
-            this.button4.Click += new System.EventHandler(this.button4_Click);
+            this.bConfigure.AccessibleRole = System.Windows.Forms.AccessibleRole.None;
+            this.bConfigure.Location = new System.Drawing.Point(135, 239);
+            this.bConfigure.Margin = new System.Windows.Forms.Padding(4);
+            this.bConfigure.Name = "bConfigure";
+            this.bConfigure.Size = new System.Drawing.Size(60, 23);
+            this.bConfigure.TabIndex = 10;
+            this.bConfigure.Text = "Configure";
+            this.bConfigure.UseVisualStyleBackColor = true;
+            this.bConfigure.Click += new System.EventHandler(this.bConfigure_Click);
             // 
             // timer1
             // 
@@ -144,10 +144,11 @@
             // lblClock
             // 
             this.lblClock.AutoSize = true;
-            this.lblClock.Location = new System.Drawing.Point(501, 249);
+            this.lblClock.Location = new System.Drawing.Point(508, 249);
             this.lblClock.Name = "lblClock";
-            this.lblClock.Size = new System.Drawing.Size(0, 13);
+            this.lblClock.Size = new System.Drawing.Size(49, 13);
             this.lblClock.TabIndex = 12;
+            this.lblClock.Text = "00:00:00";
             // 
             // timer2
             // 
@@ -181,7 +182,7 @@
             this.loginToolStripMenuItem.Name = "loginToolStripMenuItem";
             this.loginToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
             this.loginToolStripMenuItem.Text = "Login";
-            this.loginToolStripMenuItem.Click += new System.EventHandler(this.button1_Click);
+            this.loginToolStripMenuItem.Click += new System.EventHandler(this.bStart_Click);
             // 
             // viewServerToolStripMenuItem
             // 
@@ -215,18 +216,18 @@
             this.exitXMTunerToolStripMenuItem.Text = "Exit XMTuner";
             this.exitXMTunerToolStripMenuItem.Click += new System.EventHandler(this.exitXMTunerToolStripMenuItem_Click);
             // 
-            // button5
+            // bStop
             // 
-            this.button5.Enabled = false;
-            this.button5.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button5.Location = new System.Drawing.Point(70, 239);
-            this.button5.Margin = new System.Windows.Forms.Padding(2);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(71, 23);
-            this.button5.TabIndex = 15;
-            this.button5.Text = "Stop Server";
-            this.button5.UseVisualStyleBackColor = true;
-            this.button5.Click += new System.EventHandler(this.button5_Click);
+            this.bStop.Enabled = false;
+            this.bStop.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bStop.Location = new System.Drawing.Point(70, 239);
+            this.bStop.Margin = new System.Windows.Forms.Padding(2);
+            this.bStop.Name = "bStop";
+            this.bStop.Size = new System.Drawing.Size(60, 23);
+            this.bStop.TabIndex = 15;
+            this.bStop.Text = "Stop";
+            this.bStop.UseVisualStyleBackColor = true;
+            this.bStop.Click += new System.EventHandler(this.bStop_Click);
             // 
             // tabcontrol1
             // 
@@ -433,7 +434,7 @@
             this.btnSerUninstall.TabIndex = 1;
             this.btnSerUninstall.Text = "Uninstall";
             this.btnSerUninstall.UseVisualStyleBackColor = true;
-            this.btnSerUninstall.Click += new System.EventHandler(this.button8_Click);
+            this.btnSerUninstall.Click += new System.EventHandler(this.btnSerUninstall_Click);
             // 
             // btnSerInstall
             // 
@@ -495,7 +496,7 @@
             this.btnSerStop.TabIndex = 1;
             this.btnSerStop.Text = "Stop";
             this.btnSerStop.UseVisualStyleBackColor = true;
-            this.btnSerStop.Click += new System.EventHandler(this.button3_Click_1);
+            this.btnSerStop.Click += new System.EventHandler(this.btnSerStop_Click);
             // 
             // btnSerStart
             // 
@@ -534,7 +535,7 @@
             // tAbout
             // 
             this.tAbout.BackColor = System.Drawing.SystemColors.Control;
-            this.tAbout.Controls.Add(this.button2);
+            this.tAbout.Controls.Add(this.bUpdate);
             this.tAbout.Controls.Add(this.textBox2);
             this.tAbout.Controls.Add(this.label8);
             this.tAbout.Controls.Add(this.label9);
@@ -552,15 +553,15 @@
             this.tAbout.TabIndex = 2;
             this.tAbout.Text = "About";
             // 
-            // button2
+            // bUpdate
             // 
-            this.button2.Location = new System.Drawing.Point(415, 181);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(115, 23);
-            this.button2.TabIndex = 17;
-            this.button2.Text = "Check for Updates...";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.bUpdate.Location = new System.Drawing.Point(415, 181);
+            this.bUpdate.Name = "bUpdate";
+            this.bUpdate.Size = new System.Drawing.Size(115, 23);
+            this.bUpdate.TabIndex = 17;
+            this.bUpdate.Text = "Check for Updates...";
+            this.bUpdate.UseVisualStyleBackColor = true;
+            this.bUpdate.Click += new System.EventHandler(this.bUpdate_Click);
             // 
             // textBox2
             // 
@@ -757,20 +758,12 @@
             this.axWindowsMediaPlayer1.StatusChange += new System.EventHandler(this.axWindowsMediaPlayer1_StatusChange);
             this.axWindowsMediaPlayer1.MouseMoveEvent += new AxWMPLib._WMPOCXEvents_MouseMoveEventHandler(this.axWindowsMediaPlayer1_MouseMoveEvent);
             // 
-            // label5
+            // timerUpdater
             // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(611, 214);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(0, 13);
-            this.label5.TabIndex = 12;
-            // 
-            // timer3
-            // 
-            this.timer3.Enabled = true;
-            this.timer3.Interval = 86400000;
-            this.timer3.Tag = "Updater check";
-            this.timer3.Tick += new System.EventHandler(this.timer3_Tick);
+            this.timerUpdater.Enabled = true;
+            this.timerUpdater.Interval = 86400000;
+            this.timerUpdater.Tag = "Updater check";
+            this.timerUpdater.Tick += new System.EventHandler(this.timerUpdater_Tick);
             // 
             // pTimer
             // 
@@ -814,24 +807,23 @@
             this.pHoverTimer.Tag = "Hover timer for WMP control UI flip";
             this.pHoverTimer.Tick += new System.EventHandler(this.pHoverTimer_Tick);
             // 
-            // timer4
+            // timerCB
             // 
-            this.timer4.Interval = 10000;
-            this.timer4.Tag = "Update lstChannels data";
-            this.timer4.Tick += new System.EventHandler(this.timer4_Tick);
+            this.timerCB.Interval = 10000;
+            this.timerCB.Tag = "Update channelbox data";
+            this.timerCB.Tick += new System.EventHandler(this.timerCB_Tick);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(560, 349);
-            this.Controls.Add(this.label5);
             this.Controls.Add(this.lblClock);
-            this.Controls.Add(this.button5);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.bStop);
+            this.Controls.Add(this.bStart);
             this.Controls.Add(this.tabcontrol1);
             this.Controls.Add(this.panel1);
-            this.Controls.Add(this.button4);
+            this.Controls.Add(this.bConfigure);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(2);
             this.MaximizeBox = false;
@@ -868,17 +860,16 @@
 
         #endregion
 
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.Button bStart;
+        private System.Windows.Forms.Button bConfigure;
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.Label lblClock;
         private System.Windows.Forms.Timer timer2;
         private System.Windows.Forms.NotifyIcon notifyIcon1;
-        private System.Windows.Forms.Button button5;
+        private System.Windows.Forms.Button bStop;
         private System.Windows.Forms.TabControl tabcontrol1;
         private System.Windows.Forms.TabPage tLog;
         private System.Windows.Forms.TabPage tChannels;
-        private System.Windows.Forms.Label label5;
         private System.Windows.Forms.RichTextBox outputbox;
         private System.Windows.Forms.TextBox addressBox;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
@@ -916,8 +907,8 @@
         private System.Windows.Forms.Button btnSerStop;
         private System.Windows.Forms.Button btnSerStart;
         private System.Windows.Forms.Label lblServiceInst;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Timer timer3;
+        private System.Windows.Forms.Button bUpdate;
+        private System.Windows.Forms.Timer timerUpdater;
         private System.Windows.Forms.TabPage tHistory;
         private System.Windows.Forms.TextBox txtChannel;
         private AxWMPLib.AxWindowsMediaPlayer axWindowsMediaPlayer1;
@@ -933,7 +924,7 @@
         private System.Windows.Forms.RichTextBox recentlyPlayedBox;
         private System.Windows.Forms.Timer pHoverTimer;
         private System.Windows.Forms.Label pStatusLabel;
-        private System.Windows.Forms.Timer timer4;
+        private System.Windows.Forms.Timer timerCB;
         private System.Windows.Forms.ListView channelBox;
     }
 }
