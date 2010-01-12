@@ -136,6 +136,9 @@
     <Compile Include="NotifyWindow.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Player.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="servicemanager.cs" />
     <Compile Include="TheConstructor.cs" />
     <Compile Include="Updater.cs" />
