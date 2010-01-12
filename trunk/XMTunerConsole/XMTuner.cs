@@ -24,7 +24,7 @@ namespace XMTuner
         String cookies;
         public int lastChannelPlayed;
         public bool isLoggedIn;
-        Boolean loadedExtendedChannelData = false;
+        public Boolean loadedExtendedChannelData = false;
         int cookieCount = 0;
         public List<String> recentlyPlayed = new List<String>();
 
