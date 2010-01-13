@@ -457,5 +457,26 @@ namespace XMTuner
             return OutputStream;
         }
 
+
+        public String doBuildPlaylist(string methodURL, NameValueCollection URLparams, String useragent, String serverHost)
+        {
+            //Weblistner: 288
+            List<XMChannel> ChannelList = myTuner.getChannels();
+            String media = "";
+            String playlist = "";
+            int i = 0; 
+            int sizeofList = ChannelList.Count;
+            playlist += "[playlist]\r\n";
+            playlist += "NumberOfEntries="+sizeofList.ToString()+"\r\n";
+            playlist += "\r\n";
+            
+            foreach (XMChannel channel in ChannelList)
+            {
+                i++;
+                media = TheConstructor.buildLink("stream", serverHost, URLparams, null, channel.num, config);
+                playlist += media;
+            }
+            return "oompaloompa";
+        }
     }
 }
