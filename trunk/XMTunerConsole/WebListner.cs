@@ -287,7 +287,20 @@ namespace XMTuner
             {
                 NameValueCollection URLParams = request.QueryString;
                 String playlist = worker.DoBuildPlaylist(methodURL, URLParams, serverHost);
-                SendRequest(context, null, playlist, "text/plain", false, HttpStatusCode.OK);
+                String servtype = "";
+                if (URLParams["type"].ToLower()=="pls") 
+                {
+                    servtype="audio/x-scpls";
+                }
+                else if (URLParams["type"].ToLower() == "asx")
+                {
+                    servtype = "video/x-ms-asf";
+                }
+                else
+                {
+                    servtype = "audio/x-scpls";
+                }
+                SendRequest(context, null, playlist, servtype, false, HttpStatusCode.OK);
             }
             else
             {
