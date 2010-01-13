@@ -457,30 +457,51 @@ namespace XMTuner
             return OutputStream;
         }
 
-
         public String DoBuildPlaylist(string methodURL, NameValueCollection URLparams, String serverHost)
         {
             //Weblistner: 288
+            String type = URLparams["type"].ToUpper();
             List<XMChannel> ChannelList = myTuner.getChannels();
             String media = "";
             String playlist = "";
             int i = 0; 
             int sizeofList = ChannelList.Count;
-            playlist += "[playlist]\r\n";
-            playlist += "NumberOfEntries="+sizeofList.ToString()+"\r\n";
-            playlist += "\r\n";
-            
-            foreach (XMChannel channel in ChannelList)
-            {
-                i++;
-                media = TheConstructor.buildLink("stream", serverHost, URLparams, null, channel.num, config);
-                playlist += "File" + i+"="+media+"\r\n";
-                playlist += "Title"+i+"="+channel.name+"\r\n";
-                playlist += "Length=-1\r\n";
-                playlist += "\r\n";
-            }
 
-            playlist += "Version=2";
+            if (type == "PLS")
+            {
+                playlist += "[playlist]\r\n";
+                playlist += "NumberOfEntries=" + sizeofList.ToString() + "\r\n";
+                playlist += "\r\n";
+
+                foreach (XMChannel channel in ChannelList)
+                {
+                    i++;
+                    media = TheConstructor.buildLink("stream", serverHost, URLparams, null, channel.num, config);
+                    playlist += "File" + i + "=" + media + "\r\n";
+                    playlist += "Title" + i + "=" + channel.name + "\r\n";
+                    playlist += "Length=-1\r\n";
+                    playlist += "\r\n";
+                }
+
+                playlist += "Version=2";
+            }
+            else if (type == "ASX")
+            {
+                playlist += "<asx version=\"3.0\">\r\n";
+                playlist += "\t<title>XM Tuner</title>\r\n";
+                playlist += "\r\n";
+
+                foreach (XMChannel channel in ChannelList)
+                {
+                    media = TheConstructor.buildLink("stream", serverHost, URLparams, null, channel.num, config);
+
+                    playlist += "\t<entry>\r\n";
+                    playlist += "\t\t<title>"+channel.name+"</title>\r\n";
+                    playlist += "\t\t<ref href=\""+media+"\"/>\r\n";
+                    playlist += "\t</entry>\r\n";
+                }
+                playlist += "</asx>";
+            }
             return playlist;
         }
     }
