@@ -11,9 +11,9 @@ namespace XMTuner
         int p;
 
         #region Player
-        private void updateNowPlayingData(Boolean useDefault, Int32 num)
+        private void updateNowPlayingData(Boolean useDefault, Boolean isLoading, Int32 num)
         {
-            if (useDefault == true)
+            if (useDefault == true || isLoading == true)
             {
                 pLogoBox.ImageLocation = "";
                 showLogo();
@@ -24,6 +24,15 @@ namespace XMTuner
                 pLabel4.Text = ""; //"Album:";
                 pLabel5.Text = "";
                 pLabel6.Text = "";
+
+                if (isLoading == true && num > 0)
+                {
+                    XMChannel npChannel = self.Find(num);
+                    pLabel1.Text = "XM " + npChannel.num + " - " + npChannel.name;
+                    pLabel2.Text = "Loading...";
+                }
+
+                panel1.Refresh();
             }
             else
             {
@@ -98,11 +107,12 @@ namespace XMTuner
 
         private void play(int num)
         {
-            updateNowPlayingData(true, 0);
+            updateNowPlayingData(true, true, num);
 
-            axWindowsMediaPlayer1.URL = self.play(num, "high");
+            String url = self.play(num, "high");
+            axWindowsMediaPlayer1.URL = url;
             playerNum = num;
-            updateNowPlayingData(false, num);
+            updateNowPlayingData(false, false, num);
 
             updateRecentlyPlayedBox();
         }
@@ -143,14 +153,14 @@ namespace XMTuner
                 //Tell the app we're done playing so history stops being built.
                 playerNum = 0;
                 self.lastChannelPlayed = 0;
-                updateNowPlayingData(true, 0);
+                updateNowPlayingData(true, false, 0);
             }
 
         }
 
         private void pTimer_Tick(object sender, EventArgs e)
         {
-            updateNowPlayingData(false, 0);
+            updateNowPlayingData(false, false, 0);
         }
 
         private void pLabel2_TextChanged(object sender, EventArgs e)
@@ -187,7 +197,7 @@ namespace XMTuner
             axWindowsMediaPlayer1.uiMode = "none";
 
             pLabel5.Visible = false;
-            updateNowPlayingData(true, 0);
+            updateNowPlayingData(true, false, 0);
 
             syncStatusLabel();
 
