@@ -286,20 +286,43 @@ namespace XMTuner
             else if (baseURL.Equals("playlists"))
             {
                 NameValueCollection URLParams = request.QueryString;
+               String servtype = "";
+
+               String keystring = "";
+               foreach (String key in URLParams.Keys)
+               {
+                   keystring += " "+key + " ";
+               }
+
+               if (!URLParams.HasKeys())
+               {
+                   URLParams.Add("type", "pls");
+                   servtype = "audio/x-scpls";
+               }
+               else if (!keystring.Contains(" type "))
+               {
+                   servtype = "audio/x-scpls";
+                   URLParams.Add("type", "pls");
+               }
+               else if (URLParams["type"].ToLower() == "pls")
+               {
+                   servtype = "audio/x-scpls";
+               }
+               else if (URLParams["type"].ToLower() == "m3u")
+               {
+                   servtype = "audio/x-ms-wax";
+               }
+               else if (URLParams["type"].ToLower() == "asx")
+               {
+                   servtype = "audio/x-ms-wax";
+               }
+               else
+               {
+                   URLParams["type"] = "pls";
+                   servtype = "audio/x-scpls";
+               }
+
                 String playlist = worker.DoBuildPlaylist(methodURL, URLParams, serverHost);
-                String servtype = "";
-                if (URLParams["type"].ToLower()=="pls") 
-                {
-                    servtype="audio/x-scpls";
-                }
-                else if (URLParams["type"].ToLower() == "asx")
-                {
-                    servtype = "video/x-ms-asf";
-                }
-                else
-                {
-                    servtype = "audio/x-scpls";
-                }
                 SendRequest(context, null, playlist, servtype, false, HttpStatusCode.OK);
             }
             else
