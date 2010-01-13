@@ -283,6 +283,10 @@ namespace XMTuner
                 MemoryStream stream = worker.DoFeed(methodURL, URLParams, request.UserAgent, serverHost);
                 SendRequest(context, stream, null, "text/xml;charset=UTF-8", false, HttpStatusCode.OK);
             }
+            else if (baseURL.Equals("playlists"))
+            {
+
+            }
             else
             {
                 string responseString = "<HTML><BODY>Unknown Request</BODY></HTML>";
