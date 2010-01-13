@@ -458,7 +458,7 @@ namespace XMTuner
         }
 
 
-        public String doBuildPlaylist(string methodURL, NameValueCollection URLparams, String useragent, String serverHost)
+        public String DoBuildPlaylist(string methodURL, NameValueCollection URLparams, String serverHost)
         {
             //Weblistner: 288
             List<XMChannel> ChannelList = myTuner.getChannels();

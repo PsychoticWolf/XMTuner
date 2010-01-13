@@ -285,7 +285,9 @@ namespace XMTuner
             }
             else if (baseURL.Equals("playlists"))
             {
-
+                NameValueCollection URLParams = request.QueryString;
+                String playlist = worker.DoBuildPlaylist(methodURL, URLParams, serverHost);
+                SendRequest(context, null, playlist, "text/plain", false, HttpStatusCode.OK);
             }
             else
             {
