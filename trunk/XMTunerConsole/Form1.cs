@@ -384,6 +384,10 @@ namespace XMTuner
         {
             if (self == null || channelBox.Items.Count > 0) { return; }
 
+            typeBox.SelectedItem = "Channel";
+            if (isMMS) { protocolBox.SelectedItem = "MMS"; } else { protocolBox.SelectedItem = "HTTP"; }
+            if (bitrate.Equals("high")) { bitRateBox.SelectedItem = "High"; } else { bitRateBox.SelectedItem = "Low"; }
+
             channelBox.BeginUpdate();
             channelBox.Clear();
             ImageList imagelist = new ImageList();
@@ -430,9 +434,7 @@ namespace XMTuner
 
             channelBox.EndUpdate();
             timerCB.Enabled = true;
-
-            if (isMMS) { protocolBox.SelectedItem = "MMS"; } else { protocolBox.SelectedItem = "HTTP"; }
-            if (bitrate.Equals("high")) { bitRateBox.SelectedItem = "High"; } else { bitRateBox.SelectedItem = "Low"; }
+            txtChannel.Enabled = true;
 
         }
 
@@ -485,6 +487,26 @@ namespace XMTuner
             return address1;
         }
 
+        private String getFeedAddress(String protocol, String altBitrate)
+        {
+            NameValueCollection collectionForAdd = new NameValueCollection();
+            collectionForAdd.Add("type", protocol.ToLower());
+            collectionForAdd.Add("bitrate", altBitrate.ToLower());
+            NameValueCollection config = new NameValueCollection();
+            config.Add("bitrate", bitrate);
+            config.Add("isMMS", isMMS.ToString());
+
+            String host;
+            if (hostname.Equals("")) { host = ip; } else { host = hostname; }
+            host = host + ":" + port;
+
+            if (bitRateBox.SelectedIndex == -1) { altBitrate = bitrate; }
+
+            String address = TheConstructor.buildLink("feed", host, collectionForAdd, null, 0, config);
+
+            return address;
+        }
+
         private void makeAddress(object sender, EventArgs e)
         {
             if (channelBox.Items.Count == 0) { return; }
@@ -503,7 +525,14 @@ namespace XMTuner
                 channel = channelBox.Items[0].Name;
             }
             altBitrate = (String)bitRateBox.SelectedItem;
-            addressBox.Text = getChannelAddress(channel, protocol, altBitrate);
+            if (typeBox.SelectedItem.ToString().ToLower().Equals("feed"))
+            {
+                addressBox.Text = getFeedAddress(protocol, altBitrate);
+            }
+            else
+            {
+                addressBox.Text = getChannelAddress(channel, protocol, altBitrate);
+            }
         }
 
         private void cpyToClip_Click(object sender, EventArgs e)

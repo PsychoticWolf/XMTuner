@@ -48,13 +48,12 @@
             this.tLog = new System.Windows.Forms.TabPage();
             this.outputbox = new System.Windows.Forms.RichTextBox();
             this.tChannels = new System.Windows.Forms.TabPage();
+            this.typeBox = new System.Windows.Forms.ComboBox();
             this.channelBox = new System.Windows.Forms.ListView();
             this.txtChannel = new System.Windows.Forms.TextBox();
             this.bitRateBox = new System.Windows.Forms.ComboBox();
-            this.label7 = new System.Windows.Forms.Label();
             this.cpyToClip = new System.Windows.Forms.Button();
             this.protocolBox = new System.Windows.Forms.ComboBox();
-            this.label6 = new System.Windows.Forms.Label();
             this.addressBox = new System.Windows.Forms.TextBox();
             this.tService = new System.Windows.Forms.TabPage();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
@@ -280,13 +279,12 @@
             // tChannels
             // 
             this.tChannels.BackColor = System.Drawing.SystemColors.Control;
+            this.tChannels.Controls.Add(this.typeBox);
             this.tChannels.Controls.Add(this.channelBox);
             this.tChannels.Controls.Add(this.txtChannel);
             this.tChannels.Controls.Add(this.bitRateBox);
-            this.tChannels.Controls.Add(this.label7);
             this.tChannels.Controls.Add(this.cpyToClip);
             this.tChannels.Controls.Add(this.protocolBox);
-            this.tChannels.Controls.Add(this.label6);
             this.tChannels.Controls.Add(this.addressBox);
             this.tChannels.Location = new System.Drawing.Point(4, 22);
             this.tChannels.Margin = new System.Windows.Forms.Padding(2);
@@ -295,6 +293,19 @@
             this.tChannels.Size = new System.Drawing.Size(552, 208);
             this.tChannels.TabIndex = 1;
             this.tChannels.Text = "Channels";
+            // 
+            // typeBox
+            // 
+            this.typeBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.typeBox.FormattingEnabled = true;
+            this.typeBox.Items.AddRange(new object[] {
+            "Channel",
+            "Feed"});
+            this.typeBox.Location = new System.Drawing.Point(4, 184);
+            this.typeBox.Name = "typeBox";
+            this.typeBox.Size = new System.Drawing.Size(58, 21);
+            this.typeBox.TabIndex = 12;
+            this.typeBox.SelectedIndexChanged += new System.EventHandler(this.makeAddress);
             // 
             // channelBox
             // 
@@ -312,6 +323,7 @@
             // 
             // txtChannel
             // 
+            this.txtChannel.Enabled = false;
             this.txtChannel.Location = new System.Drawing.Point(521, 185);
             this.txtChannel.Name = "txtChannel";
             this.txtChannel.Size = new System.Drawing.Size(27, 20);
@@ -323,24 +335,15 @@
             this.bitRateBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.bitRateBox.FormattingEnabled = true;
             this.bitRateBox.Items.AddRange(new object[] {
+            "Bitrate:",
             "High",
             "Low"});
-            this.bitRateBox.Location = new System.Drawing.Point(174, 184);
+            this.bitRateBox.Location = new System.Drawing.Point(140, 184);
             this.bitRateBox.Margin = new System.Windows.Forms.Padding(2);
             this.bitRateBox.Name = "bitRateBox";
             this.bitRateBox.Size = new System.Drawing.Size(64, 21);
             this.bitRateBox.TabIndex = 10;
             this.bitRateBox.SelectedIndexChanged += new System.EventHandler(this.makeAddress);
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(133, 187);
-            this.label7.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(40, 13);
-            this.label7.TabIndex = 9;
-            this.label7.Text = "Bitrate:";
             // 
             // cpyToClip
             // 
@@ -358,28 +361,20 @@
             this.protocolBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.protocolBox.FormattingEnabled = true;
             this.protocolBox.Items.AddRange(new object[] {
+            "Protocol:",
             "HTTP",
             "MMS"});
-            this.protocolBox.Location = new System.Drawing.Point(51, 184);
+            this.protocolBox.Location = new System.Drawing.Point(66, 184);
             this.protocolBox.Name = "protocolBox";
-            this.protocolBox.Size = new System.Drawing.Size(79, 21);
+            this.protocolBox.Size = new System.Drawing.Size(70, 21);
             this.protocolBox.TabIndex = 5;
             this.protocolBox.SelectedIndexChanged += new System.EventHandler(this.makeAddress);
             // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(3, 187);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(49, 13);
-            this.label6.TabIndex = 4;
-            this.label6.Text = "Protocol:";
-            // 
             // addressBox
             // 
-            this.addressBox.Location = new System.Drawing.Point(246, 185);
+            this.addressBox.Location = new System.Drawing.Point(210, 185);
             this.addressBox.Name = "addressBox";
-            this.addressBox.Size = new System.Drawing.Size(224, 20);
+            this.addressBox.Size = new System.Drawing.Size(260, 20);
             this.addressBox.TabIndex = 3;
             // 
             // tService
@@ -876,7 +871,6 @@
         private System.Windows.Forms.ToolStripMenuItem restoreToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exitXMTunerToolStripMenuItem;
         private System.Windows.Forms.ComboBox protocolBox;
-        private System.Windows.Forms.Label label6;
         private System.Windows.Forms.ToolStripMenuItem viewServerToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem loginToolStripMenuItem;
@@ -893,7 +887,6 @@
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.ComboBox bitRateBox;
-        private System.Windows.Forms.Label label7;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.TabPage tService;
         private System.Windows.Forms.GroupBox groupBox3;
@@ -926,6 +919,7 @@
         private System.Windows.Forms.Label pStatusLabel;
         private System.Windows.Forms.Timer timerCB;
         private System.Windows.Forms.ListView channelBox;
+        private System.Windows.Forms.ComboBox typeBox;
     }
 }
 
