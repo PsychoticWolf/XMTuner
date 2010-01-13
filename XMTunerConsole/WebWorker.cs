@@ -502,6 +502,17 @@ namespace XMTuner
                 }
                 playlist += "</asx>";
             }
+            else if (type == "M3U")
+            {
+                playlist += "#EXTM3U\r\n";
+                foreach (XMChannel channel in ChannelList)
+                {
+                    media = TheConstructor.buildLink("stream", serverHost, URLparams, null, channel.num, config);
+
+                    playlist += "#EXTINF:-1,"+channel.name+"\r\n";
+                    playlist += media + "\r\n";
+                }
+            }
             return playlist;
         }
     }
