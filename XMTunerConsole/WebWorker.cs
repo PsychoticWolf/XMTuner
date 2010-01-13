@@ -474,9 +474,14 @@ namespace XMTuner
             {
                 i++;
                 media = TheConstructor.buildLink("stream", serverHost, URLparams, null, channel.num, config);
-                playlist += media;
+                playlist += "File" + i+"="+media+"\r\n";
+                playlist += "Title"+i+"="+channel.name+"\r\n";
+                playlist += "Length=-1\r\n";
+                playlist += "\r\n";
             }
-            return "oompaloompa";
+
+            playlist += "Version=2";
+            return playlist;
         }
     }
 }
