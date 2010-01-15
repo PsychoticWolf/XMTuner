@@ -39,7 +39,6 @@
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.loginToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewServerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.restoreToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.exitXMTunerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -71,13 +70,13 @@
             this.recentlyPlayedBox = new System.Windows.Forms.RichTextBox();
             this.tAbout = new System.Windows.Forms.TabPage();
             this.bUpdate = new System.Windows.Forms.Button();
-            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.aBuildDate = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.aVersion = new System.Windows.Forms.TextBox();
             this.label13 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
@@ -95,6 +94,7 @@
             this.pStatusLabel = new System.Windows.Forms.Label();
             this.pHoverTimer = new System.Windows.Forms.Timer(this.components);
             this.timerCB = new System.Windows.Forms.Timer(this.components);
+            this.linkServer = new System.Windows.Forms.LinkLabel();
             this.contextMenuStrip1.SuspendLayout();
             this.tabcontrol1.SuspendLayout();
             this.tLog.SuspendLayout();
@@ -168,12 +168,11 @@
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.loginToolStripMenuItem,
             this.viewServerToolStripMenuItem,
-            this.aboutToolStripMenuItem,
             this.restoreToolStripMenuItem,
             this.toolStripSeparator1,
             this.exitXMTunerToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(145, 120);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(145, 98);
             // 
             // loginToolStripMenuItem
             // 
@@ -190,11 +189,6 @@
             this.viewServerToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
             this.viewServerToolStripMenuItem.Text = "What\'s On...";
             this.viewServerToolStripMenuItem.Click += new System.EventHandler(this.viewServerToolStripMenuItem_Click);
-            // 
-            // aboutToolStripMenuItem
-            // 
-            this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
             // 
             // restoreToolStripMenuItem
             // 
@@ -300,12 +294,13 @@
             this.typeBox.FormattingEnabled = true;
             this.typeBox.Items.AddRange(new object[] {
             "Channel",
-            "Feed"});
+            "Feed",
+            "Playlist"});
             this.typeBox.Location = new System.Drawing.Point(4, 184);
             this.typeBox.Name = "typeBox";
-            this.typeBox.Size = new System.Drawing.Size(58, 21);
+            this.typeBox.Size = new System.Drawing.Size(64, 21);
             this.typeBox.TabIndex = 12;
-            this.typeBox.SelectedIndexChanged += new System.EventHandler(this.makeAddress);
+            this.typeBox.SelectedIndexChanged += new System.EventHandler(this.updateTypeList);
             // 
             // channelBox
             // 
@@ -364,9 +359,9 @@
             "Protocol:",
             "HTTP",
             "MMS"});
-            this.protocolBox.Location = new System.Drawing.Point(66, 184);
+            this.protocolBox.Location = new System.Drawing.Point(72, 184);
             this.protocolBox.Name = "protocolBox";
-            this.protocolBox.Size = new System.Drawing.Size(70, 21);
+            this.protocolBox.Size = new System.Drawing.Size(64, 21);
             this.protocolBox.TabIndex = 5;
             this.protocolBox.SelectedIndexChanged += new System.EventHandler(this.makeAddress);
             // 
@@ -531,13 +526,13 @@
             // 
             this.tAbout.BackColor = System.Drawing.SystemColors.Control;
             this.tAbout.Controls.Add(this.bUpdate);
-            this.tAbout.Controls.Add(this.textBox2);
+            this.tAbout.Controls.Add(this.aBuildDate);
             this.tAbout.Controls.Add(this.label8);
             this.tAbout.Controls.Add(this.label9);
             this.tAbout.Controls.Add(this.label10);
             this.tAbout.Controls.Add(this.label11);
             this.tAbout.Controls.Add(this.label12);
-            this.tAbout.Controls.Add(this.textBox1);
+            this.tAbout.Controls.Add(this.aVersion);
             this.tAbout.Controls.Add(this.label13);
             this.tAbout.Controls.Add(this.groupBox1);
             this.tAbout.Location = new System.Drawing.Point(4, 22);
@@ -558,17 +553,17 @@
             this.bUpdate.UseVisualStyleBackColor = true;
             this.bUpdate.Click += new System.EventHandler(this.bUpdate_Click);
             // 
-            // textBox2
+            // aBuildDate
             // 
-            this.textBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox2.ForeColor = System.Drawing.Color.Black;
-            this.textBox2.Location = new System.Drawing.Point(365, 73);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.ReadOnly = true;
-            this.textBox2.Size = new System.Drawing.Size(62, 19);
-            this.textBox2.TabIndex = 17;
-            this.textBox2.Text = "20100111";
-            this.textBox2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.aBuildDate.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.aBuildDate.ForeColor = System.Drawing.Color.Black;
+            this.aBuildDate.Location = new System.Drawing.Point(365, 73);
+            this.aBuildDate.Name = "aBuildDate";
+            this.aBuildDate.ReadOnly = true;
+            this.aBuildDate.Size = new System.Drawing.Size(62, 19);
+            this.aBuildDate.TabIndex = 17;
+            this.aBuildDate.Text = "20100111";
+            this.aBuildDate.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // label8
             // 
@@ -617,16 +612,15 @@
             this.label12.TabIndex = 12;
             this.label12.Text = "XMTuner";
             // 
-            // textBox1
+            // aVersion
             // 
-            this.textBox1.ForeColor = System.Drawing.Color.Black;
-            this.textBox1.Location = new System.Drawing.Point(365, 43);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.ReadOnly = true;
-            this.textBox1.Size = new System.Drawing.Size(62, 20);
-            this.textBox1.TabIndex = 11;
-            this.textBox1.Text = "0.4";
-            this.textBox1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.aVersion.ForeColor = System.Drawing.Color.Black;
+            this.aVersion.Location = new System.Drawing.Point(365, 43);
+            this.aVersion.Name = "aVersion";
+            this.aVersion.ReadOnly = true;
+            this.aVersion.Size = new System.Drawing.Size(62, 20);
+            this.aVersion.TabIndex = 11;
+            this.aVersion.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // label13
             // 
@@ -808,11 +802,24 @@
             this.timerCB.Tag = "Update channelbox data";
             this.timerCB.Tick += new System.EventHandler(this.timerCB_Tick);
             // 
+            // linkServer
+            // 
+            this.linkServer.AutoSize = true;
+            this.linkServer.Enabled = false;
+            this.linkServer.Location = new System.Drawing.Point(408, 249);
+            this.linkServer.Name = "linkServer";
+            this.linkServer.Size = new System.Drawing.Size(100, 13);
+            this.linkServer.TabIndex = 18;
+            this.linkServer.TabStop = true;
+            this.linkServer.Text = "Server is Stopped...";
+            this.linkServer.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkServer_LinkClicked);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(560, 349);
+            this.Controls.Add(this.linkServer);
             this.Controls.Add(this.lblClock);
             this.Controls.Add(this.bStop);
             this.Controls.Add(this.bStart);
@@ -872,19 +879,18 @@
         private System.Windows.Forms.ToolStripMenuItem exitXMTunerToolStripMenuItem;
         private System.Windows.Forms.ComboBox protocolBox;
         private System.Windows.Forms.ToolStripMenuItem viewServerToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem loginToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.Button cpyToClip;
         private System.Windows.Forms.TabPage tAbout;
         private System.Windows.Forms.LinkLabel linkLabel1;
-        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.TextBox aBuildDate;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.Label label12;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox aVersion;
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.ComboBox bitRateBox;
         private System.Windows.Forms.GroupBox groupBox1;
@@ -920,6 +926,7 @@
         private System.Windows.Forms.Timer timerCB;
         private System.Windows.Forms.ListView channelBox;
         private System.Windows.Forms.ComboBox typeBox;
+        private System.Windows.Forms.LinkLabel linkServer;
     }
 }
 

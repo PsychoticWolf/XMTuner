@@ -36,9 +36,16 @@ namespace XMTuner
             TheRequest.Headers.Add(header);
         }
 
+        public void setTimeout(Int32 timeout)
+        {
+            TheRequest.Timeout = timeout;
+        }
+
         public void fetch()
         {
-            TheRequest.Timeout = 30000;
+            if (TheRequest.Timeout.Equals(100000)) {
+                TheRequest.Timeout = 30000;
+            }
             try
             {
                 TheReply = (HttpWebResponse)TheRequest.GetResponse();

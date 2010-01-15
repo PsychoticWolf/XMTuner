@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Xml;
 using System.Windows.Forms;
 using System.Drawing;
+using System.Reflection;
 
 namespace XMTuner
 {
@@ -10,8 +11,7 @@ namespace XMTuner
     {
 
         // get the running version
-        Version curVersion =
-         System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+        Version curVersion = Assembly.GetExecutingAssembly().GetName().Version;
 
         // in newVersion variable we will store the
         // version info from xml file

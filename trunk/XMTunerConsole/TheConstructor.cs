@@ -35,6 +35,12 @@ namespace XMTuner
                 link = type + "://" + serverHost + "/streams/" + num + "/" + streamtype + bitrate;
 
             }
+            else if (linkType.Equals("playlist"))
+            {
+                String type = URLparams["type"].ToLower(); //XXX should be getPlaylistType()
+                String bitrate = getBitRate(URLparams, config);
+                link = "http://" + serverHost + "/playlists/"+"?type=" + type + "&bitrate=" + bitrate;
+            }
             else
             {
                 String category = ""; //XXX not implemented yet.

@@ -21,6 +21,7 @@ namespace XMTuner
         XMTuner self;
         Log logging;
         WebListner xmServer;
+        Boolean isConfigurationLoaded = false;
         bool loggedIn = false;
         bool serverRunning = false;
         String username = "";
@@ -56,6 +57,7 @@ namespace XMTuner
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            aVersion.Text = getVersion();
             serviceControl.ServiceName = "XMTunerService";
 
             service_button_reset();
@@ -93,7 +95,7 @@ namespace XMTuner
             outputbox.AppendText("Please wait... logging in\n");
             outputbox.Refresh();
             logging = new Log(ref outputbox, useLocalDatapath);
-            self = new XMTuner(username, password, logging);
+            self = new XMTuner(username, password, logging, useLocalDatapath);
             if (self.isLoggedIn == false)
             {
                 //Not logged in successfully.. Bail!
@@ -113,6 +115,8 @@ namespace XMTuner
             viewServerToolStripMenuItem.Enabled = true;
             loginToolStripMenuItem.Enabled = false;
             timer2.Enabled = true;
+            linkServer.Text = "Server is Running...";
+            linkServer.Enabled = true;
 
             loggedIn = true;
             if (loggedIn) {
@@ -178,6 +182,11 @@ namespace XMTuner
             syncStatusLabel();
             GC.Collect();
         }
+
+        private void linkServer_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("http://" + getLocalIP() + ":" + port);
+        }
         #endregion
 
         #region Configuration
@@ -209,7 +218,6 @@ namespace XMTuner
                 isMMS = Convert.ToBoolean(configIn.Get("isMMS"));
                 tversityHost = configIn.Get("Tversity"); ;
                 hostname = configIn.Get("hostname"); ;
-                //if (hostname.Equals("")) { hostname = ip; }
                 if (!serverRunning)
                 {
                     bStart.Enabled = true;
@@ -219,6 +227,8 @@ namespace XMTuner
                 DateTime currentTime = DateTime.Now;
                 String ct = currentTime.ToString("%H:") + currentTime.ToString("mm:") + currentTime.ToString("ss");
                 outputbox.AppendText(ct + "  Configuration Loaded\n");
+                isConfigurationLoaded = true;
+                syncStatusLabel();
                 return true;
             }
             else
@@ -230,6 +240,7 @@ namespace XMTuner
 
                 bStart.Enabled = false;
                 outputbox.AppendText("No Configuration\nClick Configure.\n");
+                isConfigurationLoaded = false;
                 return false;
             }
 
@@ -293,6 +304,12 @@ namespace XMTuner
         {
             System.Diagnostics.Process.Start("http://www.pcfire.net/XMTuner/");
         }
+
+        public static String getVersion()
+        {
+            Version curVersion = Assembly.GetExecutingAssembly().GetName().Version;
+            return curVersion.ToString(2);
+        }
         #endregion
 
         #region Log Tab / Outputbox
@@ -303,9 +320,13 @@ namespace XMTuner
         public static void output(String output, String level, ref RichTextBox outputbox)
         {
             Color color = Color.Black;
-            if (level.ToLower().Equals("debug") || level.ToLower().Equals("error"))
+            if (level.ToLower().Equals("error"))
             {
                 color = Color.Red;
+            }
+            if (level.ToLower().Equals("debug"))
+            {
+                color = Color.CornflowerBlue;
             }
 
             //We can't talk to outputbox from the server thread...
@@ -375,6 +396,7 @@ namespace XMTuner
         private Image getImageFromURL(String url)
         {
             URL imageURL = new URL(url);
+            imageURL.setTimeout(500);
             imageURL.fetch();
             Image image = imageURL.responseAsImage();
             return image; //Note, this can be null
@@ -399,18 +421,36 @@ namespace XMTuner
             Image defaultImage = Image.FromStream(Assembly.GetExecutingAssembly().GetManifestResourceStream("XMTuner.xmtuner64.png"));
             channelBox.Columns.AddRange(new ColumnHeader[] { new ColumnHeader(), new ColumnHeader()});
 
+            int errcnt = 0;
             foreach (XMChannel chan in self.getChannels())
             {
                 Int32 imagenum;
+                Image image = null;
+                Boolean haveLogo = false;
+                //If the logo is defined, attempt to load it...
                 if (chan.logo_small != null)
                 {
-                    Image image = getImageFromURL(chan.logo_small);
+                    //Unless we've already had problems loading logos before...
+                    if (errcnt <= 2)
+                    {
+                        image = getImageFromURL(chan.logo_small);
+                        haveLogo = true;
+                    }
+                    //We failed to get the logo, declare it invalid and increase the error count
+                    if (image == null)
+                    {
+                        errcnt++;
+                    }
+                }
+
+                //Evaluate if the logo is defined, so we catch it being declared invalid above
+                if (haveLogo)
+                {
+                    //If we have the image, use it.
                     if (image != null)
                     {
                         imagelist.Images.Add(image);
                     }
-                    //if (channel.category.ToLower().Contains("talk") || channel.category.ToLower().Contains("sports"))
-                    // then the default image height is too small.. 
                     imagenum = i;
                 }
                 else
@@ -463,31 +503,22 @@ namespace XMTuner
 
         private String getChannelAddress(String channelString, String protocol, String altBitrate)
         {
-            if (channelString == null) {
-                return "";
-            }
-
-            String[] tmp1 = channelString.Split('-');
-            String channelNum = tmp1[0].Replace("XM","").Trim();
-            String channelAddress = protocol.ToLower()+"://"+hostname+":"+port+"/streams/"+channelNum+"/"+bitrate;
-
-            if (bitRateBox.SelectedIndex == -1) { altBitrate = bitrate; }
-            NameValueCollection collectionForAdd = new NameValueCollection();
-            collectionForAdd.Add("type", protocol.ToLower());
-            collectionForAdd.Add("bitrate", altBitrate.ToLower());
-
-            NameValueCollection config = new NameValueCollection();
-            config.Add("bitrate", bitrate);
-            config.Add("isMMS", isMMS.ToString());
-            String useHost;
-            if (hostname.Equals("")) { useHost = ip; } else { useHost = hostname; }
-            useHost = useHost + ":" + port;
-            String address1 = TheConstructor.buildLink("stream", useHost, collectionForAdd, null, Convert.ToInt32(channelNum), config);
-            
-            return address1;
+            if (channelBox.SelectedItems.Count == 0) { return ""; }
+            Int32 channelNum = Convert.ToInt32(channelBox.SelectedItems[0].Name);
+            return getAddress("stream", protocol, altBitrate, channelNum);
         }
 
         private String getFeedAddress(String protocol, String altBitrate)
+        {
+            return getAddress("feed", protocol, altBitrate, 0);
+        }
+
+        private String getPlaylistAddress(string protocol, string altBitrate)
+        {
+            return getAddress("playlist", protocol, altBitrate, 0);
+        }
+
+        private String getAddress(String type, String protocol, String altBitrate, Int32 channelNum)
         {
             NameValueCollection collectionForAdd = new NameValueCollection();
             collectionForAdd.Add("type", protocol.ToLower());
@@ -495,20 +526,19 @@ namespace XMTuner
             NameValueCollection config = new NameValueCollection();
             config.Add("bitrate", bitrate);
             config.Add("isMMS", isMMS.ToString());
+            if (bitRateBox.SelectedIndex == -1) { altBitrate = bitrate; }
 
             String host;
             if (hostname.Equals("")) { host = ip; } else { host = hostname; }
             host = host + ":" + port;
 
-            if (bitRateBox.SelectedIndex == -1) { altBitrate = bitrate; }
-
-            String address = TheConstructor.buildLink("feed", host, collectionForAdd, null, 0, config);
-
+            String address = TheConstructor.buildLink(type, host, collectionForAdd, null, channelNum, config);
             return address;
         }
 
         private void makeAddress(object sender, EventArgs e)
         {
+            
             if (channelBox.Items.Count == 0) { return; }
 
             String protocol;
@@ -529,11 +559,36 @@ namespace XMTuner
             {
                 addressBox.Text = getFeedAddress(protocol, altBitrate);
             }
+            else if (typeBox.SelectedItem.ToString().ToLower().Equals("playlist"))
+            {
+                addressBox.Text = getPlaylistAddress(protocol, altBitrate);
+            }
             else
             {
                 addressBox.Text = getChannelAddress(channel, protocol, altBitrate);
             }
         }
+
+        private void updateTypeList(object sender, EventArgs e)
+        {
+            if (typeBox.SelectedItem.ToString().ToLower().Equals("playlist")) {
+                protocolBox.Items.Clear();
+                protocolBox.Items.Add("Type:");
+                protocolBox.Items.Add("ASX");
+                protocolBox.Items.Add("PLS");
+                protocolBox.Items.Add("M3U");
+                protocolBox.SelectedItem = "ASX";
+            } else {
+                protocolBox.Items.Clear();
+                protocolBox.Items.Add("Protocol:");
+                protocolBox.Items.Add("HTTP");
+                protocolBox.Items.Add("MMS");
+                if (isMMS) { protocolBox.SelectedItem = "MMS"; } else { protocolBox.SelectedItem = "HTTP"; }
+            }
+            makeAddress(sender, e);
+        }
+
+
 
         private void cpyToClip_Click(object sender, EventArgs e)
         {

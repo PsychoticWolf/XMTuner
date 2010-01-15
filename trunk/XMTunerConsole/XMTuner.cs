@@ -12,12 +12,12 @@ namespace XMTuner
     class XMTuner
     {
         //Flags
-        bool isLive = true;
-        //isDebug is now in Log.cs
+        bool isLive = false;
 
         //Config options...
         String user;
         String password;
+        Boolean useLocalDatapath = false;
 
         List<XMChannel> channels = new List<XMChannel>();
         Log log;
@@ -25,6 +25,8 @@ namespace XMTuner
         public int lastChannelPlayed;
         public bool isLoggedIn;
         public Boolean loadedExtendedChannelData = false;
+        Boolean loadedChannelMetadataCache = false;
+        Boolean isProgramDataCurrent = false;
         int cookieCount = 0;
         public List<String> recentlyPlayed = new List<String>();
 
@@ -33,12 +35,15 @@ namespace XMTuner
         {
         }
 
-        public XMTuner(String username, String passw, Log logging)
+        public XMTuner(String username, String passw, Log logging, Boolean pUseLocalDatapath)
         {
             user = username;
             password = passw;
             log = logging;
-           
+            useLocalDatapath = pUseLocalDatapath;
+#if !DEBUG
+            isLive = true;
+#endif
             login();
           
         }
@@ -86,6 +91,9 @@ namespace XMTuner
                             //We're logged in and have valid channel information, set login flag to true
                             isLoggedIn = true;
 
+                            //Attempt to preload channel metadata
+                            loadChannelMetadata(true);
+
                             //Continue to preloading whatsOn data
                             doWhatsOn();
                         }
@@ -117,20 +125,48 @@ namespace XMTuner
             isLoggedIn = false;
         }
 
-        private bool isChannelDataCurrent()
+        private String getDataPath(String file)
         {
-            String directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "XMTuner");
-            String file = "channellineup.cache";
-            if (!Directory.Exists(directory)) { Directory.CreateDirectory(directory); }
-            String path = directory + "\\" + file;
+            String directory = "";
+            if (useLocalDatapath == false)
+            {
+                directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "XMTuner");
+                if (!Directory.Exists(directory)) { Directory.CreateDirectory(directory); }
+            }
+            if (file.Equals(""))
+            {
+                return directory;
+            }
+            else 
+            {
+                if (directory.Equals(""))
+                {
+                    return file;
+                }
+                else
+                {
+                    return directory + "\\" + file;
+                }
+            }
+        }
 
+        private Boolean isChannelDataCurrent()
+        {
+            return isDataCurrent("channellineup.cache", -1);
+        }
+
+        private Boolean isDataCurrent(String file, Double value)
+        {
+            String path = getDataPath(file);
             DateTime dt = File.GetLastWriteTime(path);
             DateTime maxage = DateTime.Now;
             maxage = maxage.AddDays(-1);
             if (dt > maxage)
             {
                 return true;
-            } else {
+            }
+            else
+            {
                 return false;
             }
         }
@@ -142,10 +178,7 @@ namespace XMTuner
             if (isChannelDataCurrent())
             {
                 //Load from file
-                String directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "XMTuner");
-                String file = "channellineup.cache";
-                if (!Directory.Exists(directory)) { Directory.CreateDirectory(directory); }
-                String path = directory + "\\" + file;
+                String path = getDataPath("channellineup.cache");
                
                 try
                 {
@@ -296,10 +329,7 @@ namespace XMTuner
 
         private void saveChannelData(String rawchanneldata)
         {
-            String directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "XMTuner");
-            String file = "channellineup.cache";
-            if (!Directory.Exists(directory)) { Directory.CreateDirectory(directory); }
-            String path = directory + "\\" + file;
+            String path = getDataPath("channellineup.cache");
 
             try {
             FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write);
@@ -337,7 +367,7 @@ namespace XMTuner
                 dnldChannelData();
             }
 
-            if (loadedExtendedChannelData == false)
+            if (loadedExtendedChannelData == false || isProgramDataCurrent == false)
             {
                 MethodInvoker extendedChannelDataDelegate = new MethodInvoker(loadExtendedChannelData);
                 extendedChannelDataDelegate.BeginInvoke(null, null);
@@ -351,7 +381,10 @@ namespace XMTuner
         private void loadExtendedChannelData()
         {
             loadChannelMetadata();
-            loadProgramGuideData();
+            if (isProgramDataCurrent == false)
+            {
+                loadProgramGuideData();
+            }
         }
 
         private void loadWhatsOn()
@@ -508,7 +541,59 @@ namespace XMTuner
 
         private void loadChannelMetadata()
         {
-            output("Load Channel Metadata...", "debug");
+            output("Loading extended channel data...", "info");
+            if (isDataCurrent("channelmetadata.cache", -5))
+            {
+                loadChannelMetadata(false);
+            }
+            else
+            {
+                dnldChannelMetadata();
+            }
+        }
+        private void loadChannelMetadata(Boolean fastLoad)
+        {
+            if (fastLoad == true)
+            {
+                output("Loading extended channel data... (from cache)", "info");
+            }
+            //We only load cached data once (so if fastLoad succeeded.. 
+            // Normal mode can return early
+            if (loadedChannelMetadataCache == true)
+            {
+                output("Extended channel data is loaded and current, no update needed.", "info");
+                if (fastLoad == false)
+                {
+                    loadedExtendedChannelData = true; 
+                }
+                return;
+            } 
+            String file = "channelmetadata.cache";
+            String path = getDataPath(file);
+            FileStream fs = new FileStream(path, FileMode.OpenOrCreate, FileAccess.Read);
+            StreamReader textIn = new StreamReader(fs);
+            String rawchannelmetadata = textIn.ReadToEnd();
+            textIn.Close();
+            loadedChannelMetadataCache = setChannelMetadata(rawchannelmetadata);
+            if (!loadedChannelMetadataCache)
+            {
+                //Force expiration of bad data. (Don't delete it in case something useful is in the file for debugging)
+                File.SetLastWriteTime(path, new DateTime(1985, 1, 1));
+                output("Failed to load extended channel data (from cache).", "error");
+            }
+            else
+            {
+                output("Extended channel data loaded successfully (from cache)", "info");
+                if (fastLoad == false)
+                {
+                    loadedExtendedChannelData = true;
+                }
+            }
+        }
+
+        private void dnldChannelMetadata()
+        {
+            output("Downloading extended channel data...", "info");
             String channelMetaURL;
             if (isLive)
             {
@@ -525,7 +610,13 @@ namespace XMTuner
 
             int responseCode = channelMetaData.getStatus();
             output("Server Response: " + responseCode.ToString(), "debug");
-            loadedExtendedChannelData = setChannelMetadata(channelMetaData.response());
+            String rawChannelMetaData = channelMetaData.response();
+            loadedExtendedChannelData = setChannelMetadata(rawChannelMetaData);
+            if (loadedExtendedChannelData == true)
+            {
+                output("Extended channel data loaded successfully", "info");
+                saveChannelMetadata(rawChannelMetaData);
+            }
             channelMetaData.close();
         }
 
@@ -563,6 +654,23 @@ namespace XMTuner
             return true;
         }
 
+        private void saveChannelMetadata(String rawdata)
+        {
+            String path = getDataPath("channelmetadata.cache");
+
+            try
+            {
+                FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write);
+                StreamWriter textOut = new StreamWriter(fs);
+                textOut.Write(rawdata);
+                textOut.Close();
+            }
+            catch (IOException e)
+            {
+                output("Error encountered saving channel metadata to cache. (" + e.Message + ")", "error");
+            }
+        }
+
         private void setRecentlyPlayed()
         {
             XMChannel npChannel = Find(lastChannelPlayed);
@@ -588,13 +696,21 @@ namespace XMTuner
             }
         }
 
+        private String getChannelsNums()
+        {
+            String channels = "";
+            foreach (XMChannel chan in getChannels())
+            {
+                channels += chan.num+",";
+            }
+            return channels;
+        }
+
         private void loadProgramGuideData()
         {
-            output("Local program data...", "debug");
+            output("Loading program guide...", "info");
 
-            //XXX Need to convert this to something enumerated
-            String channums="2,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,20,21,22,23,24,25,26,27,28,29,30,32,33,34,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,62,64,65,66,67,68,70,71,72,73,74,75,76,77,78,79,80,81,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,192,193,194,195,196,197,198,199,200,201,202,203,204,205,206,207,208,209,210,211,212,213,214,215,216,217,218,219,221,222,225,226,227,231,232,233,234,235,236,237,238,239,241,242,243,244,245,246,247";
-            channums = HttpUtility.UrlEncode(channums);
+            String channums = HttpUtility.UrlEncode(getChannelsNums());
 
             //endDate	11122009030000 (date("dmYHis", time()+86400);)
             String enddate = DateTime.Now.AddDays(1).ToString("ddMMyyyyHHmmss");
@@ -602,7 +718,15 @@ namespace XMTuner
             //startDate	11122009000000 (date("dmYHis", time());)
             String startdate = DateTime.Now.ToString("ddMMyyyyHHmmss");
 
-            String programGuideURL = "http://www.xmradio.com/epg.program_schedules.xmc?channelNums="+channums+"&endDate="+enddate+"&startDate="+startdate;
+            String programGuideURL;
+            if (isLive)
+            {
+                programGuideURL = "http://www.xmradio.com/epg.program_schedules.xmc?channelNums=" + channums + "&endDate=" + enddate + "&startDate=" + startdate;
+            }
+            else
+            {
+                programGuideURL = "http://users.pcfire.net/~wolf/XMReader/epg/program_schedules.xmc1";
+            }
             URL programGuideData = new URL(programGuideURL);
             output("Fetching: " + programGuideURL, "debug");
             programGuideData.setRequestHeader("Cookie", cookies);
@@ -610,7 +734,18 @@ namespace XMTuner
 
             int responseCode = programGuideData.getStatus();
             output("Server Response: " + responseCode.ToString(), "debug");
-            Boolean loadedProgramGuideData = setProgramGuideData(programGuideData.response());
+            if (responseCode.Equals(200))
+            {
+                isProgramDataCurrent = setProgramGuideData(programGuideData.response());
+            }
+            if (isProgramDataCurrent)
+            {
+                output("Program guide loaded successfully.", "info");
+            }
+            else
+            {
+                output("Failed to load program guide data (will retry).", "error");
+            }
             programGuideData.close();
         }
 
@@ -682,6 +817,14 @@ namespace XMTuner
                     foundFirstValidProgram = true;
                 }
             }
+
+            //We assume that if we can't find a valid program, we should reload the program data.
+            //So we set the variable here to cause such a reload to be rescheduled.
+            if (program == null)
+            {
+                isProgramDataCurrent = false;
+            }
+
             return program;
         }
 

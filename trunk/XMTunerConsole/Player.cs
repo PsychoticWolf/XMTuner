@@ -50,7 +50,6 @@ namespace XMTuner
 
                 if (pLogoBox.ImageLocation.Equals(""))
                 {
-                    //pLogoBox.SizeMode = PictureBoxSizeMode.CenterImage;
                     pLogoBox.ClientSize = new Size(128, 50);
                     pLogoBox.ImageLocation = npChannel.logo;
                 }
@@ -88,7 +87,14 @@ namespace XMTuner
             pStatusLabel.Visible = true;
             if (loggedIn == false)
             {
-                pStatusLabel.Text = "Log in to begin...";
+                if (isConfigurationLoaded == false)
+                {
+                    pStatusLabel.Text = "XMTuner needs to be configured before you can begin...";
+                }
+                else
+                {
+                    pStatusLabel.Text = "Log in to begin...";
+                }
             }
             else
             {
@@ -99,7 +105,6 @@ namespace XMTuner
                 }
                 else
                 {
-
                     pStatusLabel.Text = "Select a channel...";
                 }
             }
