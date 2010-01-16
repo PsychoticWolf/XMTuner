@@ -48,10 +48,13 @@ namespace XMTuner
                     syncStatusLabel();
                 }
 
-                if (pLogoBox.ImageLocation.Equals(""))
+                if (npChannel.logo != null)
                 {
-                    pLogoBox.ClientSize = new Size(128, 50);
-                    pLogoBox.ImageLocation = npChannel.logo;
+                    if (pLogoBox.ImageLocation.Equals(""))
+                    {
+                        pLogoBox.ClientSize = new Size(128, 50);
+                        pLogoBox.ImageLocation = npChannel.logo;
+                    }
                 }
                 pLabel1.Text = "XM " + npChannel.num + " - " + npChannel.name;
                 pLabel2.Text = npChannel.song;

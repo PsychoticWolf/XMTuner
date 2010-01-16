@@ -169,6 +169,8 @@ namespace XMTuner
             shutdownPlayer();
             xmServer.stop();
             serverRunning = false;
+            linkServer.Text = "Server is Stopped...";
+            linkServer.Enabled = false;
             lblClock.Text = "0:00:00";
             i = 0;
             timer2.Enabled = false;

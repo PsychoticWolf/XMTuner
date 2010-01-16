@@ -121,8 +121,16 @@ namespace XMTuner
             cookies = null;
             channels.Clear();
             loadedExtendedChannelData = false;
+            loadedChannelMetadataCache = false;
+            isProgramDataCurrent = false;
             lastChannelPlayed = 0;
             isLoggedIn = false;
+        }
+
+        private void relogin()
+        {
+            logout();
+            login();
         }
 
         private String getDataPath(String file)
@@ -358,7 +366,7 @@ namespace XMTuner
             if (isLoggedIn == false)
             {
                 output("XM Session Timed-out. Reconnecting...", "info");
-                login();
+                relogin();
                 return;
             }
 
@@ -674,7 +682,7 @@ namespace XMTuner
         private void setRecentlyPlayed()
         {
             XMChannel npChannel = Find(lastChannelPlayed);
-            if (npChannel.num == 0 || npChannel.song.Equals(""))
+            if (npChannel.num == 0 || npChannel.song == null || npChannel.song.Equals(""))
             { 
                 return;
             }
