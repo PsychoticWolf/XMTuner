@@ -18,7 +18,7 @@ namespace XMTuner
         String user;
         String password;
         String port = "";
-        //String bitrate;
+        Boolean useLocalDatapath = false;
         bool highbit = true;
         String hostname = "";
         String tversityHost = "";
@@ -42,7 +42,7 @@ namespace XMTuner
             {
                 logging.output("Reading configuration", "debug");
                 logging.log(i);
-                self = new XMTuner(user, password, logging);
+                self = new XMTuner(user, password, logging, useLocalDatapath);
                 logging.output("XMTuner created, Attempting Login", "debug");
                 logging.log(i);
 

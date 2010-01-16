@@ -9,5 +9,10 @@ namespace XMTuner
         {
 
         }
+
+        public static String getVersion()
+        {
+            return "";
+        }
     }
 }
