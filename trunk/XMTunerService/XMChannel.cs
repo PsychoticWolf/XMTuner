@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Web;
 
 
 namespace XMTuner
@@ -17,6 +18,7 @@ namespace XMTuner
         public String url;
         public String logo;
         public String logo_small;
+        public List<String[]> programData = new List<string[]>();
 
         public XMChannel(String cat, int nu, String na, String d)
         {
@@ -40,9 +42,9 @@ namespace XMTuner
 
         public void addPlayingInfo(String[] stringyInfo)
         {
-            artist = stringyInfo[1];
-            song = stringyInfo[2];
-            album = stringyInfo[3];
+            artist = HttpUtility.HtmlDecode(stringyInfo[1]);
+            song = HttpUtility.HtmlDecode(stringyInfo[2]);
+            album = HttpUtility.HtmlDecode(stringyInfo[3]);
         }
 
         public void addChannelMetadata(String[] stringyInfo)
@@ -51,6 +53,16 @@ namespace XMTuner
             logo_small = stringyInfo[2];
             logo = stringyInfo[3];
 
+        }
+
+        public void addProgram(String[] program)
+        {
+            programData.Add(program);
+        }
+
+        public void clearProgram()
+        {
+            programData.Clear();
         }
 
         #region IComparable<XMChannel> Members

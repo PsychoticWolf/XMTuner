@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Net;
 using System.IO;
+using System.Drawing;
 
 namespace XMTuner
 {
@@ -35,9 +36,16 @@ namespace XMTuner
             TheRequest.Headers.Add(header);
         }
 
+        public void setTimeout(Int32 timeout)
+        {
+            TheRequest.Timeout = timeout;
+        }
+
         public void fetch()
         {
-            TheRequest.Timeout = 30000;
+            if (TheRequest.Timeout.Equals(100000)) {
+                TheRequest.Timeout = 30000;
+            }
             try
             {
                 TheReply = (HttpWebResponse)TheRequest.GetResponse();
@@ -55,13 +63,12 @@ namespace XMTuner
             byte[] buffer = Encoding.ASCII.GetBytes(postdata);
             TheRequest.ContentType = "application/x-www-form-urlencoded";
             TheRequest.ContentLength = buffer.Length;
-            Stream PostData = TheRequest.GetRequestStream();
-
-            PostData.Write(buffer, 0, buffer.Length);
-            PostData.Close();
 
             try
             {
+                Stream PostData = TheRequest.GetRequestStream();
+                PostData.Write(buffer, 0, buffer.Length);
+                PostData.Close();
                 TheReply = (HttpWebResponse)TheRequest.GetResponse();
             }
             catch (WebException e) {
@@ -71,12 +78,20 @@ namespace XMTuner
 
         public int getStatus()
         {
+            if (TheReply == null)
+            {
+                return 0;
+            }
             int statusCode = (int) TheReply.StatusCode;
             return statusCode;
         }
 
         public String response()
         {
+            if (TheReply == null)
+            {
+                return "";
+            }
             StreamReader Stream = new StreamReader(TheReply.GetResponseStream());
             String result = Stream.ReadToEnd();
             TheReply.Close();
@@ -84,9 +99,28 @@ namespace XMTuner
             return result;
         }
 
+        /* The placement of this method is a bit shameless (since it returns an Image 
+         * and not a more generic Stream, but its for our protection.
+         * As I want to make sure we're closing streams reliably. */
+        public Image responseAsImage()
+        {
+            if (TheReply == null)
+            {
+                return null;
+            }
+            Stream stream = TheReply.GetResponseStream();
+            Image image = Image.FromStream(stream);
+            TheReply.Close();
+            stream.Close();
+            return image;
+        }
+
         public void close()
         {
-            TheReply.Close();
+            if (TheReply != null)
+            {
+                TheReply.Close();
+            }
         }
 
         public CookieCollection getCookies()

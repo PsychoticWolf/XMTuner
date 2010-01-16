@@ -233,7 +233,17 @@ namespace XMTuner
                 NameValueCollection streamParams = worker.parseStreamURL(methodURL);
 
                 //Validate Channel
-                String chanName = myTuner.checkChannel(Convert.ToInt32(streamParams[0]));
+                Int32 num = 0;
+                try
+                {
+                    num = Convert.ToInt32(streamParams[0]);
+                }
+                catch (FormatException e)
+                {
+                    myTuner.output("Failed to read XM channel number requested. ("+e.Message+")", "debug");
+                }
+
+                String chanName = myTuner.checkChannel(num);
                 if (!chanName.Equals(""))
                 {
                     myTuner.output("Incoming Stream Request for XM" + streamParams[0] + " - " + chanName + "", "info");
@@ -272,6 +282,48 @@ namespace XMTuner
                 NameValueCollection URLParams = request.QueryString;
                 MemoryStream stream = worker.DoFeed(methodURL, URLParams, request.UserAgent, serverHost);
                 SendRequest(context, stream, null, "text/xml;charset=UTF-8", false, HttpStatusCode.OK);
+            }
+            else if (baseURL.Equals("playlists"))
+            {
+                NameValueCollection URLParams = request.QueryString;
+               String servtype = "";
+
+               String keystring = "";
+               foreach (String key in URLParams.Keys)
+               {
+                   keystring += " "+key + " ";
+               }
+
+               if (!URLParams.HasKeys())
+               {
+                   URLParams.Add("type", "pls");
+                   servtype = "audio/x-scpls";
+               }
+               else if (!keystring.Contains(" type "))
+               {
+                   servtype = "audio/x-scpls";
+                   URLParams.Add("type", "pls");
+               }
+               else if (URLParams["type"].ToLower() == "pls")
+               {
+                   servtype = "audio/x-scpls";
+               }
+               else if (URLParams["type"].ToLower() == "m3u")
+               {
+                   servtype = "audio/x-ms-wax";
+               }
+               else if (URLParams["type"].ToLower() == "asx")
+               {
+                   servtype = "audio/x-ms-wax";
+               }
+               else
+               {
+                   URLParams["type"] = "pls";
+                   servtype = "audio/x-scpls";
+               }
+
+                String playlist = worker.DoBuildPlaylist(methodURL, URLParams, serverHost);
+                SendRequest(context, null, playlist, servtype, false, HttpStatusCode.OK);
             }
             else
             {

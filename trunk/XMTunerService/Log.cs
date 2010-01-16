@@ -8,20 +8,30 @@ namespace XMTuner
     {
         RichTextBox outputbox;
         String theLog = "";
-        String logFile = "applicaiton.log";
-        Boolean isDebug = true;
+        String logFile = "application.log";
+        Boolean isDebug = false;
         Boolean useLocalDatapath = false;
+        String version;
 
         public Log()
         {
+#if DEBUG
+            isDebug = true;
+#endif
             logFile = "XMTunerService.log";
+            version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(3);
+
         }
 
         public Log(ref RichTextBox box1, Boolean bUseLocalDataPath)
         {
+#if DEBUG
+            isDebug = true;
+#endif
             logFile = "XMTuner.log";
             outputbox = box1;
             useLocalDatapath = bUseLocalDataPath;
+            version = Form1.getVersion();
         }
 
         public void output(String output, String level)
@@ -43,20 +53,21 @@ namespace XMTuner
 
         public void log(int i)
         {
-            String directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "XMTuner");
-            if (!Directory.Exists(directory)) { Directory.CreateDirectory(directory); }
-            String file = logFile;
-            String path;
-            //output(directory, "message");
-            path = directory + "\\" + file;
-            //path = file;
+            String path = "";
+            if (useLocalDatapath == false)
+            {
+                String directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "XMTuner");
+                if (!Directory.Exists(directory)) { Directory.CreateDirectory(directory); }
+                path += directory + "\\";
+            }
+            path += logFile;
 
             FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write);
             StreamWriter textOut = new StreamWriter(fs);
 
             DateTime datetime = DateTime.Now;
             String header = "XMTuner Output\n";
-            header = header + "Build: 0.4 \n";
+            header = header + "Build: "+version+" \n";
             header += datetime.ToString() + "\n\n";
             if (outputbox != null)
             {
