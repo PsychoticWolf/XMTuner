@@ -15,8 +15,26 @@
     {
         "Entry"
         {
+        "MsmKey" = "8:_273AF3ACF7F89ED7E1C3A4114EC2C23B"
+        "OwnerKey" = "8:_64CFD250E4D85F9E6A14B6202D6966D5"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_273AF3ACF7F89ED7E1C3A4114EC2C23B"
+        "OwnerKey" = "8:_732B0E6386A04A43B50C7F48502BD92D"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_5DBAF8F0697F4B149EE38E9DFA613118"
         "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_64CFD250E4D85F9E6A14B6202D6966D5"
+        "OwnerKey" = "8:_732B0E6386A04A43B50C7F48502BD92D"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -41,6 +59,18 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_732B0E6386A04A43B50C7F48502BD92D"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_64CFD250E4D85F9E6A14B6202D6966D5"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_273AF3ACF7F89ED7E1C3A4114EC2C23B"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -154,6 +184,68 @@
         }
         "File"
         {
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_273AF3ACF7F89ED7E1C3A4114EC2C23B"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:Interop.WMPLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_273AF3ACF7F89ED7E1C3A4114EC2C23B"
+                    {
+                    "Name" = "8:Interop.WMPLib.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:Interop.WMPLib.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_47B84E94336740F5B9549DA184B45EC3"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_64CFD250E4D85F9E6A14B6202D6966D5"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:AxInterop.WMPLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_64CFD250E4D85F9E6A14B6202D6966D5"
+                    {
+                    "Name" = "8:AxInterop.WMPLib.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:AxInterop.WMPLib.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_47B84E94336740F5B9549DA184B45EC3"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B197A2688E5D463C8B426B61EC34CAED"
             {
             "SourcePath" = "8:..\\satellite-Vista.ico"
@@ -261,14 +353,14 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:XM Tuner"
-        "ProductCode" = "8:{4A734D93-D47A-4D7F-8CBD-D8E61ABC9F7C}"
-        "PackageCode" = "8:{0C2033A7-2673-4344-8862-C2C305ADAA02}"
+        "ProductCode" = "8:{42C73C4D-8A2B-4148-9A5F-59ED92E935A9}"
+        "PackageCode" = "8:{99C56F47-62FA-4524-908A-A51DE8B78EBB}"
         "UpgradeCode" = "8:{96B7DD5C-10F8-4C80-A7F6-A36C2DFE7C7F}"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:0.2.0"
+        "ProductVersion" = "8:0.5.0"
         "Manufacturer" = "8:PCFIRE"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -810,7 +902,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_5DBAF8F0697F4B149EE38E9DFA613118"
             {
-            "SourcePath" = "8:..\\XMTunerService\\obj\\x86\\Debug\\XMTunerService.exe"
+            "SourcePath" = "8:..\\XMTunerService\\obj\\x86\\Release\\XMTunerService.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_47B84E94336740F5B9549DA184B45EC3"
@@ -838,7 +930,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_732B0E6386A04A43B50C7F48502BD92D"
             {
-            "SourcePath" = "8:..\\XMReaderConsole\\obj\\x86\\Debug\\XMTuner.exe"
+            "SourcePath" = "8:..\\XMTunerConsole\\obj\\x86\\Release\\XMTuner.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_47B84E94336740F5B9549DA184B45EC3"

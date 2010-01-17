@@ -8,7 +8,7 @@ and a UPnP service provider (such as TVersity or Orb).
 
 If you encounter any issues, please send us an email at xmtuner@pcfire.net.
 
-Usuability notes:
+Usability notes:
 	- You will need an XMRO account to utilize this application.
 	- The default address for the feed is http://localhost:19081/feeds/
 	- "Playing now" information is available at http://localhost:19081/
@@ -35,18 +35,6 @@ The Service:
 	a user interface, although, you may still launch XMTuner to make changes to the service
 	or remove it completely if you wish. 
 	
-Changes from 0.3
-    * Internal player functionality
-    * Updated "Channels" page works with the plauer
-    * "Now Playing" information now in main UI
-    * Program Guide added to Channels page
-    * "Playing" information history available
-    * Notification box on information change
-    * PLS, M3U and ASX Playlists
-    * Windows UAC now supported
-    * More stable and less crashes than 0.3
-
-	
-Special Notes for TVersity Users:
+Special Notes for TVersity Users: 
 	-If you have a limit of 20 channels on Tversity:
 		-Set Internet Feeds Maximum Items Per Feed to 0 (unlimited)
