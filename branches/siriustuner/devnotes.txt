@@ -1,0 +1,38 @@
+FIX!
+
+Crash when loading feed (null bitrate)
+Broken default mms:// on whatson (and feed?!?)
+Missing bitrate in generated URLs on whatsOn
+
+
+====
+
+
+Things from uXM:
+* (WONTFIX) ASX - fetch URL and return the file w/ type
+	--> Probably safe to exclude this given XMTuner's support for http urls. uXM only did mms
+* XBMC Support - 
+   Write files for each channel to user provided path
+   XM <num> - <channel name (cleaned up for use in filename, strip all non-alphanumeric chars)>.strm 
+      Contents, one line, plaintext, pointing to the http:// URL of the stream.
+  (Not sure if this is worthwhile, seems there's a script for that platform http://www.leknifragonline.net/RunXM/)
+* Need Panel for Displaying Channel URLs and Feed Path
+--> Largely done, need to add feed link still
+* Lineup Caching
+
+
+* Finish hostname support
+* Installer tweaks
+
+--
+
+TODO:
+* Cleanup.. Relogin support should do more work
+     Probably need to purge cookies and such as well.
+* Recently Played Songs list
+     
+* Seperate server startup/shutdown from login.
+
+* Player mode
+* Service mode
+
