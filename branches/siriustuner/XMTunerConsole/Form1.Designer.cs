@@ -832,7 +832,7 @@
             this.MaximumSize = new System.Drawing.Size(576, 387);
             this.Name = "Form1";
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
-            this.Text = "XMTuner";
+            this.Text = "SiriusTuner (Experimental)";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Resize += new System.EventHandler(this.Form1_Resize);
