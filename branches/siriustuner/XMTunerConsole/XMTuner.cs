@@ -6,6 +6,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Web;
+using System.Xml;
 
 namespace XMTuner
 {
@@ -52,7 +53,14 @@ namespace XMTuner
         {
             //Prefetch
             String SiriusPlayerURL;
-            SiriusPlayerURL = "http://www.sirius.com/player/home/siriushome.action";
+            /* if (isLive)
+            { */
+                SiriusPlayerURL = "http://www.sirius.com/player/home/siriushome.action";
+            /* }
+            else
+            {
+                SiriusPlayerURL = "http://users.pcfire.net/~wolf/XMReader/sirius/player.index";
+            } */
             URL playerURL = new URL(SiriusPlayerURL);
             output("Connecting to: " + SiriusPlayerURL, "debug");
             playerURL.setCookieContainer();
@@ -94,7 +102,7 @@ namespace XMTuner
             }
             else
             {
-                SiriusLoginURL = "http://users.pcfire.net/~wolf/XMReader/Sirius/logintest.php";
+                SiriusLoginURL = "http://users.pcfire.net/~wolf/XMReader/test.php";
             }
 
             output("Connecting to: "+SiriusLoginURL, "debug");
@@ -110,7 +118,9 @@ namespace XMTuner
             
             if (loginURL.getStatus() > 0 && loginURL.getStatus() < 400)
             {
-                cookies = setCookies(loginURL.getCookies());
+                CookieCollection loginCookies = loginURL.getCookies();
+                loginCookies.Add(playerCookies);
+                cookies = setCookies(loginCookies);
 
                 output("Number of Cookies: " + cookieCount.ToString(), "debug");
 
@@ -130,8 +140,10 @@ namespace XMTuner
                             //We're logged in and have valid channel information, set login flag to true
                             isLoggedIn = true;
 
+                            loadSiriusChannelGuide();
+
                             //Attempt to preload channel metadata
-                            loadChannelMetadata(true);
+                            //loadChannelMetadata(true);
 
                             //Continue to preloading whatsOn data
                             doWhatsOn();
@@ -152,6 +164,32 @@ namespace XMTuner
                 output("Login Failed: " + loginURL.getStatus(), "error"); 
             }
             loginURL.close();
+        }
+
+        private void loadSiriusChannelGuide()
+        {
+            String URL = "http://users.pcfire.net/~wolf/XMReader/sirius/ContentServer";
+            URL channelGuideURL = new URL(URL);
+            channelGuideURL.fetch();
+            String data = channelGuideURL.response().Trim();
+            XmlDocument xmldoc = new XmlDocument();
+            xmldoc.LoadXml(data);
+            XmlNodeList list = xmldoc.GetElementsByTagName("channel");
+
+            foreach (XmlNode channel in list)
+            {
+                Int32 chanNum = Convert.ToInt32(channel.ChildNodes[4].InnerText);
+                String chanKey = channel.Attributes["key"].Value;
+                String chanURL = channel.ChildNodes[8].InnerText;
+
+                String[] details = new String[2];
+                details[0] = chanURL;
+                details[1] = chanKey;
+
+                XMChannel c = Find(chanNum);
+                c.addChannelData(details);
+            }
+
         }
 
         private void logout()
@@ -376,7 +414,7 @@ namespace XMTuner
                 string url;
                 if (isLive)
                 {
-                   url = "http://www.xmradio.com/player/channel/ajax.action?reqURL=player/2ft/channelData.jsp?remote=true&all_channels=true";
+                   url = "http://www.sirius.com/player/channel/ajax.action?reqURL=player/2ft/channelData.jsp?remote=true&all_channels=true";
                 }
                 else
                 {
@@ -522,15 +560,16 @@ namespace XMTuner
                 dnldChannelData();
             }
 
+            isProgramDataCurrent = true; //XXX
             if (loadedExtendedChannelData == false || isProgramDataCurrent == false)
             {
                 MethodInvoker extendedChannelDataDelegate = new MethodInvoker(loadExtendedChannelData);
                 extendedChannelDataDelegate.BeginInvoke(null, null);
             }
-
+            /*
             MethodInvoker simpleDelegate = new MethodInvoker(loadWhatsOn);
             simpleDelegate.BeginInvoke(null, null);
-
+            */
         }
 
         private void loadExtendedChannelData()
@@ -643,16 +682,37 @@ namespace XMTuner
             }
         }
 
-        public string play(int channelnum, String speed)
+        public XMChannel Find(String channame)
         {
-            String address;
-            if (isLive)
+            XMChannel result = channels.Find(
+            delegate(XMChannel chan)
             {
-                address = "http://www.xmradio.com/player/listen/play.action?channelKey=" + channelnum + "&newBitRate=" + speed;
+                return chan.name == channame;
+            }
+            );
+            if (result != null)
+            {
+                return result;
             }
             else
             {
-                address = "http://users.pcfire.net/~wolf/XMReader/play.action";
+                XMChannel tmp = new XMChannel("", 0, "", "");
+                return tmp;
+            }
+        }
+
+        public string play(int channelnum, String speed)
+        {
+            String channelKey = Find(channelnum).channelKey;
+            output("Playing stream for Sirius "+channelnum+" ("+channelKey+")", "debug");
+            String address;
+            if (isLive)
+            {
+                address = "http://www.sirius.com/player/listen/play.action?channelKey=" + channelKey + "&newBitRate=" + speed;
+            }
+            else
+            {
+                address = "http://users.pcfire.net/~wolf/XMReader/sirius/play.action";
             }
             Uri tmp = new Uri(address);
             URL playerURL = new URL(tmp);
@@ -667,25 +727,53 @@ namespace XMTuner
 
         private string playChannel(URL url)
         {
-            String contentURL;
-            String pattern = "<PARAM NAME=\"FileName\" VALUE=\"(.*?)\">";
-            String m = Regex.Match(url.response(),pattern).ToString();
+            String contentURL = null;
+            String pattern = "<PARAM (NAME|name)=\"FileName\" (VALUE|value)=\"(.*?)\">";
+            String data = url.response();
+            String m = Regex.Match(data, pattern ).ToString();
             m = m.Replace("<PARAM NAME=\"FileName\" VALUE=\"", "");
+            m = m.Replace("<PARAM name=\"FileName\" value=\"", "");
             m = m.Replace("\">", "");
 
             if (!m.Equals(""))
             {
-                contentURL = m.ToString();
-                output(contentURL, "debug");
+                if (m.Contains("asxfwrd.action"))
+                {
+                    contentURL = playSiriusChannel(m);
+                }
+                else
+                {
+                    contentURL = m.ToString();
+                }
             }
-            else 
+
+            if (contentURL == null)
             {
-                output("XM Radio Online Error - Not Logged In", "error");
-                isLoggedIn = false;
-                contentURL = null;
+                output("Failed fetching stream for channel...", "error");
+                //output("XM Radio Online Error - Not Logged In", "error");
+                //isLoggedIn = false;
+            }
+            else
+            {
+                output(contentURL, "debug");
             }
 
             return (contentURL);
+        }
+
+        private String playSiriusChannel(String url)
+        {
+            url = "http://www.sirius.com" + url;
+            //url = url.Replace("playasxpc", "playasxmac");
+            URL asxFwrdURL = new URL(url);
+            asxFwrdURL.setRequestHeader("Cookie", cookies);
+            asxFwrdURL.fetch();
+            url = asxFwrdURL.response();
+            if (url.Equals("null"))
+            {
+                url = null;
+            }
+            return url;
         }
 
         //Helper method so we don't have to pass log around everywhere....
@@ -799,12 +887,13 @@ namespace XMTuner
                 String[] value = _value.Split(new string[] { "\"," }, StringSplitOptions.None);
             	          
                 String[] newdata = new String[4];
+                String name = value[0].Replace("\"", "");
                 newdata[0] = value[2].Replace("\"", ""); //Num
-                newdata[1] = baseurl + value[5].Replace("\"", ""); //URL for channel
+                //newdata[1] = baseurl + value[5].Replace("\"", ""); //URL for channel
                 newdata[2] = baseurl + value[6].Replace("\"", ""); // Logo (45x40)
                 newdata[3] = baseurl + value[10].Replace("\"", ""); // Logo (138x50)
 
-                Find(Convert.ToInt32(newdata[0])).addChannelMetadata(newdata);
+                Find(name.ToUpper()).addChannelMetadata(newdata);
             }
             return true;
         }

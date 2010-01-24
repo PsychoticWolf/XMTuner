@@ -18,6 +18,7 @@ namespace XMTuner
         public String url;
         public String logo;
         public String logo_small;
+        public String channelKey;
         public List<String[]> programData = new List<string[]>();
 
         public XMChannel(String cat, int nu, String na, String d)
@@ -63,6 +64,13 @@ namespace XMTuner
         public void clearProgram()
         {
             programData.Clear();
+        }
+
+        //This is Sirius specific...
+        public void addChannelData(String[] details)
+        {
+            url = details[0];
+            channelKey = details[1];
         }
 
         #region IComparable<XMChannel> Members

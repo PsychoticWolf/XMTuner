@@ -65,7 +65,7 @@ namespace XMTuner
                 //pLabel4: Tri-mode Artist/Program Now/Next Text
                 if (p <= 5)
                 {
-                    if (npChannel.album.Equals("")) { p = 5; p++; return; }
+                    if (npChannel.album == null || npChannel.album.Equals("")) { p = 5; p++; return; }
                     pLabel4.Text = npChannel.album;
                 }
                 else if (p <= 10 && p > 5)
