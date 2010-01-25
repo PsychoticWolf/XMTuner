@@ -424,6 +424,7 @@ namespace XMTuner
             channelBox.Columns.AddRange(new ColumnHeader[] { new ColumnHeader(), new ColumnHeader()});
 
             int errcnt = 0;
+            int defaultImg = 0;
             foreach (XMChannel chan in self.getChannels())
             {
                 Int32 imagenum;
@@ -460,12 +461,22 @@ namespace XMTuner
                     //Default Icon
                     if (setDefaultImage == false)
                     {
-                        imagelist.ImageSize = new Size(30, 30);
+                        if (imagelist.Images.Count < 1)
+                        {
+                            imagelist.ImageSize = new Size(30, 30);
+                            cbIconsLoaded = false;
+                        }
                         imagelist.Images.Add(defaultImage);
+                        imagenum = i;
+                        setDefaultImage = true;
+                        defaultImg = imagenum;
                     }
-                    cbIconsLoaded = false;
-                    imagenum = 0;
-                    setDefaultImage = true;
+                    else
+                    {
+                        imagenum = defaultImg;
+                        i--;
+                    }
+
                 }
                 ListViewItem item = new ListViewItem(new String[] {chan.ToSimpleString(), chan.desc});
                 item.ImageIndex = imagenum;
@@ -494,7 +505,6 @@ namespace XMTuner
                 channelBox.Clear();
                 loadChannels();
             }
-
             int i = 0;
             foreach (XMChannel chan in self.getChannels())
             {

@@ -23,6 +23,7 @@ namespace XMTuner
         List<XMChannel> channels = new List<XMChannel>();
         Log log;
         String cookies;
+        public String network = "SIRIUS";
         public int lastChannelPlayed;
         public bool isLoggedIn;
         public Boolean loadedExtendedChannelData = false;
@@ -52,15 +53,7 @@ namespace XMTuner
         private void login()
         {
             //Prefetch
-            String SiriusPlayerURL;
-            /* if (isLive)
-            { */
-                SiriusPlayerURL = "http://www.sirius.com/player/home/siriushome.action";
-            /* }
-            else
-            {
-                SiriusPlayerURL = "http://users.pcfire.net/~wolf/XMReader/sirius/player.index";
-            } */
+            String SiriusPlayerURL = "http://www.sirius.com/player/home/siriushome.action";
             URL playerURL = new URL(SiriusPlayerURL);
             output("Connecting to: " + SiriusPlayerURL, "debug");
             playerURL.setCookieContainer();
@@ -143,7 +136,7 @@ namespace XMTuner
                             loadSiriusChannelGuide();
 
                             //Attempt to preload channel metadata
-                            //loadChannelMetadata(true);
+                            loadChannelMetadata(true);
 
                             //Continue to preloading whatsOn data
                             doWhatsOn();
@@ -168,7 +161,8 @@ namespace XMTuner
 
         private void loadSiriusChannelGuide()
         {
-            String URL = "http://users.pcfire.net/~wolf/XMReader/sirius/ContentServer";
+            //String URL = "http://users.pcfire.net/~wolf/XMReader/sirius/ContentServer";
+            String URL = "http://www.sirius.com/servlet/ContentServer?pagename=Sirius/XML/ChannelGuideXML&c=ChannelLineup&cid=1218563499691&pid=SIR_AUD_EVT_SXM&catid=all"; //&pid=SIR_IP_EVT&catid=all";
             URL channelGuideURL = new URL(URL);
             channelGuideURL.fetch();
             String data = channelGuideURL.response().Trim();
@@ -560,16 +554,15 @@ namespace XMTuner
                 dnldChannelData();
             }
 
-            isProgramDataCurrent = true; //XXX
             if (loadedExtendedChannelData == false || isProgramDataCurrent == false)
             {
                 MethodInvoker extendedChannelDataDelegate = new MethodInvoker(loadExtendedChannelData);
                 extendedChannelDataDelegate.BeginInvoke(null, null);
             }
-            /*
+            
             MethodInvoker simpleDelegate = new MethodInvoker(loadWhatsOn);
             simpleDelegate.BeginInvoke(null, null);
-            */
+            
         }
 
         private void loadExtendedChannelData()
@@ -638,7 +631,7 @@ namespace XMTuner
                 String[] channel = rawChannel.Split(new string[] { sep }, StringSplitOptions.None);
             	
                 //channels.Find(Find(Convert.ToInt32(channel[0])));
-                Find(Convert.ToInt32(channel[0])).addPlayingInfo(channel);
+                FindbyXM(Convert.ToInt32(channel[0])).addPlayingInfo(channel);
             }
 
         }
@@ -669,6 +662,25 @@ namespace XMTuner
             delegate(XMChannel chan)
             {
                 return chan.num == channum;
+            }
+            );
+            if (result != null)
+            {
+                return result;
+            }
+            else
+            {
+                XMChannel tmp = new XMChannel("", 0, "", "");
+                return tmp;
+            }
+        }
+
+        public XMChannel FindbyXM(int channum)
+        {
+            XMChannel result = channels.Find(
+            delegate(XMChannel chan)
+            {
+                return chan.xmxref == channum;
             }
             );
             if (result != null)
@@ -882,16 +894,22 @@ namespace XMTuner
             }
 
             String[] data = rawData.Split(new string[] { "rig.addChannel(" }, StringSplitOptions.None);
-            String baseurl = "http://www.xmradio.com";
+            String baseurl = "http://www.sirius.com";
             foreach(String _value in data) {
-                String[] value = _value.Split(new string[] { "\"," }, StringSplitOptions.None);
+                String[] value = _value.Replace("\\","").Split(new string[] { "\"," }, StringSplitOptions.None);
             	          
                 String[] newdata = new String[4];
                 String name = value[0].Replace("\"", "");
-                newdata[0] = value[2].Replace("\"", ""); //Num
-                //newdata[1] = baseurl + value[5].Replace("\"", ""); //URL for channel
+                newdata[0] = value[2].Replace("\"", ""); //XM's Num
                 newdata[2] = baseurl + value[6].Replace("\"", ""); // Logo (45x40)
                 newdata[3] = baseurl + value[10].Replace("\"", ""); // Logo (138x50)
+
+                /* Because Sirius/XM have to be unique, this channel doesn't have the same name and won't
+                 *  be correctly cross-referenced without being special-cased, for now. */
+                if (name.ToUpper().Equals("NPR NOW")) {
+                    name = "NPR";
+                }
+
 
                 Find(name.ToUpper()).addChannelMetadata(newdata);
             }
@@ -923,7 +941,7 @@ namespace XMTuner
                 return;
             }
             String currentTime = DateTime.Now.ToString("T");
-            String entry = "XM " + npChannel.num + " - " + npChannel.artist + " - " + npChannel.song;
+            String entry = npChannel.ShortName() + " - " + npChannel.artist + " - " + npChannel.song;
 
             if (recentlyPlayed.Count > 0)
             {
@@ -945,7 +963,7 @@ namespace XMTuner
             String channels = "";
             foreach (XMChannel chan in getChannels())
             {
-                channels += chan.num+",";
+                channels += chan.xmxref+",";
             }
             return channels;
         }
@@ -1027,7 +1045,7 @@ namespace XMTuner
             	
 	            //ChannelNum, Program ID, Program Name, Duration, Start Time, End Time
 	            Int32 num = Convert.ToInt32(PData[8]);
-                XMChannel channel = Find(num);
+                XMChannel channel = FindbyXM(num);
                 String[] program = new String[6];
                         program[0] = PData[8];
                         program[1] = PData[0];

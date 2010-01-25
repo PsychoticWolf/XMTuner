@@ -11,9 +11,11 @@ namespace XMTuner
     {
         NameValueCollection config;
         XMTuner myTuner;
+        String network = "";
         public WebWorker(XMTuner xmTuner)
         {
             myTuner = xmTuner;
+            network = xmTuner.network;
 
             //Set up configuration values
             configMan gConfig = new configMan();
@@ -107,7 +109,7 @@ namespace XMTuner
             {
                 isErr = "true";
                 msg = "<html><body><h1>Service Unavailable</h1> " +
-                      "<p>Stream Error: Unable to fetch XM stream URL. (XMRO Not Logged In or Down)</p>" +
+                      "<p>Stream Error: Unable to fetch "+network+" stream URL. (Not Logged In or Down)</p>" +
                       "</body></html>";
             }
             streamCollection.Add("msg", msg);
@@ -119,7 +121,7 @@ namespace XMTuner
         {
             String bitrate_desc = getBitrateDesc(TheConstructor.getBitRate(URLparams, config));
             serverHost = getHostName(serverHost);
-            myTuner.output("Incoming Feed Request: XM Channels (All - " + bitrate_desc + ")", "info");
+            myTuner.output("Incoming Feed Request: " + network + " Channels (All - " + bitrate_desc + ")", "info");
             List<XMChannel> list = myTuner.getChannels();
             MemoryStream OutputStream = CreateXMFeed(list, URLparams, serverHost, useragent);
 
@@ -154,7 +156,7 @@ namespace XMTuner
                               "</td></tr>\n";
             if (npChannel.num != 0)
             {
-                NowPlayingPage += "<tr><td style=\"height: 1em; padding-left: 5px;\">XM " + npChannel.num + " - " + npChannel.name + "</td>";
+                NowPlayingPage += "<tr><td style=\"height: 1em; padding-left: 5px;\">" + npChannel.ToSimpleString() + "</td>";
                     
                         if (npChannel.logo != null) {
                             NowPlayingPage += "<td rowspan=3 width=\"138\"><a href=\""+npChannel.url+"\" target=\"_blank\"><img src=\"" + npChannel.logo + "\" border=0 alt=\"\" width=\"138\" height=\"50\" align=\"right\"></a></td>";
@@ -181,7 +183,7 @@ namespace XMTuner
                                 "<div style=\"float: right; font-size: 10pt;\">" +
                                 "<a style=\"text-decoration: none;\" href=\"/feeds/\" title=\"RSS 2.0 Feed for TVersity Media Server\"><img border=\"0\" width=\"16\" height=\"16\" alt=\"\" src=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAKOSURBVHjadJNNSFRRGIbfc+6dO6OOOplDykSZaRCtnKRc+ANRUBFEm0gicxG0bGoVhERRYIvIjRAtW+UmW5QQQS6qRWQSWJRaUcjkT0LiVWfm/pzTd869M5LShe+eufC973m+n2Fj55KJymTt9ZgVy3AGMHoxvvEs/qZgDL4AlhbsAfv34g1TiRPxRMZbWwU3GQzO9clNhGcYBpkY4UlGiWRd5scnMvx5tUWano9IMoXy1pOUBPgz4xC/xv8r1hSexNKiB1Nhq6RIbQoVhy6i+MiCDffDEPyJITBvZZPYLwiQFFzVZ0Q45Moc8q8fwP34FGJ5FixaCevgBZT1DMNs7Nok9iikL8GyfWkZ3VgvhbljP6yOy2BbmzWR/+o2vM/PSmLfkchTaAIlsHa1ourSS5Sfvg8r3Q38mYb7+DzE9Ig2MDquAan2kth3AgKu0JSBapLCNranEWnPIHp2GDzZDEE3+1OBiXW4D4LHtViZCB/rBHJuHPmHp+CO3oK0Zyk7DvP4IGR1EwrPb673JX0mELslgvVRYW0O8usIvCe9AboyOdIPn1Ug9+Kupihr69ZiZSJFsYRwztbRO4icGARv6IT3ZkCTsKp68J2dyE2MQuZtsFgllbZHTyMsAVqsaldCVt8CtvsYPHsZzvtH+tZIc5e+sfBtLOhFYytRFAlYuGGED2clGNn8lO62m53U37y6XmM7M8E3onEIIpCSLp/vPyC31Bp6SUSsjmIbnO9jpVEZqbROzn15F5RDZs5CFs58FmaNBTZ5Ze+9hn11Genl/1mS0qjChumaCVvo2iViNXHkuD1g9Daxt7lVEQPMNpcSdah1pQb5kqho4yVXQc2iacHiMMpNFPia/jv/FWAAUTVTOunExzkAAAAASUVORK5CYII%3D\">" +
                                 "&nbsp;RSS Feed</a></div>" +
-                                "XM Channel Guide" +
+                                network+" Channel Guide" +
 
                                 "</td></tr>\n" +
                                 "<tr><th></th><th>Channel</th><th>Artist</th><th>Song</th><th>Album</th><th></th></tr>\n";
@@ -230,6 +232,7 @@ namespace XMTuner
                                     "\t<td>" + channel.artist + "</td>\n" +
                                     "\t<td>" + channel.song + "</td>\n" +
                                     "\t<td>" + channel.album + "</td>\n" +
+                                    //"\t<td>" + channel.channelKey + " :: " + channel.xmkey + " ("+ channel.xmxref +")</td>\n" + //Temp for Testing
                                     "\t<td><strong><a href=\"" + mediaurl + "\">Play!</a></strong></td>\n" +
                                     "</tr>\n";
 
@@ -375,7 +378,7 @@ namespace XMTuner
             //Write the title element.
             //<title>XM Channels (" + bitrate_desc + ")</title>
             writer.WriteStartElement("title");
-            writer.WriteString("XM Channels (" + bitrate_desc + ")");
+            writer.WriteString(network + " Channels (" + bitrate_desc + ")");
             writer.WriteEndElement();
 
             //<link>" + link + "</link>
@@ -409,7 +412,7 @@ namespace XMTuner
 
                 //<title>XM " + chan.num + " - " + chan.name + "</title>
                 writer.WriteStartElement("title");
-                writer.WriteString("XM " + chan.num + " - " + chan.name);
+                writer.WriteString(chan.ToSimpleString());
                 writer.WriteEndElement();
 
                 //<link>"+media+"</link>
