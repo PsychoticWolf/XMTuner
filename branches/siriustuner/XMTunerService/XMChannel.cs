@@ -18,12 +18,15 @@ namespace XMTuner
         public String url;
         public String logo;
         public String logo_small;
+        public String channelKey;
+        public int xmxref;
+        public String xmkey;
         public List<String[]> programData = new List<string[]>();
 
         public XMChannel(String cat, int nu, String na, String d)
         {
             num = nu;
-            name = na;
+            name = na.Trim() ;
             desc = d;
             category = cat;
         }
@@ -36,8 +39,13 @@ namespace XMTuner
 
         public String ToSimpleString()
         {
-            String theString = "XM " + num + " - " + name;
+            String theString = "SIRIUS " + num + " - " + name;
             return theString;
+        }
+
+        public String ShortName()
+        {
+            return "SIRIUS " + num;
         }
 
         public void addPlayingInfo(String[] stringyInfo)
@@ -49,9 +57,11 @@ namespace XMTuner
 
         public void addChannelMetadata(String[] stringyInfo)
         {
-            url = stringyInfo[1];
+            //url = stringyInfo[1];
+            xmkey = stringyInfo[1];
             logo_small = stringyInfo[2];
             logo = stringyInfo[3];
+            xmxref = Convert.ToInt32(stringyInfo[0]);
 
         }
 
@@ -63,6 +73,13 @@ namespace XMTuner
         public void clearProgram()
         {
             programData.Clear();
+        }
+
+        //This is Sirius specific...
+        public void addChannelData(String[] details)
+        {
+            url = details[0];
+            channelKey = details[1];
         }
 
         #region IComparable<XMChannel> Members
