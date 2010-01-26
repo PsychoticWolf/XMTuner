@@ -419,9 +419,10 @@ namespace XMTuner
             imagelist.ImageSize = new Size(45, 40);
             int i = 0;
             cbIconsLoaded = true;
-            Boolean setDefaultImage = false;
-            Image defaultImage = Image.FromStream(Assembly.GetExecutingAssembly().GetManifestResourceStream("XMTuner.xmtuner64.png"));
             channelBox.Columns.AddRange(new ColumnHeader[] { new ColumnHeader(), new ColumnHeader()});
+
+            Boolean setLogoImage = false;
+            Image defaultImage = Image.FromStream(Assembly.GetExecutingAssembly().GetManifestResourceStream("XMTuner.xmtuner64.png"));
 
             int errcnt = 0;
             foreach (XMChannel chan in self.getChannels())
@@ -438,7 +439,7 @@ namespace XMTuner
                         image = getImageFromURL(chan.logo_small);
                         haveLogo = true;
                     }
-                    //We failed to get the logo, declare it invalid and increase the error count
+                    //We failed to get a logo: increase the error count
                     if (image == null)
                     {
                         errcnt++;
@@ -453,20 +454,20 @@ namespace XMTuner
                     {
                         imagelist.Images.Add(image);
                     }
-                    imagenum = i;
+                    setLogoImage = true;
                 }
                 else
                 {
                     //Default Icon
-                    if (setDefaultImage == false)
+                    if (setLogoImage == false && imagelist.Images.Count < 1)
                     {
                         imagelist.ImageSize = new Size(30, 30);
-                        imagelist.Images.Add(defaultImage);
+                        cbIconsLoaded = false;
                     }
-                    cbIconsLoaded = false;
-                    imagenum = 0;
-                    setDefaultImage = true;
+                    imagelist.Images.Add(defaultImage);
+                    
                 }
+                imagenum = i;
                 ListViewItem item = new ListViewItem(new String[] {chan.ToSimpleString(), chan.desc});
                 item.ImageIndex = imagenum;
                 item.Name = chan.num.ToString();
@@ -494,7 +495,6 @@ namespace XMTuner
                 channelBox.Clear();
                 loadChannels();
             }
-
             int i = 0;
             foreach (XMChannel chan in self.getChannels())
             {
