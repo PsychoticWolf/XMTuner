@@ -22,6 +22,7 @@ namespace XMTuner
         List<XMChannel> channels = new List<XMChannel>();
         Log log;
         String cookies;
+        public String network = "XM";
         public int lastChannelPlayed;
         public bool isLoggedIn;
         public Boolean loadedExtendedChannelData = false;
