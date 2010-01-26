@@ -161,11 +161,27 @@ namespace XMTuner
 
         private void loadSiriusChannelGuide()
         {
-            //String URL = "http://users.pcfire.net/~wolf/XMReader/sirius/ContentServer";
-            String URL = "http://www.sirius.com/servlet/ContentServer?pagename=Sirius/XML/ChannelGuideXML&c=ChannelLineup&cid=1218563499691&pid=SIR_AUD_EVT_SXM&catid=all"; //&pid=SIR_IP_EVT&catid=all";
-            URL channelGuideURL = new URL(URL);
-            channelGuideURL.fetch();
-            String data = channelGuideURL.response().Trim();
+            Boolean fromCache = false;
+            output("Loading Sirius Extended Channel Data...", "info");
+            String data;
+            if (isDataCurrent("channellineupsirius.cache", -1))
+            {
+                String file = "channellineupsirius.cache";
+                String path = getDataPath(file);
+                FileStream fs = new FileStream(path, FileMode.OpenOrCreate, FileAccess.Read);
+                StreamReader textIn = new StreamReader(fs);
+                data = textIn.ReadToEnd();
+                textIn.Close();
+                fromCache = true;
+            }
+            else 
+            {
+                //String URL = "http://users.pcfire.net/~wolf/XMReader/sirius/ContentServer";
+                String URL = "http://www.sirius.com/servlet/ContentServer?pagename=Sirius/XML/ChannelGuideXML&c=ChannelLineup&cid=1218563499691&pid=SIR_AUD_EVT_SXM&catid=all"; //&pid=SIR_IP_EVT&catid=all";
+                URL channelGuideURL = new URL(URL);
+                channelGuideURL.fetch();
+                data = channelGuideURL.response().Trim();
+            }
             XmlDocument xmldoc = new XmlDocument();
             xmldoc.LoadXml(data);
             XmlNodeList list = xmldoc.GetElementsByTagName("channel");
@@ -184,6 +200,32 @@ namespace XMTuner
                 c.addChannelData(details);
             }
 
+            if (fromCache == false)
+            {
+                output("Sirius Extended Channel Data loaded successfully...", "info");
+                saveSiriusChannelGuide(data);
+            }
+            else
+            {
+                output("Sirius Extended Channel Data loaded successfully... (from cache)", "info");
+            }
+        }
+
+        private void saveSiriusChannelGuide(string rawdata)
+        {
+            String path = getDataPath("channellineupsirius.cache");
+
+            try
+            {
+                FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write);
+                StreamWriter textOut = new StreamWriter(fs);
+                textOut.Write(rawdata);
+                textOut.Close();
+            }
+            catch (IOException e)
+            {
+                output("Error encountered saving channel metadata to cache. (" + e.Message + ")", "error");
+            }
         }
 
         private void logout()
@@ -762,8 +804,10 @@ namespace XMTuner
             if (contentURL == null)
             {
                 output("Failed fetching stream for channel...", "error");
-                //output("XM Radio Online Error - Not Logged In", "error");
-                //isLoggedIn = false;
+                
+                //XXX This needs to be reworked...
+                output("SIRIUS Internet Radio Error - Not Logged In", "error");
+                isLoggedIn = false;
             }
             else
             {
