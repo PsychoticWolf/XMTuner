@@ -14,11 +14,11 @@ namespace XMTuner
         public Log logging;
         WebListner xmServer;
         bool loggedIn = false;
-        bool serverRunning = false;
         String user;
         String password;
         String port = "";
         Boolean useLocalDatapath = false;
+        Boolean serverRunning = false; 
         bool highbit = true;
         String hostname = "";
         String tversityHost = "";
