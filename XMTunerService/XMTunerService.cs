@@ -10,8 +10,8 @@ namespace XMTuner
         //private System.ComponentModel.IContainer components;
         
         XMReader reader;
+        bool serviceStarted = false;
         Thread workerThread;
-        Boolean serviceStarted;
         /// <summary>
 
         /// Public Constructor for WindowsService.

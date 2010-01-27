@@ -28,7 +28,7 @@ namespace XMTuner
                 if (isLoading == true && num > 0)
                 {
                     XMChannel npChannel = self.Find(num);
-                    pLabel1.Text = npChannel.ToSimpleString();
+                    pLabel1.Text = "XM " + npChannel.num + " - " + npChannel.name;
                     pLabel2.Text = "Loading...";
                 }
 
@@ -56,7 +56,7 @@ namespace XMTuner
                         pLogoBox.ImageLocation = npChannel.logo;
                     }
                 }
-                pLabel1.Text = npChannel.ToSimpleString();
+                pLabel1.Text = "XM " + npChannel.num + " - " + npChannel.name;
                 pLabel2.Text = npChannel.song;
                 pLabel3.Text = npChannel.artist;
                 //pLabel5 is Player status (Handled in axWindowsMediaPlayer1_StatusChange)
@@ -65,7 +65,7 @@ namespace XMTuner
                 //pLabel4: Tri-mode Artist/Program Now/Next Text
                 if (p <= 5)
                 {
-                    if (npChannel.album == null || npChannel.album.Equals("")) { p = 5; p++; return; }
+                    if (npChannel.album.Equals("")) { p = 5; p++; return; }
                     pLabel4.Text = npChannel.album;
                 }
                 else if (p <= 10 && p > 5)
@@ -187,7 +187,7 @@ namespace XMTuner
         {
             if (playerNum == 0) { return; } //Bail early if we have no work to do.
             XMChannel npChannel = self.Find(playerNum);
-            String title = npChannel.ToSimpleString();
+            String title = "XM " + npChannel.num + " - " + npChannel.name;
             String nptext = npChannel.artist + " - " + npChannel.song;
             NotifyWindow nw = new NotifyWindow(title, "Now Playing:\n" + nptext);
             nw.TitleFont = new Font("Tahoma", 8.25F, FontStyle.Bold);

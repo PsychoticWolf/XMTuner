@@ -310,7 +310,7 @@ namespace XMTuner
         public static String getVersion()
         {
             Version curVersion = Assembly.GetExecutingAssembly().GetName().Version;
-            return curVersion.ToString(2);
+            return curVersion.ToString(3);
         }
         #endregion
 
@@ -419,7 +419,7 @@ namespace XMTuner
             imagelist.ImageSize = new Size(45, 40);
             int i = 0;
             cbIconsLoaded = true;
-            channelBox.Columns.AddRange(new ColumnHeader[] { new ColumnHeader(), new ColumnHeader()});
+            channelBox.Columns.AddRange(new ColumnHeader[] { new ColumnHeader(), new ColumnHeader() });
 
             Boolean setLogoImage = false;
             Image defaultImage = Image.FromStream(Assembly.GetExecutingAssembly().GetManifestResourceStream("XMTuner.xmtuner64.png"));
@@ -465,10 +465,10 @@ namespace XMTuner
                         cbIconsLoaded = false;
                     }
                     imagelist.Images.Add(defaultImage);
-                    
+
                 }
                 imagenum = i;
-                ListViewItem item = new ListViewItem(new String[] {chan.ToSimpleString(), chan.desc});
+                ListViewItem item = new ListViewItem(new String[] { chan.ToSimpleString(), chan.desc });
                 item.ImageIndex = imagenum;
                 item.Name = chan.num.ToString();
                 channelBox.Items.Add(item);
@@ -495,6 +495,7 @@ namespace XMTuner
                 channelBox.Clear();
                 loadChannels();
             }
+
             int i = 0;
             foreach (XMChannel chan in self.getChannels())
             {
