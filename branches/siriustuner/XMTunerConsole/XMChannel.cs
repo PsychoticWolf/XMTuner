@@ -8,6 +8,8 @@ namespace XMTuner
 {
     class XMChannel : IComparable<XMChannel>, IEquatable<XMChannel>
     {
+        protected String network = "XM";
+
         public int num;
         public String name;
         public String desc;
@@ -18,15 +20,16 @@ namespace XMTuner
         public String url;
         public String logo;
         public String logo_small;
-        public String channelKey;
-        public int xmxref;
-        public String xmkey;
         public List<String[]> programData = new List<string[]>();
 
+        public String channelKey;
+        public int xmxref;
+
+        public XMChannel(String cat, int nu, String na, String d, String net) : this(cat, nu, na, d) { network = net; }
         public XMChannel(String cat, int nu, String na, String d)
         {
             num = nu;
-            name = na.Trim() ;
+            name = na.Trim();
             desc = d;
             category = cat;
         }
@@ -39,13 +42,13 @@ namespace XMTuner
 
         public String ToSimpleString()
         {
-            String theString = "SIRIUS " + num + " - " + name;
+            String theString = network + " " + num + " - " + name;
             return theString;
         }
 
         public String ShortName()
         {
-            return "SIRIUS " + num;
+            return network + " " + num;
         }
 
         public void addPlayingInfo(String[] stringyInfo)
@@ -55,13 +58,11 @@ namespace XMTuner
             album = HttpUtility.HtmlDecode(stringyInfo[3]);
         }
 
-        public void addChannelMetadata(String[] stringyInfo)
+        public virtual void addChannelMetadata(String[] stringyInfo)
         {
-            //url = stringyInfo[1];
-            xmkey = stringyInfo[1];
+            url = stringyInfo[1];
             logo_small = stringyInfo[2];
             logo = stringyInfo[3];
-            xmxref = Convert.ToInt32(stringyInfo[0]);
 
         }
 
@@ -75,12 +76,22 @@ namespace XMTuner
             programData.Clear();
         }
 
-        //This is Sirius specific...
+        #region Sirius Specific Methods
+        public void addChannelMetadataS(String[] stringyInfo)
+        {
+            logo_small = stringyInfo[2];
+            logo = stringyInfo[3];
+            xmxref = Convert.ToInt32(stringyInfo[0]);
+
+        }
+
         public void addChannelData(String[] details)
         {
             url = details[0];
             channelKey = details[1];
         }
+        #endregion
+
 
         #region IComparable<XMChannel> Members
 
