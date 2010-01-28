@@ -41,6 +41,17 @@ namespace XMTuner
             TheRequest.Timeout = timeout;
         }
 
+        public void setCookieContainer()
+        {
+            TheRequest.CookieContainer = new CookieContainer();
+        }
+
+        public void setCookieContainer(CookieCollection cookiejar)
+        {
+            TheRequest.CookieContainer = new CookieContainer();
+            TheRequest.CookieContainer.Add(cookiejar);
+        }
+
         public void fetch()
         {
             if (TheRequest.Timeout.Equals(100000)) {
@@ -59,7 +70,10 @@ namespace XMTuner
         public void fetch(String postdata)
         {
             TheRequest.Method = "POST";
-            TheRequest.CookieContainer = new CookieContainer();
+            if (TheRequest.CookieContainer == null)
+            {
+                TheRequest.CookieContainer = new CookieContainer();
+            }
             byte[] buffer = Encoding.ASCII.GetBytes(postdata);
             TheRequest.ContentType = "application/x-www-form-urlencoded";
             TheRequest.ContentLength = buffer.Length;

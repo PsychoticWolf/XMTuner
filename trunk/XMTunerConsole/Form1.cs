@@ -24,6 +24,7 @@ namespace XMTuner
         Boolean isConfigurationLoaded = false;
         bool loggedIn = false;
         bool serverRunning = false;
+        String network = "";
         String username = "";
         String password = "";
         String port = "";
@@ -95,7 +96,14 @@ namespace XMTuner
             outputbox.AppendText("Please wait... logging in\n");
             outputbox.Refresh();
             logging = new Log(ref outputbox, useLocalDatapath);
-            self = new XMTuner(username, password, logging, useLocalDatapath);
+            if (network.ToUpper().Equals("SIRIUS"))
+            {
+                self = new SiriusTuner(username, password, logging, useLocalDatapath);
+            }
+            else
+            {
+                self = new XMTuner(username, password, logging, useLocalDatapath);
+            }
             if (self.isLoggedIn == false)
             {
                 //Not logged in successfully.. Bail!

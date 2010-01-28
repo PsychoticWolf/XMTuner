@@ -39,8 +39,8 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_732B0E6386A04A43B50C7F48502BD92D"
-        "OwnerKey" = "8:_UNDEFINED"
+        "MsmKey" = "8:_819FCEDC8A2751E8A75FB5A95797CEA2"
+        "OwnerKey" = "8:_732B0E6386A04A43B50C7F48502BD92D"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -475,7 +475,7 @@
         {
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_6D651D077978496A80907231BA667FFC"
             {
-            "Name" = "8:readme"
+            "Name" = "8:Readme"
             "Arguments" = "8:"
             "Description" = "8:"
             "ShowCmd" = "3:1"
@@ -902,7 +902,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_5DBAF8F0697F4B149EE38E9DFA613118"
             {
-            "SourcePath" = "8:..\\XMTunerService\\obj\\x86\\Release\\XMTunerService.exe"
+            "SourcePath" = "8:..\\XMTunerService\\obj\\Debug\\XMTunerService.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_47B84E94336740F5B9549DA184B45EC3"
@@ -930,7 +930,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_732B0E6386A04A43B50C7F48502BD92D"
             {
-            "SourcePath" = "8:..\\XMTunerConsole\\obj\\x86\\Release\\XMTuner.exe"
+            "SourcePath" = "8:..\\XMTunerConsole\\obj\\Debug\\XMTuner.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_47B84E94336740F5B9549DA184B45EC3"
