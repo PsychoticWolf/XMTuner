@@ -12,29 +12,24 @@ namespace XMTuner
     class XMTuner
     {
         //Flags
-        bool isLive = true;
+        protected bool isLive = false;
 
         //Config options...
-        String user;
-        String password;
+        protected String user;
+        protected String password;
         Boolean useLocalDatapath = false;
 
-        List<XMChannel> channels = new List<XMChannel>();
+        protected List<XMChannel> channels = new List<XMChannel>();
         Log log;
-        String cookies;
+        protected String cookies;
         public String network = "XM";
         public int lastChannelPlayed;
         public bool isLoggedIn;
         public Boolean loadedExtendedChannelData = false;
         Boolean loadedChannelMetadataCache = false;
         Boolean isProgramDataCurrent = false;
-        int cookieCount = 0;
+        protected int cookieCount = 0;
         public List<String> recentlyPlayed = new List<String>();
-
-
-        public XMTuner()
-        {
-        }
 
         public XMTuner(String username, String passw, Log logging, Boolean pUseLocalDatapath)
         {
@@ -49,7 +44,7 @@ namespace XMTuner
           
         }
 
-        private void login()
+        protected virtual void login()
         {
             String XMURL;
             if (isLive) 
@@ -134,7 +129,7 @@ namespace XMTuner
             login();
         }
 
-        private String getDataPath(String file)
+        protected String getDataPath(String file)
         {
             String directory = "";
             if (useLocalDatapath == false)
@@ -164,8 +159,10 @@ namespace XMTuner
             return isDataCurrent("channellineup.cache", -1);
         }
 
-        private Boolean isDataCurrent(String file, Double value)
+        protected Boolean isDataCurrent(String file, Double value)
         {
+            //return false; //Override caching temporarily
+
             String path = getDataPath(file);
             DateTime dt = File.GetLastWriteTime(path);
             DateTime maxage = DateTime.Now;
@@ -180,7 +177,7 @@ namespace XMTuner
             }
         }
 
-        private bool loadChannelData()
+        protected bool loadChannelData()
         {
             Boolean lineupLoaded;
             output("Loading channel lineup...", "info");
@@ -219,7 +216,7 @@ namespace XMTuner
             }
         }
 
-        private bool dnldChannelData()
+        protected virtual bool dnldChannelData()
         {
             output("Downloading channel lineup...", "info");
             Boolean goodData = false;
@@ -270,7 +267,7 @@ namespace XMTuner
             return false;
         }
 
-        private Boolean setChannelData(String rawchanneldata)
+        protected Boolean setChannelData(String rawchanneldata)
         {
             if (rawchanneldata.Contains("\"allchannels\",null")) {
                 //isLoggedIn = false;
@@ -336,7 +333,7 @@ namespace XMTuner
             return true;
         }
 
-        private void saveChannelData(String rawchanneldata)
+        protected void saveChannelData(String rawchanneldata)
         {
             String path = getDataPath("channellineup.cache");
 
@@ -421,7 +418,7 @@ namespace XMTuner
             setRecentlyPlayed();
         }
 
-        private void setWhatsonData(String rawdata)
+        protected virtual void setWhatsonData(String rawdata)
         {
             if (rawdata.Equals(""))
             {
@@ -459,7 +456,7 @@ namespace XMTuner
         }
 
 
-        private String setCookies(CookieCollection cookies)
+        protected String setCookies(CookieCollection cookies)
         {
             cookieCount = cookies.Count;
             String[] cookieStr = new String[cookieCount];
@@ -497,7 +494,7 @@ namespace XMTuner
             }
         }
 
-        public string play(int channelnum, String speed)
+        public virtual string play(int channelnum, String speed)
         {
             String address;
             if (isLive)
@@ -519,7 +516,7 @@ namespace XMTuner
             return URL;
          }
 
-        private string playChannel(URL url)
+        protected virtual string playChannel(URL url)
         {
             String contentURL;
             String pattern = "<PARAM NAME=\"FileName\" VALUE=\"(.*?)\">";
@@ -548,7 +545,7 @@ namespace XMTuner
             log.output(output, level);
         }
 
-        private void loadChannelMetadata()
+        protected void loadChannelMetadata()
         {
             output("Loading extended channel data...", "info");
             if (isDataCurrent("channelmetadata.cache", -5))
@@ -560,7 +557,7 @@ namespace XMTuner
                 dnldChannelMetadata();
             }
         }
-        private void loadChannelMetadata(Boolean fastLoad)
+        protected void loadChannelMetadata(Boolean fastLoad)
         {
             if (fastLoad == true)
             {
@@ -629,7 +626,7 @@ namespace XMTuner
             channelMetaData.close();
         }
 
-        private Boolean setChannelMetadata(String rawData)
+        protected virtual Boolean setChannelMetadata(String rawData)
         {
             try
             {
@@ -663,7 +660,7 @@ namespace XMTuner
             return true;
         }
 
-        private void saveChannelMetadata(String rawdata)
+        protected void saveChannelMetadata(String rawdata)
         {
             String path = getDataPath("channelmetadata.cache");
 
@@ -680,7 +677,7 @@ namespace XMTuner
             }
         }
 
-        private void setRecentlyPlayed()
+        protected void setRecentlyPlayed()
         {
             XMChannel npChannel = Find(lastChannelPlayed);
             if (npChannel.num == 0 || npChannel.song == null || npChannel.song.Equals(""))
@@ -705,7 +702,7 @@ namespace XMTuner
             }
         }
 
-        private String getChannelsNums()
+        protected virtual String getChannelsNums()
         {
             String channels = "";
             foreach (XMChannel chan in getChannels())
@@ -734,7 +731,7 @@ namespace XMTuner
             }
             else
             {
-                programGuideURL = "http://users.pcfire.net/~wolf/XMReader/epg/program_schedules.xmc1";
+                programGuideURL = "http://users.pcfire.net/~wolf/XMReader/epg/program_schedules.xmc";
             }
             URL programGuideData = new URL(programGuideURL);
             output("Fetching: " + programGuideURL, "debug");
@@ -758,7 +755,7 @@ namespace XMTuner
             programGuideData.close();
         }
 
-        private Boolean setProgramGuideData(String rawData)
+        protected virtual Boolean setProgramGuideData(String rawData)
         {
             rawData = rawData.Replace("{\"programScheduleList\":[{","");
             rawData = rawData.Replace("\"repeat\":\"","");
