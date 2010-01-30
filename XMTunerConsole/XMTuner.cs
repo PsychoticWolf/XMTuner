@@ -21,6 +21,7 @@ namespace XMTuner
 
         protected List<XMChannel> channels = new List<XMChannel>();
         Log log;
+        public CacheManager cache;
         protected String cookies;
         public String network = "XM";
         public int lastChannelPlayed;
@@ -37,6 +38,7 @@ namespace XMTuner
             password = passw;
             log = logging;
             useLocalDatapath = pUseLocalDatapath;
+            cache = new CacheManager(useLocalDatapath, log);
 #if !DEBUG
             isLive = true;
 #endif
@@ -129,69 +131,22 @@ namespace XMTuner
             login();
         }
 
-        protected String getDataPath(String file)
-        {
-            String directory = "";
-            if (useLocalDatapath == false)
-            {
-                directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "XMTuner");
-                if (!Directory.Exists(directory)) { Directory.CreateDirectory(directory); }
-            }
-            if (file.Equals(""))
-            {
-                return directory;
-            }
-            else 
-            {
-                if (directory.Equals(""))
-                {
-                    return file;
-                }
-                else
-                {
-                    return directory + "\\" + file;
-                }
-            }
-        }
-
         private Boolean isChannelDataCurrent()
         {
-            return isDataCurrent("channellineup.cache", -1);
-        }
-
-        protected Boolean isDataCurrent(String file, Double value)
-        {
-            //return false; //Override caching temporarily
-
-            String path = getDataPath(file);
-            DateTime dt = File.GetLastWriteTime(path);
-            DateTime maxage = DateTime.Now;
-            maxage = maxage.AddDays(-1);
-            if (dt > maxage)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return cache.isCached("channellineup.cache");
         }
 
         protected bool loadChannelData()
         {
             Boolean lineupLoaded;
             output("Loading channel lineup...", "info");
+            cache.addCacheFile("channellineup.cache", "channel lineup", -1);
             if (isChannelDataCurrent())
             {
                 //Load from file
-                String path = getDataPath("channellineup.cache");
-               
                 try
                 {
-                    FileStream fs = new FileStream(path, FileMode.OpenOrCreate, FileAccess.Read);
-                    StreamReader textIn = new StreamReader(fs);
-                    String rawchanneldata = textIn.ReadToEnd();
-                    textIn.Close();
+                    String rawchanneldata = cache.getFile("channellineup.cache");
                     lineupLoaded = setChannelData(rawchanneldata);
 
                 }
@@ -202,7 +157,7 @@ namespace XMTuner
                 if (!lineupLoaded)
                 {
                     //Force expiration of bad data. (Don't delete it in case something useful is in the file for debugging)
-                    File.SetLastWriteTime(path, new DateTime(1985, 1, 1)); 
+                    cache.invalidateFile("channellineup.cache");
                     output("Failed to load channel lineup.", "error");
                     return false;
                 }
@@ -237,11 +192,11 @@ namespace XMTuner
                 URL channelURL = new URL(url);
                 channelURL.setRequestHeader("Cookie", cookies);
                 channelURL.fetch();
-                String resultStr = channelURL.response();
-                if (channelURL.getStatus() >= 200 && channelURL.getStatus() < 300 && resultStr.IndexOf(":[],") == -1)
+                String data = channelURL.response();
+                if (channelURL.getStatus() >= 200 && channelURL.getStatus() < 300 && data.IndexOf(":[],") == -1)
                 {
                     //Returns Bool; False if invalid (null) channel data, true on success
-                    goodData = setChannelData(resultStr);
+                    goodData = setChannelData(data);
 
                     //Try to catch the need to relogin because of dead channel data without retrying 5 times...
                     if (!goodData && isLoggedIn)
@@ -253,7 +208,7 @@ namespace XMTuner
                 }
                 if (goodData)
                 {
-                    saveChannelData(resultStr);
+                    cache.saveFile("channellineup.cache", data);
                     isLoggedIn = true;
                     output("Channel lineup loaded successfully.", "info");
                     return true;
@@ -333,20 +288,6 @@ namespace XMTuner
             return true;
         }
 
-        protected void saveChannelData(String rawchanneldata)
-        {
-            String path = getDataPath("channellineup.cache");
-
-            try {
-            FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write);
-            StreamWriter textOut = new StreamWriter(fs);
-            textOut.Write(rawchanneldata);
-            textOut.Close();
-            } catch (IOException e) {
-                output("Error encountered saving channel lineup to cache. ("+e.Message+")", "error");
-            }
-        }
-
         public List<XMChannel> getChannels()
         {
             channels.Sort();
@@ -368,7 +309,7 @@ namespace XMTuner
                 return;
             }
 
-            if (!isChannelDataCurrent())
+            if (cache.enabled == true && !isChannelDataCurrent())
             {
                 dnldChannelData();
             }
@@ -548,7 +489,8 @@ namespace XMTuner
         protected void loadChannelMetadata()
         {
             output("Loading extended channel data...", "info");
-            if (isDataCurrent("channelmetadata.cache", -5))
+            cache.addCacheFile("channelmetadata.cache", "channel metadata", -5);
+            if (cache.isCached("channelmetadata.cache"))
             {
                 loadChannelMetadata(false);
             }
@@ -575,16 +517,12 @@ namespace XMTuner
                 return;
             } 
             String file = "channelmetadata.cache";
-            String path = getDataPath(file);
-            FileStream fs = new FileStream(path, FileMode.OpenOrCreate, FileAccess.Read);
-            StreamReader textIn = new StreamReader(fs);
-            String rawchannelmetadata = textIn.ReadToEnd();
-            textIn.Close();
-            loadedChannelMetadataCache = setChannelMetadata(rawchannelmetadata);
+            String data = cache.getFile(file);
+            loadedChannelMetadataCache = setChannelMetadata(data);
             if (!loadedChannelMetadataCache)
             {
                 //Force expiration of bad data. (Don't delete it in case something useful is in the file for debugging)
-                File.SetLastWriteTime(path, new DateTime(1985, 1, 1));
+                cache.invalidateFile(file);
                 output("Failed to load extended channel data (from cache).", "error");
             }
             else
@@ -621,7 +559,7 @@ namespace XMTuner
             if (loadedExtendedChannelData == true)
             {
                 output("Extended channel data loaded successfully", "info");
-                saveChannelMetadata(rawChannelMetaData);
+                cache.saveFile("channelmetadata.cache", rawChannelMetaData);
             }
             channelMetaData.close();
         }
@@ -660,22 +598,15 @@ namespace XMTuner
             return true;
         }
 
-        protected void saveChannelMetadata(String rawdata)
+       /*  protected void saveChannelMetadata(String rawdata)
         {
-            String path = getDataPath("channelmetadata.cache");
-
-            try
+            String errMsg;
+            Boolean result = cache.saveFile("channelmetadata.cache", rawdata, out errMsg);
+            if (result == false)
             {
-                FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write);
-                StreamWriter textOut = new StreamWriter(fs);
-                textOut.Write(rawdata);
-                textOut.Close();
+                output("Error encountered saving channel metadata to cache. (" + errMsg + ")", "error");
             }
-            catch (IOException e)
-            {
-                output("Error encountered saving channel metadata to cache. (" + e.Message + ")", "error");
-            }
-        }
+        } */
 
         protected void setRecentlyPlayed()
         {

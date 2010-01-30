@@ -131,14 +131,11 @@ namespace XMTuner
             Boolean fromCache = false;
             output("Loading Sirius Extended Channel Data...", "info");
             String data;
-            if (isDataCurrent("channellineupsirius.cache", -1))
+            String file = "channellineupsirius.cache";
+            cache.addCacheFile(file, "sirius channel metadata", -1);
+            if (cache.isCached(file))
             {
-                String file = "channellineupsirius.cache";
-                String path = getDataPath(file);
-                FileStream fs = new FileStream(path, FileMode.OpenOrCreate, FileAccess.Read);
-                StreamReader textIn = new StreamReader(fs);
-                data = textIn.ReadToEnd();
-                textIn.Close();
+                data = cache.getFile(file);
                 fromCache = true;
             }
             else
@@ -170,28 +167,11 @@ namespace XMTuner
             if (fromCache == false)
             {
                 output("Sirius Extended Channel Data loaded successfully...", "info");
-                saveSiriusChannelGuide(data);
+                cache.saveFile("channellineupsirius.cache", data);
             }
             else
             {
                 output("Sirius Extended Channel Data loaded successfully... (from cache)", "info");
-            }
-        }
-
-        public void saveSiriusChannelGuide(string rawdata)
-        {
-            String path = getDataPath("channellineupsirius.cache");
-
-            try
-            {
-                FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write);
-                StreamWriter textOut = new StreamWriter(fs);
-                textOut.Write(rawdata);
-                textOut.Close();
-            }
-            catch (IOException e)
-            {
-                output("Error encountered saving channel metadata to cache. (" + e.Message + ")", "error");
             }
         }
 
@@ -325,11 +305,11 @@ namespace XMTuner
                 channelURL.setRequestHeader("Cookie", cookies);
                 channelURL.fetch();
                 output("Fetching: " + url + " Result: " + channelURL.getStatus() + " (" + network + ")", "debug");
-                String resultStr = channelURL.response();
-                if (channelURL.getStatus() >= 200 && channelURL.getStatus() < 300 && resultStr.IndexOf(":[],") == -1)
+                String data = channelURL.response();
+                if (channelURL.getStatus() >= 200 && channelURL.getStatus() < 300 && data.IndexOf(":[],") == -1)
                 {
                     //Returns Bool; False if invalid (null) channel data, true on success
-                    goodData = setChannelData(resultStr);
+                    goodData = setChannelData(data);
 
                     //Try to catch the need to relogin because of dead channel data without retrying 5 times...
                     if (!goodData && isLoggedIn)
@@ -341,7 +321,7 @@ namespace XMTuner
                 }
                 if (goodData)
                 {
-                    saveChannelData(resultStr);
+                    cache.saveFile("channellineup.cache", data);
                     isLoggedIn = true;
                     output("Channel lineup loaded successfully.", "info");
                     return true;

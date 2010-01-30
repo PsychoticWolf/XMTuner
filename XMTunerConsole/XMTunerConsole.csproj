@@ -125,6 +125,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CacheManager.cs" />
     <Compile Include="configMan.cs" />
     <Compile Include="Form2.cs">
       <SubType>Form</SubType>

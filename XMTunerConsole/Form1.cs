@@ -202,7 +202,10 @@ namespace XMTuner
         #region Configuration
         private void bConfigure_Click(object sender, EventArgs e)
         {
-            Form2 form2 = new Form2(username, password, port, highbit, autologin, isMMS, tversityHost, hostname, loggedIn, useLocalDatapath);
+            CacheManager cache = null;
+            if (self != null) { cache = self.cache; }
+
+            Form2 form2 = new Form2(cache, username, password, port, highbit, autologin, isMMS, tversityHost, hostname, loggedIn, useLocalDatapath);
             form2.ShowDialog();
             refreshConfig();
         }
