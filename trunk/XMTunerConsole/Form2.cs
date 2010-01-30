@@ -1,8 +1,4 @@
 ﻿using System;
-//using System.Collections.Generic;
-//using System.ComponentModel;
-//using System.Data;
-//using System.Drawing;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
@@ -22,8 +18,9 @@ namespace XMTuner
         public String hostname;
         bool isLoggedIn = false;
         bool isDebug = false;
+        private CacheManager cache;
 
-        public Form2(String usertxt, String userpass, String usrport, bool bitRate, bool autolog, bool MMSON, String tTversityHost, String tHostname, Boolean tLoggedIn, Boolean isDebug)
+        public Form2(CacheManager cache, String usertxt, String userpass, String usrport, bool bitRate, bool autolog, bool MMSON, String tTversityHost, String tHostname, Boolean tLoggedIn, Boolean isDebug)
         {
             user = usertxt;
             pass = userpass;
@@ -35,6 +32,7 @@ namespace XMTuner
             hostname = tHostname;
             isLoggedIn = tLoggedIn;
             this.isDebug = isDebug;
+            this.cache = cache;
             InitializeComponent();
         }
 
@@ -79,17 +77,8 @@ namespace XMTuner
 
         private void bUpdateLineup_Click(object sender, EventArgs e)
         {
-            String directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "XMTuner");
-            String file = "channellineup.cache";
-            String path = directory + "\\" + file;
-            try
-            {
-                File.SetLastWriteTime(path, new DateTime(1985, 1, 1));
-            }
-            catch (FileNotFoundException)
-            {
+            cache.purgeCache();
 
-            }
             bUpdateLineup.Enabled = false;
             bUpdateLineup.Text = "Update Pending...";
         }
