@@ -16,7 +16,7 @@ namespace XMTuner
         String prefix;
         XMTuner myTuner;
         String serverHost;
-        WebWorker worker;
+        public WebWorker worker;
         public bool isRunning = false;
 
         public WebListner(XMTuner tuner, String newport)

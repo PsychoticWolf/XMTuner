@@ -17,7 +17,7 @@ namespace XMTuner
         //Config options...
         protected String user;
         protected String password;
-        Boolean useLocalDatapath = false;
+        //Boolean useLocalDatapath = false;
 
         protected List<XMChannel> channels = new List<XMChannel>();
         Log log;
@@ -32,13 +32,12 @@ namespace XMTuner
         protected int cookieCount = 0;
         public List<String> recentlyPlayed = new List<String>();
 
-        public XMTuner(String username, String passw, Log logging, Boolean pUseLocalDatapath)
+        public XMTuner(String username, String passw, Log logging)
         {
             user = username;
             password = passw;
             log = logging;
-            useLocalDatapath = pUseLocalDatapath;
-            cache = new CacheManager(useLocalDatapath, log);
+            cache = new CacheManager(log);
 #if !DEBUG
             isLive = true;
 #endif

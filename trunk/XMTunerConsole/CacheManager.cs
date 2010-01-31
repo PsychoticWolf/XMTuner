@@ -11,10 +11,10 @@ namespace XMTuner
         private Boolean useLocalDatapath = false;
         Log log;
 
-        public CacheManager(Boolean uLDP, Log log) : this(uLDP) { this.log = log; }
-        public CacheManager(Boolean uLDP)
+        public CacheManager(Log log) : this() { this.log = log; }
+        public CacheManager()
         {
-            useLocalDatapath = uLDP;
+            useLocalDatapath = new configMan().useLocalDatapath;
         }
 
         public Boolean enabled

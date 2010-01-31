@@ -23,14 +23,14 @@ namespace XMTuner
 
         }
 
-        public Log(ref RichTextBox box1, Boolean bUseLocalDataPath)
+        public Log(ref RichTextBox box1)
         {
 #if DEBUG
             isDebug = true;
 #endif
             logFile = "XMTuner.log";
             outputbox = box1;
-            useLocalDatapath = bUseLocalDataPath;
+            useLocalDatapath = new configMan().useLocalDatapath;
             version = Form1.getVersion();
         }
 

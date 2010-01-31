@@ -9,7 +9,7 @@ namespace XMTuner
 {
     class WebWorker
     {
-        NameValueCollection config;
+        public NameValueCollection config;
         XMTuner myTuner;
         String network = "";
         public WebWorker(XMTuner xmTuner)
@@ -18,8 +18,7 @@ namespace XMTuner
             network = xmTuner.network;
 
             //Set up configuration values
-            configMan gConfig = new configMan();
-            config = gConfig.getConfig(true);
+            config = new configMan().getConfig(true);
         }
 
         public NameValueCollection parseStreamURL(string methodURL)
