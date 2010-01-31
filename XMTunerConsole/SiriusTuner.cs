@@ -462,6 +462,7 @@ namespace XMTuner
 
                 //XXX This needs to be reworked...
                 output("SIRIUS Internet Radio Error - Not Logged In", "error");
+                cache.saveFile("playchannel.err", data);
                 isLoggedIn = false;
             }
             else
