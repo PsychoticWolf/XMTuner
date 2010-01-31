@@ -15,21 +15,17 @@ namespace XMTuner
 {
     public partial class Form1 : Form
     {
-
-        bool useLocalDatapath = false;
-
         XMTuner self;
         Log logging;
         WebListner xmServer;
         Boolean isConfigurationLoaded = false;
         bool loggedIn = false;
         bool serverRunning = false;
-        String network = "";
+        String network;
         String username = "";
         String password = "";
         String port = "";
         String bitrate;
-        bool highbit = true;
         bool autologin = false;
         bool isMMS = false;
         String tversityHost;
@@ -49,19 +45,21 @@ namespace XMTuner
         #region Form1 Core
         public Form1()
         {
-#if DEBUG
-            useLocalDatapath = true;
-#endif
             InitializeComponent();
             initPlayer();
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            logging = new Log(ref outputbox);
             aVersion.Text = getVersion();
             serviceControl.ServiceName = "XMTunerService";
 
             service_button_reset();
+            if (autologin && serviceRunning)
+            {
+                output("Autologin skipped - Service already running\n", "error");
+            }
 
             if (refreshConfig() && autologin && !serviceRunning)
             {
@@ -69,10 +67,9 @@ namespace XMTuner
             }
             lblClock.Text = "0:00:00";
 
-            if (!useLocalDatapath)
-            {
-                Updater update = new Updater(outputbox);
-            }
+#if !DEBUG
+            Updater update = new Updater(outputbox);
+#endif
 
         }
 
@@ -93,16 +90,18 @@ namespace XMTuner
         //Start / Login
         private void bStart_Click(object sender, EventArgs e)
         {
-            outputbox.AppendText("Please wait... logging in\n");
-            outputbox.Refresh();
-            logging = new Log(ref outputbox, useLocalDatapath);
+            start();
+        }
+        private void start()
+        {
+            output("Please wait... logging in", "info");
             if (network.ToUpper().Equals("SIRIUS"))
             {
-                self = new SiriusTuner(username, password, logging, useLocalDatapath);
+                self = new SiriusTuner(username, password, logging);
             }
             else
             {
-                self = new XMTuner(username, password, logging, useLocalDatapath);
+                self = new XMTuner(username, password, logging);
             }
             if (self.isLoggedIn == false)
             {
@@ -174,6 +173,10 @@ namespace XMTuner
         //Stop
         private void bStop_Click(object sender, EventArgs e)
         {
+            stop();
+        }
+        private void stop()
+        {
             shutdownPlayer();
             xmServer.stop();
             serverRunning = false;
@@ -197,6 +200,12 @@ namespace XMTuner
         {
             System.Diagnostics.Process.Start("http://" + getLocalIP() + ":" + port);
         }
+
+        private void restart()
+        {
+            stop();
+            start();
+        }
         #endregion
 
         #region Configuration
@@ -205,58 +214,113 @@ namespace XMTuner
             CacheManager cache = null;
             if (self != null) { cache = self.cache; }
 
-            Form2 form2 = new Form2(cache, username, password, port, highbit, autologin, isMMS, tversityHost, hostname, loggedIn, useLocalDatapath);
+            //Store current configuration for comparison test
+            NameValueCollection currentconfig = new configMan().getConfig();
+
+            Form2 form2 = new Form2(cache, loggedIn);
             form2.ShowDialog();
-            refreshConfig();
+            refreshConfig(currentconfig);
         }
 
-        private bool refreshConfig()
+        private List<String> compareConfig(NameValueCollection prevconfig, NameValueCollection config)
         {
-            configMan configuration = new configMan(useLocalDatapath);
-            configuration.readConfig();
-            ip = getLocalIP();
-            if (configuration.isConfig)
+            List<String> changedValues = new List<String>();
+            foreach (String value in config.AllKeys)
             {
-                NameValueCollection configIn = configuration.getConfig();
-                username = configIn.Get("username");
-                password = configIn.Get("password");
-                port = configIn.Get("port");
-                highbit = Convert.ToBoolean(configIn.Get("bitrate"));
-                if (highbit) { bitrate = "high"; } else { bitrate = "low"; }
-                autologin = Convert.ToBoolean(configIn.Get("autologin"));
-                if (autologin && serviceRunning)
+                if (config[value] != prevconfig[value])
                 {
-                    outputbox.AppendText("Autologin skipped - Service running\n");
+                    changedValues.Add(value.ToLower());
                 }
-                isMMS = Convert.ToBoolean(configIn.Get("isMMS"));
-                tversityHost = configIn.Get("Tversity"); ;
-                hostname = configIn.Get("hostname"); ;
-                if (!serverRunning)
-                {
-                    bStart.Enabled = true;
-                }
-                loginToolStripMenuItem.Enabled = true;
-
-                DateTime currentTime = DateTime.Now;
-                String ct = currentTime.ToString("%H:") + currentTime.ToString("mm:") + currentTime.ToString("ss");
-                outputbox.AppendText(ct + "  Configuration Loaded\n");
-                isConfigurationLoaded = true;
-                syncStatusLabel();
-                return true;
             }
-            else
+            if (changedValues.Count > 0)
             {
-                if (port.Equals(""))
-                {
-                    port = "19081";
-                }
+                String updatedvalues = "";
+                for (int i = 0; i < changedValues.Count; i++)
+                    updatedvalues += changedValues[i] + " ";
+                    output("Updated Values: " + updatedvalues, "debug");
 
+                return changedValues;
+            }
+            return null;
+        }
+
+        private bool refreshConfig() { return refreshConfig(null); }
+        private bool refreshConfig(NameValueCollection prevconfig)
+        {
+            configMan configuration = new configMan();
+            if (configuration.loaded == false)
+            {
                 bStart.Enabled = false;
-                outputbox.AppendText("No Configuration\nClick Configure.\n");
+                output("No Configuration\nClick Configure.", "error");
                 isConfigurationLoaded = false;
                 return false;
             }
 
+            //Get configuration from configMan
+            NameValueCollection config = configuration.getConfig(true);
+
+            //Set config values using new config
+            setConfig(config);
+
+            //Get list of updated values if we're updating config
+            if (loggedIn == true && prevconfig != null)
+            {
+                List<String> updatedvalues = compareConfig(prevconfig, config);
+                if (updatedvalues != null)
+                {
+                    //Update downstream users dynamically or restart as needed
+                    updateRunningConfig(config, updatedvalues);
+                }
+            }
+
+            //Messages & Item Twiddling
+            if (!serverRunning)
+            {
+                bStart.Enabled = true;
+            }
+            loginToolStripMenuItem.Enabled = true;
+
+            if (isConfigurationLoaded == false)
+            {
+                output("Configuration Loaded", "info");
+            }
+            isConfigurationLoaded = true;
+            syncStatusLabel();
+            return true;
+        }
+
+        private void updateRunningConfig(NameValueCollection config, List<String> updatedvalues)
+        {
+            if (xmServer == null || self == null || loggedIn == false) { return; }
+            //username, password, port [, network] = require restart
+            if (updatedvalues.Contains("username") || updatedvalues.Contains("password") ||
+                updatedvalues.Contains("port") || updatedvalues.Contains("network"))
+            {
+                output("Your configuration update requires XMTuner to restart the server to take effect. Restarting now...", "info");
+                restart();
+            }
+
+            //bitrate, isMMS, hostname, TVersity = should be dynamically applied
+            if (updatedvalues.Contains("bitrate") || updatedvalues.Contains("ismms") ||
+                updatedvalues.Contains("hostname") || updatedvalues.Contains("tversity"))
+            {
+                output("Updating configuration of web server...", "debug");
+                xmServer.worker.config = config;
+            }
+        }
+
+        private void setConfig(NameValueCollection config)
+        {
+            ip = getLocalIP();
+            username = config.Get("username");
+            password = config.Get("password");
+            port = config.Get("port");
+            bitrate = config.Get("bitrate");
+            autologin = Convert.ToBoolean(config.Get("autologin"));
+            isMMS = Convert.ToBoolean(config.Get("isMMS"));
+            tversityHost = config.Get("Tversity");
+            hostname = config.Get("hostname");
+            network = config.Get("network");
         }
 
         private String getLocalIP()
@@ -328,8 +392,13 @@ namespace XMTuner
         #region Log Tab / Outputbox
         // This delegate enables asynchronous calls for setting
         // the text property on a TextBox control.
-        public delegate void SetTextCallback(ref RichTextBox outputbox, string text, Color color);
+        private void output(String output, String level)
+        {
+            logging.output(output, level);
+        }
 
+
+        public delegate void SetTextCallback(ref RichTextBox outputbox, string text, Color color);
         public static void output(String output, String level, ref RichTextBox outputbox)
         {
             Color color = Color.Black;

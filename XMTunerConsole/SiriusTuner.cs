@@ -11,8 +11,8 @@ namespace XMTuner
 {
     class SiriusTuner : XMTuner
     {
-        public SiriusTuner(String username, String passw, Log logging, Boolean pUseLocalDatapath)
-            : base(username, passw, logging, pUseLocalDatapath)
+        public SiriusTuner(String username, String passw, Log logging)
+            : base(username, passw, logging)
         {
             network = "SIRIUS";
         }

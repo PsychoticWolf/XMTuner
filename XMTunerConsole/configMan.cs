@@ -8,58 +8,48 @@ namespace XMTuner
 {
     class configMan
     {
+        public bool useLocalDatapath = false;
+        private bool isConfig = false;
         //collection to store configuration variables
         NameValueCollection config = new NameValueCollection();
 
         //path to Application Data folder
-        String directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "XMTuner");
-        String file = "config.txt";
         String path;
-        public bool isConfig = false;
-        public bool protocolMMS = false;
-
         public configMan()
         {
-            if (!Directory.Exists(directory)) { Directory.CreateDirectory(directory); } 
-            path = directory + "\\" + file;
+#if DEBUG
+            useLocalDatapath = true;
+#endif
+            path = getConfigPath(useLocalDatapath);
         }
 
-        public configMan(bool debug)
+        public Boolean loaded
         {
-            if (debug)
-            {
-                path = "config.txt";
+            get {
+                if (config.Count == 0)
+                {
+                    readConfig();
+                }
+                return isConfig;
             }
-            else
+        }
+
+        private String getConfigPath() { return getConfigPath(false); }
+        private String getConfigPath(Boolean useLocalDatapath)
+        {
+            String file = "config.txt";
+            String directory = "";
+            if (useLocalDatapath == false)
             {
+                directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "XMTuner");
                 if (!Directory.Exists(directory)) { Directory.CreateDirectory(directory); }
-                path = directory + "\\" + file;
+                directory += "\\";
             }
+            String path = directory + file;
+            return path;
         }
-        public NameValueCollection getConfig()
-        {
-            if (config.Count == 0)
-            {
-                readConfig();
-            }
-            return config;
-        }
-        public void writeConfig(NameValueCollection newConfig)
-        {
-            FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write);
-            StreamWriter textOut = new StreamWriter(fs);
-            String value;
-            textOut.WriteLine("XMTuner Configuration");
-            textOut.WriteLine("ConfigVer,0.3");
-            foreach (String configKey in newConfig.AllKeys)
-            {
-                value = newConfig.Get(configKey);
-                textOut.WriteLine(configKey + "," + value); 
-            }
 
-            textOut.Close();
-        }
-        public void readConfig()
+        private void readConfig()
         {
             FileStream fs = new FileStream(path, FileMode.OpenOrCreate, FileAccess.Read);
             StreamReader textIn = new StreamReader(fs);
@@ -82,6 +72,14 @@ namespace XMTuner
             textIn.Close();
         }
 
+        public NameValueCollection getConfig()
+        {
+            if (config.Count == 0)
+            {
+                readConfig();
+            }
+            return config;
+        }
         public NameValueCollection getConfig(Boolean interpreted)
         {
             NameValueCollection sConfig = getConfig();
@@ -90,5 +88,20 @@ namespace XMTuner
             return sConfig;
         }
 
+        public void writeConfig(NameValueCollection newConfig)
+        {
+            FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write);
+            StreamWriter textOut = new StreamWriter(fs);
+            String value;
+            textOut.WriteLine("XMTuner Configuration");
+            textOut.WriteLine("ConfigVer,0.3");
+            foreach (String configKey in newConfig.AllKeys)
+            {
+                value = newConfig.Get(configKey);
+                textOut.WriteLine(configKey + "," + value);
+            }
+
+            textOut.Close();
+        }
     }
 }

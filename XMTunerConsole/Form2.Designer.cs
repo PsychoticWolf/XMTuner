@@ -32,7 +32,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
+            this.bSave = new System.Windows.Forms.Button();
             this.txtUser = new System.Windows.Forms.TextBox();
             this.txtPassword = new System.Windows.Forms.TextBox();
             this.txtPort = new System.Windows.Forms.TextBox();
@@ -55,12 +55,14 @@
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.label7 = new System.Windows.Forms.Label();
-            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
+            this.linkTversity = new System.Windows.Forms.LinkLabel();
             this.txtTversity = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
+            this.boxNetwork = new System.Windows.Forms.ComboBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.groupBox3.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.groupBox5.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -95,15 +97,15 @@
             this.label3.TabIndex = 2;
             this.label3.Text = "Listen on Port:";
             // 
-            // button1
+            // bSave
             // 
-            this.button1.Location = new System.Drawing.Point(128, 262);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(112, 23);
-            this.button1.TabIndex = 3;
-            this.button1.Text = "Save Configuration";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.bSave.Location = new System.Drawing.Point(128, 262);
+            this.bSave.Name = "bSave";
+            this.bSave.Size = new System.Drawing.Size(112, 23);
+            this.bSave.TabIndex = 3;
+            this.bSave.Text = "Save Configuration";
+            this.bSave.UseVisualStyleBackColor = true;
+            this.bSave.Click += new System.EventHandler(this.bSave_Click);
             // 
             // txtUser
             // 
@@ -206,7 +208,7 @@
             // bUpdateLineup
             // 
             this.bUpdateLineup.Enabled = false;
-            this.bUpdateLineup.Location = new System.Drawing.Point(13, 54);
+            this.bUpdateLineup.Location = new System.Drawing.Point(13, 50);
             this.bUpdateLineup.Margin = new System.Windows.Forms.Padding(2);
             this.bUpdateLineup.Name = "bUpdateLineup";
             this.bUpdateLineup.Size = new System.Drawing.Size(129, 23);
@@ -227,6 +229,7 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.boxNetwork);
             this.groupBox2.Location = new System.Drawing.Point(2, 5);
             this.groupBox2.Margin = new System.Windows.Forms.Padding(2);
             this.groupBox2.Name = "groupBox2";
@@ -331,7 +334,7 @@
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.label7);
-            this.groupBox1.Controls.Add(this.linkLabel1);
+            this.groupBox1.Controls.Add(this.linkTversity);
             this.groupBox1.Controls.Add(this.txtTversity);
             this.groupBox1.Controls.Add(this.label6);
             this.groupBox1.Location = new System.Drawing.Point(4, 0);
@@ -353,17 +356,17 @@
             this.label7.TabIndex = 2;
             this.label7.Text = "(Example: 127.0.0.1:41952)";
             // 
-            // linkLabel1
+            // linkTversity
             // 
-            this.linkLabel1.AutoSize = true;
-            this.linkLabel1.Location = new System.Drawing.Point(263, 157);
-            this.linkLabel1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.linkLabel1.Name = "linkLabel1";
-            this.linkLabel1.Size = new System.Drawing.Size(65, 13);
-            this.linkLabel1.TabIndex = 3;
-            this.linkLabel1.TabStop = true;
-            this.linkLabel1.Text = "Get TVersity";
-            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
+            this.linkTversity.AutoSize = true;
+            this.linkTversity.Location = new System.Drawing.Point(263, 157);
+            this.linkTversity.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.linkTversity.Name = "linkTversity";
+            this.linkTversity.Size = new System.Drawing.Size(65, 13);
+            this.linkTversity.TabIndex = 3;
+            this.linkTversity.TabStop = true;
+            this.linkTversity.Text = "Get TVersity";
+            this.linkTversity.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkTversity_LinkClicked);
             // 
             // txtTversity
             // 
@@ -383,13 +386,25 @@
             this.label6.Text = "XMTuner can use TVersity to create MP3 streams, to enable, enter the address and " +
                 "port to your TVersity server:";
             // 
+            // boxNetwork
+            // 
+            this.boxNetwork.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.boxNetwork.FormattingEnabled = true;
+            this.boxNetwork.Items.AddRange(new object[] {
+            "XM",
+            "SIRIUS"});
+            this.boxNetwork.Location = new System.Drawing.Point(218, 48);
+            this.boxNetwork.Name = "boxNetwork";
+            this.boxNetwork.Size = new System.Drawing.Size(67, 21);
+            this.boxNetwork.TabIndex = 0;
+            // 
             // Form2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(368, 295);
             this.Controls.Add(this.tabControl1);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.bSave);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form2";
             this.Text = "Configuration";
@@ -398,6 +413,7 @@
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
             this.groupBox3.ResumeLayout(false);
+            this.groupBox2.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
             this.groupBox5.ResumeLayout(false);
             this.groupBox5.PerformLayout();
@@ -415,7 +431,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button bSave;
         private System.Windows.Forms.TextBox txtUser;
         private System.Windows.Forms.TextBox txtPassword;
         private System.Windows.Forms.TextBox txtPort;
@@ -430,7 +446,7 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.TextBox txtTversity;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.LinkLabel linkLabel1;
+        private System.Windows.Forms.LinkLabel linkTversity;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.GroupBox groupBox3;
@@ -441,5 +457,6 @@
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.TextBox txtHostname;
         private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.ComboBox boxNetwork;
     }
 }
