@@ -103,22 +103,36 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="configMan.cs" />
-    <Compile Include="Form1.cs" />
-    <Compile Include="Log.cs">
-      <SubType>Code</SubType>
+    <Compile Include="..\XMTunerConsole\configMan.cs">
+      <Link>configMan.cs</Link>
     </Compile>
+    <Compile Include="..\XMTunerConsole\Log.cs">
+      <Link>Log.cs</Link>
+    </Compile>
+    <Compile Include="..\XMTunerConsole\TheConstructor.cs">
+      <Link>TheConstructor.cs</Link>
+    </Compile>
+    <Compile Include="..\XMTunerConsole\URL.cs">
+      <Link>URL.cs</Link>
+    </Compile>
+    <Compile Include="..\XMTunerConsole\WebListner.cs">
+      <Link>WebListner.cs</Link>
+    </Compile>
+    <Compile Include="..\XMTunerConsole\WebWorker.cs">
+      <Link>WebWorker.cs</Link>
+    </Compile>
+    <Compile Include="..\XMTunerConsole\XMChannel.cs">
+      <Link>XMChannel.cs</Link>
+    </Compile>
+    <Compile Include="..\XMTunerConsole\XMTuner.cs">
+      <Link>XMTuner.cs</Link>
+    </Compile>
+    <Compile Include="Form1.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="ServiceInstaller.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="TheConstructor.cs" />
-    <Compile Include="URL.cs" />
-    <Compile Include="WebListner.cs" />
-    <Compile Include="WebWorker.cs" />
-    <Compile Include="XMChannel.cs" />
     <Compile Include="XMReader.cs" />
-    <Compile Include="XMTuner.cs" />
     <Compile Include="XMTunerService.cs">
       <SubType>Component</SubType>
     </Compile>
