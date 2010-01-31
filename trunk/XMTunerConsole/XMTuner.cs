@@ -458,9 +458,10 @@ namespace XMTuner
 
         protected virtual string playChannel(URL url)
         {
+            String data = url.response();
             String contentURL;
             String pattern = "<PARAM NAME=\"FileName\" VALUE=\"(.*?)\">";
-            String m = Regex.Match(url.response(),pattern).ToString();
+            String m = Regex.Match(data,pattern).ToString();
             m = m.Replace("<PARAM NAME=\"FileName\" VALUE=\"", "");
             m = m.Replace("\">", "");
 
@@ -472,6 +473,7 @@ namespace XMTuner
             else 
             {
                 output("XM Radio Online Error - Not Logged In", "error");
+                cache.saveFile("playchannel.err", data);
                 isLoggedIn = false;
                 contentURL = null;
             }
