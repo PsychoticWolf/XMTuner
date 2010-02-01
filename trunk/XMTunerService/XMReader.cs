@@ -13,20 +13,13 @@ namespace XMTuner
         XMTuner self;
         public Log logging;
         WebListner xmServer;
-        bool loggedIn = false;
-        String user;
+        String username;
         String password;
-        String port = "";
-        Boolean useLocalDatapath = false;
-        Boolean serverRunning = false; 
-        bool highbit = true;
-        String hostname = "";
-        String tversityHost = "";
-        String ip = "";
-        public String output;
-        bool autologin = false;
-        bool isMMS = false;
-        public int i = 0;
+        String network;
+        String port;
+        Boolean loggedIn = false;
+        Boolean serverRunning = false;
+        int i = 0;
         System.Timers.Timer theTimer = new System.Timers.Timer(30000);
 
         public XMReader()
@@ -42,7 +35,14 @@ namespace XMTuner
             {
                 logging.output("Reading configuration", "debug");
                 logging.log(i);
-                self = new XMTuner(user, password, logging, useLocalDatapath);
+                if (network.ToUpper().Equals("SIRIUS"))
+                {
+                    self = new SiriusTuner(username, password, logging);
+                }
+                else
+                {
+                    self = new XMTuner(username, password, logging);
+                }
                 logging.output("XMTuner created, Attempting Login", "debug");
                 logging.log(i);
 
@@ -77,52 +77,42 @@ namespace XMTuner
             }
             else
             {
-                addOutput("No Configuration");
+                logging.output("No Configuration", "error");
                 
                 logging.log(i);
 
             }
-        }
-        public void addOutput(String outtxt)
-        {
-            output = output + "\n" + outtxt;
-            logging.output(outtxt, "message");
         }
 
         public String test()
         {
             return "Test reached";
         }
+
         private bool refreshConfig()
         {
             configMan configuration = new configMan();
-            configuration.readConfig();
-            if (configuration.isConfig)
+            if (configuration.loaded == false)
             {
-                NameValueCollection configIn = configuration.getConfig();
-                user = configIn.Get("username");
-                password = configIn.Get("password");
-                port = configIn.Get("port");
-                highbit = Convert.ToBoolean(configIn.Get("bitrate"));
-                autologin = Convert.ToBoolean(configIn.Get("autologin"));
-                isMMS = Convert.ToBoolean(configIn.Get("isMMS"));
-                tversityHost = configIn.Get("Tversity"); ;
-                hostname = configIn.Get("hostname"); ;
-                if (hostname.Equals("")) { hostname = ip; }
-                return true;
-            }
-            else
-            {
-                if (port.Equals(""))
-                {
-                    port = "19081";
-                }
-
-                //outputbox.AppendText("No Configuration\n");
                 return false;
             }
+
+            //Get configuration from configMan
+            NameValueCollection config = configuration.getConfig(true);
+
+            //Set config values using new config
+            setConfig(configuration, config);
+            return true;
         }
 
+        private void setConfig(configMan cfg, NameValueCollection config)
+        {
+            username = cfg.getConfigItem(config, "username");
+            password = cfg.getConfigItem(config, "password");
+            port = cfg.getConfigItem(config, "port");
+            network = cfg.getConfigItem(config, "network");
+        }
+        
         public void OnTimedEvent(object source, ElapsedEventArgs e)
         {
             if (loggedIn)
@@ -151,7 +141,7 @@ namespace XMTuner
             }
             catch (System.Net.Sockets.SocketException e)
             {
-                addOutput(e.Message);
+                logging.output(e.Message, "error");
             }
             if (localIP == null)
             {
