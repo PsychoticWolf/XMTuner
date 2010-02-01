@@ -22,6 +22,8 @@ namespace XMTuner
         // it can be a homepage or a direct
         // link to zip/exe file
         string url = "";
+        String downloadURL = "";
+        String details = "";
 
         public Updater()
         {
@@ -43,7 +45,7 @@ namespace XMTuner
             {
                  // provide the XmlTextReader with the URL of
                  // our xml document
-                    string xmlURL = "http://www.pcfire.net/XMTuner/update.xml?v="+curVersion.ToString();
+                    string xmlURL = "http://www.pcfire.net/XMTuner/update-test.xml?v="+curVersion.ToString();
                  reader = new XmlTextReader(xmlURL);
                  // simply (and easily) skip the junk at the beginning
                  reader.MoveToContent();
@@ -83,6 +85,12 @@ namespace XMTuner
                      case "url":
                       url = reader.Value;
                       break;
+                      case "download":
+                      downloadURL = reader.Value;
+                      break;
+                      case "details":
+                      details = reader.Value;
+                      break;
                      }
                     }
                    }
@@ -100,21 +108,8 @@ namespace XMTuner
             // compare the versions
             if (curVersion.CompareTo(newVersion) < 0)
             {
-                // ask the user if he would like
-                // to download the new version
-                string title = "New version available!";
-                string question = "A new version of XMTuner is available.\n New Version: " + newVersion.ToString(3) + "\n Current Version: " + curVersion.ToString(3) + "\n\nWould you like to download the new version?";
-                if (DialogResult.Yes ==
-                 MessageBox.Show(question, title,
-                                 MessageBoxButtons.YesNo,
-                                 MessageBoxIcon.Question, MessageBoxDefaultButton.Button1))
-                {
-                    // navigate the default web
-                    // browser to our app
-                    // homepage (the url
-                    // comes from the xml content)
-                    System.Diagnostics.Process.Start(url);
-                }
+                UpdaterForm update = new UpdaterForm(curVersion, newVersion, downloadURL, details);
+                update.Show();
             }
             else
             {

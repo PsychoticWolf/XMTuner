@@ -17,7 +17,6 @@ namespace XMTuner
         //Config options...
         protected String user;
         protected String password;
-        //Boolean useLocalDatapath = false;
 
         protected List<XMChannel> channels = new List<XMChannel>();
         Log log;
@@ -32,6 +31,8 @@ namespace XMTuner
         protected int cookieCount = 0;
         public List<String> recentlyPlayed = new List<String>();
 
+        Boolean useProgramGuide = true;
+
         public XMTuner(String username, String passw, Log logging)
         {
             user = username;
@@ -41,6 +42,7 @@ namespace XMTuner
 #if !DEBUG
             isLive = true;
 #endif
+            if (!isLive) useProgramGuide = false;
             login();
           
         }
@@ -92,7 +94,7 @@ namespace XMTuner
                             loadChannelMetadata(true);
 
                             //Continue to preloading whatsOn data
-                            doWhatsOn();
+                            doWhatsOn(true);
                         }
                         else
                         {
@@ -291,7 +293,8 @@ namespace XMTuner
         {
             channels.Sort();
             channels.Reverse();
-            return channels;
+            List<XMChannel> channelsCopy = new List<XMChannel>(channels.AsReadOnly());
+            return channelsCopy;
         }
 
         public string checkChannel(int num)
@@ -313,7 +316,7 @@ namespace XMTuner
                 dnldChannelData();
             }
 
-            if (loadedExtendedChannelData == false || isProgramDataCurrent == false)
+            if (loadedExtendedChannelData == false || (useProgramGuide == true && isProgramDataCurrent == false))
             {
                 MethodInvoker extendedChannelDataDelegate = new MethodInvoker(loadExtendedChannelData);
                 extendedChannelDataDelegate.BeginInvoke(null, null);
@@ -323,11 +326,16 @@ namespace XMTuner
             simpleDelegate.BeginInvoke(null, null);
 
         }
+        private void doWhatsOn(Boolean atstartup)
+        {
+            MethodInvoker simpleDelegate = new MethodInvoker(loadWhatsOn);
+            simpleDelegate.BeginInvoke(null, null);
+        }
 
         private void loadExtendedChannelData()
         {
             loadChannelMetadata();
-            if (isProgramDataCurrent == false)
+            if (useProgramGuide == true && isProgramDataCurrent == false)
             {
                 loadProgramGuideData();
             }

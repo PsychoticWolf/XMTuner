@@ -103,5 +103,29 @@ namespace XMTuner
 
             textOut.Close();
         }
+
+        public String getConfigItem(NameValueCollection config, String item)
+        {
+            NameValueCollection defaultConfig = new NameValueCollection();
+                defaultConfig.Add("ConfigVer", "0.3");
+                defaultConfig.Add("username", "");
+                defaultConfig.Add("password", "");
+                defaultConfig.Add("port", "19081");
+                defaultConfig.Add("bitrate", "True");
+                defaultConfig.Add("autologin", "False");
+                defaultConfig.Add("isMMS", "False");
+                defaultConfig.Add("TVersity", "");
+                defaultConfig.Add("hostname", "");
+                defaultConfig.Add("network", "XM");
+
+                if (config.Get(item) == null)
+                {
+                    return defaultConfig[item];
+                }
+                else
+                {
+                    return config[item];
+                }
+        }
     }
 }

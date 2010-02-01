@@ -66,7 +66,6 @@ namespace XMTuner
                 bStart_Click(sender, e);
             }
             lblClock.Text = "0:00:00";
-
 #if !DEBUG
             Updater update = new Updater(outputbox);
 #endif
@@ -260,7 +259,7 @@ namespace XMTuner
             NameValueCollection config = configuration.getConfig(true);
 
             //Set config values using new config
-            setConfig(config);
+            setConfig(configuration, config);
 
             //Get list of updated values if we're updating config
             if (loggedIn == true && prevconfig != null)
@@ -309,18 +308,19 @@ namespace XMTuner
             }
         }
 
-        private void setConfig(NameValueCollection config)
+        private void setConfig(configMan cfg, NameValueCollection config)
         {
             ip = getLocalIP();
-            username = config.Get("username");
-            password = config.Get("password");
-            port = config.Get("port");
-            bitrate = config.Get("bitrate");
-            autologin = Convert.ToBoolean(config.Get("autologin"));
-            isMMS = Convert.ToBoolean(config.Get("isMMS"));
-            tversityHost = config.Get("Tversity");
-            hostname = config.Get("hostname");
-            network = config.Get("network");
+            username = cfg.getConfigItem(config, "username");
+            password = cfg.getConfigItem(config, "password");
+            port = cfg.getConfigItem(config, "port");
+            bitrate = cfg.getConfigItem(config, "bitrate");
+            autologin = Convert.ToBoolean(cfg.getConfigItem(config, "autologin"));
+            isMMS = Convert.ToBoolean(cfg.getConfigItem(config, "isMMS"));
+            tversityHost = cfg.getConfigItem(config, "Tversity");
+            hostname = cfg.getConfigItem(config, "hostname");
+            network = cfg.getConfigItem(config, "network");
+
         }
 
         private String getLocalIP()
