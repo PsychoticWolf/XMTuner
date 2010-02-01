@@ -112,6 +112,9 @@
     <Compile Include="..\XMTunerConsole\Log.cs">
       <Link>Log.cs</Link>
     </Compile>
+    <Compile Include="..\XMTunerConsole\SiriusTuner.cs">
+      <Link>SiriusTuner.cs</Link>
+    </Compile>
     <Compile Include="..\XMTunerConsole\TheConstructor.cs">
       <Link>TheConstructor.cs</Link>
     </Compile>
