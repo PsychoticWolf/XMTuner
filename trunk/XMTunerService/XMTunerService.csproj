@@ -103,6 +103,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\XMTunerConsole\CacheManager.cs">
+      <Link>CacheManager.cs</Link>
+    </Compile>
     <Compile Include="..\XMTunerConsole\configMan.cs">
       <Link>configMan.cs</Link>
     </Compile>
@@ -127,7 +130,6 @@
     <Compile Include="..\XMTunerConsole\XMTuner.cs">
       <Link>XMTuner.cs</Link>
     </Compile>
-    <Compile Include="CacheManager.cs" />
     <Compile Include="Form1.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="ServiceInstaller.cs">
