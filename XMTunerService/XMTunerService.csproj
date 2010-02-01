@@ -127,6 +127,7 @@
     <Compile Include="..\XMTunerConsole\XMTuner.cs">
       <Link>XMTuner.cs</Link>
     </Compile>
+    <Compile Include="CacheManager.cs" />
     <Compile Include="Form1.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="ServiceInstaller.cs">
