@@ -143,7 +143,7 @@
     <Compile Include="servicemanager.cs" />
     <Compile Include="SiriusTuner.cs" />
     <Compile Include="TheConstructor.cs" />
-
+    <Compile Include="TversityHelper.cs" />
     <Compile Include="Updater.cs" />
     <Compile Include="UpdaterForm.cs">
       <SubType>Form</SubType>
