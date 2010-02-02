@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form2));
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -45,6 +46,7 @@
             this.bUpdateLineup = new System.Windows.Forms.Button();
             this.chkBitrate = new System.Windows.Forms.CheckBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.boxNetwork = new System.Windows.Forms.ComboBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.label8 = new System.Windows.Forms.Label();
@@ -54,11 +56,18 @@
             this.label9 = new System.Windows.Forms.Label();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.tversityBox2 = new System.Windows.Forms.GroupBox();
+            this.tbtnFeed = new System.Windows.Forms.Button();
+            this.tlblConfig = new System.Windows.Forms.Label();
+            this.tlblFeed = new System.Windows.Forms.Label();
+            this.tlblEnabled = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
             this.label7 = new System.Windows.Forms.Label();
             this.linkTversity = new System.Windows.Forms.LinkLabel();
             this.txtTversity = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
-            this.boxNetwork = new System.Windows.Forms.ComboBox();
+            this.groupBox7 = new System.Windows.Forms.GroupBox();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -68,6 +77,7 @@
             this.groupBox4.SuspendLayout();
             this.tabPage3.SuspendLayout();
             this.groupBox1.SuspendLayout();
+            this.tversityBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
@@ -162,6 +172,7 @@
             this.tabControl1.SelectedIndex = 0;
             this.tabControl1.Size = new System.Drawing.Size(348, 245);
             this.tabControl1.TabIndex = 12;
+            this.tabControl1.Selected += new System.Windows.Forms.TabControlEventHandler(this.tabControl1_Selected);
             // 
             // tabPage1
             // 
@@ -237,6 +248,18 @@
             this.groupBox2.Size = new System.Drawing.Size(335, 124);
             this.groupBox2.TabIndex = 12;
             this.groupBox2.TabStop = false;
+            // 
+            // boxNetwork
+            // 
+            this.boxNetwork.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.boxNetwork.FormattingEnabled = true;
+            this.boxNetwork.Items.AddRange(new object[] {
+            "XM",
+            "SIRIUS"});
+            this.boxNetwork.Location = new System.Drawing.Point(218, 48);
+            this.boxNetwork.Name = "boxNetwork";
+            this.boxNetwork.Size = new System.Drawing.Size(67, 21);
+            this.boxNetwork.TabIndex = 0;
             // 
             // tabPage2
             // 
@@ -333,23 +356,92 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.tversityBox2);
+            this.groupBox1.Controls.Add(this.button1);
             this.groupBox1.Controls.Add(this.label7);
             this.groupBox1.Controls.Add(this.linkTversity);
             this.groupBox1.Controls.Add(this.txtTversity);
             this.groupBox1.Controls.Add(this.label6);
+            this.groupBox1.Controls.Add(this.groupBox7);
             this.groupBox1.Location = new System.Drawing.Point(4, 0);
             this.groupBox1.Margin = new System.Windows.Forms.Padding(2);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Padding = new System.Windows.Forms.Padding(2);
-            this.groupBox1.Size = new System.Drawing.Size(333, 178);
+            this.groupBox1.Size = new System.Drawing.Size(333, 215);
             this.groupBox1.TabIndex = 4;
             this.groupBox1.TabStop = false;
+            // 
+            // tversityBox2
+            // 
+            this.tversityBox2.Controls.Add(this.tbtnFeed);
+            this.tversityBox2.Controls.Add(this.tlblConfig);
+            this.tversityBox2.Controls.Add(this.tlblFeed);
+            this.tversityBox2.Controls.Add(this.tlblEnabled);
+            this.tversityBox2.Enabled = false;
+            this.tversityBox2.Location = new System.Drawing.Point(7, 90);
+            this.tversityBox2.Name = "tversityBox2";
+            this.tversityBox2.Size = new System.Drawing.Size(312, 107);
+            this.tversityBox2.TabIndex = 5;
+            this.tversityBox2.TabStop = false;
+            this.tversityBox2.Text = "Details";
+            this.tversityBox2.Visible = false;
+            // 
+            // tbtnFeed
+            // 
+            this.tbtnFeed.Enabled = false;
+            this.tbtnFeed.Location = new System.Drawing.Point(243, 41);
+            this.tbtnFeed.Name = "tbtnFeed";
+            this.tbtnFeed.Size = new System.Drawing.Size(65, 20);
+            this.tbtnFeed.TabIndex = 3;
+            this.tbtnFeed.Text = "Add Feed";
+            this.tbtnFeed.UseVisualStyleBackColor = true;
+            this.tbtnFeed.Click += new System.EventHandler(this.tbtnFeed_Click);
+            // 
+            // tlblConfig
+            // 
+            this.tlblConfig.AutoSize = true;
+            this.tlblConfig.Enabled = false;
+            this.tlblConfig.Location = new System.Drawing.Point(7, 63);
+            this.tlblConfig.Name = "tlblConfig";
+            this.tlblConfig.Size = new System.Drawing.Size(37, 13);
+            this.tlblConfig.TabIndex = 2;
+            this.tlblConfig.Text = "Config";
+            // 
+            // tlblFeed
+            // 
+            this.tlblFeed.AutoSize = true;
+            this.tlblFeed.Enabled = false;
+            this.tlblFeed.Location = new System.Drawing.Point(7, 41);
+            this.tlblFeed.Name = "tlblFeed";
+            this.tlblFeed.Size = new System.Drawing.Size(31, 13);
+            this.tlblFeed.TabIndex = 1;
+            this.tlblFeed.Text = "Feed";
+            // 
+            // tlblEnabled
+            // 
+            this.tlblEnabled.AutoSize = true;
+            this.tlblEnabled.Enabled = false;
+            this.tlblEnabled.Location = new System.Drawing.Point(7, 20);
+            this.tlblEnabled.Name = "tlblEnabled";
+            this.tlblEnabled.Size = new System.Drawing.Size(46, 13);
+            this.tlblEnabled.TabIndex = 0;
+            this.tlblEnabled.Text = "Enabled";
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(186, 41);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(53, 22);
+            this.button1.TabIndex = 4;
+            this.button1.Text = "Validate";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // label7
             // 
             this.label7.AutoSize = true;
             this.label7.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.label7.Location = new System.Drawing.Point(20, 74);
+            this.label7.Location = new System.Drawing.Point(20, 63);
             this.label7.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(137, 13);
@@ -359,7 +451,7 @@
             // linkTversity
             // 
             this.linkTversity.AutoSize = true;
-            this.linkTversity.Location = new System.Drawing.Point(263, 157);
+            this.linkTversity.Location = new System.Drawing.Point(264, 200);
             this.linkTversity.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.linkTversity.Name = "linkTversity";
             this.linkTversity.Size = new System.Drawing.Size(65, 13);
@@ -370,7 +462,7 @@
             // 
             // txtTversity
             // 
-            this.txtTversity.Location = new System.Drawing.Point(7, 54);
+            this.txtTversity.Location = new System.Drawing.Point(7, 43);
             this.txtTversity.Margin = new System.Windows.Forms.Padding(2);
             this.txtTversity.Name = "txtTversity";
             this.txtTversity.Size = new System.Drawing.Size(174, 20);
@@ -378,7 +470,7 @@
             // 
             // label6
             // 
-            this.label6.Location = new System.Drawing.Point(4, 15);
+            this.label6.Location = new System.Drawing.Point(4, 11);
             this.label6.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(324, 28);
@@ -386,17 +478,23 @@
             this.label6.Text = "XMTuner can use TVersity to create MP3 streams, to enable, enter the address and " +
                 "port to your TVersity server:";
             // 
-            // boxNetwork
+            // groupBox7
             // 
-            this.boxNetwork.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.boxNetwork.FormattingEnabled = true;
-            this.boxNetwork.Items.AddRange(new object[] {
-            "XM",
-            "SIRIUS"});
-            this.boxNetwork.Location = new System.Drawing.Point(218, 48);
-            this.boxNetwork.Name = "boxNetwork";
-            this.boxNetwork.Size = new System.Drawing.Size(67, 21);
-            this.boxNetwork.TabIndex = 0;
+            this.groupBox7.Location = new System.Drawing.Point(7, 90);
+            this.groupBox7.Name = "groupBox7";
+            this.groupBox7.Size = new System.Drawing.Size(312, 107);
+            this.groupBox7.TabIndex = 5;
+            this.groupBox7.TabStop = false;
+            this.groupBox7.Text = "Details";
+            // 
+            // toolTip1
+            // 
+            this.toolTip1.AutoPopDelay = 10000;
+            this.toolTip1.InitialDelay = 500;
+            this.toolTip1.IsBalloon = true;
+            this.toolTip1.ReshowDelay = 100;
+            this.toolTip1.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
+            this.toolTip1.ToolTipTitle = "XMTuner Help";
             // 
             // Form2
             // 
@@ -422,6 +520,8 @@
             this.tabPage3.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            this.tversityBox2.ResumeLayout(false);
+            this.tversityBox2.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -458,5 +558,13 @@
         private System.Windows.Forms.TextBox txtHostname;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.ComboBox boxNetwork;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.GroupBox tversityBox2;
+        private System.Windows.Forms.GroupBox groupBox7;
+        private System.Windows.Forms.Label tlblEnabled;
+        private System.Windows.Forms.Label tlblConfig;
+        private System.Windows.Forms.Label tlblFeed;
+        private System.Windows.Forms.Button tbtnFeed;
+        private System.Windows.Forms.ToolTip toolTip1;
     }
 }
