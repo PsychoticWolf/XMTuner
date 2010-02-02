@@ -19,7 +19,7 @@ namespace XMTuner
         String port;
         Boolean loggedIn = false;
         Boolean serverRunning = false;
-        int i = 0;
+        public int i = 0;
         System.Timers.Timer theTimer = new System.Timers.Timer(30000);
 
         public XMReader()
