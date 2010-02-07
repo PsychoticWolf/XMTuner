@@ -52,7 +52,7 @@ namespace XMTuner
         private void Form1_Load(object sender, EventArgs e)
         {
             logging = new Log(ref outputbox);
-            aVersion.Text = getVersion();
+            aVersion.Text = configMan.version;
             serviceControl.ServiceName = "XMTunerService";
 
             service_button_reset();
@@ -380,12 +380,6 @@ namespace XMTuner
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             System.Diagnostics.Process.Start("http://www.pcfire.net/XMTuner/");
-        }
-
-        public static String getVersion()
-        {
-            Version curVersion = Assembly.GetExecutingAssembly().GetName().Version;
-            return curVersion.ToString(2);
         }
         #endregion
 

@@ -11,7 +11,7 @@ namespace XMTuner
         String logFile = "application.log";
         Boolean isDebug = false;
         Boolean useLocalDatapath = false;
-        String version;
+        String version = configMan.version;
 
         public Log()
         {
@@ -19,8 +19,6 @@ namespace XMTuner
             isDebug = true;
 #endif
             logFile = "XMTunerService.log";
-            version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(3);
-
         }
 
         public Log(ref RichTextBox box1)
@@ -31,7 +29,6 @@ namespace XMTuner
             logFile = "XMTuner.log";
             outputbox = box1;
             useLocalDatapath = new configMan().useLocalDatapath;
-            version = Form1.getVersion();
         }
 
         public void output(String output, String level)
