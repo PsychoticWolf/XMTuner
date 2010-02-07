@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
+using System.Reflection;
 
 namespace XMTuner
 {
@@ -8,11 +9,6 @@ namespace XMTuner
         public static void output(String output, String level, ref RichTextBox outputbox)
         {
 
-        }
-
-        public static String getVersion()
-        {
-            return "";
         }
     }
 }

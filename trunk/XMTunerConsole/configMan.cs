@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Text;
 using System.IO;
+using System.Reflection;
 
 namespace XMTuner
 {
@@ -126,6 +127,15 @@ namespace XMTuner
                 {
                     return config[item];
                 }
+        }
+
+        public static String version
+        {
+            get
+            {
+                Version curVersion = Assembly.GetExecutingAssembly().GetName().Version;
+                return curVersion.ToString(2);
+            }
         }
     }
 }

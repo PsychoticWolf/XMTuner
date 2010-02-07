@@ -485,7 +485,6 @@ namespace XMTuner
                 isLoggedIn = false;
                 contentURL = null;
             }
-
             return (contentURL);
         }
 
