@@ -237,9 +237,12 @@ namespace XMTuner
 
                 i++;
             }
+
+            String lastLoggedIn = myTuner.lastLoggedIn.ToString("F");
+
             NowPlayingPage += "</table>" +
                                 "<hr noshade>\n" +
-                                "<p style=\"text-align: right; margin: 0px; color: #666;\">XMTuner "+configMan.version+"</p>"+
+                                "<p style=\"text-align: right; margin: 0px; padding-right: 10px; color: #666;\">Last Logged in: "+lastLoggedIn+" | XMTuner "+configMan.version+"</p>"+
                                 "</body>\n</html>";
             return (NowPlayingPage);
         }

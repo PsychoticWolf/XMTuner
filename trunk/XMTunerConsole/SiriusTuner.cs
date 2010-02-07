@@ -99,6 +99,7 @@ namespace XMTuner
                         {
                             //We're logged in and have valid channel information, set login flag to true
                             isLoggedIn = true;
+                            lastLoggedIn = DateTime.Now;
 
                             loadSiriusChannelGuide();
 

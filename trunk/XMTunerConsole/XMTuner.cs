@@ -30,8 +30,8 @@ namespace XMTuner
         Boolean isProgramDataCurrent = false;
         protected int cookieCount = 0;
         public List<String> recentlyPlayed = new List<String>();
-
         Boolean useProgramGuide = true;
+        public DateTime lastLoggedIn;
 
         public XMTuner(String username, String passw, Log logging)
         {
@@ -89,6 +89,7 @@ namespace XMTuner
                         {
                             //We're logged in and have valid channel information, set login flag to true
                             isLoggedIn = true;
+                            lastLoggedIn = DateTime.Now;
 
                             //Attempt to preload channel metadata
                             loadChannelMetadata(true);
