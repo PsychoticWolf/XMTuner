@@ -45,7 +45,7 @@ namespace XMTuner
             {
                  // provide the XmlTextReader with the URL of
                  // our xml document
-                    string xmlURL = "http://www.pcfire.net/XMTuner/update-test.xml?v="+curVersion.ToString();
+                    string xmlURL = "http://www.pcfire.net/XMTuner/update.xml?v="+curVersion.ToString();
                  reader = new XmlTextReader(xmlURL);
                  // simply (and easily) skip the junk at the beginning
                  reader.MoveToContent();
@@ -108,7 +108,7 @@ namespace XMTuner
             // compare the versions
             if (curVersion.CompareTo(newVersion) < 0)
             {
-                UpdaterForm update = new UpdaterForm(curVersion, newVersion, downloadURL, details);
+                UpdaterForm update = new UpdaterForm(curVersion, newVersion, url, downloadURL, details);
                 update.Show();
             }
             else

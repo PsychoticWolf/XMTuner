@@ -61,7 +61,7 @@
             this.tlblConfig = new System.Windows.Forms.Label();
             this.tlblFeed = new System.Windows.Forms.Label();
             this.tlblEnabled = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
+            this.tbtnValidate = new System.Windows.Forms.Button();
             this.label7 = new System.Windows.Forms.Label();
             this.linkTversity = new System.Windows.Forms.LinkLabel();
             this.txtTversity = new System.Windows.Forms.TextBox();
@@ -357,7 +357,7 @@
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.tversityBox2);
-            this.groupBox1.Controls.Add(this.button1);
+            this.groupBox1.Controls.Add(this.tbtnValidate);
             this.groupBox1.Controls.Add(this.label7);
             this.groupBox1.Controls.Add(this.linkTversity);
             this.groupBox1.Controls.Add(this.txtTversity);
@@ -383,7 +383,7 @@
             this.tversityBox2.Size = new System.Drawing.Size(312, 107);
             this.tversityBox2.TabIndex = 5;
             this.tversityBox2.TabStop = false;
-            this.tversityBox2.Text = "Details";
+            this.tversityBox2.Text = "Status";
             this.tversityBox2.Visible = false;
             // 
             // tbtnFeed
@@ -427,15 +427,16 @@
             this.tlblEnabled.TabIndex = 0;
             this.tlblEnabled.Text = "Enabled";
             // 
-            // button1
+            // tbtnValidate
             // 
-            this.button1.Location = new System.Drawing.Point(186, 41);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(53, 22);
-            this.button1.TabIndex = 4;
-            this.button1.Text = "Validate";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.tbtnValidate.Enabled = false;
+            this.tbtnValidate.Location = new System.Drawing.Point(186, 41);
+            this.tbtnValidate.Name = "tbtnValidate";
+            this.tbtnValidate.Size = new System.Drawing.Size(53, 22);
+            this.tbtnValidate.TabIndex = 4;
+            this.tbtnValidate.Text = "Validate";
+            this.tbtnValidate.UseVisualStyleBackColor = true;
+            this.tbtnValidate.Click += new System.EventHandler(this.button1_Click);
             // 
             // label7
             // 
@@ -467,6 +468,7 @@
             this.txtTversity.Name = "txtTversity";
             this.txtTversity.Size = new System.Drawing.Size(174, 20);
             this.txtTversity.TabIndex = 1;
+            this.txtTversity.TextChanged += new System.EventHandler(this.txtTversity_TextChanged);
             // 
             // label6
             // 
@@ -558,7 +560,7 @@
         private System.Windows.Forms.TextBox txtHostname;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.ComboBox boxNetwork;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button tbtnValidate;
         private System.Windows.Forms.GroupBox tversityBox2;
         private System.Windows.Forms.GroupBox groupBox7;
         private System.Windows.Forms.Label tlblEnabled;

@@ -13,13 +13,16 @@ namespace XMTuner
         WebClient client = new WebClient();
         String downloadURL;
         String destination = Directory.GetCurrentDirectory() + "\\update.msi";
+        String url;
 
-        public UpdaterForm(Version curVersion, Version newVersion, String downloadURL, String details)
+        public UpdaterForm(Version curVersion, Version newVersion, String url, String downloadURL, String details)
         {
             InitializeComponent();
             lblCurrentVersion.Text = "Current Version: " + curVersion.ToString(3);
             lblNewVersion.Text = "New Version: " + newVersion.ToString(3);
             this.downloadURL = downloadURL;
+            this.url = url;
+            lnkMoreInfo.Enabled = true;
             lblDetails.Text = details;
             File.Delete(destination);
         }
@@ -92,6 +95,11 @@ namespace XMTuner
         private void btnNo_Click(object sender, EventArgs e)
         {
             Close();
+        }
+
+        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            System.Diagnostics.Process.Start(url);
         }
     }
 }

@@ -85,7 +85,7 @@ namespace XMTuner
 
         private void button1_Click(object sender, EventArgs e)
         {
-            button1.Enabled = false;
+            tbtnValidate.Enabled = false;
              syncTversityPanel();
         }
 
@@ -158,7 +158,7 @@ namespace XMTuner
                 tlblEnabled.ForeColor = System.Drawing.Color.Red;
                 tlblEnabled.Enabled = true;
             }
-            button1.Enabled = true;
+            tbtnValidate.Enabled = true;
             loadedTversityPanel = true;
         }
 
@@ -181,10 +181,25 @@ namespace XMTuner
 
         private void tabControl1_Selected(object sender, TabControlEventArgs e)
         {
-            if (e.TabPage.Equals(tabPage3) && !loadedTversityPanel)
+            if (e.TabPage.Equals(tabPage3))
             {
-                syncTversityPanel();
+                enableTVersityValidateBtn();
+                if(!loadedTversityPanel) {
+                    syncTversityPanel();
+                }
             }
+        }
+
+        private void enableTVersityValidateBtn()
+        {
+            if (txtTversity.Text.Equals("") || txtTversity.Text.Contains(":") == false)
+            { return; }
+            tbtnValidate.Enabled = true;
+        }
+
+        private void txtTversity_TextChanged(object sender, EventArgs e)
+        {
+            enableTVersityValidateBtn();
         }
     }
 }

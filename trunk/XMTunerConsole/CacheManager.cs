@@ -133,7 +133,10 @@ namespace XMTuner
             if (useCache == false) { return false; }
             String ident = filename;
             String path = getDataPath(filename);
-            ident = findCacheFile(filename)[2];
+            if (findCacheFile(filename) != null)
+            {
+                ident = findCacheFile(filename)[2];
+            }
 
             try
             {
