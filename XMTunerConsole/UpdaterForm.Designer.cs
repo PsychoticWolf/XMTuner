@@ -40,6 +40,7 @@
             this.label5 = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
             this.lblDetails = new System.Windows.Forms.Label();
+            this.lnkMoreInfo = new System.Windows.Forms.LinkLabel();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -149,12 +150,25 @@
             this.lblDetails.TabIndex = 10;
             this.lblDetails.Text = "Details";
             // 
+            // lnkMoreInfo
+            // 
+            this.lnkMoreInfo.AutoSize = true;
+            this.lnkMoreInfo.Enabled = false;
+            this.lnkMoreInfo.Location = new System.Drawing.Point(314, 157);
+            this.lnkMoreInfo.Name = "lnkMoreInfo";
+            this.lnkMoreInfo.Size = new System.Drawing.Size(86, 13);
+            this.lnkMoreInfo.TabIndex = 11;
+            this.lnkMoreInfo.TabStop = true;
+            this.lnkMoreInfo.Text = "More Information";
+            this.lnkMoreInfo.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
+            // 
             // UpdaterForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(403, 226);
+            this.Controls.Add(this.lnkMoreInfo);
             this.Controls.Add(this.lblDetails);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.label5);
@@ -190,5 +204,6 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Label lblDetails;
+        private System.Windows.Forms.LinkLabel lnkMoreInfo;
     }
 }
