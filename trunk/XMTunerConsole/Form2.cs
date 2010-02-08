@@ -11,11 +11,13 @@ namespace XMTuner
         bool isLoggedIn = false;
         private CacheManager cache;
         bool loadedTversityPanel = false;
+        String ip;
 
-        public Form2(CacheManager cache, Boolean tLoggedIn)
+        public Form2(CacheManager cache, Boolean tLoggedIn, String ip)
         {
             isLoggedIn = tLoggedIn;
             this.cache = cache;
+            this.ip = ip;
 
             InitializeComponent();
         }
@@ -101,7 +103,7 @@ namespace XMTuner
             tversityBox2.Visible = true;
             tversityBox2.Enabled = true;
 
-            TversityHelper tvhelp = new TversityHelper(txtTversity.Text);
+            TversityHelper tvhelp = new TversityHelper(txtTversity.Text, ip, txtPort.Text);
             Boolean status = tvhelp.validate();
 
             if (status == true)
@@ -165,18 +167,7 @@ namespace XMTuner
         private void tbtnFeed_Click(object sender, EventArgs e)
         {
             tbtnFeed.Enabled = false;
-            TversityHelper tvhelp = new TversityHelper(txtTversity.Text);
-            if (tbtnFeed.Text.Equals("Add Feed"))
-            {
-                tvhelp.addFeed();
-            }
-            else
-            {
-                tvhelp.refresh();
-            }
-            MessageBox.Show(tvhelp.message, "TVersity says...", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            syncTversityPanel();
-            tbtnFeed.Enabled = true;
+            backgroundWorker1.RunWorkerAsync();
         }
 
         private void tabControl1_Selected(object sender, TabControlEventArgs e)
@@ -200,6 +191,29 @@ namespace XMTuner
         private void txtTversity_TextChanged(object sender, EventArgs e)
         {
             enableTVersityValidateBtn();
+        }
+
+        private void backgroundWorker1_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
+        {
+            TversityHelper tvhelp = new TversityHelper(txtTversity.Text, ip, txtPort.Text);
+            if (tbtnFeed.Text.Equals("Add Feed"))
+            {
+                tvhelp.addFeed();
+            }
+            else
+            {
+                tvhelp.refresh();
+            }
+
+            e.Result = tvhelp;
+        }
+
+        private void backgroundWorker1_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
+        {
+            TversityHelper tvhelp = e.Result as TversityHelper;
+            MessageBox.Show(tvhelp.message, "TVersity says...", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            syncTversityPanel();
+            tbtnFeed.Enabled = true;
         }
     }
 }

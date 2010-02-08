@@ -149,6 +149,12 @@ namespace XMTuner
             // Hopefully not crashing because the client ran away in the meantime
             try
             {
+                if (redirect)
+                {
+                    output.Close();
+                    return;
+                }
+
                 if (responseString != null)
                 {
                     response.ContentLength64 = buffer.Length;
@@ -225,7 +231,7 @@ namespace XMTuner
             else  if (baseURL.Equals("streams"))
             {
                 String response;
-                String contentType = "audio/x-ms-wma";
+                String contentType = "video/x-ms-asf";
                 HttpStatusCode status = HttpStatusCode.OK;
                 Boolean redirect = false;
 
