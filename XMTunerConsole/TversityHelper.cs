@@ -9,14 +9,19 @@ namespace XMTuner
     class TversityHelper
     {
         String tversityURL = "";
+        String ip;
+        String port;
         Int32 id;
         Boolean feedAdded;
         String lastMessage;
         public Int32 maxitemsperfeed;
 
-        public TversityHelper(String tvURL)
+        public TversityHelper(String tvURL, String ip, String port)
         {
             tversityURL = tvURL;
+            this.ip = ip;
+            this.port = port;
+
             feedAdded = getID();
         }
 
@@ -28,11 +33,7 @@ namespace XMTuner
 
         private String getXMTunerURL()
         {
-            String ip = "192.168.1.104";
-            String port = "19081";
-
             String url = "http://" + ip + ":" + port + "/feeds/";
-
             return url;
         }
 
@@ -52,6 +53,7 @@ namespace XMTuner
                 url += "&id=";
 
             URL tAdd = new URL(url);
+            tAdd.setTimeout(60000);
             tAdd.fetch();
             String reply = tAdd.response();
 
@@ -97,6 +99,8 @@ namespace XMTuner
 
         private bool parseResponse(string data)
         {
+            if (data == null || data.Equals("")) { return false; }
+
             XmlDocument xmldoc = new XmlDocument();
             xmldoc.LoadXml(data);
             XmlNodeList list = xmldoc.GetElementsByTagName("response");

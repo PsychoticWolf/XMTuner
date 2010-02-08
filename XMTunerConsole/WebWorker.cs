@@ -373,6 +373,7 @@ namespace XMTuner
             writer.WriteAttributeString("xmlns:media", "http://search.yahoo.com/mrss/");
             writer.WriteAttributeString("xmlns:atom", "http://www.w3.org/2005/Atom");
             writer.WriteAttributeString("xmlns:upnp", "urn:schemas-upnp-org:metadata-1-0/upnp/");
+            writer.WriteAttributeString("xmlns:tversity", "http://tversity.com/schemas/podcast-1.0.xsd");
 
             //<channel>
             writer.WriteStartElement("channel");
@@ -434,8 +435,9 @@ namespace XMTuner
                 //<media:content url=\""+media+"\" type=\"audio/x-ms-wma\" medium=\"audio\" />
                 writer.WriteStartElement("media:content");
                 writer.WriteAttributeString("url", media);
-                writer.WriteAttributeString("type", "audio/x-ms-wma");
+                writer.WriteAttributeString("type", "video/x-ms-asf");
                 writer.WriteAttributeString("medium", "audio");
+                writer.WriteAttributeString("audioCodec", "WMAV2");
                 writer.WriteEndElement();
 
                 //<upnp:region>United States</upnp:region>

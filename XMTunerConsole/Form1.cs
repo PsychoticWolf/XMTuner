@@ -216,7 +216,7 @@ namespace XMTuner
             //Store current configuration for comparison test
             NameValueCollection currentconfig = new configMan().getConfig();
 
-            Form2 form2 = new Form2(cache, loggedIn);
+            Form2 form2 = new Form2(cache, loggedIn, ip);
             form2.ShowDialog();
             refreshConfig(currentconfig);
         }
