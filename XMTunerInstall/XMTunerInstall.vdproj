@@ -380,7 +380,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:XM Tuner"
         "ProductCode" = "8:{42C73C4D-8A2B-4148-9A5F-59ED92E935A9}"
-        "PackageCode" = "8:{99C56F47-62FA-4524-908A-A51DE8B78EBB}"
+        "PackageCode" = "8:{3A05256F-8F62-4B36-9C24-12274B3DFFD2}"
         "UpgradeCode" = "8:{96B7DD5C-10F8-4C80-A7F6-A36C2DFE7C7F}"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
@@ -517,7 +517,7 @@
             {
             "Name" = "8:XMTuner"
             "Arguments" = "8:"
-            "Description" = "8:Listen to Sirius XM Satelite Radio using XMTuner"
+            "Description" = "8:Listen to SiriusXM Satelite Radio using XMTuner"
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
             "Transitive" = "11:FALSE"
@@ -982,7 +982,8 @@
                             "Type" = "3:8"
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
-                            "Setting" = "3:1"
+                            "Setting" = "3:2"
+                            "Value" = "8:_19BE080CDB0940068EBBA2D72252DE75"
                             "UsePlugInResources" = "11:TRUE"
                             }
                             "BannerText"
