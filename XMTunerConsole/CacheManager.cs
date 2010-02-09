@@ -10,7 +10,12 @@ namespace XMTuner
         private List<String[]> cacheFiles = new List<String[]>();
         private Boolean useLocalDatapath = false;
         Log log;
+        String network;
 
+        private String versionPrefix = "::XMTUNER-VERSION-START::";
+        private String versionSuffix = "::XMTUNER-VERSION-END::";
+
+        public CacheManager(Log log, String network) : this() { this.log = log; this.network = network; }
         public CacheManager(Log log) : this() { this.log = log; }
         public CacheManager()
         {
@@ -20,6 +25,11 @@ namespace XMTuner
         public Boolean enabled
         {
             get { return useCache; }
+        }
+
+        private String version
+        {
+            get { return versionPrefix + configMan.version + "|" + network + versionSuffix; }
         }
 
         public void purgeCache()
@@ -41,7 +51,8 @@ namespace XMTuner
             }
         }
 
-        public String getFile(String file)
+        public String getFile(String file) { return getFile(file, true); }
+        private String getFile(String file, Boolean rmVersion)
         {
             if (useCache == false) { return null; }
             String path = getDataPath(file);
@@ -49,6 +60,10 @@ namespace XMTuner
             StreamReader textIn = new StreamReader(fs);
             String data = textIn.ReadToEnd();
             textIn.Close();
+            if (rmVersion)
+            {
+                return removeVersion(data);
+            }
             return data;
         }
 
@@ -114,8 +129,13 @@ namespace XMTuner
         public Boolean isCached(String file)
         {
             if (useCache == false) { return false; }
-            Double value = Convert.ToDouble(findCacheFile(file)[1]);
-            return isDataCurrent(file, value);
+            if (isVersionCurrent(file))
+            {
+
+                Double value = Convert.ToDouble(findCacheFile(file)[1]);
+                return isDataCurrent(file, value);
+            }
+            return false;
         }
 
         public void invalidateFile(String file)
@@ -131,6 +151,8 @@ namespace XMTuner
         public Boolean saveFile(String filename, String data)
         {
             if (useCache == false) { return false; }
+            data = prependVersion(data);
+
             String ident = filename;
             String path = getDataPath(filename);
             if (findCacheFile(filename) != null)
@@ -153,6 +175,39 @@ namespace XMTuner
                 return false;
             }
 
+        }
+
+        private String prependVersion(String data)
+        {
+            return version+data;
+        }
+
+        private String removeVersion(String data)
+        {
+            return data.Replace(version, "");
+        }
+
+        private Boolean isVersionCurrent(String file)
+        {
+            String data = getFile(file, false);
+
+            int start = data.IndexOf(versionPrefix)+versionPrefix.Length;
+            int length = data.IndexOf(versionSuffix);
+            if (length == -1) {
+                invalidateFile(file);
+                return false;
+            }
+            String[] temp = data.Substring(start, length-start).Split('|');
+
+            String dVersion = temp[0];
+            String dNetwork = temp[1];
+
+            if (dVersion != configMan.version || dNetwork != network)
+            {
+                invalidateFile(file);
+                return false;
+            }
+            return true;
         }
     }
 }
