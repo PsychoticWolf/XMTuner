@@ -45,7 +45,7 @@ namespace XMTuner
             {
                  // provide the XmlTextReader with the URL of
                  // our xml document
-                    string xmlURL = "http://www.pcfire.net/XMTuner/update.xml?v="+curVersion.ToString();
+                    string xmlURL = "http://www.pcfire.net/XMTuner/update-test.xml?v="+curVersion.ToString();
                  reader = new XmlTextReader(xmlURL);
                  // simply (and easily) skip the junk at the beginning
                  reader.MoveToContent();
@@ -130,7 +130,7 @@ namespace XMTuner
                 DateTime currentTime = DateTime.Now;
                 String ct = currentTime.ToString("%H:") + currentTime.ToString("mm:") + currentTime.ToString("ss");
 
-                string message = ct+"  New version available! Get XMTuner " + newVersion.ToString(3) + " at "+url+"\n";
+                string message = ct+"  New version available! Get XMTuner " + newVersion.ToString(3) + " at http://www.pcfire.net/xmtuner/update/\n";
                 outputbox.SelectionColor = Color.OrangeRed;
                 outputbox.AppendText(message);
             }

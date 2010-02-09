@@ -464,7 +464,11 @@ namespace XMTuner
 
         protected void Link_Clicked(object sender, LinkClickedEventArgs e)
         {
-            System.Diagnostics.Process.Start(e.LinkText);
+            if (e.LinkText.Contains("/xmtuner/update/")) {
+                Updater update = new Updater();
+            } else {
+                System.Diagnostics.Process.Start(e.LinkText);
+            }
         }
         #endregion
 
