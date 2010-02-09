@@ -38,7 +38,7 @@ namespace XMTuner
             user = username;
             password = passw;
             log = logging;
-            cache = new CacheManager(log);
+            cache = new CacheManager(log, network);
 #if !DEBUG
             isLive = true;
 #endif
