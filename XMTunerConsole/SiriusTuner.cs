@@ -36,22 +36,38 @@ namespace XMTuner
 
             String data = playerURL.response();
 
-            int start = data.IndexOf("<!-- CAPTCHA:BEGIN -->");
-            int end = data.IndexOf("<!-- CAPTCHA:END -->");
+            String captchaResponse = "";
+            String captchaID = "";
+            int start;
+            try
+            {
+                start = data.IndexOf("<!-- CAPTCHA:BEGIN -->");
+                int end = data.IndexOf("<!-- CAPTCHA:END -->");
+                if (start == -1 || end == -1)
+                {
+                    data = "";
+                }
+                else
+                {
+                    data = data.Substring(start, end - start);
+                }
+                start = data.IndexOf("/mp/captcha/image/");
+                String _captchaNum = data.Substring(start, 25);
+                String[] _captchaNumA = _captchaNum.Split('_');
+                int captchaNum = Convert.ToInt32(_captchaNumA[1]);
 
-            data = data.Substring(start, end - start);
+                captchaResponse = getCaptchaResponse(captchaNum);
 
-            start = data.IndexOf("/mp/captcha/image/");
-            String _captchaNum = data.Substring(start, 25);
-            String[] _captchaNumA = _captchaNum.Split('_');
-            int captchaNum = Convert.ToInt32(_captchaNumA[1]);
+                start = data.IndexOf("name=\"captchaID\"");
+                captchaID = data.Trim().Substring(start, 35);
+                String[] _captchaID = captchaID.Split(new String[] { "value=\"" }, StringSplitOptions.None);
+                captchaID = _captchaID[1].Trim().Replace("\">", "");
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                output("Failed to get Sirius captcha.", "error");
+            }
 
-            start = data.IndexOf("name=\"captchaID\"");
-            String captchaID = data.Trim().Substring(start, 35);
-            String[] _captchaID = captchaID.Split(new String[] { "value=\"" }, StringSplitOptions.None);
-            captchaID = _captchaID[1].Trim().Replace("\">", "");
-
-            String captchaResponse = getCaptchaResponse(captchaNum);
 
 
             // Do Actual Login
@@ -95,23 +111,27 @@ namespace XMTuner
                     {
                         output("Logged in as " + user, "info");
                         Boolean cd = loadChannelData();
+                        Boolean ecd = false;
                         if (cd)
+                        {
+                            ecd = loadSiriusChannelGuide();
+                        }
+                        if (cd && ecd)
                         {
                             //We're logged in and have valid channel information, set login flag to true
                             isLoggedIn = true;
                             lastLoggedIn = DateTime.Now;
-
-                            loadSiriusChannelGuide();
 
                             //Attempt to preload channel metadata
                             loadChannelMetadata(true);
 
                             //Continue to preloading whatsOn data
                             doWhatsOn();
+
                         }
                         else
                         {
-                            //If we don't have chanData, consider ourselves not-logged-in
+                            //If we don't have [complete] chanData, consider ourselves not-logged-in
                             isLoggedIn = false;
                             output("Login failed: Unable to retrieve channel data.", "error");
                         }
@@ -127,7 +147,7 @@ namespace XMTuner
             loginURL.close();
         }
 
-        private void loadSiriusChannelGuide()
+        private Boolean loadSiriusChannelGuide()
         {
             Boolean fromCache = false;
             output("Loading Sirius Extended Channel Data...", "info");
@@ -141,14 +161,22 @@ namespace XMTuner
             }
             else
             {
-                //String URL = "http://users.pcfire.net/~wolf/XMReader/sirius/ContentServer";
+                //String URL = "http://users.pcfire.net/~wolf/XMReader/sirius/ContentServer2";
                 String URL = "http://www.sirius.com/servlet/ContentServer?pagename=Sirius/XML/ChannelGuideXML&c=ChannelLineup&cid=1218563499691&pid=SIR_AUD_EVT_SXM&catid=all"; //&pid=SIR_IP_EVT&catid=all";
                 URL channelGuideURL = new URL(URL);
                 channelGuideURL.fetch();
                 data = channelGuideURL.response().Trim();
             }
             XmlDocument xmldoc = new XmlDocument();
-            xmldoc.LoadXml(data);
+            try
+            {
+                xmldoc.LoadXml(data);
+            }
+            catch (XmlException)
+            {
+                output("Failed to load Sirius Extended Channel Data...", "error");
+                return false;
+            }
             XmlNodeList list = xmldoc.GetElementsByTagName("channel");
 
             foreach (XmlNode channel in list)
@@ -174,6 +202,7 @@ namespace XMTuner
             {
                 output("Sirius Extended Channel Data loaded successfully... (from cache)", "info");
             }
+            return true;
         }
 
         public string getCaptchaResponse(int captchaNum)
@@ -299,7 +328,7 @@ namespace XMTuner
                 }
                 else
                 {
-                    url = "http://users.pcfire.net/~wolf/XMReader/sirius/channeldata.jsp";
+                    url = "http://users.pcfire.net/~wolf/XMReader/sirius/channeldata2.jsp";
                 }
 
                 URL channelURL = new URL(url);
@@ -319,17 +348,27 @@ namespace XMTuner
                         output("Downloaded channel data had no stations. Scheduling relogin (Wait a few seconds...)", "info");
                         return false;
                     }
+
+                    if (goodData)
+                    {
+                        cache.saveFile("channellineup.cache", data);
+                        isLoggedIn = true;
+                        output("Channel lineup loaded successfully.", "info");
+                        return true;
+                    }
+                    else
+                    {
+                        isLoggedIn = false;
+                        output("Downloaded channel data had no stations. Verify your subscription is active.", "error");
+                        return false;
+                    }
                 }
-                if (goodData)
+                else
                 {
-                    cache.saveFile("channellineup.cache", data);
-                    isLoggedIn = true;
-                    output("Channel lineup loaded successfully.", "info");
-                    return true;
+                    isLoggedIn = false;
+                    output("Error downloading channel data.. Will try again in 5 seconds (Attempt " + j + " of 5, Error " + channelURL.getStatus().ToString() + ")", "error");
+                    System.Threading.Thread.Sleep(5000);
                 }
-                isLoggedIn = false;
-                output("Error downloading channel data.. Will try again in 5 seconds (Attempt " + j + " of 5, Error " + channelURL.getStatus().ToString() + ")", "error");
-                System.Threading.Thread.Sleep(5000);
             }
 
             output("Failed to load channel lineup", "error");
