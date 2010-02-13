@@ -207,17 +207,27 @@ namespace XMTuner
                         output("Downloaded channel data had no stations. Scheduling relogin (Wait a few seconds...)", "info");
                         return false;
                     }
+
+                    if (goodData)
+                    {
+                        cache.saveFile("channellineup.cache", data);
+                        isLoggedIn = true;
+                        output("Channel lineup loaded successfully.", "info");
+                        return true;
+                    }
+                    else
+                    {
+                        isLoggedIn = false;
+                        output("Downloaded channel data had no stations. Verify your subscription is active.", "error");
+                        return false;
+                    }
                 }
-                if (goodData)
+                else
                 {
-                    cache.saveFile("channellineup.cache", data);
-                    isLoggedIn = true;
-                    output("Channel lineup loaded successfully.", "info");
-                    return true;
+                    isLoggedIn = false;
+                    output("Error downloading channel data.. Will try again in 5 seconds (Attempt " + j + " of 5, Error " + channelURL.getStatus().ToString() + ")", "error");
+                    System.Threading.Thread.Sleep(5000);
                 }
-                isLoggedIn = false;
-                output("Error downloading channel data.. Will try again in 5 seconds (Attempt " + j + " of 5, Error " + channelURL.getStatus().ToString() + ")", "error");
-                System.Threading.Thread.Sleep(5000);
             }
 
             output("Failed to load channel lineup", "error");
