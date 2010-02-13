@@ -328,7 +328,7 @@ namespace XMTuner
                 }
                 else
                 {
-                    url = "http://users.pcfire.net/~wolf/XMReader/sirius/channeldata2.jsp";
+                    url = "http://users.pcfire.net/~wolf/XMReader/sirius/channeldata.jsp";
                 }
 
                 URL channelURL = new URL(url);
@@ -564,7 +564,6 @@ namespace XMTuner
                 {
                     name = "NPR";
                 }
-
 
                 Find(name.ToUpper()).addChannelMetadataS(newdata);
             }

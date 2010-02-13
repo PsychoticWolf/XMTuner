@@ -515,12 +515,15 @@ namespace XMTuner
                     if (errcnt <= 2)
                     {
                         image = getImageFromURL(chan.logo_small);
-                        haveLogo = true;
                     }
                     //We failed to get a logo: increase the error count
                     if (image == null)
                     {
                         errcnt++;
+                    }
+                    else
+                    {
+                        haveLogo = true;
                     }
                 }
 
@@ -552,9 +555,13 @@ namespace XMTuner
                 channelBox.Items.Add(item);
                 i++;
             }
+            if (errcnt >= 3) { 
+                cbIconsLoaded = false;
+            }
 
             channelBox.EndUpdate();
             timerCB.Enabled = true;
+            timerCB.Tag = 0;
             txtChannel.Enabled = true;
 
         }
@@ -570,8 +577,15 @@ namespace XMTuner
         {
             if (cbIconsLoaded == false && self.loadedExtendedChannelData == true)
             {
-                channelBox.Clear();
-                loadChannels();
+                int j = (int)timerCB.Tag;
+                if (j == 0 || j >= 12)
+                {
+                    channelBox.Clear();
+                    loadChannels();
+                    j = (int)timerCB.Tag;
+                }
+                j++;
+                timerCB.Tag = j;
             }
             int i = 0;
             foreach (XMChannel chan in self.getChannels())
