@@ -1,6 +1,6 @@
 XM Tuner
-January 16, 2010
-Release 0.4
+February 13, 2010
+Release 0.5
 ------------------
 
 This application is designed as an intermediate between the XM Radio Online platform
@@ -9,12 +9,12 @@ and a UPnP service provider (such as TVersity or Orb).
 If you encounter any issues, please send us an email at xmtuner@pcfire.net.
 
 Usability notes:
-	- You will need an XMRO account to utilize this application.
+	- You will need an XMRO or SIR account to utilize this application.
 	- The default address for the feed is http://localhost:19081/feeds/
 	- "Playing now" information is available at http://localhost:19081/
 	- You may need to open port 19081 on your Windows firewall
 	- The port number can be changed in the configuration
-	- Configuration of 0.4 is identical to 0.3, no new configuration is needed
+	- If upgrading from XMTuner before 0.3 you'll need to reconfigure the application.
 	- If after installing the service you wish to not automatically start the service:
 		Control Panel> Administrative Tools> Services > XMTuner
 		Right-click, Properties. Toggle "Startup type" to "Manual"
