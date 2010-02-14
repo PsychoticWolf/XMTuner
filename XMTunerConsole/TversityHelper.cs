@@ -46,7 +46,7 @@ namespace XMTuner
                 url += "public=No&";
                 url += "lookforaudio=true&";
                 url += "menus=&tags=&";
-                url += "title=XMTest&";
+                url += "title=XM&";
                 url += "url=" + getXMTunerURL() + "&";
                 url += "type=audfeed&";
                 url += "menuroot=TVersity%20Custom&";
