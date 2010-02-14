@@ -21,7 +21,8 @@ namespace XMTuner
 
         public WebListner(XMTuner tuner, String newport)
         {
-            if (Convert.ToInt32(newport) < 2)
+            int i;
+            if (Int32.TryParse(newport, out i) == false)
             {
                 port = "19081";
             }

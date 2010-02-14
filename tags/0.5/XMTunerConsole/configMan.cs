@@ -11,6 +11,7 @@ namespace XMTuner
     {
         public bool useLocalDatapath = false;
         private bool isConfig = false;
+
         //collection to store configuration variables
         NameValueCollection config = new NameValueCollection();
 
@@ -32,6 +33,26 @@ namespace XMTuner
                     readConfig();
                 }
                 return isConfig;
+            }
+        }
+
+        public NameValueCollection defaultConfig
+        {
+            get
+            {
+                //default configuration collection
+                NameValueCollection defaultConfig = new NameValueCollection();
+                defaultConfig.Add("ConfigVer", "0.3");
+                defaultConfig.Add("username", "");
+                defaultConfig.Add("password", "");
+                defaultConfig.Add("port", "19081");
+                defaultConfig.Add("bitrate", "True");
+                defaultConfig.Add("autologin", "False");
+                defaultConfig.Add("isMMS", "False");
+                defaultConfig.Add("TVersity", "");
+                defaultConfig.Add("hostname", "");
+                defaultConfig.Add("network", "XM");
+                return defaultConfig;
             }
         }
 
@@ -79,6 +100,7 @@ namespace XMTuner
             {
                 readConfig();
             }
+            addDefaultValues();
             return config;
         }
         public NameValueCollection getConfig(Boolean interpreted)
@@ -105,20 +127,18 @@ namespace XMTuner
             textOut.Close();
         }
 
+        private void addDefaultValues()
+        {
+            foreach (String key in defaultConfig.AllKeys) {
+                if (config.Get(key) == null)
+                {
+                    config[key] = defaultConfig[key];
+                }
+            }
+        }
+
         public String getConfigItem(NameValueCollection config, String item)
         {
-            NameValueCollection defaultConfig = new NameValueCollection();
-                defaultConfig.Add("ConfigVer", "0.3");
-                defaultConfig.Add("username", "");
-                defaultConfig.Add("password", "");
-                defaultConfig.Add("port", "19081");
-                defaultConfig.Add("bitrate", "True");
-                defaultConfig.Add("autologin", "False");
-                defaultConfig.Add("isMMS", "False");
-                defaultConfig.Add("TVersity", "");
-                defaultConfig.Add("hostname", "");
-                defaultConfig.Add("network", "XM");
-
                 if (config.Get(item) == null)
                 {
                     return defaultConfig[item];
