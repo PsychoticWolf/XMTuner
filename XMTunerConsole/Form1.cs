@@ -133,6 +133,7 @@ namespace XMTuner
             }
             syncStatusLabel();
             loadChannels();
+            output("XMTuner Ready...", "info");
         }
 
         private void timer1_Tick(object sender, EventArgs e)

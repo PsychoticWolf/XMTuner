@@ -5,6 +5,8 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Xml;
+using System.Security.Cryptography;
+using System.Text;
 
 
 namespace XMTuner
@@ -12,13 +14,14 @@ namespace XMTuner
     class SiriusTuner : XMTuner
     {
         public SiriusTuner(String username, String passw, Log logging)
-            : base(username, passw, logging)
+            : base(username, passw, logging, "SIRIUS")
         {
-            network = "SIRIUS";
         }
 
         protected override void login()
         {
+            output("Logging into Sirius Internet Radio", "info");
+
             //Prefetch
             String SiriusPlayerURL = "http://www.sirius.com/player/home/siriushome.action";
             URL playerURL = new URL(SiriusPlayerURL);
@@ -82,8 +85,8 @@ namespace XMTuner
             }
 
             output("Connecting to: " + SiriusLoginURL, "debug");
-
-            data = "userName=" + HttpUtility.UrlEncode(user) + "&password=" + HttpUtility.UrlEncode(password) + "&__checkbox_remember=true&captchaEnabled=true&captchaID=" + HttpUtility.UrlEncode(captchaID) + "&timeNow=null&captcha_response=" + captchaResponse;
+            password = getMD5Hash(password);
+            data = "userName=" + HttpUtility.UrlEncode(user) + "&password=" + HttpUtility.UrlEncode(password) + "&__checkbox_remember=true&remember=true&captchaEnabled=true&captchaID=" + HttpUtility.UrlEncode(captchaID) + "&timeNow=null&captcha_response=" + captchaResponse;
             URL loginURL = new URL(SiriusLoginURL);
             loginURL.setRequestHeader("Cookie", cookies);
             loginURL.setCookieContainer(playerCookies);
@@ -103,7 +106,7 @@ namespace XMTuner
                 if (cookieCount > 0)
                 {
 
-                    if (cookieCount <= 3)
+                    if (cookieCount <= 12)
                     {
                         output("Login failed: Bad Username or Password", "error");
                     }
@@ -126,7 +129,7 @@ namespace XMTuner
                             loadChannelMetadata(true);
 
                             //Continue to preloading whatsOn data
-                            doWhatsOn();
+                            doWhatsOn(true);
 
                         }
                         else
@@ -146,6 +149,30 @@ namespace XMTuner
             }
             loginURL.close();
         }
+
+        private String getMD5Hash(string input)
+        {
+            // Create a new instance of the MD5CryptoServiceProvider object.
+            MD5 md5Hasher = MD5.Create();
+
+            // Convert the input string to a byte array and compute the hash.
+            byte[] data = md5Hasher.ComputeHash(Encoding.Default.GetBytes(input));
+
+            // Create a new Stringbuilder to collect the bytes
+            // and create a string.
+            StringBuilder sBuilder = new StringBuilder();
+
+            // Loop through each byte of the hashed data 
+            // and format each one as a hexadecimal string.
+            for (int i = 0; i < data.Length; i++)
+            {
+                sBuilder.Append(data[i].ToString("x2"));
+            }
+
+            // Return the hexadecimal string.
+            return sBuilder.ToString();
+        }
+
 
         private Boolean loadSiriusChannelGuide()
         {

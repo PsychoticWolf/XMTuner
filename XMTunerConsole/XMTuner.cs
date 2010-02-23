@@ -33,11 +33,15 @@ namespace XMTuner
         Boolean useProgramGuide = true;
         public DateTime lastLoggedIn;
 
-        public XMTuner(String username, String passw, Log logging)
+        public XMTuner(String username, String passw, Log logging) : this(username, passw, logging, null) {}
+        public XMTuner(String username, String passw, Log logging, String netw)
         {
             user = username;
             password = passw;
             log = logging;
+
+            if (netw != null) { network = netw; }
+
             cache = new CacheManager(log, network);
 #if !DEBUG
             isLive = true;
@@ -49,6 +53,8 @@ namespace XMTuner
 
         protected virtual void login()
         {
+            output("Logging into XM Radio Online", "info");
+
             String XMURL;
             if (isLive) 
             {
@@ -290,7 +296,7 @@ namespace XMTuner
                     if (channelData[0] != "false")
                     {
                         num = Convert.ToInt32(channelData[2]);
-                        tempChannel = new XMChannel(neighborhood, num, channelData[1], channelData[3]);
+                        tempChannel = new XMChannel(neighborhood, num, channelData[1], channelData[3], this.network);
                         output(neighborhood + " " + num + " " + channelData[1] + " " + channelData[3], "debug");
                         channels.Add(tempChannel);
                     }
@@ -337,7 +343,7 @@ namespace XMTuner
             simpleDelegate.BeginInvoke(null, null);
 
         }
-        private void doWhatsOn(Boolean atstartup)
+        protected void doWhatsOn(Boolean atstartup)
         {
             MethodInvoker simpleDelegate = new MethodInvoker(loadWhatsOn);
             simpleDelegate.BeginInvoke(null, null);
@@ -635,7 +641,7 @@ namespace XMTuner
                 return;
             }
             String currentTime = DateTime.Now.ToString("T");
-            String entry = "XM " + npChannel.num + " - " + npChannel.artist + " - " + npChannel.song;
+            String entry = network + " " + npChannel.num + " - " + npChannel.artist + " - " + npChannel.song;
 
             if (recentlyPlayed.Count > 0)
             {
