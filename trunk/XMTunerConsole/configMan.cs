@@ -154,7 +154,7 @@ namespace XMTuner
             get
             {
                 Version curVersion = Assembly.GetExecutingAssembly().GetName().Version;
-                return curVersion.ToString(2);
+                return curVersion.ToString(3);
             }
         }
     }

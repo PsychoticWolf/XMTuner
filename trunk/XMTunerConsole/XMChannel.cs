@@ -8,7 +8,7 @@ namespace XMTuner
 {
     class XMChannel : IComparable<XMChannel>, IEquatable<XMChannel>
     {
-        protected String network = "XM";
+        protected String network = "??";
 
         public int num;
         public String name;
