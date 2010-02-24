@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Net;
 using System.IO;
@@ -32,6 +33,14 @@ namespace XMTuner
         public List<String> recentlyPlayed = new List<String>();
         Boolean useProgramGuide = true;
         public DateTime lastLoggedIn;
+
+        protected virtual String baseurl
+        {
+            get
+            {
+                return "http://www.xmradio.com";
+            }
+        }
 
         public XMTuner(String username, String passw, Log logging) : this(username, passw, logging, null) {}
         public XMTuner(String username, String passw, Log logging, String netw)
@@ -179,7 +188,7 @@ namespace XMTuner
             }
         }
 
-        protected virtual bool dnldChannelData()
+        protected Boolean dnldChannelData()
         {
             output("Downloading channel lineup...", "info");
             Boolean goodData = false;
@@ -190,11 +199,11 @@ namespace XMTuner
                 string url;
                 if (isLive)
                 {
-                   url = "http://www.xmradio.com/player/channel/ajax.action?reqURL=player/2ft/channelData.jsp?remote=true&all_channels=true";
+                   url = baseurl + "/player/channel/ajax.action?reqURL=player/2ft/channelData.jsp?remote=true&all_channels=true";
                 }
                 else
                 {
-                    url = "http://users.pcfire.net/~wolf/XMReader/channeldata.jsp";
+                    url = baseurl + "/channeldata.jsp";
                 }
 
                 URL channelURL = new URL(url);
@@ -383,7 +392,7 @@ namespace XMTuner
             setRecentlyPlayed();
         }
 
-        protected virtual void setWhatsonData(String rawdata)
+        protected void setWhatsonData(String rawdata)
         {
             if (rawdata.Equals(""))
             {
@@ -415,7 +424,7 @@ namespace XMTuner
                 String[] channel = rawChannel.Split(new string[] { sep }, StringSplitOptions.None);
             	
                 //channels.Find(Find(Convert.ToInt32(channel[0])));
-                Find(Convert.ToInt32(channel[0])).addPlayingInfo(channel);
+                Find(Convert.ToInt32(channel[0]), true).addPlayingInfo(channel);
             }
 
         }
@@ -442,9 +451,18 @@ namespace XMTuner
 
         public XMChannel Find(int channum)
         {
+            return Find(channum, false);
+        }
+
+        protected XMChannel Find(int channum, Boolean useXM)
+        {
             XMChannel result = channels.Find(
             delegate(XMChannel chan)
             {
+                if (useXM == true && network.Equals("XM") == false)
+                {
+                    return chan.xmxref == channum;
+                }
                 return chan.num == channum;
             }
             );
@@ -459,16 +477,16 @@ namespace XMTuner
             }
         }
 
-        public virtual string play(int channelnum, String speed)
+        public string play(int channelnum, String speed)
         {
             String address;
             if (isLive)
             {
-                address = "http://www.xmradio.com/player/listen/play.action?channelKey=" + channelnum + "&newBitRate=" + speed;
+                address = baseurl + "/player/listen/play.action?channelKey=" + channelnum + "&newBitRate=" + speed;
             }
             else
             {
-                address = "http://users.pcfire.net/~wolf/XMReader/play.action";
+                address = baseurl + "/play.action";
             }
             Uri tmp = new Uri(address);
             URL playerURL = new URL(tmp);
@@ -591,6 +609,22 @@ namespace XMTuner
 
         protected virtual Boolean setChannelMetadata(String rawData)
         {
+            foreach (String _value in setChannelMetadataHelper(rawData))
+            {
+                String[] value = _value.Replace("\\", "").Split(new string[] { "\"," }, StringSplitOptions.None);
+
+                String[] newdata = new String[4];
+                newdata[0] = value[2].Replace("\"", ""); //Num
+                newdata[1] = baseurl + value[5].Replace("\"", ""); //URL for channel
+                newdata[2] = baseurl + value[6].Replace("\"", ""); // Logo (45x40)
+                newdata[3] = baseurl + value[10].Replace("\"", ""); // Logo (138x50)
+
+                Find(Convert.ToInt32(newdata[0])).addChannelMetadata(newdata);
+            }
+            return true;
+        }
+        protected String[] setChannelMetadataHelper(String rawData)
+        {
             try
             {
                 rawData = rawData.Replace("//rig.addChannel", "");
@@ -604,34 +638,11 @@ namespace XMTuner
             }
             catch (Exception)
             {
-               return false;
+                return new String[0];
             }
 
-            String[] data = rawData.Split(new string[] { "rig.addChannel(" }, StringSplitOptions.None);
-            String baseurl = "http://www.xmradio.com";
-            foreach(String _value in data) {
-                String[] value = _value.Split(new string[] { "\"," }, StringSplitOptions.None);
-            	          
-                String[] newdata = new String[4];
-                newdata[0] = value[2].Replace("\"", ""); //Num
-                newdata[1] = baseurl + value[5].Replace("\"", ""); //URL for channel
-                newdata[2] = baseurl + value[6].Replace("\"", ""); // Logo (45x40)
-                newdata[3] = baseurl + value[10].Replace("\"", ""); // Logo (138x50)
-
-                Find(Convert.ToInt32(newdata[0])).addChannelMetadata(newdata);
-            }
-            return true;
+            return rawData.Split(new string[] { "rig.addChannel(" }, StringSplitOptions.None);
         }
-
-       /*  protected void saveChannelMetadata(String rawdata)
-        {
-            String errMsg;
-            Boolean result = cache.saveFile("channelmetadata.cache", rawdata, out errMsg);
-            if (result == false)
-            {
-                output("Error encountered saving channel metadata to cache. (" + errMsg + ")", "error");
-            }
-        } */
 
         protected void setRecentlyPlayed()
         {
@@ -711,7 +722,7 @@ namespace XMTuner
             programGuideData.close();
         }
 
-        protected virtual Boolean setProgramGuideData(String rawData)
+        protected Boolean setProgramGuideData(String rawData)
         {
             rawData = rawData.Replace("{\"programScheduleList\":[{","");
             rawData = rawData.Replace("\"repeat\":\"","");
@@ -745,7 +756,7 @@ namespace XMTuner
             	
 	            //ChannelNum, Program ID, Program Name, Duration, Start Time, End Time
 	            Int32 num = Convert.ToInt32(PData[8]);
-                XMChannel channel = Find(num);
+                XMChannel channel = Find(num, true);
                 String[] program = new String[6];
                         program[0] = PData[8];
                         program[1] = PData[0];

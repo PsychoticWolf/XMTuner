@@ -13,6 +13,15 @@ namespace XMTuner
 {
     class SiriusTuner : XMTuner
     {
+        protected override String baseurl
+        {
+            get
+            {
+                return "http://www.sirius.com";
+            }
+        }
+
+
         public SiriusTuner(String username, String passw, Log logging)
             : base(username, passw, logging, "SIRIUS")
         {
@@ -216,7 +225,7 @@ namespace XMTuner
                 details[0] = chanURL;
                 details[1] = chanKey;
 
-                XMChannel c = Find(chanNum);
+                XMChannel c = Find(chanNum, true);
                 c.addChannelData(details);
             }
 
@@ -340,125 +349,7 @@ namespace XMTuner
 
         }
 
-        protected override bool dnldChannelData()
-        {
-            output("Downloading channel lineup...", "info");
-            Boolean goodData = false;
-            int j;
-            //We try 5 times...
-            for (j = 1; j <= 5; j++)
-            {
-                string url;
-                if (isLive)
-                {
-                    url = "http://www.sirius.com/player/channel/ajax.action?reqURL=player/2ft/channelData.jsp?remote=true&all_channels=true";
-                }
-                else
-                {
-                    url = "http://users.pcfire.net/~wolf/XMReader/sirius/channeldata.jsp";
-                }
-
-                URL channelURL = new URL(url);
-                channelURL.setRequestHeader("Cookie", cookies);
-                channelURL.fetch();
-                output("Fetching: " + url + " Result: " + channelURL.getStatus() + " (" + network + ")", "debug");
-                String data = channelURL.response();
-                if (channelURL.getStatus() >= 200 && channelURL.getStatus() < 300 && data.IndexOf(":[],") == -1)
-                {
-                    //Returns Bool; False if invalid (null) channel data, true on success
-                    goodData = setChannelData(data);
-
-                    //Try to catch the need to relogin because of dead channel data without retrying 5 times...
-                    if (!goodData && isLoggedIn)
-                    {
-                        isLoggedIn = false;
-                        output("Downloaded channel data had no stations. Scheduling relogin (Wait a few seconds...)", "info");
-                        return false;
-                    }
-
-                    if (goodData)
-                    {
-                        cache.saveFile("channellineup.cache", data);
-                        isLoggedIn = true;
-                        output("Channel lineup loaded successfully.", "info");
-                        return true;
-                    }
-                    else
-                    {
-                        isLoggedIn = false;
-                        output("Downloaded channel data had no stations. Verify your subscription is active.", "error");
-                        return false;
-                    }
-                }
-                else
-                {
-                    isLoggedIn = false;
-                    output("Error downloading channel data.. Will try again in 5 seconds (Attempt " + j + " of 5, Error " + channelURL.getStatus().ToString() + ")", "error");
-                    System.Threading.Thread.Sleep(5000);
-                }
-            }
-
-            output("Failed to load channel lineup", "error");
-            return false;
-        }
-
-        protected override void setWhatsonData(String rawdata)
-        {
-            if (rawdata.Equals(""))
-            {
-                return;
-            }
-            rawdata = rawdata.Trim();
-            rawdata = rawdata.Replace("\n", ""); // No new lines please
-            rawdata = rawdata.Replace("\t", ""); // No tabs...
-            rawdata = rawdata.Replace("xms.sendRPCDone(\"whatson\",[ {", ""); // Remove preamble
-            rawdata = rawdata.Replace("}            ]);", ""); //suffix
-
-            //$data = explode(" {   ", $rawData); // Turn our single line into an array of raw whatsOn data per channel
-            String[] data = rawdata.Split(new string[] { " {   " }, StringSplitOptions.None);
-
-            //foreach ($data as $rawChannel) {
-            foreach (String _rawChannel in data)
-            {
-                String sep = "::XMTUNER-SEPERATOR::";
-
-                //Clean up the string
-                String rawChannel = _rawChannel.Trim();
-                rawChannel = rawChannel.Replace("},", ""); //Remove Suffix
-                rawChannel = rawChannel.Replace("num: ", ""); //Remove Label Num
-                rawChannel = rawChannel.Replace(",artist: ", sep); //Remove Label Artist
-                rawChannel = rawChannel.Replace(",song: ", sep); //Remove Label Song
-                rawChannel = rawChannel.Replace(",album: ", sep); //Remove Label Album
-                rawChannel = rawChannel.Replace("\"", ""); // Too many double-quotes
-                //String[] channel = explode($sep, $rawChannel); // num, artist, song, album
-                String[] channel = rawChannel.Split(new string[] { sep }, StringSplitOptions.None);
-
-                //channels.Find(Find(Convert.ToInt32(channel[0])));
-                FindbyXM(Convert.ToInt32(channel[0])).addPlayingInfo(channel);
-            }
-
-        }
-
-        private XMChannel FindbyXM(int channum)
-        {
-            XMChannel result = channels.Find(
-            delegate(XMChannel chan)
-            {
-                return chan.xmxref == channum;
-            }
-            );
-            if (result != null)
-            {
-                return result;
-            }
-            else
-            {
-                XMChannel tmp = new XMChannel("", 0, "", "");
-                return tmp;
-            }
-        }
-
-        public XMChannel Find(String channame)
+        protected XMChannel Find(String channame)
         {
             XMChannel result = channels.Find(
             delegate(XMChannel chan)
@@ -475,30 +366,6 @@ namespace XMTuner
                 XMChannel tmp = new XMChannel("", 0, "", "");
                 return tmp;
             }
-        }
-
-        public override string play(int channelnum, String speed)
-        {
-            String channelKey = Find(channelnum).channelKey;
-            output("Playing stream for Sirius " + channelnum + " (" + channelKey + ")", "debug");
-            String address;
-            if (isLive)
-            {
-                address = "http://www.sirius.com/player/listen/play.action?channelKey=" + channelKey + "&newBitRate=" + speed;
-            }
-            else
-            {
-                address = "http://users.pcfire.net/~wolf/XMReader/sirius/play.action";
-            }
-            Uri tmp = new Uri(address);
-            URL playerURL = new URL(tmp);
-            playerURL.setRequestHeader("Cookie", cookies);
-            playerURL.fetch();
-            string URL = playChannel(playerURL);
-            //response is closed in playChannel();
-            lastChannelPlayed = channelnum;
-            setRecentlyPlayed();
-            return URL;
         }
 
         protected override string playChannel(URL url)
@@ -557,25 +424,7 @@ namespace XMTuner
 
         protected override Boolean setChannelMetadata(String rawData)
         {
-            try
-            {
-                rawData = rawData.Replace("//rig.addChannel", "");
-                int start = rawData.IndexOf("rig.addChannel") + 15;
-                int length = rawData.IndexOf("loadPage();") - start;
-                rawData = rawData.Trim().Substring(start, length);
-                rawData = rawData.Replace("\t", "");
-                rawData = rawData.Replace(");", "");
-                rawData = rawData.Replace("\r\n", "");
-                rawData = rawData.Replace("\\\"", "");
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-
-            String[] data = rawData.Split(new string[] { "rig.addChannel(" }, StringSplitOptions.None);
-            String baseurl = "http://www.sirius.com";
-            foreach (String _value in data)
+            foreach (String _value in setChannelMetadataHelper(rawData))
             {
                 String[] value = _value.Replace("\\", "").Split(new string[] { "\"," }, StringSplitOptions.None);
 
@@ -606,56 +455,5 @@ namespace XMTuner
             }
             return channels;
         }
-
-        protected override Boolean setProgramGuideData(String rawData)
-        {
-            rawData = rawData.Replace("{\"programScheduleList\":[{", "");
-            rawData = rawData.Replace("\"repeat\":\"", "");
-            rawData = rawData.Replace("\",\"class\":\"com.xm.epg.domain.EpgSchedule\",\"scheduleId\":", "");
-
-
-            rawData = rawData.Replace("\"class\":\"com.xm.epg.domain.EpgProgram\",\"programId\":", "");
-
-
-            int start = rawData.IndexOf("\"epgProgram\":{") + 14;
-
-            String[] rawProgramData = rawData.Substring(start).Split(new string[] { "\"epgProgram\":{" }, StringSplitOptions.None);
-
-
-            String sep = "::XMTUNER-SEPERATOR::";
-            foreach (String _rPData in rawProgramData)
-            {
-
-                //Program ID, Program Name, Unique ID, StartTime, Last Occurence, Unique ID, First Occurance, Duration, ChannelNum, EndTime, JUNK
-                String rPData = _rPData.Replace(",\"name\":\"", sep);
-                rPData = rPData.Replace("\",\"~unique-id~\":\"", sep);
-                rPData = rPData.Replace("\"},\"startTime\":\"", sep);
-                rPData = rPData.Replace("\",\"lastOccurence\":\"", sep);
-                rPData = rPData.Replace("\",\"firstOccurence\":\"", sep);
-                rPData = rPData.Replace("\",\"duration\":", sep);
-                rPData = rPData.Replace(",\"channelNum\":", sep);
-                rPData = rPData.Replace(",\"endTime\":\"", sep);
-                rPData = rPData.Replace("\"},{", sep); //Break off leftover junk
-                rPData = rPData.Replace("\"}],", sep); //Break off leftover junk (Final Line)
-
-                String[] PData = rPData.Split(new String[] { sep }, StringSplitOptions.None);
-
-                //ChannelNum, Program ID, Program Name, Duration, Start Time, End Time
-                Int32 num = Convert.ToInt32(PData[8]);
-                XMChannel channel = FindbyXM(num);
-                String[] program = new String[6];
-                program[0] = PData[8];
-                program[1] = PData[0];
-                program[2] = PData[1];
-                program[3] = PData[7];
-                program[4] = PData[3];
-                program[5] = PData[9];
-
-                channel.addProgram(program);
-            }
-            return true;
-        }
-
-
     }
 }
