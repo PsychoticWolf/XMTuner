@@ -53,6 +53,7 @@ namespace XMTuner
         {
             logging = new Log(ref outputbox);
             aVersion.Text = configMan.version;
+            outputbox.AppendText("XMTuner "+configMan.version);
             serviceControl.ServiceName = "XMTunerService";
 
             service_button_reset();
