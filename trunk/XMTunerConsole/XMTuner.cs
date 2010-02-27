@@ -13,7 +13,7 @@ namespace XMTuner
     class XMTuner
     {
         //Flags
-        protected bool isLive = false;
+        protected bool isLive = true;
 
         //Config options...
         protected String user;
@@ -477,7 +477,7 @@ namespace XMTuner
             }
         }
 
-        public string play(int channelnum, String speed)
+        public virtual string play(int channelnum, String speed)
         {
             String address;
             if (isLive)

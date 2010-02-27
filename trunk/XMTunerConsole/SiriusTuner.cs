@@ -94,8 +94,7 @@ namespace XMTuner
             }
 
             output("Connecting to: " + SiriusLoginURL, "debug");
-            password = getMD5Hash(password);
-            data = "userName=" + HttpUtility.UrlEncode(user) + "&password=" + HttpUtility.UrlEncode(password) + "&__checkbox_remember=true&remember=true&captchaEnabled=true&captchaID=" + HttpUtility.UrlEncode(captchaID) + "&timeNow=null&captcha_response=" + captchaResponse;
+            data = "userName=" + HttpUtility.UrlEncode(user) + "&password=" + HttpUtility.UrlEncode(getMD5Hash(password)) + "&__checkbox_remember=true&remember=true&captchaEnabled=true&captchaID=" + HttpUtility.UrlEncode(captchaID) + "&timeNow=null&captcha_response=" + captchaResponse;
             URL loginURL = new URL(SiriusLoginURL);
             loginURL.setRequestHeader("Cookie", cookies);
             loginURL.setCookieContainer(playerCookies);
@@ -225,7 +224,7 @@ namespace XMTuner
                 details[0] = chanURL;
                 details[1] = chanKey;
 
-                XMChannel c = Find(chanNum, true);
+                XMChannel c = Find(chanNum);
                 c.addChannelData(details);
             }
 
@@ -367,6 +366,31 @@ namespace XMTuner
                 return tmp;
             }
         }
+
+        public override string play(int channelnum, String speed)
+        {
+            String channelKey = Find(channelnum).channelKey;
+            output("Playing stream for Sirius " + channelnum + " (" + channelKey + ")", "debug");
+            String address;
+            if (isLive)
+            {
+                address = "http://www.sirius.com/player/listen/play.action?channelKey=" + channelKey + "&newBitRate=" + speed;
+            }
+            else
+            {
+                address = "http://users.pcfire.net/~wolf/XMReader/sirius/play.action";
+            }
+            Uri tmp = new Uri(address);
+            URL playerURL = new URL(tmp);
+            playerURL.setRequestHeader("Cookie", cookies);
+            playerURL.fetch();
+            string URL = playChannel(playerURL);
+            //response is closed in playChannel();
+            lastChannelPlayed = channelnum;
+            setRecentlyPlayed();
+            return URL;
+        }
+
 
         protected override string playChannel(URL url)
         {
