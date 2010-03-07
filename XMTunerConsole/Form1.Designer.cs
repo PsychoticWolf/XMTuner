@@ -95,6 +95,7 @@
             this.pHoverTimer = new System.Windows.Forms.Timer(this.components);
             this.timerCB = new System.Windows.Forms.Timer(this.components);
             this.linkServer = new System.Windows.Forms.LinkLabel();
+            this.timerTest = new System.Windows.Forms.Timer(this.components);
             this.contextMenuStrip1.SuspendLayout();
             this.tabcontrol1.SuspendLayout();
             this.tLog.SuspendLayout();
@@ -745,6 +746,7 @@
             this.axWindowsMediaPlayer1.TabIndex = 4;
             this.axWindowsMediaPlayer1.PlayStateChange += new AxWMPLib._WMPOCXEvents_PlayStateChangeEventHandler(this.axWindowsMediaPlayer1_PlayStateChange);
             this.axWindowsMediaPlayer1.StatusChange += new System.EventHandler(this.axWindowsMediaPlayer1_StatusChange);
+            this.axWindowsMediaPlayer1.ErrorEvent += new System.EventHandler(this.axWindowsMediaPlayer1_ErrorEvent);
             this.axWindowsMediaPlayer1.MouseMoveEvent += new AxWMPLib._WMPOCXEvents_MouseMoveEventHandler(this.axWindowsMediaPlayer1_MouseMoveEvent);
             // 
             // timerUpdater
@@ -813,6 +815,11 @@
             this.linkServer.TabStop = true;
             this.linkServer.Text = "Server is Stopped...";
             this.linkServer.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkServer_LinkClicked);
+            // 
+            // timerTest
+            // 
+            this.timerTest.Interval = 300000;
+            this.timerTest.Tick += new System.EventHandler(this.timerTest_Tick);
             // 
             // Form1
             // 
@@ -928,6 +935,7 @@
         private System.Windows.Forms.ListView channelBox;
         private System.Windows.Forms.ComboBox typeBox;
         private System.Windows.Forms.LinkLabel linkServer;
+        private System.Windows.Forms.Timer timerTest;
     }
 }
 
