@@ -127,8 +127,9 @@ namespace XMTuner
 
         private void axWindowsMediaPlayer1_StatusChange(object sender, EventArgs e)
         {
-            if (axWindowsMediaPlayer1.playState != WMPLib.WMPPlayState.wmppsReady &&
-                axWindowsMediaPlayer1.playState != WMPLib.WMPPlayState.wmppsStopped)
+            if (axWindowsMediaPlayer1.playState != WMPLib.WMPPlayState.wmppsReady //&&
+                //axWindowsMediaPlayer1.playState != WMPLib.WMPPlayState.wmppsStopped
+                )
             {
                 String status = axWindowsMediaPlayer1.status;
                 if (status.Contains("Playing"))
@@ -138,6 +139,7 @@ namespace XMTuner
                 }
                 pLabel5.Visible = true;
                 pLabel5.Text = status;
+                output("Player: "+status, "info");
             }
         }
 
@@ -244,6 +246,15 @@ namespace XMTuner
         private void shutdownPlayer()
         {
             axWindowsMediaPlayer1.Ctlcontrols.stop();
+        }
+
+        private void axWindowsMediaPlayer1_ErrorEvent(object sender, EventArgs e)
+        {
+            // Get the description of the first error. 
+            string errDesc = axWindowsMediaPlayer1.Error.get_Item(0).errorDescription;
+
+            // Display the error description.
+            output(errDesc, "error");
         }
 
         #endregion

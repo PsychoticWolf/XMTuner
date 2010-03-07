@@ -369,27 +369,27 @@ namespace XMTuner
 
         public override string play(int channelnum, String speed)
         {
+            return play(channelnum, speed, true);
+        }
+
+        /* public override string play(int channelnum, String speed)
+        {
             String channelKey = Find(channelnum).channelKey;
             output("Playing stream for Sirius " + channelnum + " (" + channelKey + ")", "debug");
-            String address;
-            if (isLive)
+            String address = "http://www.sirius.com/player/listen/play.action?channelKey=" + channelKey + "&newBitRate=" + speed;
+            if (!isLive)
             {
-                address = "http://www.sirius.com/player/listen/play.action?channelKey=" + channelKey + "&newBitRate=" + speed;
+                address = baseurl + "/play.action";
             }
-            else
-            {
-                address = "http://users.pcfire.net/~wolf/XMReader/sirius/play.action";
-            }
-            Uri tmp = new Uri(address);
-            URL playerURL = new URL(tmp);
+            URL playerURL = new URL(address);
             playerURL.setRequestHeader("Cookie", cookies);
             playerURL.fetch();
-            string URL = playChannel(playerURL);
+            String URL = playChannel(playerURL);
             //response is closed in playChannel();
             lastChannelPlayed = channelnum;
             setRecentlyPlayed();
             return URL;
-        }
+        } */
 
 
         protected override string playChannel(URL url)
@@ -398,9 +398,9 @@ namespace XMTuner
             String pattern = "<PARAM (NAME|name)=\"FileName\" (VALUE|value)=\"(.*?)\">";
             String data = url.response();
             String m = Regex.Match(data, pattern).ToString();
-            m = m.Replace("<PARAM NAME=\"FileName\" VALUE=\"", "");
-            m = m.Replace("<PARAM name=\"FileName\" value=\"", "");
-            m = m.Replace("\">", "");
+                   m = m.Replace("<PARAM NAME=\"FileName\" VALUE=\"", "");
+                   m = m.Replace("<PARAM name=\"FileName\" value=\"", "");
+                   m = m.Replace("\">", "");
 
             if (!m.Equals(""))
             {
@@ -433,8 +433,7 @@ namespace XMTuner
 
         private String playSiriusChannel(String url)
         {
-            url = "http://www.sirius.com" + url;
-            //url = url.Replace("playasxpc", "playasxmac");
+            url = baseurl + url;
             URL asxFwrdURL = new URL(url);
             asxFwrdURL.setRequestHeader("Cookie", cookies);
             asxFwrdURL.fetch();

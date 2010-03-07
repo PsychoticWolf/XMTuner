@@ -479,23 +479,34 @@ namespace XMTuner
 
         public virtual string play(int channelnum, String speed)
         {
-            String address;
-            if (isLive)
+            return play(channelnum, speed, false);
+        }
+
+        protected string play(int channelnum, String speed, Boolean useKey)
+        {
+            XMChannel cD = Find(channelnum);
+            String channelKey = channelnum.ToString();
+            if (useKey == true)
             {
-                address = baseurl + "/player/listen/play.action?channelKey=" + channelnum + "&newBitRate=" + speed;
+                channelKey = cD.channelKey;
             }
-            else
+            output("Playing " + cD.ToSimpleString(), "info");
+            String address = baseurl + "/player/listen/play.action?channelKey=" + channelKey + "&newBitRate=" + speed;
+            if (!isLive)
             {
                 address = baseurl + "/play.action";
             }
-            Uri tmp = new Uri(address);
-            URL playerURL = new URL(tmp);
+            URL playerURL = new URL(address);
             playerURL.setRequestHeader("Cookie", cookies);
             playerURL.fetch();
             string URL = playChannel(playerURL);
             //response is closed in playChannel();
             lastChannelPlayed = channelnum;
             setRecentlyPlayed();
+            if (URL == null || URL.Contains("http") == false)
+            {
+                output("Error fetching stream for " + cD.ToSimpleString(), "error");
+            }
             return URL;
          }
 
@@ -820,5 +831,54 @@ namespace XMTuner
             }
             return true;
         }
+
+        public void doTest()
+        {
+            MethodInvoker simpleDelegate = new MethodInvoker(do_testChannelData);
+            simpleDelegate.BeginInvoke(null, null);
+        }
+        protected void do_testChannelData()
+        {
+            testChannelData();
+        }
+
+        protected Boolean testChannelData()
+        {
+            output("[Test] Downloading channel lineup...", "debug");
+            int j;
+            //We try 5 times...
+            for (j = 1; j <= 5; j++)
+            {
+                string url;
+                if (isLive)
+                {
+                   url = baseurl + "/player/channel/ajax.action?reqURL=player/2ft/channelData.jsp?remote=true&all_channels=true";
+                }
+                else
+                {
+                    url = baseurl + "/channeldata.jsp";
+                }
+
+                URL channelURL = new URL(url);
+                channelURL.setRequestHeader("Cookie", cookies);
+                channelURL.fetch();
+                String data = channelURL.response();
+                if (channelURL.getStatus() >= 200 && channelURL.getStatus() < 300 && data.IndexOf(":[],") == -1)
+                {
+                    //Returns Bool; False if invalid (null) channel data, true on success
+                    if (data.Contains("\"allchannels\",null"))
+                    {
+                        output("Session dead. Downloaded channel data had no stations.", "error");
+                        return false;
+                    }
+                    output("Session alive.", "debug");
+                    return true;
+                }
+            }
+            return false;
+        }
+		
+		
+
     }
 }
