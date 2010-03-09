@@ -139,7 +139,10 @@ namespace XMTuner
                 }
                 pLabel5.Visible = true;
                 pLabel5.Text = status;
-                output("Player: "+status, "info");
+                if (status.Equals("") == false)
+                {
+                    output("Player: ("+axWindowsMediaPlayer1.playState+") " + status, "player");
+                }
             }
         }
 
@@ -251,10 +254,11 @@ namespace XMTuner
         private void axWindowsMediaPlayer1_ErrorEvent(object sender, EventArgs e)
         {
             // Get the description of the first error. 
+            int errCode = axWindowsMediaPlayer1.Error.get_Item(0).errorCode;
             string errDesc = axWindowsMediaPlayer1.Error.get_Item(0).errorDescription;
 
             // Display the error description.
-            output(errDesc, "error");
+            output(errCode + " " +errDesc, "error");
         }
 
         #endregion

@@ -54,18 +54,6 @@
             this.cpyToClip = new System.Windows.Forms.Button();
             this.protocolBox = new System.Windows.Forms.ComboBox();
             this.addressBox = new System.Windows.Forms.TextBox();
-            this.tService = new System.Windows.Forms.TabPage();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.lblServiceInst = new System.Windows.Forms.Label();
-            this.label14 = new System.Windows.Forms.Label();
-            this.btnSerUninstall = new System.Windows.Forms.Button();
-            this.btnSerInstall = new System.Windows.Forms.Button();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.lblServiceStat = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
-            this.btnSerRestart = new System.Windows.Forms.Button();
-            this.btnSerStop = new System.Windows.Forms.Button();
-            this.btnSerStart = new System.Windows.Forms.Button();
             this.tHistory = new System.Windows.Forms.TabPage();
             this.recentlyPlayedBox = new System.Windows.Forms.RichTextBox();
             this.tAbout = new System.Windows.Forms.TabPage();
@@ -100,9 +88,6 @@
             this.tabcontrol1.SuspendLayout();
             this.tLog.SuspendLayout();
             this.tChannels.SuspendLayout();
-            this.tService.SuspendLayout();
-            this.groupBox3.SuspendLayout();
-            this.groupBox2.SuspendLayout();
             this.tHistory.SuspendLayout();
             this.tAbout.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -228,7 +213,6 @@
             this.tabcontrol1.AccessibleRole = System.Windows.Forms.AccessibleRole.None;
             this.tabcontrol1.Controls.Add(this.tLog);
             this.tabcontrol1.Controls.Add(this.tChannels);
-            this.tabcontrol1.Controls.Add(this.tService);
             this.tabcontrol1.Controls.Add(this.tHistory);
             this.tabcontrol1.Controls.Add(this.tAbout);
             this.tabcontrol1.Dock = System.Windows.Forms.DockStyle.Top;
@@ -373,132 +357,6 @@
             this.addressBox.Size = new System.Drawing.Size(260, 20);
             this.addressBox.TabIndex = 3;
             // 
-            // tService
-            // 
-            this.tService.BackColor = System.Drawing.SystemColors.Control;
-            this.tService.Controls.Add(this.groupBox3);
-            this.tService.Controls.Add(this.groupBox2);
-            this.tService.Location = new System.Drawing.Point(4, 22);
-            this.tService.Name = "tService";
-            this.tService.Padding = new System.Windows.Forms.Padding(3);
-            this.tService.Size = new System.Drawing.Size(552, 208);
-            this.tService.TabIndex = 3;
-            this.tService.Text = "Service";
-            // 
-            // groupBox3
-            // 
-            this.groupBox3.Controls.Add(this.lblServiceInst);
-            this.groupBox3.Controls.Add(this.label14);
-            this.groupBox3.Controls.Add(this.btnSerUninstall);
-            this.groupBox3.Controls.Add(this.btnSerInstall);
-            this.groupBox3.Location = new System.Drawing.Point(7, 114);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(257, 84);
-            this.groupBox3.TabIndex = 1;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Installation";
-            // 
-            // lblServiceInst
-            // 
-            this.lblServiceInst.AutoSize = true;
-            this.lblServiceInst.Location = new System.Drawing.Point(56, 27);
-            this.lblServiceInst.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.lblServiceInst.Name = "lblServiceInst";
-            this.lblServiceInst.Size = new System.Drawing.Size(65, 13);
-            this.lblServiceInst.TabIndex = 3;
-            this.lblServiceInst.Text = "UNKNOWN";
-            // 
-            // label14
-            // 
-            this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(6, 27);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(53, 13);
-            this.label14.TabIndex = 2;
-            this.label14.Text = "Service is";
-            // 
-            // btnSerUninstall
-            // 
-            this.btnSerUninstall.Location = new System.Drawing.Point(88, 55);
-            this.btnSerUninstall.Name = "btnSerUninstall";
-            this.btnSerUninstall.Size = new System.Drawing.Size(75, 23);
-            this.btnSerUninstall.TabIndex = 1;
-            this.btnSerUninstall.Text = "Uninstall";
-            this.btnSerUninstall.UseVisualStyleBackColor = true;
-            this.btnSerUninstall.Click += new System.EventHandler(this.btnSerUninstall_Click);
-            // 
-            // btnSerInstall
-            // 
-            this.btnSerInstall.Location = new System.Drawing.Point(6, 55);
-            this.btnSerInstall.Name = "btnSerInstall";
-            this.btnSerInstall.Size = new System.Drawing.Size(75, 23);
-            this.btnSerInstall.TabIndex = 0;
-            this.btnSerInstall.Text = "Install";
-            this.btnSerInstall.UseVisualStyleBackColor = true;
-            this.btnSerInstall.Click += new System.EventHandler(this.btnSerInstall_Click);
-            // 
-            // groupBox2
-            // 
-            this.groupBox2.Controls.Add(this.lblServiceStat);
-            this.groupBox2.Controls.Add(this.label1);
-            this.groupBox2.Controls.Add(this.btnSerRestart);
-            this.groupBox2.Controls.Add(this.btnSerStop);
-            this.groupBox2.Controls.Add(this.btnSerStart);
-            this.groupBox2.Location = new System.Drawing.Point(7, 7);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(257, 100);
-            this.groupBox2.TabIndex = 0;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Service Control";
-            // 
-            // lblServiceStat
-            // 
-            this.lblServiceStat.AutoSize = true;
-            this.lblServiceStat.Location = new System.Drawing.Point(52, 33);
-            this.lblServiceStat.Name = "lblServiceStat";
-            this.lblServiceStat.Size = new System.Drawing.Size(53, 13);
-            this.lblServiceStat.TabIndex = 4;
-            this.lblServiceStat.Text = "Unknown";
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 33);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(40, 13);
-            this.label1.TabIndex = 3;
-            this.label1.Text = "Status:";
-            // 
-            // btnSerRestart
-            // 
-            this.btnSerRestart.Location = new System.Drawing.Point(170, 71);
-            this.btnSerRestart.Name = "btnSerRestart";
-            this.btnSerRestart.Size = new System.Drawing.Size(75, 23);
-            this.btnSerRestart.TabIndex = 2;
-            this.btnSerRestart.Text = "Restart";
-            this.btnSerRestart.UseVisualStyleBackColor = true;
-            this.btnSerRestart.Click += new System.EventHandler(this.btnSerRestart_Click);
-            // 
-            // btnSerStop
-            // 
-            this.btnSerStop.Location = new System.Drawing.Point(88, 71);
-            this.btnSerStop.Name = "btnSerStop";
-            this.btnSerStop.Size = new System.Drawing.Size(75, 23);
-            this.btnSerStop.TabIndex = 1;
-            this.btnSerStop.Text = "Stop";
-            this.btnSerStop.UseVisualStyleBackColor = true;
-            this.btnSerStop.Click += new System.EventHandler(this.btnSerStop_Click);
-            // 
-            // btnSerStart
-            // 
-            this.btnSerStart.Location = new System.Drawing.Point(6, 71);
-            this.btnSerStart.Name = "btnSerStart";
-            this.btnSerStart.Size = new System.Drawing.Size(75, 23);
-            this.btnSerStart.TabIndex = 0;
-            this.btnSerStart.Text = "Start";
-            this.btnSerStart.UseVisualStyleBackColor = true;
-            this.btnSerStart.Click += new System.EventHandler(this.btnSerStart_Click);
-            // 
             // tHistory
             // 
             this.tHistory.Controls.Add(this.recentlyPlayedBox);
@@ -563,7 +421,7 @@
             this.aBuildDate.ReadOnly = true;
             this.aBuildDate.Size = new System.Drawing.Size(62, 19);
             this.aBuildDate.TabIndex = 17;
-            this.aBuildDate.Text = "20100223";
+            this.aBuildDate.Text = "2010307";
             this.aBuildDate.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // label8
@@ -849,11 +707,6 @@
             this.tLog.ResumeLayout(false);
             this.tChannels.ResumeLayout(false);
             this.tChannels.PerformLayout();
-            this.tService.ResumeLayout(false);
-            this.groupBox3.ResumeLayout(false);
-            this.groupBox3.PerformLayout();
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
             this.tHistory.ResumeLayout(false);
             this.tAbout.ResumeLayout(false);
             this.tAbout.PerformLayout();
@@ -902,18 +755,6 @@
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.ComboBox bitRateBox;
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.TabPage tService;
-        private System.Windows.Forms.GroupBox groupBox3;
-        private System.Windows.Forms.Label label14;
-        private System.Windows.Forms.Button btnSerUninstall;
-        private System.Windows.Forms.Button btnSerInstall;
-        private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.Label lblServiceStat;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Button btnSerRestart;
-        private System.Windows.Forms.Button btnSerStop;
-        private System.Windows.Forms.Button btnSerStart;
-        private System.Windows.Forms.Label lblServiceInst;
         private System.Windows.Forms.Button bUpdate;
         private System.Windows.Forms.Timer timerUpdater;
         private System.Windows.Forms.TabPage tHistory;

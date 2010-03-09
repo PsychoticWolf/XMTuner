@@ -1,14 +1,9 @@
 ﻿using System;
+using System.Windows.Forms;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
+using System.Collections.Specialized;
 using System.Drawing;
 using System.Net;
-using System.Text;
-using System.Windows.Forms;
-using System.IO;
-using System.Collections.Specialized;
-using System.ServiceProcess;
 using System.Reflection;
 
 namespace XMTuner
@@ -30,8 +25,6 @@ namespace XMTuner
         bool isMMS = false;
         String tversityHost;
         String hostname;
-        ServiceController serviceControl = new ServiceController();
-        bool serviceRunning = false;
 
         int i = 0;
         double sec = 0;
@@ -54,9 +47,8 @@ namespace XMTuner
             logging = new Log(ref outputbox);
             aVersion.Text = configMan.version;
             outputbox.AppendText("XMTuner "+configMan.version+"\n");
-            serviceControl.ServiceName = "XMTunerService";
 
-            service_button_reset();
+            Boolean serviceRunning = false; //XXX Remove me.
             if (autologin && serviceRunning)
             {
                 output("Autologin skipped - Service already running\n", "error");
@@ -124,8 +116,9 @@ namespace XMTuner
             timer2.Enabled = true;
             linkServer.Text = "Server is Running...";
             linkServer.Enabled = true;
-
+#if DEBUG
             timerTest.Enabled = true;
+#endif
 
             loggedIn = true;
             if (loggedIn) {
@@ -408,6 +401,10 @@ namespace XMTuner
             if (level.ToLower().Equals("debug"))
             {
                 color = Color.CornflowerBlue;
+            }
+            if (level.ToLower().Equals("player"))
+            {
+                color = Color.Green;
             }
 
             //We can't talk to outputbox from the server thread...
@@ -723,100 +720,6 @@ namespace XMTuner
         private void timerCB_Tick(object sender, EventArgs e)
         {
             updateChannels();
-        }
-        #endregion
-
-        #region Service Tab
-        private void service_button_reset()
-        {
-            try
-            {
-                lblServiceStat.Text = serviceControl.Status.ToString();
-                lblServiceInst.Text = "installed";
-                if (serviceControl.Status.ToString().ToLower().Equals("stopped"))
-                {
-                    btnSerInstall.Enabled = false;
-                    btnSerUninstall.Enabled = true;
-                    btnSerStart.Enabled = true;
-                    btnSerStop.Enabled = false;
-                    btnSerRestart.Enabled = false;
-                    serviceRunning = false;
-                }
-                else if (serviceControl.Status.ToString().ToLower().Equals("running"))
-                {
-                    btnSerInstall.Enabled = false;
-                    btnSerUninstall.Enabled = true;
-                    btnSerStart.Enabled = false;
-                    btnSerStop.Enabled = true;
-                    btnSerRestart.Enabled = true;
-                    serviceRunning = true;
-                }
-                else
-                {
-                    btnSerInstall.Enabled = false;
-                    btnSerUninstall.Enabled = true;
-                    btnSerStart.Enabled = true;
-                    btnSerStop.Enabled = false;
-                    btnSerRestart.Enabled = false;
-                    serviceRunning = false;
-                }
-
-            }
-            catch
-            {
-                lblServiceStat.Text = "NOT INSTALLED";
-                lblServiceInst.Text = "not installed";
-                btnSerStop.Enabled = false;
-                btnSerStart.Enabled = false;
-                btnSerRestart.Enabled = false;
-                btnSerUninstall.Enabled = false;
-                btnSerInstall.Enabled = true;
-            }
-
-        }
-
-        private void btnSerStart_Click(object sender, EventArgs e)
-        {
-            serviceControl.Start();
-            serviceControl.WaitForStatus(System.ServiceProcess.ServiceControllerStatus.Running);
-            service_button_reset();
-
-        }
-
-        private void btnSerStop_Click(object sender, EventArgs e)
-        {
-            serviceControl.Stop();
-            serviceControl.WaitForStatus(System.ServiceProcess.ServiceControllerStatus.Stopped);
-            service_button_reset();
-
-        }
-
-        private void btnSerRestart_Click(object sender, EventArgs e)
-        {
-            serviceControl.Stop();
-            serviceControl.WaitForStatus(System.ServiceProcess.ServiceControllerStatus.Stopped);
-            serviceControl.Start();
-            serviceControl.WaitForStatus(System.ServiceProcess.ServiceControllerStatus.Running);
-            service_button_reset();
-        }
-
-        private void btnSerInstall_Click(object sender, EventArgs e)
-        {
-            servicemanager sm = new servicemanager("XMTunerService", "Provides XMRO to Devices", "XM Tuner");
-            bool sucess = sm.Install(ServiceStartMode.Automatic);
-            service_button_reset();
-
-        }
-
-        private void btnSerUninstall_Click(object sender, EventArgs e)
-        {
-
-            servicemanager sm = new servicemanager("XMTunerService", "Provides XMRO to Devices", "XM Tuner");
-            bool sucess = sm.Uninstall();
-            service_button_reset();
-            MessageBox.Show("If you wish to reinstall the service, please restart XMTuner");
-            btnSerUninstall.Enabled = false;
-            btnSerStart.Enabled = false;
         }
         #endregion
 
