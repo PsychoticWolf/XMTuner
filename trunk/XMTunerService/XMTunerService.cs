@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.ServiceProcess;
 using System.Threading;
+using System.IO;
 
 namespace XMTuner
 {
@@ -11,7 +12,7 @@ namespace XMTuner
         
         XMReader reader;
         Thread workerThread;
-        Boolean serviceStarted;
+        //Boolean serviceStarted;
         /// <summary>
 
         /// Public Constructor for WindowsService.
@@ -94,12 +95,12 @@ namespace XMTuner
             workerThread = new Thread(st);
 
             // set flag to indicate worker thread is active
-            serviceStarted = true;
+            //serviceStarted = true;
 
             // start the thread
             workerThread.Start();
 
-            
+            writePID();
             
         }
 
@@ -126,6 +127,7 @@ namespace XMTuner
         {
             base.OnStop();
             reader.logging.log(reader.i);
+            removePID();
         }
 
         /// <summary>
@@ -247,14 +249,33 @@ namespace XMTuner
 
         }
 
-        private void notifyIcon1_MouseDoubleClick(object sender, System.Windows.Forms.MouseEventArgs e)
+        private void writePID()
         {
+            String lockFile = "xmtunerservice.lock";
+
+            int pid = Process.GetCurrentProcess().Id;
+
+            String directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "XMTuner");
+            if (!Directory.Exists(directory)) { Directory.CreateDirectory(directory); }
+            String path = directory + "\\" + lockFile;
+
+            FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write);
+            StreamWriter textOut = new StreamWriter(fs);
+            textOut.Write(pid);
+            textOut.Close();
 
         }
 
-        private void contextMenuStrip1_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        private void removePID()
         {
+            String lockFile = "xmtunerservice.lock";
+            String directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "XMTuner");
+            String path = directory + "\\" + lockFile;
 
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
         }
 
     }

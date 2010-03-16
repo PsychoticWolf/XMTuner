@@ -122,35 +122,9 @@ namespace XMTuner
             //Store current configuration for comparison test
             NameValueCollection currentconfig = new configMan().getConfig();
 
-            Form2 form2 = new Form2(null, false, getLocalIP());
+            Form2 form2 = new Form2(null, false, configMan.getLocalIP());
             form2.ShowDialog();
             btnSerRestart_Click(sender, e);
-        }
-
-        private String getLocalIP()
-        {
-            String localIP = null;
-            IPAddress[] IP;
-            try
-            {
-                IP = Dns.GetHostAddresses("");
-                foreach (IPAddress ip in IP)
-                {
-                    if (ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
-                    {
-                        localIP = ip.ToString();
-                        break;
-                    }
-                }
-            }
-            catch (System.Net.Sockets.SocketException)
-            {
-            }
-            if (localIP == null)
-            {
-                localIP = "localhost";
-            }
-            return localIP;
         }
         #endregion
 
