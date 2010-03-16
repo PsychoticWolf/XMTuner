@@ -4,6 +4,7 @@ using System.Collections.Specialized;
 using System.Text;
 using System.IO;
 using System.Reflection;
+using System.Net;
 
 namespace XMTuner
 {
@@ -155,6 +156,52 @@ namespace XMTuner
             {
                 Version curVersion = Assembly.GetExecutingAssembly().GetName().Version;
                 return curVersion.ToString(3);
+            }
+        }
+
+        public static String getLocalIP()
+        {
+            String localIP = null;
+            IPAddress[] IP;
+            try
+            {
+                IP = Dns.GetHostAddresses("");
+                foreach (IPAddress ip in IP)
+                {
+                    if (ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+                    {
+                        localIP = ip.ToString();
+                        break;
+                    }
+                }
+            }
+            catch (System.Net.Sockets.SocketException e)
+            {
+                System.Windows.Forms.MessageBox.Show(e.Message);
+            }
+            if (localIP == null)
+            {
+                localIP = "localhost";
+            }
+            return localIP;
+        }
+
+        public static String datapath
+        {
+            get
+            {
+                Boolean useLocalDatapath = false;
+#if DEBUG
+                useLocalDatapath = true;
+#endif
+
+                String directory = "";
+                if (useLocalDatapath == false)
+                {
+                    directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "XMTuner");
+
+                }
+                return directory;
             }
         }
     }

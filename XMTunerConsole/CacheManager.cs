@@ -209,5 +209,15 @@ namespace XMTuner
             }
             return true;
         }
+
+        public static String getFileS(String path)
+        {
+            FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
+            StreamReader textIn = new StreamReader(fs);
+            String data = textIn.ReadToEnd();
+            textIn.Close();
+
+            return data;
+        }
     }
 }

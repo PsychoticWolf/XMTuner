@@ -195,7 +195,7 @@ namespace XMTuner
 
         private void linkServer_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            System.Diagnostics.Process.Start("http://" + getLocalIP() + ":" + port);
+            System.Diagnostics.Process.Start("http://" + configMan.getLocalIP() + ":" + port);
         }
 
         private void restart()
@@ -308,7 +308,7 @@ namespace XMTuner
 
         private void setConfig(configMan cfg, NameValueCollection config)
         {
-            ip = getLocalIP();
+            ip = configMan.getLocalIP();
             username = cfg.getConfigItem(config, "username");
             password = cfg.getConfigItem(config, "password");
             port = cfg.getConfigItem(config, "port");
@@ -319,34 +319,6 @@ namespace XMTuner
             hostname = cfg.getConfigItem(config, "hostname");
             network = cfg.getConfigItem(config, "network");
 
-        }
-
-        private String getLocalIP()
-        {
-            String localIP = null;
-            IPAddress[] IP;
-            try
-            {
-                IP = Dns.GetHostAddresses("");
-                foreach (IPAddress ip in IP)
-                {
-                    if (ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
-                    {
-                        localIP = ip.ToString();
-                        break;
-                    }
-                }
-            }
-            catch (System.Net.Sockets.SocketException e)
-            {
-                outputbox.SelectionColor = Color.Red;
-                outputbox.AppendText(e.Message);
-            }
-            if (localIP == null)
-            {
-                localIP = "localhost";
-            }
-            return localIP;
         }
         #endregion
 
@@ -370,7 +342,7 @@ namespace XMTuner
 
         private void viewServerToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("http://" + getLocalIP() + ":" + port);
+            System.Diagnostics.Process.Start("http://" + configMan.getLocalIP() + ":" + port);
         }
         #endregion
 

@@ -122,32 +122,5 @@ namespace XMTuner
 
             logging.log(i);
         }
-
-        private String getLocalIP()
-        {
-            String localIP = null;
-            IPAddress[] IP;
-            try
-            {
-                IP = Dns.GetHostAddresses("");
-                foreach (IPAddress ip in IP)
-                {
-                    if (ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
-                    {
-                        localIP = ip.ToString();
-                        break;
-                    }
-                }
-            }
-            catch (System.Net.Sockets.SocketException e)
-            {
-                logging.output(e.Message, "error");
-            }
-            if (localIP == null)
-            {
-                localIP = "localhost";
-            }
-            return localIP;
-        }
     }
 }
