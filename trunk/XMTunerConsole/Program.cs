@@ -17,7 +17,7 @@ namespace XMTuner
 
 #if !DEBUG
 
-            if (serviceRunning() == false)
+            if (serviceRunning() == true)
             {
                 MessageBox.Show("XMTuner cannot start because the XMTuner service is running.\nStop the XMTuner service and try again.", "XMTuner Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Application.Exit();
