@@ -30,13 +30,15 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
+            System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("Recently Played", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("Nothing Played Yet...");
             this.bStart = new System.Windows.Forms.Button();
             this.bConfigure = new System.Windows.Forms.Button();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.lblClock = new System.Windows.Forms.Label();
             this.timer2 = new System.Windows.Forms.Timer(this.components);
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
-            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.trayIconContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.loginToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewServerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.restoreToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -47,14 +49,23 @@
             this.tLog = new System.Windows.Forms.TabPage();
             this.outputbox = new System.Windows.Forms.RichTextBox();
             this.tChannels = new System.Windows.Forms.TabPage();
-            this.typeBox = new System.Windows.Forms.ComboBox();
+            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.channelBox = new System.Windows.Forms.ListView();
-            this.txtChannel = new System.Windows.Forms.TextBox();
+            this.channelContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.uRLBuilderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.enabledToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.disabledToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.playToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.detailsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.label1 = new System.Windows.Forms.Label();
+            this.typeBox = new System.Windows.Forms.ComboBox();
             this.bitRateBox = new System.Windows.Forms.ComboBox();
+            this.addressBox = new System.Windows.Forms.TextBox();
             this.cpyToClip = new System.Windows.Forms.Button();
             this.protocolBox = new System.Windows.Forms.ComboBox();
-            this.addressBox = new System.Windows.Forms.TextBox();
+            this.txtChannel = new System.Windows.Forms.TextBox();
             this.tHistory = new System.Windows.Forms.TabPage();
+            this.recentlyPlayedListView = new System.Windows.Forms.ListView();
             this.recentlyPlayedBox = new System.Windows.Forms.RichTextBox();
             this.tAbout = new System.Windows.Forms.TabPage();
             this.bUpdate = new System.Windows.Forms.Button();
@@ -78,22 +89,26 @@
             this.axWindowsMediaPlayer1 = new AxWMPLib.AxWindowsMediaPlayer();
             this.timerUpdater = new System.Windows.Forms.Timer(this.components);
             this.pTimer = new System.Windows.Forms.Timer(this.components);
-            this.panel1 = new System.Windows.Forms.Panel();
+            this.playerPanel = new System.Windows.Forms.Panel();
             this.pStatusLabel = new System.Windows.Forms.Label();
             this.pHoverTimer = new System.Windows.Forms.Timer(this.components);
             this.timerCB = new System.Windows.Forms.Timer(this.components);
             this.linkServer = new System.Windows.Forms.LinkLabel();
             this.timerTest = new System.Windows.Forms.Timer(this.components);
-            this.contextMenuStrip1.SuspendLayout();
+            this.trayIconContextMenu.SuspendLayout();
             this.tabcontrol1.SuspendLayout();
             this.tLog.SuspendLayout();
             this.tChannels.SuspendLayout();
+            this.splitContainer1.Panel1.SuspendLayout();
+            this.splitContainer1.Panel2.SuspendLayout();
+            this.splitContainer1.SuspendLayout();
+            this.channelContextMenu.SuspendLayout();
             this.tHistory.SuspendLayout();
             this.tAbout.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pLogoBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.axWindowsMediaPlayer1)).BeginInit();
-            this.panel1.SuspendLayout();
+            this.playerPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // bStart
@@ -143,22 +158,22 @@
             // 
             // notifyIcon1
             // 
-            this.notifyIcon1.ContextMenuStrip = this.contextMenuStrip1;
+            this.notifyIcon1.ContextMenuStrip = this.trayIconContextMenu;
             this.notifyIcon1.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon1.Icon")));
             this.notifyIcon1.Text = "XMTuner";
             this.notifyIcon1.Visible = true;
             this.notifyIcon1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon1_MouseDoubleClick);
             // 
-            // contextMenuStrip1
+            // trayIconContextMenu
             // 
-            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.trayIconContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.loginToolStripMenuItem,
             this.viewServerToolStripMenuItem,
             this.restoreToolStripMenuItem,
             this.toolStripSeparator1,
             this.exitXMTunerToolStripMenuItem});
-            this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(145, 98);
+            this.trayIconContextMenu.Name = "contextMenuStrip1";
+            this.trayIconContextMenu.Size = new System.Drawing.Size(145, 98);
             // 
             // loginToolStripMenuItem
             // 
@@ -215,12 +230,12 @@
             this.tabcontrol1.Controls.Add(this.tChannels);
             this.tabcontrol1.Controls.Add(this.tHistory);
             this.tabcontrol1.Controls.Add(this.tAbout);
-            this.tabcontrol1.Dock = System.Windows.Forms.DockStyle.Top;
             this.tabcontrol1.HotTrack = true;
             this.tabcontrol1.Location = new System.Drawing.Point(0, 0);
+            this.tabcontrol1.Margin = new System.Windows.Forms.Padding(3, 3, 3, 50);
             this.tabcontrol1.Name = "tabcontrol1";
             this.tabcontrol1.SelectedIndex = 0;
-            this.tabcontrol1.Size = new System.Drawing.Size(560, 234);
+            this.tabcontrol1.Size = new System.Drawing.Size(560, 237);
             this.tabcontrol1.TabIndex = 16;
             this.tabcontrol1.Selected += new System.Windows.Forms.TabControlEventHandler(this.tabcontrol1_Selected);
             // 
@@ -232,7 +247,7 @@
             this.tLog.Margin = new System.Windows.Forms.Padding(2);
             this.tLog.Name = "tLog";
             this.tLog.Padding = new System.Windows.Forms.Padding(3);
-            this.tLog.Size = new System.Drawing.Size(552, 208);
+            this.tLog.Size = new System.Drawing.Size(552, 211);
             this.tLog.TabIndex = 0;
             this.tLog.Text = "Log";
             this.tLog.UseVisualStyleBackColor = true;
@@ -247,7 +262,7 @@
             this.outputbox.Name = "outputbox";
             this.outputbox.ReadOnly = true;
             this.outputbox.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
-            this.outputbox.Size = new System.Drawing.Size(546, 202);
+            this.outputbox.Size = new System.Drawing.Size(546, 205);
             this.outputbox.TabIndex = 6;
             this.outputbox.Text = "";
             this.outputbox.WordWrap = false;
@@ -258,20 +273,117 @@
             // tChannels
             // 
             this.tChannels.BackColor = System.Drawing.SystemColors.Control;
-            this.tChannels.Controls.Add(this.typeBox);
-            this.tChannels.Controls.Add(this.channelBox);
-            this.tChannels.Controls.Add(this.txtChannel);
-            this.tChannels.Controls.Add(this.bitRateBox);
-            this.tChannels.Controls.Add(this.cpyToClip);
-            this.tChannels.Controls.Add(this.protocolBox);
-            this.tChannels.Controls.Add(this.addressBox);
+            this.tChannels.Controls.Add(this.splitContainer1);
             this.tChannels.Location = new System.Drawing.Point(4, 22);
             this.tChannels.Margin = new System.Windows.Forms.Padding(2);
             this.tChannels.Name = "tChannels";
             this.tChannels.Padding = new System.Windows.Forms.Padding(3);
-            this.tChannels.Size = new System.Drawing.Size(552, 208);
+            this.tChannels.Size = new System.Drawing.Size(552, 211);
             this.tChannels.TabIndex = 1;
             this.tChannels.Text = "Channels";
+            // 
+            // splitContainer1
+            // 
+            this.splitContainer1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer1.Location = new System.Drawing.Point(3, 3);
+            this.splitContainer1.Name = "splitContainer1";
+            this.splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            // 
+            // splitContainer1.Panel1
+            // 
+            this.splitContainer1.Panel1.Controls.Add(this.channelBox);
+            this.splitContainer1.Panel1MinSize = 150;
+            // 
+            // splitContainer1.Panel2
+            // 
+            this.splitContainer1.Panel2.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.splitContainer1.Panel2.ContextMenuStrip = this.channelContextMenu;
+            this.splitContainer1.Panel2.Controls.Add(this.label1);
+            this.splitContainer1.Panel2.Controls.Add(this.typeBox);
+            this.splitContainer1.Panel2.Controls.Add(this.bitRateBox);
+            this.splitContainer1.Panel2.Controls.Add(this.addressBox);
+            this.splitContainer1.Panel2.Controls.Add(this.cpyToClip);
+            this.splitContainer1.Panel2.Controls.Add(this.protocolBox);
+            this.splitContainer1.Panel2.Controls.Add(this.txtChannel);
+            this.splitContainer1.Panel2MinSize = 0;
+            this.splitContainer1.Size = new System.Drawing.Size(546, 205);
+            this.splitContainer1.SplitterDistance = 152;
+            this.splitContainer1.SplitterIncrement = 5;
+            this.splitContainer1.SplitterWidth = 2;
+            this.splitContainer1.TabIndex = 14;
+            // 
+            // channelBox
+            // 
+            this.channelBox.Activation = System.Windows.Forms.ItemActivation.OneClick;
+            this.channelBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.channelBox.ContextMenuStrip = this.channelContextMenu;
+            this.channelBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.channelBox.HoverSelection = true;
+            this.channelBox.Location = new System.Drawing.Point(0, 0);
+            this.channelBox.Margin = new System.Windows.Forms.Padding(0);
+            this.channelBox.MultiSelect = false;
+            this.channelBox.Name = "channelBox";
+            this.channelBox.Size = new System.Drawing.Size(544, 150);
+            this.channelBox.TabIndex = 11;
+            this.channelBox.TileSize = new System.Drawing.Size(515, 30);
+            this.channelBox.UseCompatibleStateImageBehavior = false;
+            this.channelBox.View = System.Windows.Forms.View.Tile;
+            this.channelBox.SelectedIndexChanged += new System.EventHandler(this.makeAddress);
+            this.channelBox.DoubleClick += new System.EventHandler(this.channelBox_DoubleClick);
+            // 
+            // channelContextMenu
+            // 
+            this.channelContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.uRLBuilderToolStripMenuItem,
+            this.playToolStripMenuItem,
+            this.detailsToolStripMenuItem});
+            this.channelContextMenu.Name = "contextMenuStrip2";
+            this.channelContextMenu.Size = new System.Drawing.Size(136, 70);
+            // 
+            // uRLBuilderToolStripMenuItem
+            // 
+            this.uRLBuilderToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.enabledToolStripMenuItem,
+            this.disabledToolStripMenuItem});
+            this.uRLBuilderToolStripMenuItem.Name = "uRLBuilderToolStripMenuItem";
+            this.uRLBuilderToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
+            this.uRLBuilderToolStripMenuItem.Text = "URL Builder";
+            // 
+            // enabledToolStripMenuItem
+            // 
+            this.enabledToolStripMenuItem.Name = "enabledToolStripMenuItem";
+            this.enabledToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
+            this.enabledToolStripMenuItem.Text = "Enabled";
+            this.enabledToolStripMenuItem.Click += new System.EventHandler(this.enabledToolStripMenuItem_Click);
+            // 
+            // disabledToolStripMenuItem
+            // 
+            this.disabledToolStripMenuItem.Name = "disabledToolStripMenuItem";
+            this.disabledToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
+            this.disabledToolStripMenuItem.Text = "Disabled";
+            this.disabledToolStripMenuItem.Click += new System.EventHandler(this.disabledToolStripMenuItem_Click);
+            // 
+            // playToolStripMenuItem
+            // 
+            this.playToolStripMenuItem.Name = "playToolStripMenuItem";
+            this.playToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
+            this.playToolStripMenuItem.Text = "Play";
+            // 
+            // detailsToolStripMenuItem
+            // 
+            this.detailsToolStripMenuItem.Name = "detailsToolStripMenuItem";
+            this.detailsToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
+            this.detailsToolStripMenuItem.Text = "Details...";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(3, 4);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(64, 13);
+            this.label1.TabIndex = 13;
+            this.label1.Text = "URL Builder";
             // 
             // typeBox
             // 
@@ -281,34 +393,11 @@
             "Channel",
             "Feed",
             "Playlist"});
-            this.typeBox.Location = new System.Drawing.Point(4, 184);
+            this.typeBox.Location = new System.Drawing.Point(3, 21);
             this.typeBox.Name = "typeBox";
             this.typeBox.Size = new System.Drawing.Size(64, 21);
             this.typeBox.TabIndex = 12;
             this.typeBox.SelectedIndexChanged += new System.EventHandler(this.updateTypeList);
-            // 
-            // channelBox
-            // 
-            this.channelBox.Dock = System.Windows.Forms.DockStyle.Top;
-            this.channelBox.Location = new System.Drawing.Point(3, 3);
-            this.channelBox.MultiSelect = false;
-            this.channelBox.Name = "channelBox";
-            this.channelBox.Size = new System.Drawing.Size(546, 179);
-            this.channelBox.TabIndex = 11;
-            this.channelBox.TileSize = new System.Drawing.Size(515, 30);
-            this.channelBox.UseCompatibleStateImageBehavior = false;
-            this.channelBox.View = System.Windows.Forms.View.Tile;
-            this.channelBox.SelectedIndexChanged += new System.EventHandler(this.makeAddress);
-            this.channelBox.DoubleClick += new System.EventHandler(this.channelBox_DoubleClick);
-            // 
-            // txtChannel
-            // 
-            this.txtChannel.Enabled = false;
-            this.txtChannel.Location = new System.Drawing.Point(521, 185);
-            this.txtChannel.Name = "txtChannel";
-            this.txtChannel.Size = new System.Drawing.Size(27, 20);
-            this.txtChannel.TabIndex = 2;
-            this.txtChannel.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtChannel_KeyPress);
             // 
             // bitRateBox
             // 
@@ -318,16 +407,23 @@
             "Bitrate:",
             "High",
             "Low"});
-            this.bitRateBox.Location = new System.Drawing.Point(140, 184);
+            this.bitRateBox.Location = new System.Drawing.Point(139, 21);
             this.bitRateBox.Margin = new System.Windows.Forms.Padding(2);
             this.bitRateBox.Name = "bitRateBox";
             this.bitRateBox.Size = new System.Drawing.Size(64, 21);
             this.bitRateBox.TabIndex = 10;
             this.bitRateBox.SelectedIndexChanged += new System.EventHandler(this.makeAddress);
             // 
+            // addressBox
+            // 
+            this.addressBox.Location = new System.Drawing.Point(206, 22);
+            this.addressBox.Name = "addressBox";
+            this.addressBox.Size = new System.Drawing.Size(260, 20);
+            this.addressBox.TabIndex = 3;
+            // 
             // cpyToClip
             // 
-            this.cpyToClip.Location = new System.Drawing.Point(473, 184);
+            this.cpyToClip.Location = new System.Drawing.Point(469, 21);
             this.cpyToClip.Margin = new System.Windows.Forms.Padding(0, 2, 0, 2);
             this.cpyToClip.Name = "cpyToClip";
             this.cpyToClip.Size = new System.Drawing.Size(42, 23);
@@ -344,40 +440,67 @@
             "Protocol:",
             "HTTP",
             "MMS"});
-            this.protocolBox.Location = new System.Drawing.Point(72, 184);
+            this.protocolBox.Location = new System.Drawing.Point(71, 21);
             this.protocolBox.Name = "protocolBox";
             this.protocolBox.Size = new System.Drawing.Size(64, 21);
             this.protocolBox.TabIndex = 5;
             this.protocolBox.SelectedIndexChanged += new System.EventHandler(this.makeAddress);
             // 
-            // addressBox
+            // txtChannel
             // 
-            this.addressBox.Location = new System.Drawing.Point(210, 185);
-            this.addressBox.Name = "addressBox";
-            this.addressBox.Size = new System.Drawing.Size(260, 20);
-            this.addressBox.TabIndex = 3;
+            this.txtChannel.Enabled = false;
+            this.txtChannel.Location = new System.Drawing.Point(515, 22);
+            this.txtChannel.Name = "txtChannel";
+            this.txtChannel.Size = new System.Drawing.Size(27, 20);
+            this.txtChannel.TabIndex = 2;
+            this.txtChannel.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtChannel_KeyPress);
             // 
             // tHistory
             // 
+            this.tHistory.Controls.Add(this.recentlyPlayedListView);
             this.tHistory.Controls.Add(this.recentlyPlayedBox);
             this.tHistory.Location = new System.Drawing.Point(4, 22);
             this.tHistory.Name = "tHistory";
             this.tHistory.Padding = new System.Windows.Forms.Padding(3);
-            this.tHistory.Size = new System.Drawing.Size(552, 208);
+            this.tHistory.Size = new System.Drawing.Size(552, 211);
             this.tHistory.TabIndex = 4;
             this.tHistory.Text = "History";
             this.tHistory.UseVisualStyleBackColor = true;
+            // 
+            // recentlyPlayedListView
+            // 
+            this.recentlyPlayedListView.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.recentlyPlayedListView.Dock = System.Windows.Forms.DockStyle.Top;
+            this.recentlyPlayedListView.FullRowSelect = true;
+            listViewGroup1.Header = "Recently Played";
+            listViewGroup1.Name = "listViewGroup1";
+            this.recentlyPlayedListView.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
+            listViewGroup1});
+            this.recentlyPlayedListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
+            listViewItem1.Group = listViewGroup1;
+            this.recentlyPlayedListView.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
+            listViewItem1});
+            this.recentlyPlayedListView.Location = new System.Drawing.Point(3, 3);
+            this.recentlyPlayedListView.Margin = new System.Windows.Forms.Padding(0);
+            this.recentlyPlayedListView.MultiSelect = false;
+            this.recentlyPlayedListView.Name = "recentlyPlayedListView";
+            this.recentlyPlayedListView.Size = new System.Drawing.Size(546, 150);
+            this.recentlyPlayedListView.TabIndex = 7;
+            this.recentlyPlayedListView.TileSize = new System.Drawing.Size(507, 30);
+            this.recentlyPlayedListView.UseCompatibleStateImageBehavior = false;
+            this.recentlyPlayedListView.View = System.Windows.Forms.View.Tile;
             // 
             // recentlyPlayedBox
             // 
             this.recentlyPlayedBox.BackColor = System.Drawing.Color.White;
             this.recentlyPlayedBox.Cursor = System.Windows.Forms.Cursors.IBeam;
-            this.recentlyPlayedBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.recentlyPlayedBox.Location = new System.Drawing.Point(3, 3);
+            this.recentlyPlayedBox.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.recentlyPlayedBox.Location = new System.Drawing.Point(3, 153);
+            this.recentlyPlayedBox.Margin = new System.Windows.Forms.Padding(0);
             this.recentlyPlayedBox.Name = "recentlyPlayedBox";
             this.recentlyPlayedBox.ReadOnly = true;
             this.recentlyPlayedBox.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
-            this.recentlyPlayedBox.Size = new System.Drawing.Size(546, 202);
+            this.recentlyPlayedBox.Size = new System.Drawing.Size(546, 55);
             this.recentlyPlayedBox.TabIndex = 6;
             this.recentlyPlayedBox.Text = "";
             // 
@@ -398,7 +521,7 @@
             this.tAbout.Margin = new System.Windows.Forms.Padding(2);
             this.tAbout.Name = "tAbout";
             this.tAbout.Padding = new System.Windows.Forms.Padding(2);
-            this.tAbout.Size = new System.Drawing.Size(552, 208);
+            this.tAbout.Size = new System.Drawing.Size(552, 211);
             this.tAbout.TabIndex = 2;
             this.tAbout.Text = "About";
             // 
@@ -421,7 +544,7 @@
             this.aBuildDate.ReadOnly = true;
             this.aBuildDate.Size = new System.Drawing.Size(62, 19);
             this.aBuildDate.TabIndex = 17;
-            this.aBuildDate.Text = "2010307";
+            this.aBuildDate.Text = "20100325";
             this.aBuildDate.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // label8
@@ -620,23 +743,23 @@
             this.pTimer.Tag = "Player timer for WMP counter";
             this.pTimer.Tick += new System.EventHandler(this.pTimer_Tick);
             // 
-            // panel1
+            // playerPanel
             // 
-            this.panel1.BackColor = System.Drawing.Color.Black;
-            this.panel1.Controls.Add(this.pStatusLabel);
-            this.panel1.Controls.Add(this.axWindowsMediaPlayer1);
-            this.panel1.Controls.Add(this.pLabel6);
-            this.panel1.Controls.Add(this.pLabel5);
-            this.panel1.Controls.Add(this.pLogoBox);
-            this.panel1.Controls.Add(this.pLabel4);
-            this.panel1.Controls.Add(this.pLabel1);
-            this.panel1.Controls.Add(this.pLabel3);
-            this.panel1.Controls.Add(this.pLabel2);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(0, 265);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(560, 84);
-            this.panel1.TabIndex = 17;
+            this.playerPanel.BackColor = System.Drawing.Color.Black;
+            this.playerPanel.Controls.Add(this.pStatusLabel);
+            this.playerPanel.Controls.Add(this.axWindowsMediaPlayer1);
+            this.playerPanel.Controls.Add(this.pLabel6);
+            this.playerPanel.Controls.Add(this.pLabel5);
+            this.playerPanel.Controls.Add(this.pLogoBox);
+            this.playerPanel.Controls.Add(this.pLabel4);
+            this.playerPanel.Controls.Add(this.pLabel1);
+            this.playerPanel.Controls.Add(this.pLabel3);
+            this.playerPanel.Controls.Add(this.pLabel2);
+            this.playerPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.playerPanel.Location = new System.Drawing.Point(0, 265);
+            this.playerPanel.Name = "playerPanel";
+            this.playerPanel.Size = new System.Drawing.Size(560, 84);
+            this.playerPanel.TabIndex = 17;
             // 
             // pStatusLabel
             // 
@@ -689,12 +812,11 @@
             this.Controls.Add(this.bStop);
             this.Controls.Add(this.bStart);
             this.Controls.Add(this.tabcontrol1);
-            this.Controls.Add(this.panel1);
+            this.Controls.Add(this.playerPanel);
             this.Controls.Add(this.bConfigure);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(2);
-            this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(576, 387);
+            this.MaximumSize = new System.Drawing.Size(576, 600);
             this.MinimumSize = new System.Drawing.Size(576, 387);
             this.Name = "Form1";
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
@@ -702,11 +824,15 @@
             this.Load += new System.EventHandler(this.Form1_Load);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Resize += new System.EventHandler(this.Form1_Resize);
-            this.contextMenuStrip1.ResumeLayout(false);
+            this.trayIconContextMenu.ResumeLayout(false);
             this.tabcontrol1.ResumeLayout(false);
             this.tLog.ResumeLayout(false);
             this.tChannels.ResumeLayout(false);
-            this.tChannels.PerformLayout();
+            this.splitContainer1.Panel1.ResumeLayout(false);
+            this.splitContainer1.Panel2.ResumeLayout(false);
+            this.splitContainer1.Panel2.PerformLayout();
+            this.splitContainer1.ResumeLayout(false);
+            this.channelContextMenu.ResumeLayout(false);
             this.tHistory.ResumeLayout(false);
             this.tAbout.ResumeLayout(false);
             this.tAbout.PerformLayout();
@@ -714,8 +840,8 @@
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pLogoBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.axWindowsMediaPlayer1)).EndInit();
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
+            this.playerPanel.ResumeLayout(false);
+            this.playerPanel.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -735,7 +861,7 @@
         private System.Windows.Forms.TabPage tChannels;
         private System.Windows.Forms.RichTextBox outputbox;
         private System.Windows.Forms.TextBox addressBox;
-        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.ContextMenuStrip trayIconContextMenu;
         private System.Windows.Forms.ToolStripMenuItem restoreToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exitXMTunerToolStripMenuItem;
         private System.Windows.Forms.ComboBox protocolBox;
@@ -768,7 +894,7 @@
         private System.Windows.Forms.Label pLabel5;
         private System.Windows.Forms.Timer pTimer;
         private System.Windows.Forms.Label pLabel6;
-        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Panel playerPanel;
         private System.Windows.Forms.RichTextBox recentlyPlayedBox;
         private System.Windows.Forms.Timer pHoverTimer;
         private System.Windows.Forms.Label pStatusLabel;
@@ -777,6 +903,15 @@
         private System.Windows.Forms.ComboBox typeBox;
         private System.Windows.Forms.LinkLabel linkServer;
         private System.Windows.Forms.Timer timerTest;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.ContextMenuStrip channelContextMenu;
+        private System.Windows.Forms.ToolStripMenuItem uRLBuilderToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem enabledToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem disabledToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem playToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem detailsToolStripMenuItem;
+        private System.Windows.Forms.SplitContainer splitContainer1;
+        private System.Windows.Forms.ListView recentlyPlayedListView;
     }
 }
 
