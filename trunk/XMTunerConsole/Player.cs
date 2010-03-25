@@ -32,7 +32,7 @@ namespace XMTuner
                     pLabel2.Text = "Loading...";
                 }
 
-                panel1.Refresh();
+                playerPanel.Refresh();
             }
             else
             {

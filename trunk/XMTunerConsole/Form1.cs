@@ -693,6 +693,16 @@ namespace XMTuner
         {
             updateChannels();
         }
+
+        private void enabledToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            splitContainer1.Panel2Collapsed = false;
+        }
+
+        private void disabledToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            splitContainer1.Panel2Collapsed = true;
+        }
         #endregion
 
         #region Updater
@@ -735,6 +745,35 @@ namespace XMTuner
             {
                 recentlyPlayedBox.AppendText("Recently Played List Temporarily Not Available\n");
             }
+
+            //Build the ListView version...
+            recentlyPlayedListView.BeginUpdate();
+            recentlyPlayedListView.View = View.Tile;
+            recentlyPlayedListView.Clear();
+            recentlyPlayedListView.Columns.Add("Time");
+            recentlyPlayedListView.Columns.Add("Channel");
+            recentlyPlayedListView.Columns.Add("Song");
+
+            //Image defaultImage = Image.FromStream(Assembly.GetExecutingAssembly().GetManifestResourceStream("XMTuner.xmtuner64.png"));
+            //ImageList imagelist = new ImageList();
+            recentlyPlayedListView.LargeImageList = channelBox.LargeImageList;
+            //imagelist.ImageSize = new Size(30, 30); //new Size(45, 40);
+            //imagelist.Images.Add(defaultImage);
+
+            try
+            {
+                foreach (String entry in self.recentlyPlayed)
+                {
+                    String[] _entry = entry.Split(new Char[] {'-'}, 2);
+                    String[] __entry = _entry[0].Split(new String[] {"M: "}, 2, StringSplitOptions.None);
+                    ListViewItem item = new ListViewItem(new String[] {_entry[1].Trim(), _entry[0].Trim()});
+                    item.ImageIndex = channelBox.FindItemWithText(__entry[1]).ImageIndex;
+                    item.Group = recentlyPlayedListView.Groups[0];
+                    recentlyPlayedListView.Items.Add(item);
+                }
+            }
+            catch (InvalidOperationException) {}
+            recentlyPlayedListView.EndUpdate();
         }
         #endregion
 
