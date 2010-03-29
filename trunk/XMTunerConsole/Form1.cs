@@ -721,44 +721,24 @@ namespace XMTuner
         #region History Tab
         private void updateRecentlyPlayedBox()
         {
+            recentlyPlayedBox.BeginUpdate();
+            recentlyPlayedBox.View = View.Tile;
             recentlyPlayedBox.Clear();
-            recentlyPlayedBox.SelectionFont = new Font(recentlyPlayedBox.SelectionFont, FontStyle.Bold);
-            recentlyPlayedBox.SelectionColor = Color.Blue;
-            recentlyPlayedBox.AppendText("Recently Played:\n");
-
-            recentlyPlayedBox.SelectionColor = Color.Black;
-            recentlyPlayedBox.SelectionFont = new Font(recentlyPlayedBox.SelectionFont, FontStyle.Regular);
-            if (self.recentlyPlayed.Count == 0)
-            {
-                recentlyPlayedBox.AppendText("Nothing yet.. Play a channel...");
-                return;
-            }
-
-            try
-            {
-                foreach (String entry in self.recentlyPlayed)
-                {
-                    recentlyPlayedBox.AppendText(entry + "\n");
-                }
-            }
-            catch (InvalidOperationException)
-            {
-                recentlyPlayedBox.AppendText("Recently Played List Temporarily Not Available\n");
-            }
-
-            //Build the ListView version...
-            recentlyPlayedListView.BeginUpdate();
-            recentlyPlayedListView.View = View.Tile;
-            recentlyPlayedListView.Clear();
-            recentlyPlayedListView.Columns.Add("Time");
-            recentlyPlayedListView.Columns.Add("Channel");
-            recentlyPlayedListView.Columns.Add("Song");
+            recentlyPlayedBox.Columns.Add("Time");
+            recentlyPlayedBox.Columns.Add("Channel");
+            recentlyPlayedBox.Columns.Add("Song");
 
             //Image defaultImage = Image.FromStream(Assembly.GetExecutingAssembly().GetManifestResourceStream("XMTuner.xmtuner64.png"));
             //ImageList imagelist = new ImageList();
-            recentlyPlayedListView.LargeImageList = channelBox.LargeImageList;
+            recentlyPlayedBox.LargeImageList = channelBox.LargeImageList;
             //imagelist.ImageSize = new Size(30, 30); //new Size(45, 40);
             //imagelist.Images.Add(defaultImage);
+
+            if (self.recentlyPlayed.Count == 0)
+            {
+                recentlyPlayedBox.Items.Add("Nothing yet.. Play a channel...");
+                return;
+            }
 
             try
             {
@@ -768,12 +748,12 @@ namespace XMTuner
                     String[] __entry = _entry[0].Split(new String[] {"M: "}, 2, StringSplitOptions.None);
                     ListViewItem item = new ListViewItem(new String[] {_entry[1].Trim(), _entry[0].Trim()});
                     item.ImageIndex = channelBox.FindItemWithText(__entry[1]).ImageIndex;
-                    item.Group = recentlyPlayedListView.Groups[0];
-                    recentlyPlayedListView.Items.Add(item);
+                    item.Group = recentlyPlayedBox.Groups[0];
+                    recentlyPlayedBox.Items.Add(item);
                 }
             }
             catch (InvalidOperationException) {}
-            recentlyPlayedListView.EndUpdate();
+            recentlyPlayedBox.EndUpdate();
         }
         #endregion
 
