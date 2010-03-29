@@ -13,7 +13,7 @@ namespace XMTuner
     class XMTuner
     {
         //Flags
-        protected bool isLive = true;
+        protected bool isLive = false;
 
         //Config options...
         protected String user;

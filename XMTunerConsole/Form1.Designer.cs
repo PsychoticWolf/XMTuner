@@ -65,8 +65,7 @@
             this.protocolBox = new System.Windows.Forms.ComboBox();
             this.txtChannel = new System.Windows.Forms.TextBox();
             this.tHistory = new System.Windows.Forms.TabPage();
-            this.recentlyPlayedListView = new System.Windows.Forms.ListView();
-            this.recentlyPlayedBox = new System.Windows.Forms.RichTextBox();
+            this.recentlyPlayedBox = new System.Windows.Forms.ListView();
             this.tAbout = new System.Windows.Forms.TabPage();
             this.bUpdate = new System.Windows.Forms.Button();
             this.aBuildDate = new System.Windows.Forms.TextBox();
@@ -319,7 +318,7 @@
             this.channelBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.channelBox.ContextMenuStrip = this.channelContextMenu;
             this.channelBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.channelBox.HoverSelection = true;
+            this.channelBox.FullRowSelect = true;
             this.channelBox.Location = new System.Drawing.Point(0, 0);
             this.channelBox.Margin = new System.Windows.Forms.Padding(0);
             this.channelBox.MultiSelect = false;
@@ -457,7 +456,6 @@
             // 
             // tHistory
             // 
-            this.tHistory.Controls.Add(this.recentlyPlayedListView);
             this.tHistory.Controls.Add(this.recentlyPlayedBox);
             this.tHistory.Location = new System.Drawing.Point(4, 22);
             this.tHistory.Name = "tHistory";
@@ -467,42 +465,28 @@
             this.tHistory.Text = "History";
             this.tHistory.UseVisualStyleBackColor = true;
             // 
-            // recentlyPlayedListView
-            // 
-            this.recentlyPlayedListView.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.recentlyPlayedListView.Dock = System.Windows.Forms.DockStyle.Top;
-            this.recentlyPlayedListView.FullRowSelect = true;
-            listViewGroup1.Header = "Recently Played";
-            listViewGroup1.Name = "listViewGroup1";
-            this.recentlyPlayedListView.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
-            listViewGroup1});
-            this.recentlyPlayedListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
-            listViewItem1.Group = listViewGroup1;
-            this.recentlyPlayedListView.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem1});
-            this.recentlyPlayedListView.Location = new System.Drawing.Point(3, 3);
-            this.recentlyPlayedListView.Margin = new System.Windows.Forms.Padding(0);
-            this.recentlyPlayedListView.MultiSelect = false;
-            this.recentlyPlayedListView.Name = "recentlyPlayedListView";
-            this.recentlyPlayedListView.Size = new System.Drawing.Size(546, 150);
-            this.recentlyPlayedListView.TabIndex = 7;
-            this.recentlyPlayedListView.TileSize = new System.Drawing.Size(507, 30);
-            this.recentlyPlayedListView.UseCompatibleStateImageBehavior = false;
-            this.recentlyPlayedListView.View = System.Windows.Forms.View.Tile;
-            // 
             // recentlyPlayedBox
             // 
-            this.recentlyPlayedBox.BackColor = System.Drawing.Color.White;
-            this.recentlyPlayedBox.Cursor = System.Windows.Forms.Cursors.IBeam;
-            this.recentlyPlayedBox.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.recentlyPlayedBox.Location = new System.Drawing.Point(3, 153);
+            this.recentlyPlayedBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.recentlyPlayedBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.recentlyPlayedBox.FullRowSelect = true;
+            listViewGroup1.Header = "Recently Played";
+            listViewGroup1.Name = "listViewGroup1";
+            this.recentlyPlayedBox.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
+            listViewGroup1});
+            this.recentlyPlayedBox.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
+            listViewItem1.Group = listViewGroup1;
+            this.recentlyPlayedBox.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
+            listViewItem1});
+            this.recentlyPlayedBox.Location = new System.Drawing.Point(3, 3);
             this.recentlyPlayedBox.Margin = new System.Windows.Forms.Padding(0);
+            this.recentlyPlayedBox.MultiSelect = false;
             this.recentlyPlayedBox.Name = "recentlyPlayedBox";
-            this.recentlyPlayedBox.ReadOnly = true;
-            this.recentlyPlayedBox.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
-            this.recentlyPlayedBox.Size = new System.Drawing.Size(546, 55);
-            this.recentlyPlayedBox.TabIndex = 6;
-            this.recentlyPlayedBox.Text = "";
+            this.recentlyPlayedBox.Size = new System.Drawing.Size(546, 205);
+            this.recentlyPlayedBox.TabIndex = 7;
+            this.recentlyPlayedBox.TileSize = new System.Drawing.Size(507, 30);
+            this.recentlyPlayedBox.UseCompatibleStateImageBehavior = false;
+            this.recentlyPlayedBox.View = System.Windows.Forms.View.Tile;
             // 
             // tAbout
             // 
@@ -895,7 +879,6 @@
         private System.Windows.Forms.Timer pTimer;
         private System.Windows.Forms.Label pLabel6;
         private System.Windows.Forms.Panel playerPanel;
-        private System.Windows.Forms.RichTextBox recentlyPlayedBox;
         private System.Windows.Forms.Timer pHoverTimer;
         private System.Windows.Forms.Label pStatusLabel;
         private System.Windows.Forms.Timer timerCB;
@@ -911,7 +894,7 @@
         private System.Windows.Forms.ToolStripMenuItem playToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem detailsToolStripMenuItem;
         private System.Windows.Forms.SplitContainer splitContainer1;
-        private System.Windows.Forms.ListView recentlyPlayedListView;
+        private System.Windows.Forms.ListView recentlyPlayedBox;
     }
 }
 
