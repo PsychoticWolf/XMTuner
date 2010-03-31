@@ -154,6 +154,18 @@ namespace XMTuner
                 }
         }
 
+        public Boolean getConfigItemAsBoolean(NameValueCollection config, String item)
+        {
+            if (config.Get(item) == null)
+            {
+                return Convert.ToBoolean(defaultConfig[item]);
+            }
+            else
+            {
+                return Convert.ToBoolean(config[item]);
+            }
+        }
+
         public static String version
         {
             get

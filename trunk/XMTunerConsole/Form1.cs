@@ -313,20 +313,19 @@ namespace XMTuner
         private void setConfig(configMan cfg, NameValueCollection config)
         {
             ip = configMan.getLocalIP();
-            username = cfg.getConfigItem(config, "username");
-            password = cfg.getConfigItem(config, "password");
-            port = cfg.getConfigItem(config, "port");
+            username = config["username"];
+            password = config["password"];
+            port = config["port"];
             bitrate = cfg.getConfigItem(config, "bitrate");
-            autologin = Convert.ToBoolean(cfg.getConfigItem(config, "autologin"));
-            isMMS = Convert.ToBoolean(cfg.getConfigItem(config, "isMMS"));
-            tversityHost = cfg.getConfigItem(config, "Tversity");
-            hostname = cfg.getConfigItem(config, "hostname");
-            network = cfg.getConfigItem(config, "network");
-            showNotification = Convert.ToBoolean(config["showNotice"]);
-            onTop = Convert.ToBoolean(config["alwaysOnTop"]);
-            showURLBuilder = Convert.ToBoolean(config["showURLBuilder"]);
+            autologin = cfg.getConfigItemAsBoolean(config, "autologin");
+            isMMS = cfg.getConfigItemAsBoolean(config, "isMMS");
+            tversityHost = config["Tversity"];
+            hostname = config["hostname"];
+            network = config["network"];
+            showNotification = cfg.getConfigItemAsBoolean(config, "showNotice");
+            onTop = cfg.getConfigItemAsBoolean(config, "alwaysOnTop");
+            showURLBuilder = cfg.getConfigItemAsBoolean(config, "showURLBuilder");
             keepHistory = Convert.ToInt32(config["numRecentHistory"]);
-
         }
         #endregion
 
