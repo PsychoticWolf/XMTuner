@@ -52,21 +52,21 @@ namespace XMTuner
             aVersion.Text = configMan.version;
             outputbox.AppendText("XMTuner "+configMan.version+"\n");
 
-            Boolean serviceRunning = false; //XXX Remove me.
-            if (autologin && serviceRunning)
-            {
-                output("Autologin skipped - Service already running\n", "error");
-            }
-
-            if (refreshConfig() && autologin && !serviceRunning)
-            {
-                bStart_Click(sender, e);
-            }
+            //Load config...
+            refreshConfig();
             lblClock.Text = "0:00:00";
 #if !DEBUG
             Updater update = new Updater(outputbox);
 #endif
+        }
 
+        private void Form1_Shown(object sender, EventArgs e)
+        {
+            //If we have a configuration, and they want autologin, do it now.
+            if (isConfigurationLoaded && autologin)
+            {
+                start();
+            }
         }
 
         private void Form1_FormClosing(Object sender, FormClosingEventArgs e)
@@ -274,6 +274,14 @@ namespace XMTuner
                 }
             }
 
+            //Set alwaysOnTop and URL Builder settings...
+            this.TopMost = onTop; //Make XMTuner always on top
+            //Hide URL Builder on Top
+            if (showURLBuilder == false)
+            {
+                splitContainer1.Panel2Collapsed = true;
+            }
+
             //Messages & Item Twiddling
             if (!serverRunning)
             {
@@ -292,6 +300,8 @@ namespace XMTuner
 
         private void updateRunningConfig(NameValueCollection config, List<String> updatedvalues)
         {
+            //alwaysOnTop, showURLBuilder, showNotice (refreshed directly as they're Form1 elements)
+
             if (xmServer == null || self == null || loggedIn == false) { return; }
             //username, password, port [, network] = require restart
             if (updatedvalues.Contains("username") || updatedvalues.Contains("password") ||
@@ -300,6 +310,7 @@ namespace XMTuner
                 output("Your configuration update requires XMTuner to restart the server to take effect. Restarting now...", "info");
                 restart();
             }
+            //numRecentHistory is always dynamically updated it fetches getConfigItem() itself...
 
             //bitrate, isMMS, hostname, TVersity = should be dynamically applied
             if (updatedvalues.Contains("bitrate") || updatedvalues.Contains("ismms") ||

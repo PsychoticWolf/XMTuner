@@ -142,6 +142,12 @@ namespace XMTuner
             }
         }
 
+        public String getConfigItem(String item)
+        {
+            getConfig(true);
+            return getConfigItem(config, item);
+        }
+
         public String getConfigItem(NameValueCollection config, String item)
         {
                 if (config.Get(item) == null)

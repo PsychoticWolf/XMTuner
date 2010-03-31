@@ -657,6 +657,7 @@ namespace XMTuner
 
         protected void setRecentlyPlayed()
         {
+            int numItems = Convert.ToInt32(new configMan().getConfigItem("numRecentHistory"));
             XMChannel npChannel = Find(lastChannelPlayed);
             if (npChannel.num == 0 || npChannel.song == null || npChannel.song.Equals(""))
             { 
@@ -674,9 +675,9 @@ namespace XMTuner
             }
 
             recentlyPlayed.Insert(0, currentTime + ": " + entry);
-            if (recentlyPlayed.Count > 25)
+            if (recentlyPlayed.Count > numItems)
             {
-                recentlyPlayed.RemoveRange(25, recentlyPlayed.Count - 25);
+                recentlyPlayed.RemoveRange(numItems, recentlyPlayed.Count - numItems);
             }
         }
 

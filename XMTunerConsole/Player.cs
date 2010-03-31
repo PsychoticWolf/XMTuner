@@ -190,7 +190,7 @@ namespace XMTuner
 
         private void doNotification()
         {
-            if (playerNum == 0) { return; } //Bail early if we have no work to do.
+            if (playerNum == 0 || !showNotification) { return; } //Bail early if we have no work to do.
             XMChannel npChannel = self.Find(playerNum);
             String title = npChannel.ToSimpleString();
             String nptext = npChannel.artist + " - " + npChannel.song;
