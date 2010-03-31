@@ -23,6 +23,10 @@ namespace XMTuner
         String bitrate;
         bool autologin = false;
         bool isMMS = false;
+        bool showNotification;
+        bool onTop;
+        bool showURLBuilder;
+        int keepHistory;
         String tversityHost;
         String hostname;
 
@@ -318,6 +322,10 @@ namespace XMTuner
             tversityHost = cfg.getConfigItem(config, "Tversity");
             hostname = cfg.getConfigItem(config, "hostname");
             network = cfg.getConfigItem(config, "network");
+            showNotification = Convert.ToBoolean(config["showNotice"]);
+            onTop = Convert.ToBoolean(config["alwaysOnTop"]);
+            showURLBuilder = Convert.ToBoolean(config["showURLBuilder"]);
+            keepHistory = Convert.ToInt32(config["numRecentHistory"]);
 
         }
         #endregion

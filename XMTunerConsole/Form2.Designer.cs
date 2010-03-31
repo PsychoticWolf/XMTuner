@@ -67,14 +67,14 @@
             this.txtTversity = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
+            this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.numRecent = new System.Windows.Forms.NumericUpDown();
+            this.label10 = new System.Windows.Forms.Label();
+            this.chkShowURL = new System.Windows.Forms.CheckBox();
+            this.chkOnTop = new System.Windows.Forms.CheckBox();
+            this.chkShowNote = new System.Windows.Forms.CheckBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
-            this.tabPage4 = new System.Windows.Forms.TabPage();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.checkBox2 = new System.Windows.Forms.CheckBox();
-            this.checkBox3 = new System.Windows.Forms.CheckBox();
-            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
-            this.label10 = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -86,7 +86,7 @@
             this.groupBox1.SuspendLayout();
             this.tversityBox2.SuspendLayout();
             this.tabPage4.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numRecent)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -499,28 +499,14 @@
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = "Details";
             // 
-            // toolTip1
-            // 
-            this.toolTip1.AutoPopDelay = 10000;
-            this.toolTip1.InitialDelay = 500;
-            this.toolTip1.IsBalloon = true;
-            this.toolTip1.ReshowDelay = 100;
-            this.toolTip1.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
-            this.toolTip1.ToolTipTitle = "XMTuner Help";
-            // 
-            // backgroundWorker1
-            // 
-            this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
-            this.backgroundWorker1.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker1_RunWorkerCompleted);
-            // 
             // tabPage4
             // 
             this.tabPage4.BackColor = System.Drawing.SystemColors.Control;
-            this.tabPage4.Controls.Add(this.numericUpDown1);
+            this.tabPage4.Controls.Add(this.numRecent);
             this.tabPage4.Controls.Add(this.label10);
-            this.tabPage4.Controls.Add(this.checkBox3);
-            this.tabPage4.Controls.Add(this.checkBox2);
-            this.tabPage4.Controls.Add(this.checkBox1);
+            this.tabPage4.Controls.Add(this.chkShowURL);
+            this.tabPage4.Controls.Add(this.chkOnTop);
+            this.tabPage4.Controls.Add(this.chkShowNote);
             this.tabPage4.Location = new System.Drawing.Point(4, 22);
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
@@ -528,47 +514,13 @@
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "UI";
             // 
-            // checkBox1
+            // numRecent
             // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Checked = true;
-            this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox1.Location = new System.Drawing.Point(7, 16);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(192, 17);
-            this.checkBox1.TabIndex = 0;
-            this.checkBox1.Text = "Show Notification on Song Change";
-            this.checkBox1.UseVisualStyleBackColor = true;
-            // 
-            // checkBox2
-            // 
-            this.checkBox2.AutoSize = true;
-            this.checkBox2.Location = new System.Drawing.Point(7, 40);
-            this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(229, 17);
-            this.checkBox2.TabIndex = 1;
-            this.checkBox2.Text = "Keep XMTuner on top of other applications";
-            this.checkBox2.UseVisualStyleBackColor = true;
-            // 
-            // checkBox3
-            // 
-            this.checkBox3.AutoSize = true;
-            this.checkBox3.Checked = true;
-            this.checkBox3.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox3.Location = new System.Drawing.Point(7, 64);
-            this.checkBox3.Name = "checkBox3";
-            this.checkBox3.Size = new System.Drawing.Size(163, 17);
-            this.checkBox3.TabIndex = 2;
-            this.checkBox3.Text = "Show URL Builder on startup";
-            this.checkBox3.UseVisualStyleBackColor = true;
-            // 
-            // numericUpDown1
-            // 
-            this.numericUpDown1.Location = new System.Drawing.Point(40, 87);
-            this.numericUpDown1.Name = "numericUpDown1";
-            this.numericUpDown1.Size = new System.Drawing.Size(45, 20);
-            this.numericUpDown1.TabIndex = 3;
-            this.numericUpDown1.Value = new decimal(new int[] {
+            this.numRecent.Location = new System.Drawing.Point(40, 87);
+            this.numRecent.Name = "numRecent";
+            this.numRecent.Size = new System.Drawing.Size(45, 20);
+            this.numRecent.TabIndex = 3;
+            this.numRecent.Value = new decimal(new int[] {
             25,
             0,
             0,
@@ -582,6 +534,54 @@
             this.label10.Size = new System.Drawing.Size(238, 13);
             this.label10.TabIndex = 4;
             this.label10.Text = "Keep                   entries in recently played history";
+            // 
+            // chkShowURL
+            // 
+            this.chkShowURL.AutoSize = true;
+            this.chkShowURL.Checked = true;
+            this.chkShowURL.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkShowURL.Location = new System.Drawing.Point(7, 64);
+            this.chkShowURL.Name = "chkShowURL";
+            this.chkShowURL.Size = new System.Drawing.Size(163, 17);
+            this.chkShowURL.TabIndex = 2;
+            this.chkShowURL.Text = "Show URL Builder on startup";
+            this.chkShowURL.UseVisualStyleBackColor = true;
+            // 
+            // chkOnTop
+            // 
+            this.chkOnTop.AutoSize = true;
+            this.chkOnTop.Location = new System.Drawing.Point(7, 40);
+            this.chkOnTop.Name = "chkOnTop";
+            this.chkOnTop.Size = new System.Drawing.Size(229, 17);
+            this.chkOnTop.TabIndex = 1;
+            this.chkOnTop.Text = "Keep XMTuner on top of other applications";
+            this.chkOnTop.UseVisualStyleBackColor = true;
+            // 
+            // chkShowNote
+            // 
+            this.chkShowNote.AutoSize = true;
+            this.chkShowNote.Checked = true;
+            this.chkShowNote.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkShowNote.Location = new System.Drawing.Point(7, 16);
+            this.chkShowNote.Name = "chkShowNote";
+            this.chkShowNote.Size = new System.Drawing.Size(192, 17);
+            this.chkShowNote.TabIndex = 0;
+            this.chkShowNote.Text = "Show Notification on Song Change";
+            this.chkShowNote.UseVisualStyleBackColor = true;
+            // 
+            // toolTip1
+            // 
+            this.toolTip1.AutoPopDelay = 10000;
+            this.toolTip1.InitialDelay = 500;
+            this.toolTip1.IsBalloon = true;
+            this.toolTip1.ReshowDelay = 100;
+            this.toolTip1.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
+            this.toolTip1.ToolTipTitle = "XMTuner Help";
+            // 
+            // backgroundWorker1
+            // 
+            this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
+            this.backgroundWorker1.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker1_RunWorkerCompleted);
             // 
             // Form2
             // 
@@ -611,7 +611,7 @@
             this.tversityBox2.PerformLayout();
             this.tabPage4.ResumeLayout(false);
             this.tabPage4.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numRecent)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -658,10 +658,10 @@
         private System.Windows.Forms.ToolTip toolTip1;
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
         private System.Windows.Forms.TabPage tabPage4;
-        private System.Windows.Forms.NumericUpDown numericUpDown1;
-        private System.Windows.Forms.CheckBox checkBox3;
-        private System.Windows.Forms.CheckBox checkBox2;
-        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.NumericUpDown numRecent;
+        private System.Windows.Forms.CheckBox chkShowURL;
+        private System.Windows.Forms.CheckBox chkOnTop;
+        private System.Windows.Forms.CheckBox chkShowNote;
         private System.Windows.Forms.Label label10;
     }
 }

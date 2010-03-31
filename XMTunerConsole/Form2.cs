@@ -60,6 +60,10 @@ namespace XMTuner
             chkBitrate.Checked = Convert.ToBoolean(config["bitrate"]);
             chkAutologin.Checked = Convert.ToBoolean(config["autologin"]);
             chkMMS.Checked = Convert.ToBoolean(config["isMMS"]);
+            chkShowNote.Checked = Convert.ToBoolean(config["showNotice"]);
+            chkOnTop.Checked = Convert.ToBoolean(config["alwaysOnTop"]);
+            chkShowURL.Checked = Convert.ToBoolean(config["showURLBuilder"]);
+            numRecent.Value = Convert.ToInt32(config["numRecentHistory"]);
             txtTversity.Text = config["Tversity"];
             txtHostname.Text = config["hostname"];
             boxNetwork.SelectedItem = config["network"];
@@ -81,7 +85,10 @@ namespace XMTuner
             config.Add("Tversity", txtTversity.Text);
             config.Add("hostname", txtHostname.Text);
             config.Add("network", boxNetwork.SelectedItem.ToString());
-
+            config.Add("showNotice", chkShowNote.Checked.ToString());
+            config.Add("alwaysOnTop", chkOnTop.Checked.ToString());
+            config.Add("showURLBuilder", chkShowURL.Checked.ToString());
+            config.Add("numRecentHistory", numRecent.Value.ToString());
             configuration.writeConfig(config);
         }
 
