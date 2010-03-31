@@ -53,6 +53,10 @@ namespace XMTuner
                 defaultConfig.Add("TVersity", "");
                 defaultConfig.Add("hostname", "");
                 defaultConfig.Add("network", "XM");
+                defaultConfig.Add("showNotice", true.ToString());
+                defaultConfig.Add("alwaysOnTop", false.ToString());
+                defaultConfig.Add("showURLBuilder", true.ToString());
+                defaultConfig.Add("numRecentHistory", "25");
                 return defaultConfig;
             }
         }
