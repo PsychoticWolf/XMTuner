@@ -141,13 +141,15 @@ namespace XMTuner
                 pLabel5.Text = status;
                 if (status.Equals("") == false)
                 {
-                    output("Player: ("+axWindowsMediaPlayer1.playState+") " + status, "player");
+                    output("Player (Status Change): " + status, "player");
                 }
             }
         }
 
         private void axWindowsMediaPlayer1_PlayStateChange(object sender, AxWMPLib._WMPOCXEvents_PlayStateChangeEvent e)
         {
+            output("Player (State Change): " + axWindowsMediaPlayer1.playState, "player");
+
             // If Windows Media Player is in the playing state, enable the data update timer. 
             if (axWindowsMediaPlayer1.playState == WMPLib.WMPPlayState.wmppsPlaying)
             {
@@ -160,7 +162,8 @@ namespace XMTuner
                 pTimer.Enabled = false;
             }
 
-            if (axWindowsMediaPlayer1.playState == WMPLib.WMPPlayState.wmppsStopped)
+            if (axWindowsMediaPlayer1.playState == WMPLib.WMPPlayState.wmppsStopped ||
+                axWindowsMediaPlayer1.playState == WMPLib.WMPPlayState.wmppsReady)
             {
                 axWindowsMediaPlayer1.enableContextMenu = false;
                 //Tell the app we're done playing so history stops being built.
@@ -182,7 +185,7 @@ namespace XMTuner
             {
                 return;
             }
-            String dummy = pLabel2.Text;
+            self.lastChannelPlayed = playerNum;
             updateRecentlyPlayedBox();
             doNotification();
             updateChannels();
@@ -259,6 +262,14 @@ namespace XMTuner
 
             // Display the error description.
             output(errCode + " " +errDesc, "error");
+
+            //Handle things like stopping and trying to retune...
+            axWindowsMediaPlayer1.Ctlcontrols.stop();
+            pLabel2.Text = "Error!";
+            pLabel3.Text = "Attempting to retune channel...";
+            pLabel4.Text = errDesc;
+            output("Attempting to retune to channel...", "info");
+            play(playerNum);
         }
 
         #endregion
