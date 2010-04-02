@@ -6,9 +6,9 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("XMTunerServiceControl")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Control application for the XMTuner Service")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("PCFIRE")]
 [assembly: AssemblyProduct("XMTunerServiceControl")]
 [assembly: AssemblyCopyright("Copyright ©  2010")]
 [assembly: AssemblyTrademark("")]
