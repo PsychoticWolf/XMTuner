@@ -13,7 +13,7 @@ namespace XMTuner
     class XMTuner
     {
         //Flags
-        protected bool isLive = false;
+        protected bool isLive = true;
 
         //Config options...
         protected String user;
@@ -33,6 +33,7 @@ namespace XMTuner
         public List<String> recentlyPlayed = new List<String>();
         Boolean useProgramGuide = true;
         public DateTime lastLoggedIn;
+        public int numItems = Convert.ToInt32(new configMan().getConfigItem("numRecentHistory"));
 
         protected virtual String baseurl
         {
@@ -332,7 +333,7 @@ namespace XMTuner
         {
             if (isLoggedIn == false)
             {
-                output("XM Session Timed-out. Reconnecting...", "info");
+                output(network.ToUpper()+" Session Timed-out. Reconnecting...", "info");
                 relogin();
                 return;
             }
@@ -657,7 +658,6 @@ namespace XMTuner
 
         protected void setRecentlyPlayed()
         {
-            int numItems = Convert.ToInt32(new configMan().getConfigItem("numRecentHistory"));
             XMChannel npChannel = Find(lastChannelPlayed);
             if (npChannel.num == 0 || npChannel.song == null || npChannel.song.Equals(""))
             { 

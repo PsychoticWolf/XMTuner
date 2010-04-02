@@ -26,14 +26,12 @@ namespace XMTuner
         bool showNotification;
         bool onTop;
         bool showURLBuilder;
-        int keepHistory;
+        int numRecentHistory;
         String tversityHost;
         String hostname;
 
         int i = 0;
-        double sec = 0;
-        double minute = 0;
-        double hour = 0;
+
         String runTime = "";
         String ip = "";
 
@@ -44,6 +42,9 @@ namespace XMTuner
         {
             InitializeComponent();
             initPlayer();
+
+            Microsoft.Win32.SystemEvents.PowerModeChanged += new
+            Microsoft.Win32.PowerModeChangedEventHandler(powerModeChanged);    
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -117,6 +118,7 @@ namespace XMTuner
             }
             viewServerToolStripMenuItem.Enabled = true;
             loginToolStripMenuItem.Enabled = false;
+            timer1.Enabled = true;
             timer2.Enabled = true;
             linkServer.Text = "Server is Running...";
             linkServer.Enabled = true;
@@ -138,6 +140,9 @@ namespace XMTuner
 
         private void timer1_Tick(object sender, EventArgs e)
         {
+            double sec = 0;
+            double minute = 0;
+            double hour = 0;
             if (serverRunning)
             {
                 i++;
@@ -180,8 +185,10 @@ namespace XMTuner
             shutdownPlayer();
             xmServer.stop();
             serverRunning = false;
-            linkServer.Text = "Server is Stopped...";
+            linkServer.Text = "Server is Stopped";
+            output("Server Uptime was "+runTime, "info");
             linkServer.Enabled = false;
+            timer1.Enabled = false;
             lblClock.Text = "0:00:00";
             i = 0;
             timer2.Enabled = false;
@@ -310,7 +317,8 @@ namespace XMTuner
                 output("Your configuration update requires XMTuner to restart the server to take effect. Restarting now...", "info");
                 restart();
             }
-            //numRecentHistory is always dynamically updated it fetches getConfigItem() itself...
+            //numRecentHistory
+            self.numItems = numRecentHistory;
 
             //bitrate, isMMS, hostname, TVersity = should be dynamically applied
             if (updatedvalues.Contains("bitrate") || updatedvalues.Contains("ismms") ||
@@ -336,7 +344,7 @@ namespace XMTuner
             showNotification = cfg.getConfigItemAsBoolean(config, "showNotice");
             onTop = cfg.getConfigItemAsBoolean(config, "alwaysOnTop");
             showURLBuilder = cfg.getConfigItemAsBoolean(config, "showURLBuilder");
-            keepHistory = Convert.ToInt32(config["numRecentHistory"]);
+            numRecentHistory = Convert.ToInt32(config["numRecentHistory"]);
         }
         #endregion
 
@@ -778,6 +786,23 @@ namespace XMTuner
         private void timerTest_Tick(object sender, EventArgs e)
         {
             self.doTest();
+        }
+
+        private void powerModeChanged(System.Object sender, Microsoft.Win32.PowerModeChangedEventArgs e)
+        {
+            //Handle the PowerModes we care about... (Resume, Suspend)
+            if (e.Mode == Microsoft.Win32.PowerModes.Suspend)
+            {
+                //We're going to sleep.. Stop.
+                output("System is going to sleep, stopping server.", "info");
+                stop();
+            }
+            else if (e.Mode == Microsoft.Win32.PowerModes.Resume)
+            {
+                //We're waking up, resume server.
+                output("System has resumed, starting server.", "info");
+                start();
+            }
         }
     }
 }
