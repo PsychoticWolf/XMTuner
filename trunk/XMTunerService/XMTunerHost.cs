@@ -7,7 +7,7 @@ using System.Timers;
 
 namespace XMTuner
 {
-    public class XMReader
+    public class XMTunerHost
     {
         
         XMTuner self;
@@ -22,7 +22,7 @@ namespace XMTuner
         public int i = 0;
         System.Timers.Timer theTimer = new System.Timers.Timer(30000);
 
-        public XMReader()
+        public XMTunerHost()
         {
             logging = new Log();
         }
@@ -82,11 +82,6 @@ namespace XMTuner
                 logging.log(i);
 
             }
-        }
-
-        public String test()
-        {
-            return "Test reached";
         }
 
         private bool refreshConfig()
