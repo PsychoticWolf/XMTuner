@@ -13,27 +13,33 @@ namespace XMTuner
     class XMTuner
     {
         //Flags
-        protected bool isLive = false;
+        protected bool isLive = true;
 
         //Config options...
         protected String user;
         protected String password;
+        public String network = "XM";
+        public int numItems = Convert.ToInt32(new configMan().getConfigItem("numRecentHistory"));
 
-        protected List<XMChannel> channels = new List<XMChannel>();
+        //Objects
         Log log;
         public CacheManager cache;
         protected String cookies;
-        public String network = "XM";
-        public int lastChannelPlayed;
-        public bool isLoggedIn;
+        protected List<XMChannel> channels = new List<XMChannel>();
+        public List<String> recentlyPlayed = new List<String>();
+
+        //Runtime Flags
+        public Boolean isLoggedIn;
         public Boolean loadedExtendedChannelData = false;
+        protected Boolean firstLogin = false;
         Boolean loadedChannelMetadataCache = false;
         Boolean isProgramDataCurrent = false;
-        protected int cookieCount = 0;
-        public List<String> recentlyPlayed = new List<String>();
         Boolean useProgramGuide = true;
+
+        //General Globals
+        protected int cookieCount = 0;
+        public int lastChannelPlayed;
         public DateTime lastLoggedIn;
-        public int numItems = Convert.ToInt32(new configMan().getConfigItem("numRecentHistory"));
         int attempts = 1;
         System.Timers.Timer timer;
 
@@ -138,6 +144,13 @@ namespace XMTuner
                     else
                     {
                         output("Logged in as " + user, "info");
+                        /* For the purposes of quickLogin, we want to just do the actual login step
+                           and let the normal data rebuilding occur incrementally on its own.*/
+                        if (firstLogin == true)
+                        {
+                            isLoggedIn = true;
+                            return true;
+                        }
                         Boolean cd = loadChannelData();
                         if (cd)
                         {
@@ -169,6 +182,10 @@ namespace XMTuner
                 loginResult = false;
             }
             loginURL.close();
+            if (loginResult == true)
+            {
+                firstLogin = true;
+            }
             return loginResult;
         }
 
@@ -182,12 +199,22 @@ namespace XMTuner
             isProgramDataCurrent = false;
             lastChannelPlayed = 0;
             isLoggedIn = false;
+            firstLogin = false;
         }
 
         private void relogin()
         {
             logout();
             login();
+        }
+
+        private void reloginQuick()
+        {
+            cookieCount = 0;
+            cookies = null;
+            isLoggedIn = false;
+            login();
+            output("Relogin Completed.", "info");
         }
 
         private Boolean isChannelDataCurrent()
@@ -375,7 +402,7 @@ namespace XMTuner
             if (isLoggedIn == false)
             {
                 output(network.ToUpper()+" Session Timed-out. Reconnecting...", "info");
-                relogin();
+                reloginQuick();
                 return;
             }
 

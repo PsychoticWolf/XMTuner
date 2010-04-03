@@ -104,7 +104,7 @@ namespace XMTuner
 
             int responseCode = loginURL.getStatus();
             output("Server Response: " + responseCode.ToString(), "debug");
-            output("Server Response: " + loginURL.getStatusDescription(), "debug")
+            output("Server Response: " + loginURL.getStatusDescription(), "debug");
 
             if (loginURL.getStatus() > 0 && loginURL.getStatus() < 400)
             {
@@ -125,6 +125,13 @@ namespace XMTuner
                     else
                     {
                         output("Logged in as " + user, "info");
+                        /* For the purposes of quickLogin, we want to just do the actual login step
+                           and let the normal data rebuilding occur incrementally on its own.*/
+                        if (firstLogin == true)
+                        {
+                            isLoggedIn = true;
+                            return true;
+                        }
                         Boolean cd = loadChannelData();
                         Boolean ecd = false;
                         if (cd)
