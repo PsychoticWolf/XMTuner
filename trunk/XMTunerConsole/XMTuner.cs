@@ -13,7 +13,7 @@ namespace XMTuner
     class XMTuner
     {
         //Flags
-        protected bool isLive = true;
+        protected bool isLive = false;
 
         //Config options...
         protected String user;
@@ -34,6 +34,8 @@ namespace XMTuner
         Boolean useProgramGuide = true;
         public DateTime lastLoggedIn;
         public int numItems = Convert.ToInt32(new configMan().getConfigItem("numRecentHistory"));
+        int attempts = 1;
+        System.Timers.Timer timer;
 
         protected virtual String baseurl
         {
@@ -57,12 +59,46 @@ namespace XMTuner
             isLive = true;
 #endif
             if (!isLive) useProgramGuide = false;
-            login();
-          
+            handleLogin(login());
+     
+        }
+        private void handleLogin(Boolean result)
+        {
+            int maxattempts = 5;
+            int timeout = 5000;
+            if (Form1.isService)
+            {
+                maxattempts = -1;
+                timeout = 30000;
+            }
+
+            if (result == false)
+            {
+                if (maxattempts != -1 && attempts >= maxattempts)
+                {
+                    output("Login attempts exhausted, giving up...", "error");
+                    attempts = 1;
+                    return;
+                }
+                attempts++;
+                output("Waiting to retry login... (Attempt " + attempts + " of 5)", "info");
+                timer = new System.Timers.Timer(timeout);
+                timer.Elapsed += new System.Timers.ElapsedEventHandler(OnTimer);
+                timer.AutoReset = false;
+                timer.Enabled = true;
+                return;
+            }
+            attempts = 1;
         }
 
-        protected virtual void login()
+        private void OnTimer(object source, System.Timers.ElapsedEventArgs e)
         {
+            handleLogin(login());
+        }
+
+        protected virtual Boolean login()
+        {
+            Boolean loginResult = true;
             output("Logging into XM Radio Online", "info");
 
             String XMURL;
@@ -83,7 +119,8 @@ namespace XMTuner
 
             int responseCode = loginURL.getStatus();
             output("Server Response: " + responseCode.ToString(), "debug");
-            
+            output("Server Response: " + loginURL.getStatusDescription(), "debug");
+
             if (loginURL.getStatus() > 0 && loginURL.getStatus() < 400)
             {
                 cookies = setCookies(loginURL.getCookies());
@@ -96,6 +133,7 @@ namespace XMTuner
                     if (cookieCount <= 1)
                     {
                         output("Login failed: Bad Username or Password", "error");
+                        loginResult = false;
                     }
                     else
                     {
@@ -118,6 +156,7 @@ namespace XMTuner
                             //If we don't have chanData, consider ourselves not-logged-in
                             isLoggedIn = false;
                             output("Login failed: Unable to retrieve channel data.", "error");
+                            loginResult = false;
                         }
 
                     }
@@ -126,9 +165,11 @@ namespace XMTuner
             }
             else 
             {
-                output("Login Failed: " + loginURL.getStatus(), "error"); 
+                output("Login Failed: " + loginURL.getStatus(), "error");
+                loginResult = false;
             }
             loginURL.close();
+            return loginResult;
         }
 
         private void logout()

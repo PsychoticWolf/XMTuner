@@ -27,8 +27,9 @@ namespace XMTuner
         {
         }
 
-        protected override void login()
+        protected override Boolean login()
         {
+            Boolean loginResult = true;
             output("Logging into Sirius Internet Radio", "info");
 
             //Prefetch
@@ -78,6 +79,7 @@ namespace XMTuner
             catch (ArgumentOutOfRangeException)
             {
                 output("Failed to get Sirius captcha.", "error");
+                return false;
             }
 
 
@@ -102,6 +104,7 @@ namespace XMTuner
 
             int responseCode = loginURL.getStatus();
             output("Server Response: " + responseCode.ToString(), "debug");
+            output("Server Response: " + loginURL.getStatusDescription(), "debug")
 
             if (loginURL.getStatus() > 0 && loginURL.getStatus() < 400)
             {
@@ -117,6 +120,7 @@ namespace XMTuner
                     if (cookieCount <= 12)
                     {
                         output("Login failed: Bad Username or Password", "error");
+                        loginResult = false;
                     }
                     else
                     {
@@ -145,6 +149,7 @@ namespace XMTuner
                             //If we don't have [complete] chanData, consider ourselves not-logged-in
                             isLoggedIn = false;
                             output("Login failed: Unable to retrieve channel data.", "error");
+                            loginResult = false;
                         }
 
                     }
@@ -154,8 +159,10 @@ namespace XMTuner
             else
             {
                 output("Login Failed: " + loginURL.getStatus(), "error");
+                loginResult = false;
             }
             loginURL.close();
+            return loginResult;
         }
 
         private String getMD5Hash(string input)

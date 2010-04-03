@@ -100,6 +100,15 @@ namespace XMTuner
             return statusCode;
         }
 
+        public String getStatusDescription()
+        {
+            if (TheReply == null)
+            {
+                return "Unknown Error";
+            }
+            return TheReply.StatusDescription;
+        }
+
         public String response()
         {
             if (TheReply == null)
