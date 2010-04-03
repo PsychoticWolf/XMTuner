@@ -27,6 +27,18 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_3FD0F3FD56CBE927FD5190ED915391D7"
+        "OwnerKey" = "8:_A59B04F212F8CA41955FE45A2824BA37"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_3FD0F3FD56CBE927FD5190ED915391D7"
+        "OwnerKey" = "8:_732B0E6386A04A43B50C7F48502BD92D"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_5DBAF8F0697F4B149EE38E9DFA613118"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -45,19 +57,7 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_B87EBD7109313EEF0D202938552B9D68"
-        "OwnerKey" = "8:_BF62E11121DA63162ECAEA666B0F428B"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_B87EBD7109313EEF0D202938552B9D68"
-        "OwnerKey" = "8:_732B0E6386A04A43B50C7F48502BD92D"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_BF62E11121DA63162ECAEA666B0F428B"
+        "MsmKey" = "8:_A59B04F212F8CA41955FE45A2824BA37"
         "OwnerKey" = "8:_732B0E6386A04A43B50C7F48502BD92D"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -76,13 +76,13 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_BF62E11121DA63162ECAEA666B0F428B"
+        "OwnerKey" = "8:_A59B04F212F8CA41955FE45A2824BA37"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_B87EBD7109313EEF0D202938552B9D68"
+        "OwnerKey" = "8:_3FD0F3FD56CBE927FD5190ED915391D7"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -105,7 +105,7 @@
         "DisplayName" = "8:Debug"
         "IsDebugOnly" = "11:TRUE"
         "IsReleaseOnly" = "11:FALSE"
-        "OutputFilename" = "8:Debug\\XMTunerInstall64.msi"
+        "OutputFilename" = "8:Debug\\x64\\XMTunerInstall64.msi"
         "PackageFilesAs" = "3:2"
         "PackageFileSize" = "3:-2147483648"
         "CabType" = "3:1"
@@ -142,7 +142,7 @@
         "DisplayName" = "8:Release"
         "IsDebugOnly" = "11:FALSE"
         "IsReleaseOnly" = "11:TRUE"
-        "OutputFilename" = "8:Release\\XMTunerInstall64.msi"
+        "OutputFilename" = "8:Release\\x64\\XMTunerInstall64.msi"
         "PackageFilesAs" = "3:2"
         "PackageFileSize" = "3:-2147483648"
         "CabType" = "3:1"
@@ -222,34 +222,14 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8A99BD833771400683FA965AEB4372A0"
-            {
-            "SourcePath" = "8:xmtuner.ico"
-            "TargetName" = "8:xmtuner.ico"
-            "Tag" = "8:"
-            "Folder" = "8:_47B84E94336740F5B9549DA184B45EC3"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_B87EBD7109313EEF0D202938552B9D68"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_3FD0F3FD56CBE927FD5190ED915391D7"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
             "AssemblyAsmDisplayName" = "8:Interop.WMPLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_B87EBD7109313EEF0D202938552B9D68"
+                    "_3FD0F3FD56CBE927FD5190ED915391D7"
                     {
                     "Name" = "8:Interop.WMPLib.dll"
                     "Attributes" = "3:512"
@@ -273,14 +253,34 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_BF62E11121DA63162ECAEA666B0F428B"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8A99BD833771400683FA965AEB4372A0"
+            {
+            "SourcePath" = "8:xmtuner.ico"
+            "TargetName" = "8:xmtuner.ico"
+            "Tag" = "8:"
+            "Folder" = "8:_47B84E94336740F5B9549DA184B45EC3"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_A59B04F212F8CA41955FE45A2824BA37"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
             "AssemblyAsmDisplayName" = "8:AxInterop.WMPLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_BF62E11121DA63162ECAEA666B0F428B"
+                    "_A59B04F212F8CA41955FE45A2824BA37"
                     {
                     "Name" = "8:AxInterop.WMPLib.dll"
                     "Attributes" = "3:512"
@@ -392,7 +392,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:XM Tuner"
         "ProductCode" = "8:{B0F6CDC7-F3D9-4D9F-8C87-C0CDEC37C990}"
-        "PackageCode" = "8:{6174DF65-EC97-4827-BDD5-611115B1E471}"
+        "PackageCode" = "8:{435682D5-634F-4AE3-8250-5069C71741C1}"
         "UpgradeCode" = "8:{96B7DD5C-10F8-4C80-A7F6-A36C2DFE7C7F}"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
@@ -1050,7 +1050,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_3C0D86D41BB94417ACEDC9E4E13024F8"
             {
-            "SourcePath" = "8:..\\XMTunerServiceControl\\obj\\Debug\\XMTunerServiceControl.exe"
+            "SourcePath" = "8:..\\XMTunerServiceControl\\obj\\Release\\XMTunerServiceControl.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_47B84E94336740F5B9549DA184B45EC3"
@@ -1078,7 +1078,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_5DBAF8F0697F4B149EE38E9DFA613118"
             {
-            "SourcePath" = "8:..\\XMTunerService\\obj\\x86\\Debug\\XMTunerService.exe"
+            "SourcePath" = "8:..\\XMTunerService\\obj\\x64\\Release\\XMTunerService.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_47B84E94336740F5B9549DA184B45EC3"
@@ -1106,7 +1106,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_732B0E6386A04A43B50C7F48502BD92D"
             {
-            "SourcePath" = "8:..\\XMTunerConsole\\obj\\x86\\Debug\\XMTuner.exe"
+            "SourcePath" = "8:..\\XMTunerConsole\\obj\\x64\\Release\\XMTuner.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_47B84E94336740F5B9549DA184B45EC3"
