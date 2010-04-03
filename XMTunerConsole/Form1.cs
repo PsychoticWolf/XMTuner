@@ -375,7 +375,7 @@ namespace XMTuner
         #region About Tab
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            System.Diagnostics.Process.Start("http://www.pcfire.net/XMTuner/");
+            System.Diagnostics.Process.Start("http://www.xmtuner.net/");
         }
         #endregion
 

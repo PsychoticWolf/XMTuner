@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XMTunerService", "XMTunerSe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XMTunerServiceControl", "XMTunerServiceControl\XMTunerServiceControl.csproj", "{FB709221-E568-4739-8859-8539581B771A}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "XMTunerInstall64", "XMTunerInstall\XMTunerInstall64.vdproj", "{1DD258B5-EF64-45E7-8DE2-7A30EE4765A6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,12 +41,10 @@ Global
 		{F86D5C78-600F-45B7-9496-DC1EAC2DB95A}.Release|x86.Build.0 = Release|x86
 		{6EA869CA-8D37-4DA8-944F-842987477852}.Debug|Any CPU.ActiveCfg = Debug
 		{6EA869CA-8D37-4DA8-944F-842987477852}.Debug|x64.ActiveCfg = Debug
-		{6EA869CA-8D37-4DA8-944F-842987477852}.Debug|x64.Build.0 = Debug
 		{6EA869CA-8D37-4DA8-944F-842987477852}.Debug|x86.ActiveCfg = Debug
 		{6EA869CA-8D37-4DA8-944F-842987477852}.Release|Any CPU.ActiveCfg = Release
 		{6EA869CA-8D37-4DA8-944F-842987477852}.Release|Any CPU.Build.0 = Release
 		{6EA869CA-8D37-4DA8-944F-842987477852}.Release|x64.ActiveCfg = Release
-		{6EA869CA-8D37-4DA8-944F-842987477852}.Release|x64.Build.0 = Release
 		{6EA869CA-8D37-4DA8-944F-842987477852}.Release|x86.ActiveCfg = Release
 		{6EA869CA-8D37-4DA8-944F-842987477852}.Release|x86.Build.0 = Release
 		{E89AD9D6-C082-46C6-8856-C4C07508DD99}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -60,11 +60,21 @@ Global
 		{FB709221-E568-4739-8859-8539581B771A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FB709221-E568-4739-8859-8539581B771A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FB709221-E568-4739-8859-8539581B771A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{FB709221-E568-4739-8859-8539581B771A}.Debug|x64.Build.0 = Debug|Any CPU
 		{FB709221-E568-4739-8859-8539581B771A}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{FB709221-E568-4739-8859-8539581B771A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FB709221-E568-4739-8859-8539581B771A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FB709221-E568-4739-8859-8539581B771A}.Release|x64.ActiveCfg = Release|Any CPU
 		{FB709221-E568-4739-8859-8539581B771A}.Release|x86.ActiveCfg = Release|Any CPU
+		{1DD258B5-EF64-45E7-8DE2-7A30EE4765A6}.Debug|Any CPU.ActiveCfg = Debug
+		{1DD258B5-EF64-45E7-8DE2-7A30EE4765A6}.Debug|Any CPU.Build.0 = Debug
+		{1DD258B5-EF64-45E7-8DE2-7A30EE4765A6}.Debug|x64.ActiveCfg = Debug
+		{1DD258B5-EF64-45E7-8DE2-7A30EE4765A6}.Debug|x86.ActiveCfg = Debug
+		{1DD258B5-EF64-45E7-8DE2-7A30EE4765A6}.Release|Any CPU.ActiveCfg = Release
+		{1DD258B5-EF64-45E7-8DE2-7A30EE4765A6}.Release|Any CPU.Build.0 = Release
+		{1DD258B5-EF64-45E7-8DE2-7A30EE4765A6}.Release|x64.ActiveCfg = Release
+		{1DD258B5-EF64-45E7-8DE2-7A30EE4765A6}.Release|x64.Build.0 = Release
+		{1DD258B5-EF64-45E7-8DE2-7A30EE4765A6}.Release|x86.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
