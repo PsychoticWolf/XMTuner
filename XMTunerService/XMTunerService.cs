@@ -10,7 +10,7 @@ namespace XMTuner
     {
         //private System.ComponentModel.IContainer components;
         
-        XMReader reader;
+        XMTunerHost reader;
         Thread workerThread;
         //Boolean serviceStarted;
         /// <summary>
@@ -25,11 +25,9 @@ namespace XMTuner
         {
             InitializeComponent();
 
-
             this.ServiceName = "XMTunerService";
             this.EventLog.Log = "Application";
            
-            
             // These Flags set whether or not to handle that specific
 
             //  type of event. Set to true if you need it, false otherwise.
@@ -39,10 +37,6 @@ namespace XMTuner
             this.CanPauseAndContinue = true;
             this.CanShutdown = true;
             this.CanStop = true;
-
-            //XMReader reader = new XMReader();
-            //reader = new XMReader();
-            //reader.run();
         }
 
         /// <summary>
@@ -54,8 +48,6 @@ namespace XMTuner
         static void Main()
         {
             ServiceBase.Run(new XMTunerService());
-            //XMReader.run();
-            
         }
 
         /// <summary>
@@ -117,7 +109,7 @@ namespace XMTuner
             EventLog.WriteEntry("Opening XMTuner",
          System.Diagnostics.EventLogEntryType.Information);
 
-            reader = new XMReader();
+            reader = new XMTunerHost();
             reader.run();
 
 
