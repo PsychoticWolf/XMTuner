@@ -10,7 +10,7 @@ namespace XMTuner
     {
         //private System.ComponentModel.IContainer components;
         
-        XMTunerHost reader;
+        XMTunerHost tuner;
         Thread workerThread;
         //Boolean serviceStarted;
         /// <summary>
@@ -34,7 +34,7 @@ namespace XMTuner
 
             this.CanHandlePowerEvent = true;
             this.CanHandleSessionChangeEvent = true;
-            this.CanPauseAndContinue = true;
+            this.CanPauseAndContinue = false;
             this.CanShutdown = true;
             this.CanStop = true;
         }
@@ -79,11 +79,7 @@ namespace XMTuner
         {
             
             //base.OnStart(args);
-            //System.Threading.ThreadStart job = new System.Threading.ThreadStart(runReader);
-            //System.Threading.Thread thread = new System.Threading.Thread(job);
-            //thread.Start();
-            //runReader();
-            ThreadStart st = new ThreadStart(runReader);
+            ThreadStart st = new ThreadStart(runXMTuner);
             workerThread = new Thread(st);
 
             // set flag to indicate worker thread is active
@@ -96,6 +92,17 @@ namespace XMTuner
             
         }
 
+        public void runXMTuner()
+        {
+            EventLog.WriteEntry("Opening XMTuner", System.Diagnostics.EventLogEntryType.Information);
+            tuner = new XMTunerHost(this.EventLog);
+            if (tuner.started != true)
+            {
+                this.ExitCode = tuner.err;
+                this.Stop();
+            }
+        }
+
         /// <summary>
 
         /// OnStop(): Put your stop code here
@@ -104,21 +111,10 @@ namespace XMTuner
 
         /// </summary>
 
-        public void runReader()
-        {
-            EventLog.WriteEntry("Opening XMTuner",
-         System.Diagnostics.EventLogEntryType.Information);
-
-            reader = new XMTunerHost();
-            reader.run();
-
-
-        }
-
         protected override void OnStop()
         {
             base.OnStop();
-            reader.logging.log(reader.i);
+            tuner.stop();
             removePID();
         }
 

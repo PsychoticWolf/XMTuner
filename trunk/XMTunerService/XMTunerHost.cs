@@ -11,77 +11,95 @@ namespace XMTuner
     {
         
         XMTuner self;
-        public Log logging;
+        Log logging;
+        EventLog EventLog;
         WebListner xmServer;
         String username;
         String password;
         String network;
         String port;
         Boolean loggedIn = false;
-        Boolean serverRunning = false;
-        public int i = 0;
-        System.Timers.Timer theTimer = new System.Timers.Timer(30000);
+        Boolean isConfigurationLoaded = false;
+        Timer theTimer = new System.Timers.Timer(30000);
+        public int err = 0;
+        public Boolean started = false;
+        DateTime serverStarted;
+        String runTime;
 
-        public XMTunerHost()
+        public XMTunerHost(EventLog log)
         {
+            this.EventLog = log;
             logging = new Log();
+
+            //Load config...
+ 	  	  	refreshConfig();
+
+            //Complaint to Event Log for Missing Configuration
+            if (isConfigurationLoaded == false)
+            {
+                EventLog.WriteEntry("Missing Configuration", System.Diagnostics.EventLogEntryType.Error);
+                logging.output("No Configuration", "error");
+                return;
+            }
+            start(); //GO!
         }
 
-        public void run()
+        private void start()
         {
-            logging.output("XMTuner Service started", "message");
-            logging.log(i);
-            if (refreshConfig())
+            EventLog.WriteEntry("XMTuner Service initializing", System.Diagnostics.EventLogEntryType.Information);
+            logging.output("Please wait... logging in", "info");
+
+            if (network.ToUpper().Equals("SIRIUS"))
             {
-                logging.output("Reading configuration", "debug");
-                logging.log(i);
-                if (network.ToUpper().Equals("SIRIUS"))
-                {
-                    self = new SiriusTuner(username, password, logging);
-                }
-                else
-                {
-                    self = new XMTuner(username, password, logging);
-                }
-                logging.output("XMTuner created, Attempting Login", "debug");
-                logging.log(i);
-
-                if (self.isLoggedIn == false)
-                {
-                    //Not logged in successfully.. Bail!
-                    logging.output("Failed Login", "message");
-                    logging.log(i);
-                    return;
-                }
-
-                i = 0;
-                loggedIn = true;
-                xmServer = new WebListner(self, port);
-                serverRunning = true;
-                xmServer.start();
-                if (xmServer.isRunning == false)
-                {
-                    serverRunning = false;
-                    logging.output("Server failed to start.", "message");
-                    logging.log(i);
-                    return;
-                }
-
-                logging.output("Services are Up!", "message");
-                logging.log(i);
-
-                theTimer.Elapsed += new ElapsedEventHandler(OnTimedEvent);
-                theTimer.AutoReset = true;
-                theTimer.Enabled = true;
-
+                self = new SiriusTuner(username, password, logging);
             }
             else
             {
-                logging.output("No Configuration", "error");
-                
-                logging.log(i);
-
+                self = new XMTuner(username, password, logging);
             }
+
+            if (self.isLoggedIn == false)
+            {
+                //Not logged in successfully.. Bail!
+                EventLog.WriteEntry("Failed to login. Check the serivce log for details (Err 1)", EventLogEntryType.Error);
+                err = 1;
+                return;
+            }
+
+            xmServer = new WebListner(self, port);
+            xmServer.start();
+            if (xmServer.isRunning == false)
+            {
+                EventLog.WriteEntry("Server failed to start. (Err 2)", System.Diagnostics.EventLogEntryType.Error);
+                logging.output("Server failed to start.", "error");
+                err = 2;
+                return;
+            }
+            serverStarted = DateTime.Now;
+
+            theTimer.Elapsed += new ElapsedEventHandler(OnTimedEvent);
+            theTimer.AutoReset = true;
+            theTimer.Enabled = true;
+
+            EventLog.WriteEntry("XMTuner Service started", System.Diagnostics.EventLogEntryType.Information);
+            logging.output("XMTuner Service started", "info");
+            started = true;
+        }
+
+        public void stop()
+        {
+            if (xmServer != null)
+            {
+                xmServer.stop();
+            }
+            theTimer.Stop();
+            started = false;
+            runTime = (DateTime.Now - serverStarted).ToString();
+            logging.output("Server Uptime was " + runTime, "info"); 
+            self = null;
+            xmServer = null;
+            loggedIn = false;
+            GC.Collect();
         }
 
         private bool refreshConfig()
@@ -89,6 +107,7 @@ namespace XMTuner
             configMan configuration = new configMan();
             if (configuration.loaded == false)
             {
+                isConfigurationLoaded = false;
                 return false;
             }
 
@@ -97,15 +116,16 @@ namespace XMTuner
 
             //Set config values using new config
             setConfig(configuration, config);
+            isConfigurationLoaded = true;
             return true;
         }
 
         private void setConfig(configMan cfg, NameValueCollection config)
         {
-            username = cfg.getConfigItem(config, "username");
-            password = cfg.getConfigItem(config, "password");
-            port = cfg.getConfigItem(config, "port");
-            network = cfg.getConfigItem(config, "network");
+            username = config["username"];
+            password = config["password"];
+            port = config["port"];
+            network = config["network"];
         }
         
         public void OnTimedEvent(object source, ElapsedEventArgs e)
@@ -114,8 +134,6 @@ namespace XMTuner
             {
                 self.doWhatsOn();
             }
-
-            logging.log(i);
         }
     }
 }
