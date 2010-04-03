@@ -10,5 +10,13 @@ namespace XMTuner
         {
 
         }
+
+        public static Boolean isService
+        {
+            get
+            {
+                return true;
+            }
+        }
     }
 }

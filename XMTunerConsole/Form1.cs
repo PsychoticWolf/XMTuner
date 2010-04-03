@@ -788,6 +788,14 @@ namespace XMTuner
             self.doTest();
         }
 
+        public static Boolean isService
+        {
+            get
+            {
+                return true;
+            }
+        }
+
         private void powerModeChanged(System.Object sender, Microsoft.Win32.PowerModeChangedEventArgs e)
         {
             //Handle the PowerModes we care about... (Resume, Suspend)
