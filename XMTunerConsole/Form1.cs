@@ -166,11 +166,7 @@ namespace XMTuner
 
         private void timer2_Tick(object sender, EventArgs e)
         {
-            if (loggedIn)
-            {
-                self.doWhatsOn();
-            }
-            //logging.doLog();
+            self.doWhatsOn();
         }
 
 

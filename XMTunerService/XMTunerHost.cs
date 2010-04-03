@@ -18,7 +18,6 @@ namespace XMTuner
         String password;
         String network;
         String port;
-        Boolean loggedIn = false;
         Boolean isConfigurationLoaded = false;
         Timer theTimer = new System.Timers.Timer(30000);
         public int err = 0;
@@ -98,7 +97,6 @@ namespace XMTuner
             logging.output("Server Uptime was " + runTime, "info"); 
             self = null;
             xmServer = null;
-            loggedIn = false;
             GC.Collect();
         }
 
@@ -130,10 +128,7 @@ namespace XMTuner
         
         public void OnTimedEvent(object source, ElapsedEventArgs e)
         {
-            if (loggedIn)
-            {
-                self.doWhatsOn();
-            }
+            self.doWhatsOn();
         }
     }
 }
