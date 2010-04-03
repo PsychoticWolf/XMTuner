@@ -73,7 +73,7 @@ namespace XMTuner
         private void Form1_FormClosing(Object sender, FormClosingEventArgs e)
         {
             if (logging == null) { return; }
-            logging.log(i);
+            //logging.doLog();
         }
 
         private void Form1_Resize(object sender, EventArgs e)
@@ -170,7 +170,7 @@ namespace XMTuner
             {
                 self.doWhatsOn();
             }
-            logging.log(i);
+            //logging.doLog();
         }
 
 

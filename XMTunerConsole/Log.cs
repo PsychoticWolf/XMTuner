@@ -46,9 +46,10 @@ namespace XMTuner
                 Form1.output(output, level, ref outputbox);
             }
 
+            log();
         }
 
-        public void log(int i)
+        private void log()
         {
             String path = "";
             if (useLocalDatapath == false)
