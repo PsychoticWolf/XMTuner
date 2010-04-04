@@ -806,6 +806,14 @@ namespace XMTuner
                 //We're waking up, resume server.
                 output("System has resumed, starting server.", "info");
                 start();
+
+                //If we were playing, resume.
+                playerNum = sleepPlayerNum;
+                if (playerNum >0)
+                {
+                    output("Resuming playback...", "info");
+                    play(playerNum);
+                }
             }
         }
     }

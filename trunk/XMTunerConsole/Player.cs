@@ -9,6 +9,7 @@ namespace XMTuner
     {
         int playerNum;
         int p;
+        int sleepPlayerNum = 0;
 
         #region Player
         private void updateNowPlayingData(Boolean useDefault, Boolean isLoading, Int32 num)
@@ -167,6 +168,12 @@ namespace XMTuner
             {
                 axWindowsMediaPlayer1.enableContextMenu = false;
                 //Tell the app we're done playing so history stops being built.
+
+                //Save number when going to ready to restore on resume from sleep
+                if (axWindowsMediaPlayer1.playState == WMPLib.WMPPlayState.wmppsReady)
+                {
+                    sleepPlayerNum = playerNum;
+                }
                 playerNum = 0;
                 self.lastChannelPlayed = 0;
                 updateNowPlayingData(true, false, 0);
