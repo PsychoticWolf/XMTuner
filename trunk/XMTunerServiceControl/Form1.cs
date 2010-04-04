@@ -201,7 +201,8 @@ namespace XMTuner
             String directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "XMTuner");
                 if (!Directory.Exists(directory)) { Directory.CreateDirectory(directory); }
             String path = directory + "\\" + logFile;
-
+            fileSystemWatcher1.Path = directory;
+            fileSystemWatcher1.Filter = logFile;
             try
             {
                 FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
@@ -213,6 +214,10 @@ namespace XMTuner
             catch (FileNotFoundException)
             {
                 rtbServiceLog.Text = "No XMTuner Service Log Found";
+            }
+            catch (IOException)
+            {
+                loadServiceLog();
             }
         }
 
@@ -232,6 +237,11 @@ namespace XMTuner
                 rtbServiceLog.SelectionStart = rtbServiceLog.Text.Length;
                 rtbServiceLog.ScrollToCaret();
             }
+        }
+
+        private void fileSystemWatcher1_Changed(object sender, FileSystemEventArgs e)
+        {
+            loadServiceLog();
         }
     }
 }

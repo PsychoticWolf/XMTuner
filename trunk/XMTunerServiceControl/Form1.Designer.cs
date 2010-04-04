@@ -44,18 +44,20 @@
             this.bConfig = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tServiceControl = new System.Windows.Forms.TabPage();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.tLog = new System.Windows.Forms.TabPage();
             this.rtbServiceLog = new System.Windows.Forms.RichTextBox();
             this.logContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.refreshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.fileSystemWatcher1 = new System.IO.FileSystemWatcher();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tServiceControl.SuspendLayout();
+            this.groupBox1.SuspendLayout();
             this.tLog.SuspendLayout();
             this.logContextMenu.SuspendLayout();
-            this.groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.fileSystemWatcher1)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox2
@@ -190,7 +192,7 @@
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(429, 256);
+            this.tabControl1.Size = new System.Drawing.Size(429, 252);
             this.tabControl1.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
             this.tabControl1.TabIndex = 5;
             this.tabControl1.Selected += new System.Windows.Forms.TabControlEventHandler(this.tabControl1_Selected);
@@ -204,9 +206,19 @@
             this.tServiceControl.Location = new System.Drawing.Point(4, 22);
             this.tServiceControl.Name = "tServiceControl";
             this.tServiceControl.Padding = new System.Windows.Forms.Padding(3);
-            this.tServiceControl.Size = new System.Drawing.Size(421, 230);
+            this.tServiceControl.Size = new System.Drawing.Size(421, 226);
             this.tServiceControl.TabIndex = 0;
             this.tServiceControl.Text = "Controls";
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.bConfig);
+            this.groupBox1.Location = new System.Drawing.Point(269, 6);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(144, 100);
+            this.groupBox1.TabIndex = 5;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Configuration";
             // 
             // tLog
             // 
@@ -215,7 +227,7 @@
             this.tLog.Location = new System.Drawing.Point(4, 22);
             this.tLog.Name = "tLog";
             this.tLog.Padding = new System.Windows.Forms.Padding(3);
-            this.tLog.Size = new System.Drawing.Size(389, 203);
+            this.tLog.Size = new System.Drawing.Size(421, 226);
             this.tLog.TabIndex = 1;
             this.tLog.Text = "Service Log";
             // 
@@ -227,7 +239,7 @@
             this.rtbServiceLog.Location = new System.Drawing.Point(3, 3);
             this.rtbServiceLog.Name = "rtbServiceLog";
             this.rtbServiceLog.ReadOnly = true;
-            this.rtbServiceLog.Size = new System.Drawing.Size(383, 197);
+            this.rtbServiceLog.Size = new System.Drawing.Size(415, 220);
             this.rtbServiceLog.TabIndex = 0;
             this.rtbServiceLog.Text = "";
             // 
@@ -245,15 +257,12 @@
             this.refreshToolStripMenuItem.Text = "Refresh";
             this.refreshToolStripMenuItem.Click += new System.EventHandler(this.refreshToolStripMenuItem_Click);
             // 
-            // groupBox1
+            // fileSystemWatcher1
             // 
-            this.groupBox1.Controls.Add(this.bConfig);
-            this.groupBox1.Location = new System.Drawing.Point(269, 6);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(144, 100);
-            this.groupBox1.TabIndex = 5;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Configuration";
+            this.fileSystemWatcher1.EnableRaisingEvents = true;
+            this.fileSystemWatcher1.SynchronizingObject = this;
+            this.fileSystemWatcher1.Created += new System.IO.FileSystemEventHandler(this.fileSystemWatcher1_Changed);
+            this.fileSystemWatcher1.Changed += new System.IO.FileSystemEventHandler(this.fileSystemWatcher1_Changed);
             // 
             // Form1
             // 
@@ -272,9 +281,10 @@
             this.groupBox3.PerformLayout();
             this.tabControl1.ResumeLayout(false);
             this.tServiceControl.ResumeLayout(false);
+            this.groupBox1.ResumeLayout(false);
             this.tLog.ResumeLayout(false);
             this.logContextMenu.ResumeLayout(false);
-            this.groupBox1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.fileSystemWatcher1)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -300,6 +310,7 @@
         private System.Windows.Forms.ContextMenuStrip logContextMenu;
         private System.Windows.Forms.ToolStripMenuItem refreshToolStripMenuItem;
         private System.Windows.Forms.GroupBox groupBox1;
+        private System.IO.FileSystemWatcher fileSystemWatcher1;
     }
 }
 
