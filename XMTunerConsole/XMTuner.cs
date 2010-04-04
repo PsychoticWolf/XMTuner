@@ -42,7 +42,6 @@ namespace XMTuner
         public int lastChannelPlayed;
         public DateTime lastLoggedIn;
         int attempts = 1;
-        System.Timers.Timer timer;
 
         protected virtual String baseurl
         {
@@ -73,7 +72,7 @@ namespace XMTuner
         private void handleLogin(Boolean result)
         {
             int maxattempts = 5;
-            int timeout = 5000;
+            int timeout = 10000;
             if (Form1.isService)
             {
                 maxattempts = -1;
@@ -90,34 +89,15 @@ namespace XMTuner
                     return;
                 }
                 attempts++;
-                output("Waiting to retry login... (Attempt " + attempts + " of 5)", "info");
-                timer = new System.Timers.Timer(timeout);
-                timer.Elapsed += new System.Timers.ElapsedEventHandler(OnTimer);
-                timer.AutoReset = false;
-                timer.Enabled = true;
+                output("Waiting to retry login... (Attempt " + attempts + " of "+maxattempts+")", "info");
+                System.Threading.Thread.Sleep(timeout);
+                handleLogin(login());
                 return;
             }
             tryingLogin = false;
-            OnRaiseCustomEvent(new EventArgs());
+
             attempts = 1;
         }
-
-        public event EventHandler RaiseCustomEvent;
-        protected virtual void OnRaiseCustomEvent(EventArgs e)
-        {
-            // Make a temporary copy of the event to avoid possibility of
-            // a race condition if the last subscriber unsubscribes
-            // immediately after the null check and before the event is raised.
-            EventHandler handler = RaiseCustomEvent;
-
-            // Event will be null if there are no subscribers
-            if (handler != null)
-            {
-                // Use the () operator to raise the event.
-                handler(this, e);
-            }
-        }
-
 
         private void OnTimer(object source, System.Timers.ElapsedEventArgs e)
         {
