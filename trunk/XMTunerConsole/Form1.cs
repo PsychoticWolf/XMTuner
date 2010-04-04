@@ -91,17 +91,28 @@ namespace XMTuner
         }
         private void start()
         {
-            output("Please wait... logging in", "info");
-            if (network.ToUpper().Equals("SIRIUS"))
+            if (self == null)
             {
-                self = new SiriusTuner(username, password, logging);
-            }
-            else
-            {
-                self = new XMTuner(username, password, logging);
+
+                output("Please wait... logging in", "info");
+                if (network.ToUpper().Equals("SIRIUS"))
+                {
+                    self = new SiriusTuner(username, password, logging);
+                }
+                else
+                {
+                    self = new XMTuner(username, password, logging);
+                }
             }
             if (self.isLoggedIn == false)
             {
+                if (self.tryingLogin == true)
+                {
+                    output("Waiting for login attempts to finish...", "info");
+                    self.RaiseCustomEvent += HandleCustomEvent;
+
+                }
+
                 //Not logged in successfully.. Bail!
                 return;
             }
@@ -136,6 +147,12 @@ namespace XMTuner
             syncStatusLabel();
             loadChannels();
             output("XMTuner Ready...", "info");
+        }
+
+        private void HandleCustomEvent(object sender, EventArgs e)
+        {
+            output("Login Event Received. Resuming startup", "debug");
+            start();
         }
 
         private void timer1_Tick(object sender, EventArgs e)

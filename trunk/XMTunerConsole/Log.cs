@@ -69,7 +69,10 @@ namespace XMTuner
             header += datetime.ToString() + "\n\n";
             if (outputbox != null)
             {
-                textOut.Write(header + outputbox.Text);
+                if (outputbox.InvokeRequired == false)
+                {
+                    textOut.Write(header + outputbox.Text);
+                }
             }
             else
             {
