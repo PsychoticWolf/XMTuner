@@ -30,6 +30,7 @@ namespace XMTuner
 
         //Runtime Flags
         public Boolean isLoggedIn;
+        public Boolean tryingLogin = false;
         public Boolean loadedExtendedChannelData = false;
         protected Boolean firstLogin = false;
         Boolean loadedChannelMetadataCache = false;
@@ -65,6 +66,7 @@ namespace XMTuner
             isLive = true;
 #endif
             if (!isLive) useProgramGuide = false;
+            tryingLogin = true;
             handleLogin(login());
      
         }
@@ -84,6 +86,7 @@ namespace XMTuner
                 {
                     output("Login attempts exhausted, giving up...", "error");
                     attempts = 1;
+                    tryingLogin = false;
                     return;
                 }
                 attempts++;
@@ -94,8 +97,27 @@ namespace XMTuner
                 timer.Enabled = true;
                 return;
             }
+            tryingLogin = false;
+            OnRaiseCustomEvent(new EventArgs());
             attempts = 1;
         }
+
+        public event EventHandler RaiseCustomEvent;
+        protected virtual void OnRaiseCustomEvent(EventArgs e)
+        {
+            // Make a temporary copy of the event to avoid possibility of
+            // a race condition if the last subscriber unsubscribes
+            // immediately after the null check and before the event is raised.
+            EventHandler handler = RaiseCustomEvent;
+
+            // Event will be null if there are no subscribers
+            if (handler != null)
+            {
+                // Use the () operator to raise the event.
+                handler(this, e);
+            }
+        }
+
 
         private void OnTimer(object source, System.Timers.ElapsedEventArgs e)
         {
