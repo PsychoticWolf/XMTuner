@@ -27,8 +27,8 @@ namespace XMTuner
             base.OnLoad(e);
             if (!Win32.DwmIsCompositionEnabled())
             {
-                MessageBox.Show("This demo requires Vista, with Aero enabled.");
-                Application.Exit();
+                //MessageBox.Show("This demo requires Vista, with Aero enabled.");
+                //Application.Exit();
             }
             SetGlassRegion();
         }
