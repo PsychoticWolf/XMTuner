@@ -29,9 +29,12 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("Recently Played", System.Windows.Forms.HorizontalAlignment.Left);
             System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("Nothing Played Yet...");
+            this.allChannelsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.favoriteChannelsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.bStart = new System.Windows.Forms.Button();
             this.bConfigure = new System.Windows.Forms.Button();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
@@ -52,11 +55,13 @@
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.channelBox = new System.Windows.Forms.ListView();
             this.channelContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.playToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.addToFavoritesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.copyURLToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.uRLBuilderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.enabledToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.disabledToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.playToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.detailsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.label1 = new System.Windows.Forms.Label();
             this.typeBox = new System.Windows.Forms.ComboBox();
             this.bitRateBox = new System.Windows.Forms.ComboBox();
@@ -95,6 +100,7 @@
             this.linkServer = new System.Windows.Forms.LinkLabel();
             this.timerTest = new System.Windows.Forms.Timer(this.components);
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
+            viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.trayIconContextMenu.SuspendLayout();
             this.tabcontrol1.SuspendLayout();
             this.tLog.SuspendLayout();
@@ -113,6 +119,31 @@
             this.splitContainer2.Panel2.SuspendLayout();
             this.splitContainer2.SuspendLayout();
             this.SuspendLayout();
+            // 
+            // viewToolStripMenuItem
+            // 
+            viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.allChannelsToolStripMenuItem,
+            this.favoriteChannelsToolStripMenuItem});
+            viewToolStripMenuItem.Name = "viewToolStripMenuItem";
+            viewToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
+            viewToolStripMenuItem.Text = "View";
+            // 
+            // allChannelsToolStripMenuItem
+            // 
+            this.allChannelsToolStripMenuItem.Name = "allChannelsToolStripMenuItem";
+            this.allChannelsToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F3;
+            this.allChannelsToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
+            this.allChannelsToolStripMenuItem.Text = "All Channels";
+            this.allChannelsToolStripMenuItem.Click += new System.EventHandler(this.allChannelsToolStripMenuItem_Click);
+            // 
+            // favoriteChannelsToolStripMenuItem
+            // 
+            this.favoriteChannelsToolStripMenuItem.Name = "favoriteChannelsToolStripMenuItem";
+            this.favoriteChannelsToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F4;
+            this.favoriteChannelsToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
+            this.favoriteChannelsToolStripMenuItem.Text = "Favorite Channels";
+            this.favoriteChannelsToolStripMenuItem.Click += new System.EventHandler(this.favoriteChannelsToolStripMenuItem_Click);
             // 
             // bStart
             // 
@@ -311,7 +342,7 @@
             this.splitContainer1.Panel2.Controls.Add(this.txtChannel);
             this.splitContainer1.Panel2MinSize = 0;
             this.splitContainer1.Size = new System.Drawing.Size(546, 204);
-            this.splitContainer1.SplitterDistance = 152;
+            this.splitContainer1.SplitterDistance = 150;
             this.splitContainer1.SplitterIncrement = 5;
             this.splitContainer1.SplitterWidth = 2;
             this.splitContainer1.TabIndex = 14;
@@ -327,7 +358,7 @@
             this.channelBox.Margin = new System.Windows.Forms.Padding(0);
             this.channelBox.MultiSelect = false;
             this.channelBox.Name = "channelBox";
-            this.channelBox.Size = new System.Drawing.Size(544, 150);
+            this.channelBox.Size = new System.Drawing.Size(544, 148);
             this.channelBox.TabIndex = 11;
             this.channelBox.TileSize = new System.Drawing.Size(515, 30);
             this.channelBox.UseCompatibleStateImageBehavior = false;
@@ -338,11 +369,43 @@
             // channelContextMenu
             // 
             this.channelContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.uRLBuilderToolStripMenuItem,
             this.playToolStripMenuItem,
-            this.detailsToolStripMenuItem});
+            this.addToFavoritesToolStripMenuItem,
+            this.copyURLToolStripMenuItem,
+            this.toolStripSeparator2,
+            this.uRLBuilderToolStripMenuItem,
+            viewToolStripMenuItem});
             this.channelContextMenu.Name = "contextMenuStrip2";
-            this.channelContextMenu.Size = new System.Drawing.Size(136, 70);
+            this.channelContextMenu.Size = new System.Drawing.Size(210, 120);
+            // 
+            // playToolStripMenuItem
+            // 
+            this.playToolStripMenuItem.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.playToolStripMenuItem.Name = "playToolStripMenuItem";
+            this.playToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
+            this.playToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
+            this.playToolStripMenuItem.Text = "Play";
+            this.playToolStripMenuItem.Click += new System.EventHandler(this.channelBox_DoubleClick);
+            // 
+            // addToFavoritesToolStripMenuItem
+            // 
+            this.addToFavoritesToolStripMenuItem.Name = "addToFavoritesToolStripMenuItem";
+            this.addToFavoritesToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F)));
+            this.addToFavoritesToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
+            this.addToFavoritesToolStripMenuItem.Text = "Add to Favorites...";
+            this.addToFavoritesToolStripMenuItem.Click += new System.EventHandler(this.addToFavoritesToolStripMenuItem_Click);
+            // 
+            // copyURLToolStripMenuItem
+            // 
+            this.copyURLToolStripMenuItem.Name = "copyURLToolStripMenuItem";
+            this.copyURLToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
+            this.copyURLToolStripMenuItem.Text = "Copy URL";
+            this.copyURLToolStripMenuItem.Click += new System.EventHandler(this.cpyToClip_Click);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(206, 6);
             // 
             // uRLBuilderToolStripMenuItem
             // 
@@ -350,7 +413,7 @@
             this.enabledToolStripMenuItem,
             this.disabledToolStripMenuItem});
             this.uRLBuilderToolStripMenuItem.Name = "uRLBuilderToolStripMenuItem";
-            this.uRLBuilderToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
+            this.uRLBuilderToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
             this.uRLBuilderToolStripMenuItem.Text = "URL Builder";
             // 
             // enabledToolStripMenuItem
@@ -366,18 +429,6 @@
             this.disabledToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
             this.disabledToolStripMenuItem.Text = "Disabled";
             this.disabledToolStripMenuItem.Click += new System.EventHandler(this.disabledToolStripMenuItem_Click);
-            // 
-            // playToolStripMenuItem
-            // 
-            this.playToolStripMenuItem.Name = "playToolStripMenuItem";
-            this.playToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
-            this.playToolStripMenuItem.Text = "Play";
-            // 
-            // detailsToolStripMenuItem
-            // 
-            this.detailsToolStripMenuItem.Name = "detailsToolStripMenuItem";
-            this.detailsToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
-            this.detailsToolStripMenuItem.Text = "Details...";
             // 
             // label1
             // 
@@ -532,7 +583,7 @@
             this.aBuildDate.ReadOnly = true;
             this.aBuildDate.Size = new System.Drawing.Size(62, 19);
             this.aBuildDate.TabIndex = 17;
-            this.aBuildDate.Text = "20100403";
+            this.aBuildDate.Text = "20100405";
             this.aBuildDate.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // label8
@@ -668,6 +719,7 @@
             this.pLabel3.TabIndex = 8;
             this.pLabel3.Text = "Artist:";
             this.pLabel3.UseMnemonic = false;
+            this.pLabel3.TextChanged += new System.EventHandler(this.pLabel2_TextChanged);
             // 
             // pLabel2
             // 
@@ -920,10 +972,14 @@
         private System.Windows.Forms.ToolStripMenuItem enabledToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem disabledToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem playToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem detailsToolStripMenuItem;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.ListView recentlyPlayedBox;
         private System.Windows.Forms.SplitContainer splitContainer2;
+        private System.Windows.Forms.ToolStripMenuItem allChannelsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem favoriteChannelsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem copyURLToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem addToFavoritesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
     }
 }
 

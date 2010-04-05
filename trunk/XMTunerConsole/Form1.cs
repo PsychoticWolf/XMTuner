@@ -280,8 +280,11 @@ namespace XMTuner
             //Set alwaysOnTop and URL Builder settings...
             this.TopMost = onTop; //Make XMTuner always on top
             //Hide URL Builder on Top
+            enabledToolStripMenuItem.Checked = true;
             if (showURLBuilder == false)
             {
+                enabledToolStripMenuItem.Checked = false;
+                disabledToolStripMenuItem.Checked = true;
                 splitContainer1.Panel2Collapsed = true;
             }
 
@@ -718,11 +721,15 @@ namespace XMTuner
 
         private void enabledToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            enabledToolStripMenuItem.Checked = true;
+            disabledToolStripMenuItem.Checked = false;
             splitContainer1.Panel2Collapsed = false;
         }
 
         private void disabledToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            enabledToolStripMenuItem.Checked = false;
+            disabledToolStripMenuItem.Checked = true;
             splitContainer1.Panel2Collapsed = true;
         }
         #endregion
@@ -815,6 +822,30 @@ namespace XMTuner
                     play(playerNum);
                 }
             }
+        }
+
+        private void addToFavoritesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ListViewItem item = channelBox.SelectedItems[0];
+            if (item.Name.Equals("")) { return; }
+            int num = Convert.ToInt32(item.Name);
+            DialogResult result = MessageBox.Show("Add Channel " + num + " to Favorites?", "Add to Favorites", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (result == DialogResult.Yes)
+            {
+                //Do the work...
+            }
+        }
+
+        private void allChannelsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            favoriteChannelsToolStripMenuItem.Checked = false;
+            allChannelsToolStripMenuItem.Checked = true;
+        }
+
+        private void favoriteChannelsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            allChannelsToolStripMenuItem.Checked = false;
+            favoriteChannelsToolStripMenuItem.Checked = true;
         }
     }
 }

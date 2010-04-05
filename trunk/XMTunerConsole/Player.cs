@@ -29,8 +29,11 @@ namespace XMTuner
                 if (isLoading == true && num > 0)
                 {
                     XMChannel npChannel = self.Find(num);
-                    pLabel1.Text = npChannel.ToSimpleString();
-                    pLabel2.Text = "Loading...";
+                    if (npChannel.num != 0)
+                    {
+                        pLabel1.Text = npChannel.ToSimpleString();
+                        pLabel2.Text = "Loading...";
+                    }
                 }
 
                 playerPanel.Refresh();
@@ -43,6 +46,7 @@ namespace XMTuner
                 }
 
                 XMChannel npChannel = self.Find(num);
+                if (npChannel.num == 0) { return; }
 
                 if (pStatusLabel.Visible == true)
                 {
@@ -167,13 +171,12 @@ namespace XMTuner
                 axWindowsMediaPlayer1.playState == WMPLib.WMPPlayState.wmppsReady)
             {
                 axWindowsMediaPlayer1.enableContextMenu = false;
-                //Tell the app we're done playing so history stops being built.
-
                 //Save number when going to ready to restore on resume from sleep
                 if (axWindowsMediaPlayer1.playState == WMPLib.WMPPlayState.wmppsReady)
                 {
                     sleepPlayerNum = playerNum;
                 }
+                //Tell the app we're done playing so history stops being built.
                 playerNum = 0;
                 self.lastChannelPlayed = 0;
                 updateNowPlayingData(true, false, 0);
@@ -271,12 +274,13 @@ namespace XMTuner
             output(errCode + " " +errDesc, "error");
 
             //Handle things like stopping and trying to retune...
+            int cnum = playerNum;
             axWindowsMediaPlayer1.Ctlcontrols.stop();
             pLabel2.Text = "Error!";
             pLabel3.Text = "Attempting to retune channel...";
             pLabel4.Text = errDesc;
-            output("Attempting to retune to channel...", "info");
-            play(playerNum);
+            output("Attempting to retune to channel "+cnum+"...", "info");
+            play(cnum);
         }
 
         #endregion
