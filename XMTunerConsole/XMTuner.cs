@@ -556,6 +556,11 @@ namespace XMTuner
         protected string play(int channelnum, String speed, Boolean useKey)
         {
             XMChannel cD = Find(channelnum);
+            if (cD.num == 0)
+            {
+                output("Invalid Channel Number " + channelnum, "error");
+                return null;
+            }
             String channelKey = channelnum.ToString();
             if (useKey == true)
             {
@@ -939,10 +944,11 @@ namespace XMTuner
                     //Returns Bool; False if invalid (null) channel data, true on success
                     if (data.Contains("\"allchannels\",null"))
                     {
-                        output("Session dead. Downloaded channel data had no stations.", "error");
+                        output("[Test] Session dead. Downloaded channel data had no stations.", "error");
+                        isLoggedIn = false;
                         return false;
                     }
-                    output("Session alive.", "debug");
+                    output("[Test] Session alive.", "info");
                     return true;
                 }
             }

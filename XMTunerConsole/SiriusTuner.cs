@@ -386,25 +386,6 @@ namespace XMTuner
             return play(channelnum, speed, true);
         }
 
-        /* public override string play(int channelnum, String speed)
-        {
-            String channelKey = Find(channelnum).channelKey;
-            output("Playing stream for Sirius " + channelnum + " (" + channelKey + ")", "debug");
-            String address = "http://www.sirius.com/player/listen/play.action?channelKey=" + channelKey + "&newBitRate=" + speed;
-            if (!isLive)
-            {
-                address = baseurl + "/play.action";
-            }
-            URL playerURL = new URL(address);
-            playerURL.setRequestHeader("Cookie", cookies);
-            playerURL.fetch();
-            String URL = playChannel(playerURL);
-            //response is closed in playChannel();
-            lastChannelPlayed = channelnum;
-            setRecentlyPlayed();
-            return URL;
-        } */
-
 
         protected override string playChannel(URL url)
         {
