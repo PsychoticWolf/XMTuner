@@ -59,8 +59,15 @@ namespace XMTuner
                 path += directory + "\\";
             }
             path += logFile;
-
-            FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write);
+            FileStream fs;
+            try
+            {
+                fs = new FileStream(path, FileMode.Create, FileAccess.Write);
+            }
+            catch (IOException)
+            {
+                return;
+            }
             StreamWriter textOut = new StreamWriter(fs);
 
             DateTime datetime = DateTime.Now;

@@ -481,10 +481,11 @@ namespace XMTuner
             return image; //Note, this can be null
         }
 
-        private void loadChannels()
+        private void loadChannels() { loadChannels(false); }
+        private void loadChannels(Boolean force)
         {
-            if (self == null || channelBox.Items.Count > 0) { return; }
-
+            if ((self == null || channelBox.Items.Count > 0) && force == false) { return; }
+            if (channelBox.Tag == null) { channelBox.Tag = ""; }
             typeBox.SelectedItem = "Channel";
             if (isMMS) { protocolBox.SelectedItem = "MMS"; } else { protocolBox.SelectedItem = "HTTP"; }
             if (bitrate.Equals("high")) { bitRateBox.SelectedItem = "High"; } else { bitRateBox.SelectedItem = "Low"; }
@@ -497,6 +498,10 @@ namespace XMTuner
             int i = 0;
             cbIconsLoaded = true;
             channelBox.Columns.AddRange(new ColumnHeader[] { new ColumnHeader(), new ColumnHeader()});
+
+            //Add Groups
+            channelBox.Groups.Add("cbGroupFavorite", "Favorite Channels");
+            channelBox.Groups.Add("cbGroupNormal", network.ToUpper() + " Channels");
 
             Boolean setLogoImage = false;
             Image defaultImage = Image.FromStream(Assembly.GetExecutingAssembly().GetManifestResourceStream("XMTuner.xmtuner64.png"));
@@ -551,6 +556,33 @@ namespace XMTuner
                 ListViewItem item = new ListViewItem(new String[] {chan.ToSimpleString(), chan.desc});
                 item.ImageIndex = imagenum;
                 item.Name = chan.num.ToString();
+                item.ToolTipText = chan.ToSimpleString()+"\n" + chan.desc+"\n";
+
+                //Groups
+                /* Create and set category groups as we build, if we're building in category mode */
+                if (channelBox.Tag.Equals("category"))
+                {
+                    if (channelBox.Groups.IndexOf(channelBox.Groups[chan.category]) == -1)
+                    {
+                        channelBox.Groups.Add(chan.category, chan.category.ToUpperFirstLetter());
+                    }
+                    item.Group = channelBox.Groups[chan.category];
+                }
+                else
+                {
+                    /* For Favorites/Normal Mode - the general group */
+                    item.Group = channelBox.Groups["cbGroupNormal"];
+                }
+
+                /* Mark Favorites for Favorites and Category Modes */
+                if (!channelBox.Tag.Equals(""))
+                {
+                    if (self.favorites.isFavorite(chan.num))
+                    {
+                        item.Group = channelBox.Groups["cbGroupFavorite"];
+                    }
+                }
+
                 channelBox.Items.Add(item);
                 i++;
             }
@@ -829,10 +861,30 @@ namespace XMTuner
             ListViewItem item = channelBox.SelectedItems[0];
             if (item.Name.Equals("")) { return; }
             int num = Convert.ToInt32(item.Name);
-            DialogResult result = MessageBox.Show("Add Channel " + num + " to Favorites?", "Add to Favorites", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            if (result == DialogResult.Yes)
+            XMChannel ch = self.Find(num);
+            if (self.favorites.isFavorite(num) == false)
             {
-                //Do the work...
+                //Add to Favorites...
+                DialogResult result = MessageBox.Show("Add \"" + ch.ToSimpleString() + "\" to Favorites?", "Add to Favorites", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (result == DialogResult.Yes)
+                {
+                    if (self.favorites.addFavoriteChannel(num))
+                    {
+                        item.Group = channelBox.Groups["cbGroupFavorite"];
+                    }
+                }
+            }
+            else
+            {
+                //Already in favorites, offer to remove...
+                DialogResult result = MessageBox.Show("Remove \"" + ch.ToSimpleString() + "\" from Favorites?", "Remove from Favorites", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (result == DialogResult.Yes)
+                {
+                    if (self.favorites.removeFavoriteChannel(num))
+                    {
+                        item.Group = channelBox.Groups["cbGroupNormal"];
+                    }
+                }
             }
         }
 
@@ -840,12 +892,26 @@ namespace XMTuner
         {
             favoriteChannelsToolStripMenuItem.Checked = false;
             allChannelsToolStripMenuItem.Checked = true;
+            channelBox.Tag = "";
+            loadChannels(true);
         }
 
         private void favoriteChannelsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             allChannelsToolStripMenuItem.Checked = false;
             favoriteChannelsToolStripMenuItem.Checked = true;
+            channelBox.ShowGroups = true;
+            channelBox.Tag = "favorites";
+            loadChannels(true);
+        }
+
+        private void byCategoryToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            allChannelsToolStripMenuItem.Checked = false;
+            favoriteChannelsToolStripMenuItem.Checked = false;
+            byCategoryToolStripMenuItem.Checked = true;
+            channelBox.Tag = "category";
+            loadChannels(true);
         }
     }
 }
