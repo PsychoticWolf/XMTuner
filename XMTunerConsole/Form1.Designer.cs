@@ -35,6 +35,7 @@
             System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("Nothing Played Yet...");
             this.allChannelsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.favoriteChannelsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.byCategoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.bStart = new System.Windows.Forms.Button();
             this.bConfigure = new System.Windows.Forms.Button();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
@@ -124,7 +125,8 @@
             // 
             viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.allChannelsToolStripMenuItem,
-            this.favoriteChannelsToolStripMenuItem});
+            this.favoriteChannelsToolStripMenuItem,
+            this.byCategoryToolStripMenuItem});
             viewToolStripMenuItem.Name = "viewToolStripMenuItem";
             viewToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
             viewToolStripMenuItem.Text = "View";
@@ -132,7 +134,7 @@
             // allChannelsToolStripMenuItem
             // 
             this.allChannelsToolStripMenuItem.Name = "allChannelsToolStripMenuItem";
-            this.allChannelsToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F3;
+            this.allChannelsToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F2;
             this.allChannelsToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
             this.allChannelsToolStripMenuItem.Text = "All Channels";
             this.allChannelsToolStripMenuItem.Click += new System.EventHandler(this.allChannelsToolStripMenuItem_Click);
@@ -140,10 +142,18 @@
             // favoriteChannelsToolStripMenuItem
             // 
             this.favoriteChannelsToolStripMenuItem.Name = "favoriteChannelsToolStripMenuItem";
-            this.favoriteChannelsToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F4;
+            this.favoriteChannelsToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F3;
             this.favoriteChannelsToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
             this.favoriteChannelsToolStripMenuItem.Text = "Favorite Channels";
             this.favoriteChannelsToolStripMenuItem.Click += new System.EventHandler(this.favoriteChannelsToolStripMenuItem_Click);
+            // 
+            // byCategoryToolStripMenuItem
+            // 
+            this.byCategoryToolStripMenuItem.Name = "byCategoryToolStripMenuItem";
+            this.byCategoryToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F4;
+            this.byCategoryToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
+            this.byCategoryToolStripMenuItem.Text = "By Category";
+            this.byCategoryToolStripMenuItem.Click += new System.EventHandler(this.byCategoryToolStripMenuItem_Click);
             // 
             // bStart
             // 
@@ -358,6 +368,7 @@
             this.channelBox.Margin = new System.Windows.Forms.Padding(0);
             this.channelBox.MultiSelect = false;
             this.channelBox.Name = "channelBox";
+            this.channelBox.ShowItemToolTips = true;
             this.channelBox.Size = new System.Drawing.Size(544, 148);
             this.channelBox.TabIndex = 11;
             this.channelBox.TileSize = new System.Drawing.Size(515, 30);
@@ -373,10 +384,10 @@
             this.addToFavoritesToolStripMenuItem,
             this.copyURLToolStripMenuItem,
             this.toolStripSeparator2,
-            this.uRLBuilderToolStripMenuItem,
-            viewToolStripMenuItem});
+            viewToolStripMenuItem,
+            this.uRLBuilderToolStripMenuItem});
             this.channelContextMenu.Name = "contextMenuStrip2";
-            this.channelContextMenu.Size = new System.Drawing.Size(210, 120);
+            this.channelContextMenu.Size = new System.Drawing.Size(210, 142);
             // 
             // playToolStripMenuItem
             // 
@@ -560,7 +571,7 @@
             this.tAbout.Margin = new System.Windows.Forms.Padding(2);
             this.tAbout.Name = "tAbout";
             this.tAbout.Padding = new System.Windows.Forms.Padding(2);
-            this.tAbout.Size = new System.Drawing.Size(552, 213);
+            this.tAbout.Size = new System.Drawing.Size(552, 210);
             this.tAbout.TabIndex = 2;
             this.tAbout.Text = "About";
             // 
@@ -980,6 +991,7 @@
         private System.Windows.Forms.ToolStripMenuItem copyURLToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addToFavoritesToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+        private System.Windows.Forms.ToolStripMenuItem byCategoryToolStripMenuItem;
     }
 }
 

@@ -13,7 +13,7 @@ namespace XMTuner
     class XMTuner
     {
         //Flags
-        protected bool isLive = true;
+        protected bool isLive = false;
 
         //Config options...
         protected String user;
@@ -27,6 +27,7 @@ namespace XMTuner
         protected String cookies;
         protected List<XMChannel> channels = new List<XMChannel>();
         public List<String> recentlyPlayed = new List<String>();
+        public Favorites favorites = new Favorites();
 
         //Runtime Flags
         public Boolean isLoggedIn;

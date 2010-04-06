@@ -96,6 +96,7 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
@@ -107,6 +108,7 @@
   <ItemGroup>
     <Compile Include="CacheManager.cs" />
     <Compile Include="configMan.cs" />
+    <Compile Include="Favorites.cs" />
     <Compile Include="Form2.cs">
       <SubType>Form</SubType>
     </Compile>
