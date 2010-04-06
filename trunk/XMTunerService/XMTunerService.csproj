@@ -98,6 +98,9 @@
     <Compile Include="..\XMTunerConsole\configMan.cs">
       <Link>configMan.cs</Link>
     </Compile>
+    <Compile Include="..\XMTunerConsole\Favorites.cs">
+      <Link>Favorites.cs</Link>
+    </Compile>
     <Compile Include="..\XMTunerConsole\Log.cs">
       <Link>Log.cs</Link>
     </Compile>
