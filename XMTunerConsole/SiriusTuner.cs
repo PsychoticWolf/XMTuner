@@ -411,12 +411,18 @@ namespace XMTuner
 
             if (contentURL == null)
             {
-                output("Failed fetching stream for channel...", "error");
-
-                //XXX This needs to be reworked...
-                output("SIRIUS Internet Radio Error - Not Logged In", "error");
+                if (data.ToLower().Contains("access denied"))
+                {
+                    output("SIRIUS Internet Radio Error - Not Logged In", "error");
+                    isLoggedIn = false;
+                }
+                else
+                {
+                    output("SIRIUS Internet Radio Error - Unknown Error", "error");
+                    output("See playchannel.err for raw data", "debug");
+                }
                 cache.saveFile("playchannel.err", data);
-                isLoggedIn = false;
+                contentURL = null;
             }
             else
             {

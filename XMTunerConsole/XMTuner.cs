@@ -583,6 +583,7 @@ namespace XMTuner
             if (URL == null || URL.Contains("http") == false)
             {
                 output("Error fetching stream for " + cD.ToSimpleString(), "error");
+                return null;
             }
             return URL;
          }
@@ -603,9 +604,17 @@ namespace XMTuner
             }
             else 
             {
-                output("XM Radio Online Error - Not Logged In", "error");
+                if (data.ToLower().Contains("access denied"))
+                {
+                    output("XM Radio Online Error - Not Logged In", "error");
+                    isLoggedIn = false;
+                }
+                else
+                {
+                    output("XM Radio Online Error - Unknown Error", "error");
+                    output("See playchannel.err for raw data", "debug");
+                }
                 cache.saveFile("playchannel.err", data);
-                isLoggedIn = false;
                 contentURL = null;
             }
             return (contentURL);

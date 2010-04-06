@@ -123,6 +123,13 @@ namespace XMTuner
             updateNowPlayingData(true, true, num);
 
             String url = self.play(num, "high");
+            if (url == null)
+            {
+                pLabel2.Text = "Error fetching stream";
+                pLabel3.Text = "Check log for more details...";
+                pStatusLabel.Text = "";
+                return;
+            }
             axWindowsMediaPlayer1.URL = url;
             playerNum = num;
             updateNowPlayingData(false, false, num);
