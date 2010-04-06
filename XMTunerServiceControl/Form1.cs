@@ -5,7 +5,7 @@ using System.Collections.Specialized;
 using System.Net;
 using System.IO;
 using System.Drawing;
-using CodeKing.Native;
+using System.Runtime.InteropServices;
 
 
 namespace XMTuner
@@ -15,6 +15,38 @@ namespace XMTuner
         ServiceController serviceControl = new ServiceController();
         String logFile = "XMTunerService.log";
 
+        #region Aero
+        [StructLayout(LayoutKind.Sequential)]
+        public struct MARGINS
+        {
+            public int cxLeftWidth;
+            public int cxRightWidth;
+            public int cyTopHeight;
+            public int cyBottomHeight;
+        }
+
+        [DllImport("dwmapi.dll")]
+        public static extern int DwmExtendFrameIntoClientArea(
+               IntPtr hWnd,
+               ref MARGINS pMarInset
+               ); 
+        
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+            MARGINS margins = new MARGINS();
+
+            margins.cxLeftWidth = 0;
+            margins.cxRightWidth = 0;
+            margins.cyTopHeight = 45;
+            margins.cyBottomHeight = 0;
+
+            IntPtr hWnd = this.Handle;
+            int result = DwmExtendFrameIntoClientArea(hWnd, ref margins);
+
+        }
+
+        #endregion
+
         #region Core
         public Form1()
         {
@@ -23,8 +55,8 @@ namespace XMTuner
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            MainForm_Load(sender, e); //Aero
             serviceControl.ServiceName = "XMTunerService";
-
             service_button_reset();
         }
         #endregion
