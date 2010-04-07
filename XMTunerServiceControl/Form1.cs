@@ -29,20 +29,31 @@ namespace XMTuner
         public static extern int DwmExtendFrameIntoClientArea(
                IntPtr hWnd,
                ref MARGINS pMarInset
-               ); 
+               );
+        [DllImport("dwmapi.dll")]
+        public static extern int DwmIsCompositionEnabled(ref int en);
         
-        private void MainForm_Load(object sender, EventArgs e)
+        private void AeroLoad()
         {
-            MARGINS margins = new MARGINS();
+            if (System.Environment.OSVersion.Version.Major >= 6)  //make sure you are not on a legacy OS 
+            {
+                int en = 0;
+                DwmIsCompositionEnabled(ref en);  //check if the desktop composition is enabled
+                if (en > 0)
+                {
+                    this.BackColor = Color.Gainsboro;
 
-            margins.cxLeftWidth = 0;
-            margins.cxRightWidth = 0;
-            margins.cyTopHeight = 45;
-            margins.cyBottomHeight = 0;
+                    MARGINS margins = new MARGINS();
 
-            IntPtr hWnd = this.Handle;
-            int result = DwmExtendFrameIntoClientArea(hWnd, ref margins);
+                    margins.cxLeftWidth = 0;
+                    margins.cxRightWidth = 0;
+                    margins.cyTopHeight = 45;
+                    margins.cyBottomHeight = 0;
 
+                    IntPtr hWnd = this.Handle;
+                    int result = DwmExtendFrameIntoClientArea(hWnd, ref margins);
+                }
+            }
         }
 
         #endregion
@@ -55,7 +66,7 @@ namespace XMTuner
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            MainForm_Load(sender, e); //Aero
+            AeroLoad(); //Aero
             serviceControl.ServiceName = "XMTunerService";
             service_button_reset();
         }
