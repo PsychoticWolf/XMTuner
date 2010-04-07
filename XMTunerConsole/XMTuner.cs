@@ -13,7 +13,7 @@ namespace XMTuner
     class XMTuner
     {
         //Flags
-        protected bool isLive = false;
+        public bool isLive = true;
 
         //Config options...
         protected String user;
@@ -216,8 +216,14 @@ namespace XMTuner
             cookieCount = 0;
             cookies = null;
             isLoggedIn = false;
-            login();
-            output("Relogin Completed.", "info");
+            if (login())
+            {
+                output("Relogin Completed.", "info");
+            }
+            else
+            {
+                output("Relogin unsuccessful, will keep trying...", "info");
+            }
         }
 
         private Boolean isChannelDataCurrent()
