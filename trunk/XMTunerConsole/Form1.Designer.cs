@@ -322,7 +322,7 @@
             this.tChannels.Margin = new System.Windows.Forms.Padding(2);
             this.tChannels.Name = "tChannels";
             this.tChannels.Padding = new System.Windows.Forms.Padding(3);
-            this.tChannels.Size = new System.Drawing.Size(552, 186);
+            this.tChannels.Size = new System.Drawing.Size(552, 210);
             this.tChannels.TabIndex = 1;
             this.tChannels.Text = "Channels";
             // 
@@ -351,8 +351,8 @@
             this.splitContainer1.Panel2.Controls.Add(this.protocolBox);
             this.splitContainer1.Panel2.Controls.Add(this.txtChannel);
             this.splitContainer1.Panel2MinSize = 0;
-            this.splitContainer1.Size = new System.Drawing.Size(546, 180);
-            this.splitContainer1.SplitterDistance = 151;
+            this.splitContainer1.Size = new System.Drawing.Size(546, 204);
+            this.splitContainer1.SplitterDistance = 171;
             this.splitContainer1.SplitterIncrement = 5;
             this.splitContainer1.SplitterWidth = 2;
             this.splitContainer1.TabIndex = 14;
@@ -369,7 +369,7 @@
             this.channelBox.MultiSelect = false;
             this.channelBox.Name = "channelBox";
             this.channelBox.ShowItemToolTips = true;
-            this.channelBox.Size = new System.Drawing.Size(544, 149);
+            this.channelBox.Size = new System.Drawing.Size(544, 169);
             this.channelBox.TabIndex = 11;
             this.channelBox.TileSize = new System.Drawing.Size(515, 30);
             this.channelBox.UseCompatibleStateImageBehavior = false;
@@ -526,7 +526,7 @@
             this.tHistory.Location = new System.Drawing.Point(4, 22);
             this.tHistory.Name = "tHistory";
             this.tHistory.Padding = new System.Windows.Forms.Padding(3);
-            this.tHistory.Size = new System.Drawing.Size(552, 186);
+            this.tHistory.Size = new System.Drawing.Size(552, 210);
             this.tHistory.TabIndex = 4;
             this.tHistory.Text = "History";
             this.tHistory.UseVisualStyleBackColor = true;
@@ -548,7 +548,7 @@
             this.recentlyPlayedBox.Margin = new System.Windows.Forms.Padding(0);
             this.recentlyPlayedBox.MultiSelect = false;
             this.recentlyPlayedBox.Name = "recentlyPlayedBox";
-            this.recentlyPlayedBox.Size = new System.Drawing.Size(546, 180);
+            this.recentlyPlayedBox.Size = new System.Drawing.Size(546, 204);
             this.recentlyPlayedBox.TabIndex = 7;
             this.recentlyPlayedBox.TileSize = new System.Drawing.Size(507, 30);
             this.recentlyPlayedBox.UseCompatibleStateImageBehavior = false;
@@ -571,7 +571,7 @@
             this.tAbout.Margin = new System.Windows.Forms.Padding(2);
             this.tAbout.Name = "tAbout";
             this.tAbout.Padding = new System.Windows.Forms.Padding(2);
-            this.tAbout.Size = new System.Drawing.Size(552, 186);
+            this.tAbout.Size = new System.Drawing.Size(552, 213);
             this.tAbout.TabIndex = 2;
             this.tAbout.Text = "About";
             // 
@@ -594,7 +594,7 @@
             this.aBuildDate.ReadOnly = true;
             this.aBuildDate.Size = new System.Drawing.Size(62, 19);
             this.aBuildDate.TabIndex = 17;
-            this.aBuildDate.Text = "20100406";
+            this.aBuildDate.Text = "20100408";
             this.aBuildDate.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // label8
