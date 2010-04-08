@@ -5,6 +5,7 @@ using System.Collections.Specialized;
 using System.Drawing;
 using System.Net;
 using System.Reflection;
+using System.Runtime.InteropServices;
 
 namespace XMTuner
 {
@@ -37,6 +38,51 @@ namespace XMTuner
 
         Boolean cbIconsLoaded;
 
+        #region Aero
+        [StructLayout(LayoutKind.Sequential)]
+        public struct MARGINS
+        {
+            public int cxLeftWidth;
+            public int cxRightWidth;
+            public int cyTopHeight;
+            public int cyBottomHeight;
+        }
+
+        [DllImport("dwmapi.dll")]
+        public static extern int DwmExtendFrameIntoClientArea(
+               IntPtr hWnd,
+               ref MARGINS pMarInset
+               );
+        [DllImport("dwmapi.dll")]
+        public static extern int DwmIsCompositionEnabled(ref int en);
+
+        private void AeroLoad()
+        {
+            if (System.Environment.OSVersion.Version.Major >= 6)  //make sure you are not on a legacy OS 
+            {
+                int en = 0;
+                DwmIsCompositionEnabled(ref en);  //check if the desktop composition is enabled
+                if (en > 0)
+                {
+                    this.BackColor = Color.Gainsboro;
+                    splitContainer2.BackColor = SystemColors.Control;
+                    splitContainer2.Panel1.BackColor = Color.Gainsboro;
+
+                    MARGINS margins = new MARGINS();
+
+                    margins.cxLeftWidth = 0;
+                    margins.cxRightWidth = 0;
+                    margins.cyTopHeight = 45;
+                    margins.cyBottomHeight = 0;
+
+                    IntPtr hWnd = this.Handle;
+                    int result = DwmExtendFrameIntoClientArea(hWnd, ref margins);
+                }
+            }
+        }
+
+        #endregion
+
         #region Form1 Core
         public Form1()
         {
@@ -49,6 +95,7 @@ namespace XMTuner
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            AeroLoad();
             logging = new Log(ref outputbox);
             aVersion.Text = configMan.version;
             outputbox.AppendText("XMTuner "+configMan.version+"\n");
@@ -122,9 +169,7 @@ namespace XMTuner
             timer2.Enabled = true;
             linkServer.Text = "Server is Running...";
             linkServer.Enabled = true;
-#if DEBUG
             timerTest.Enabled = true;
-#endif
 
             loggedIn = true;
             if (loggedIn) {
