@@ -64,6 +64,7 @@ namespace XMTuner
                 DwmIsCompositionEnabled(ref en);  //check if the desktop composition is enabled
                 if (en > 0)
                 {
+                    output("Aero Glass Enabled", "debug");
                     this.BackColor = Color.Gainsboro;
                     splitContainer2.BackColor = SystemColors.Control;
                     splitContainer2.Panel1.BackColor = Color.Gainsboro;
@@ -534,7 +535,7 @@ namespace XMTuner
             typeBox.SelectedItem = "Channel";
             if (isMMS) { protocolBox.SelectedItem = "MMS"; } else { protocolBox.SelectedItem = "HTTP"; }
             if (bitrate.Equals("high")) { bitRateBox.SelectedItem = "High"; } else { bitRateBox.SelectedItem = "Low"; }
-
+            output("Channels Tab: Loading...", "debug");
             channelBox.BeginUpdate();
             channelBox.Clear();
             ImageList imagelist = new ImageList();
@@ -568,6 +569,7 @@ namespace XMTuner
                     //We failed to get a logo: increase the error count
                     if (image == null)
                     {
+                        output("Channels Tab: Error getting logo for "+chan.ToSimpleString(), "debug");
                         errcnt++;
                     }
                     else
@@ -595,6 +597,7 @@ namespace XMTuner
                         cbIconsLoaded = false;
                     }
                     imagelist.Images.Add(defaultImage);
+                    output("Channels Tab: Using default logo for " + chan.ToSimpleString(), "debug");
                     
                 }
                 imagenum = i;
@@ -636,6 +639,7 @@ namespace XMTuner
             }
 
             channelBox.EndUpdate();
+            output("Channels Tab: Complete", "debug");
             timerCB.Enabled = true;
             timerCB.Tag = 0;
             txtChannel.Enabled = true;
