@@ -567,7 +567,7 @@ namespace XMTuner
                     //We failed to get a logo: increase the error count
                     if (image == null)
                     {
-                        output("Channels Tab: Error getting logo for "+chan.ToSimpleString(), "debug");
+                        output("Channels Tab: Error getting logo for "+chan.ToString(), "debug");
                         errcnt++;
                     }
                     else
@@ -595,14 +595,14 @@ namespace XMTuner
                         cbIconsLoaded = false;
                     }
                     imagelist.Images.Add(defaultImage);
-                    output("Channels Tab: Using default logo for " + chan.ToSimpleString(), "debug");
+                    output("Channels Tab: Using default logo for " + chan.ToString(), "debug");
                     
                 }
                 imagenum = i;
-                ListViewItem item = new ListViewItem(new String[] {chan.ToSimpleString(), chan.desc});
+                ListViewItem item = new ListViewItem(new String[] {chan.ToString(), chan.desc});
                 item.ImageIndex = imagenum;
                 item.Name = chan.num.ToString();
-                item.ToolTipText = chan.ToSimpleString()+"\n" + chan.desc+"\n";
+                item.ToolTipText = chan.ToString()+"\n" + chan.desc+"\n";
 
                 //Groups
                 /* Create and set category groups as we build, if we're building in category mode */
@@ -912,7 +912,7 @@ namespace XMTuner
             if (self.favorites.isFavorite(num) == false)
             {
                 //Add to Favorites...
-                DialogResult result = MessageBox.Show("Add \"" + ch.ToSimpleString() + "\" to Favorites?", "Add to Favorites", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                DialogResult result = MessageBox.Show("Add \"" + ch.ToString() + "\" to Favorites?", "Add to Favorites", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (result == DialogResult.Yes)
                 {
                     if (self.favorites.addFavoriteChannel(num))
@@ -924,7 +924,7 @@ namespace XMTuner
             else
             {
                 //Already in favorites, offer to remove...
-                DialogResult result = MessageBox.Show("Remove \"" + ch.ToSimpleString() + "\" from Favorites?", "Remove from Favorites", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                DialogResult result = MessageBox.Show("Remove \"" + ch.ToString() + "\" from Favorites?", "Remove from Favorites", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (result == DialogResult.Yes)
                 {
                     if (self.favorites.removeFavoriteChannel(num))
