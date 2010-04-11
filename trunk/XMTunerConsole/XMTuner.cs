@@ -13,7 +13,7 @@ namespace XMTuner
     class XMTuner
     {
         //Flags
-        protected bool isLive = false;
+        protected bool isLive = true;
 
         //Config options...
         protected String user;
@@ -37,6 +37,9 @@ namespace XMTuner
         Boolean loadedChannelMetadataCache = false;
         Boolean isProgramDataCurrent = false;
         Boolean useProgramGuide = true;
+        Boolean preloadedImages1R = false;
+        Boolean preloadedImages = false;
+        public Boolean preloadImagesUpdated = false;
 
         //General Globals
         protected int cookieCount = 0;
@@ -420,6 +423,11 @@ namespace XMTuner
                 extendedChannelDataDelegate.BeginInvoke(null, null);
             }
 
+            if (preloadedImages == false)
+            {
+                doPreloadImages();
+            }
+
             MethodInvoker simpleDelegate = new MethodInvoker(loadWhatsOn);
             simpleDelegate.BeginInvoke(null, null);
 
@@ -674,6 +682,7 @@ namespace XMTuner
                 {
                     loadedExtendedChannelData = true;
                 }
+                doPreloadImages();
             }
         }
 
@@ -959,6 +968,44 @@ namespace XMTuner
                 return true;
             }
             return false;
+        }
+
+        public void doPreloadImages()
+        {
+            MethodInvoker simpleDelegate = new MethodInvoker(preloadImages);
+            simpleDelegate.BeginInvoke(null, null);
+        }
+
+        private void preloadImages()
+        {
+            preloadedImages = true;
+            output("Image Cache: Populate...", "debug");
+            foreach (XMChannel chan in channels)
+            {
+                //Only load the image if it needs loading...
+                if (chan.logo_small_image == null)
+                {
+                    URL imageURL = new URL(chan.logo_small);
+                    imageURL.setTimeout(500);
+                    imageURL.fetch();
+                    if (imageURL.isSuccess)
+                    {
+                        output("Image Cache: Added Image for " + chan.ToString(), "debug");
+                        chan.logo_small_image = imageURL.responseAsImage();
+                        if (preloadedImages1R)
+                        {
+                            preloadImagesUpdated = true;
+                        }
+                    }
+                    else
+                    {
+                        output("Image Cache: Error adding image for " + chan.ToString(), "error");
+                        preloadedImages = false;
+                    }
+                }
+            }
+            output("Image Cache: Done.", "debug");
+            preloadedImages1R = true;
         }
     }
 }

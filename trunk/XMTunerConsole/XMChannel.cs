@@ -20,6 +20,7 @@ namespace XMTuner
         public String url;
         public String logo;
         public String logo_small;
+        public System.Drawing.Image logo_small_image = null;
         public List<String[]> programData = new List<string[]>();
 
         public String channelKey;

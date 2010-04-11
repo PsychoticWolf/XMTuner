@@ -516,125 +516,105 @@ namespace XMTuner
         #endregion
 
         #region Channels Tab
-        private Image getImageFromURL(String url)
-        {
-            URL imageURL = new URL(url);
-            imageURL.setTimeout(500);
-            imageURL.fetch();
-            Image image = imageURL.responseAsImage();
-            return image; //Note, this can be null
-        }
-
         private void loadChannels() { loadChannels(false); }
         private void loadChannels(Boolean force)
         {
             if ((self == null || channelBox.Items.Count > 0) && force == false) { return; }
+
             if (channelBox.Tag == null) { channelBox.Tag = ""; }
+
+            // URL Builder
             typeBox.SelectedItem = "Channel";
             if (isMMS) { protocolBox.SelectedItem = "MMS"; } else { protocolBox.SelectedItem = "HTTP"; }
             if (bitrate.Equals("high")) { bitRateBox.SelectedItem = "High"; } else { bitRateBox.SelectedItem = "Low"; }
+
+            //Channel ListView
             output("Channels Tab: Loading...", "debug");
             channelBox.BeginUpdate();
             channelBox.Clear();
+
+            //Columns for Item and Subitems
+            channelBox.Columns.AddRange(new ColumnHeader[] { new ColumnHeader(), new ColumnHeader() });
+
+            //Set up ImageList (Construct, Link, Declare Size)
             ImageList imagelist = new ImageList();
             channelBox.LargeImageList = imagelist;
             imagelist.ImageSize = new Size(45, 40);
-            int i = 0;
-            cbIconsLoaded = true;
-            channelBox.Columns.AddRange(new ColumnHeader[] { new ColumnHeader(), new ColumnHeader()});
+            Image defaultImage = Image.FromStream(Assembly.GetExecutingAssembly().GetManifestResourceStream("XMTuner.xmtuner64.png"));
 
             //Add Groups
             channelBox.Groups.Add("cbGroupFavorite", "Favorite Channels");
             channelBox.Groups.Add("cbGroupNormal", network.ToUpper() + " Channels");
 
-            Boolean setLogoImage = false;
-            Image defaultImage = Image.FromStream(Assembly.GetExecutingAssembly().GetManifestResourceStream("XMTuner.xmtuner64.png"));
-
+            cbIconsLoaded = true;
             int errcnt = 0;
+            Int32 imagenum = 0;
+            //Iterate through the channels (using a copy of the List)
             foreach (XMChannel chan in self.getChannels())
             {
-                Int32 imagenum;
+                //First, we deal with the Logo and adding it to the ImageList linked to the ListView
                 Image image = null;
-                Boolean haveLogo = false;
-                //If the logo is defined, attempt to load it...
-                if (chan.logo_small != null)
-                {
-                    //Unless we've already had problems loading logos before...
-                    if (errcnt <= 2)
-                    {
-                        image = getImageFromURL(chan.logo_small);
-                    }
-                    //We failed to get a logo: increase the error count
-                    if (image == null)
-                    {
-                        output("Channels Tab: Error getting logo for "+chan.ToString(), "debug");
-                        errcnt++;
-                    }
-                    else
-                    {
-                        haveLogo = true;
-                    }
-                }
 
-                //Evaluate if the logo is defined, so we catch it being declared invalid above
-                if (haveLogo)
+                //If the logo is defined, load it...
+                if (chan.logo_small_image != null)
                 {
-                    //If we have the image, use it.
-                    if (image != null)
-                    {
-                        imagelist.Images.Add(image);
-                    }
-                    setLogoImage = true;
+                    image = chan.logo_small_image;
+                    imagelist.Images.Add(image);
+
                 }
                 else
                 {
                     //Default Icon
-                    if (setLogoImage == false && imagelist.Images.Count < 1)
+                    if (imagelist.Images.Count.Equals(0) && image == null)
                     {
                         imagelist.ImageSize = new Size(30, 30);
                         cbIconsLoaded = false;
                     }
+                    errcnt++;
                     imagelist.Images.Add(defaultImage);
                     output("Channels Tab: Using default logo for " + chan.ToString(), "debug");
-                    
                 }
-                imagenum = i;
+                //End Logo
+
+                //Construct ListViewItem to Add to the ListView
                 ListViewItem item = new ListViewItem(new String[] {chan.ToString(), chan.desc});
-                item.ImageIndex = imagenum;
                 item.Name = chan.num.ToString();
+                item.ImageIndex = imagenum;
                 item.ToolTipText = chan.ToString()+"\n" + chan.desc+"\n";
 
-                //Groups
-                /* Create and set category groups as we build, if we're building in category mode */
-                if (channelBox.Tag.Equals("category"))
-                {
-                    if (channelBox.Groups.IndexOf(channelBox.Groups[chan.category]) == -1)
-                    {
-                        channelBox.Groups.Add(chan.category, chan.category.ToUpperFirstLetter());
-                    }
-                    item.Group = channelBox.Groups[chan.category];
-                }
-                else
-                {
-                    /* For Favorites/Normal Mode - the general group */
+                    //Groups (Assign the Channel to its group)
+                    /* The General Group (For All Modes)
+                     *   (Favorites and Category Views will override this as needed.) */
                     item.Group = channelBox.Groups["cbGroupNormal"];
-                }
 
-                /* Mark Favorites for Favorites and Category Modes */
-                if (!channelBox.Tag.Equals(""))
-                {
-                    if (self.favorites.isFavorite(chan.num))
+                    /* Create and set category groups as we build, if we're building in category mode */
+                    if (channelBox.Tag.Equals("category"))
+                    {
+                        //If Category isn't yet a group, create it...
+                        if (channelBox.Groups.IndexOf(channelBox.Groups[chan.category]) == -1)
+                        {
+                            channelBox.Groups.Add(chan.category, chan.category.ToUpperFirstLetter());
+                        }
+                        //Add Item to its Category Group
+                        item.Group = channelBox.Groups[chan.category];
+                    }
+
+                    /* Mark Favorites for Favorites and Category Modes */
+                    if (!channelBox.Tag.Equals("") && self.favorites.isFavorite(chan.num))
                     {
                         item.Group = channelBox.Groups["cbGroupFavorite"];
                     }
-                }
 
                 channelBox.Items.Add(item);
-                i++;
+                imagenum++;
             }
-            if (errcnt >= 3) { 
+
+            /* If we're missing 3 or more channel logos...
+             * Set loaded flag to false so periodic update retries setting them. 
+             * Disabled for testing of push-style updating of new image cache */
+            /* if (errcnt >= 3) { 
                 cbIconsLoaded = false;
-            }
+            } */
 
             channelBox.EndUpdate();
             output("Channels Tab: Complete", "debug");
@@ -644,17 +624,19 @@ namespace XMTuner
 
         }
 
-        private void unloadChannels()
-        {
-            timerCB.Enabled = false;
-            channelBox.Clear();
-            channelBox.LargeImageList.Dispose();
-        }
-
         private void updateChannels()
         {
-            if (cbIconsLoaded == false && self.loadedExtendedChannelData == true)
+            if ((cbIconsLoaded == false && self.loadedExtendedChannelData == true) || self.preloadImagesUpdated == true)
             {
+                if (self.preloadImagesUpdated == true)
+                {
+                    output("Channels Tab: New Images in Cache Detected, Updating...", "debug");
+                }
+                else
+                {
+                    output("Channels Tab: Logos not loaded, refreshing...", "debug");
+                }
+
                 int j = (int)timerCB.Tag;
                 if (j == 0 || j >= 12)
                 {
@@ -664,13 +646,26 @@ namespace XMTuner
                 }
                 j++;
                 timerCB.Tag = j;
+                self.preloadImagesUpdated = false;
             }
+
+            //Update What's On Data in the Channel Box
             int i = 0;
             foreach (XMChannel chan in self.getChannels())
             {
-                channelBox.Items[i].SubItems[1].Text = chan.artist + " - " + chan.song;
+                if (chan.artist != null && chan.song != null)
+                {
+                    channelBox.Items[i].SubItems[1].Text = chan.artist + " - " + chan.song;
+                }
                 i++;
             }
+        }
+
+        private void unloadChannels()
+        {
+            timerCB.Enabled = false;
+            channelBox.Clear();
+            channelBox.LargeImageList.Dispose();
         }
 
         private String getChannelAddress(String channelString, String protocol, String altBitrate)
