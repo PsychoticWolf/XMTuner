@@ -76,7 +76,13 @@ namespace XMTuner
             header += datetime.ToString() + "\n\n";
             if (outputbox != null)
             {
-                if (outputbox.InvokeRequired == false)
+                if (outputbox.InvokeRequired)
+                {
+                    GetTextCallback d = new Log.GetTextCallback(GetText);
+                    String text = outputbox.Invoke(d, new object[] { outputbox }) as String;
+                    textOut.Write(header + text);
+                }
+                else
                 {
                     textOut.Write(header + outputbox.Text);
                 }
@@ -88,6 +94,11 @@ namespace XMTuner
             
 
             textOut.Close();
+        }
+        public delegate String GetTextCallback(ref RichTextBox outputbox);
+        private static String GetText(ref RichTextBox outputbox)
+        {
+            return outputbox.Text;
         }
     }
 }
