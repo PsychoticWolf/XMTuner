@@ -423,13 +423,13 @@ namespace XMTuner
                 extendedChannelDataDelegate.BeginInvoke(null, null);
             }
 
+            MethodInvoker simpleDelegate = new MethodInvoker(loadWhatsOn);
+            simpleDelegate.BeginInvoke(null, null);
+
             if (preloadedImages == false)
             {
                 doPreloadImages();
             }
-
-            MethodInvoker simpleDelegate = new MethodInvoker(loadWhatsOn);
-            simpleDelegate.BeginInvoke(null, null);
 
         }
         protected void doWhatsOn(Boolean atstartup)
@@ -683,7 +683,7 @@ namespace XMTuner
                 {
                     loadedExtendedChannelData = true;
                 }
-                doPreloadImages();
+                preloadImages();
             }
         }
 
@@ -971,39 +971,54 @@ namespace XMTuner
             return false;
         }
 
-        public void doPreloadImages()
+        private void doPreloadImages()
         {
-            MethodInvoker simpleDelegate = new MethodInvoker(preloadImages);
+            MethodInvoker simpleDelegate = new MethodInvoker(preloadImagesAsync);
             simpleDelegate.BeginInvoke(null, null);
+        }
+
+        private void preloadImagesAsync()
+        {
+            System.Threading.Thread.Sleep(500);
+            preloadImages();
         }
 
         private void preloadImages()
         {
             preloadedImages = true;
             output("Image Cache: Populate...", "debug");
-            foreach (XMChannel chan in channels)
+            int n = 0;
+            try
             {
-                //Only load the image if it needs loading...
-                if (chan.logo_small_image == null)
+                foreach (XMChannel chan in channels)
                 {
-                    URL imageURL = new URL(chan.logo_small);
-                    imageURL.setTimeout(500);
-                    imageURL.fetch();
-                    if (imageURL.isSuccess)
+                    //Only load the image if it needs loading...
+                    if (chan.logo_small_image == null)
                     {
-                        output("Image Cache: Added Image for " + chan.ToString(), "debug");
-                        chan.logo_small_image = imageURL.responseAsImage();
-                        if (preloadedImages1R)
+                        n = chan.num;
+                        URL imageURL = new URL(chan.logo_small);
+                        imageURL.setTimeout(500);
+                        imageURL.fetch();
+                        if (imageURL.isSuccess)
                         {
-                            preloadImagesUpdated = true;
+                            output("Image Cache: Added Image for " + chan.ToString(), "debug");
+                            chan.logo_small_image = imageURL.responseAsImage();
+                            if (preloadedImages1R)
+                            {
+                                preloadImagesUpdated = true;
+                            }
+                        }
+                        else
+                        {
+                            output("Image Cache: Error adding image for " + chan.ToString(), "error");
+                            preloadedImages = false;
                         }
                     }
-                    else
-                    {
-                        output("Image Cache: Error adding image for " + chan.ToString(), "error");
-                        preloadedImages = false;
-                    }
                 }
+            }
+            catch (InvalidOperationException)
+            {
+                output("Image Cache: Fatal Error during operation. (" + n + ")", "error");
             }
             output("Image Cache: Done.", "debug");
             preloadedImages1R = true;
