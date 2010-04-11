@@ -10,22 +10,14 @@ namespace XMTuner
     class URL
     {
         Uri Loc;
-        //public String postdata;
         HttpWebRequest TheRequest;
         HttpWebResponse TheReply;
+        private String error = null;
 
         public URL(String location)
         {
             Loc = new Uri(location);
             TheRequest = (HttpWebRequest) HttpWebRequest.Create(Loc);
-            TheRequest.UserAgent = "Mozilla/5.0 (compatible;)";
-
-        }
-
-        public URL(Uri location)
-        {
-            Loc = location;
-            TheRequest = (HttpWebRequest)HttpWebRequest.Create(Loc);
             TheRequest.UserAgent = "Mozilla/5.0 (compatible;)";
 
         }
@@ -64,6 +56,7 @@ namespace XMTuner
             catch (WebException e)
             {
                 TheReply = (HttpWebResponse)e.Response;
+                error = e.Message + " (" + e.Status.ToString() + ")";
             }
         }
 
@@ -87,6 +80,7 @@ namespace XMTuner
             }
             catch (WebException e) {
                 TheReply = (HttpWebResponse)e.Response;
+                error = e.Message + " (" + e.Status.ToString() + ")";
             }
         }
 
@@ -100,13 +94,40 @@ namespace XMTuner
             return statusCode;
         }
 
+        public Boolean isSuccess
+        {
+            get
+            {
+                if (error != null)
+                {
+                    return false;
+                }
+                int status = getStatus();
+                //channelURL.getStatus() >= 200 && channelURL.getStatus() < 300
+                if (status > 0 && status < 400)
+                {
+                    return true;
+                }
+                return false;
+            }
+        }
+
         public String getStatusDescription()
         {
             if (TheReply == null)
             {
-                return "Unknown Error";
+                if (error == null)
+                {
+                    return "Unknown Error";
+                }
+                else
+                {
+                    return error;
+                }
             }
-            return TheReply.StatusDescription;
+            String msg = getStatus().ToString() + " - " + TheReply.StatusDescription;
+
+            return msg;
         }
 
         public String response()
