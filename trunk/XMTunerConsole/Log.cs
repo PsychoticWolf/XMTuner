@@ -38,7 +38,7 @@ namespace XMTuner
                 return;
             }
             DateTime currentTime = DateTime.Now;
-            output = currentTime.ToString("%H:") + currentTime.ToString("mm:") + currentTime.ToString("ss") + "  " + output + "\n";
+            output = currentTime.ToString("%H:") + currentTime.ToString("mm:") + currentTime.ToString("ss") + "  " + output + "\r\n";
 
             //Tell the Form to write to the messagebox in the UI
             if (outputbox != null)

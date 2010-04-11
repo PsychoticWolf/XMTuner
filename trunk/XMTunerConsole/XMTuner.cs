@@ -995,23 +995,30 @@ namespace XMTuner
                     //Only load the image if it needs loading...
                     if (chan.logo_small_image == null)
                     {
-                        n = chan.num;
-                        URL imageURL = new URL(chan.logo_small);
-                        imageURL.setTimeout(500);
-                        imageURL.fetch();
-                        if (imageURL.isSuccess)
+                        if (chan.logo_small != null && chan.logo_small.Equals("") == false)
                         {
-                            output("Image Cache: Added Image for " + chan.ToString(), "debug");
-                            chan.logo_small_image = imageURL.responseAsImage();
-                            if (preloadedImages1R)
+                            n = chan.num;
+                            URL imageURL = new URL(chan.logo_small);
+                            imageURL.setTimeout(500);
+                            imageURL.fetch();
+                            if (imageURL.isSuccess)
                             {
-                                preloadImagesUpdated = true;
+                                output("Image Cache: Added Image for " + chan.ToString(), "debug");
+                                chan.logo_small_image = imageURL.responseAsImage();
+                                if (preloadedImages1R)
+                                {
+                                    preloadImagesUpdated = true;
+                                }
+                            }
+                            else
+                            {
+                                output("Image Cache: Error adding image for " + chan.ToString(), "error");
+                                preloadedImages = false;
                             }
                         }
                         else
                         {
-                            output("Image Cache: Error adding image for " + chan.ToString(), "error");
-                            preloadedImages = false;
+                            output("Image Cache: No logo found for " + chan.ToString(), "error");
                         }
                     }
                 }
