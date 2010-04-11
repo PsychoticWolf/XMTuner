@@ -573,6 +573,7 @@ namespace XMTuner
                 channelKey = cD.channelKey;
             }
             output("Playing " + cD.ToString(), "info");
+            output("Cookies:" + cookies, "debug");
             String address = baseurl + "/player/listen/play.action?channelKey=" + channelKey + "&newBitRate=" + speed;
             if (!isLive)
             {
