@@ -32,81 +32,29 @@ namespace XMTuner
             Boolean loginResult = true;
             output("Logging into Sirius Internet Radio", "info");
 
-            //Prefetch
-            String SiriusPlayerURL = "http://www.sirius.com/player/home/siriushome.action";
-            URL playerURL = new URL(SiriusPlayerURL);
-            output("Connecting to: " + SiriusPlayerURL, "debug");
-            playerURL.setCookieContainer();
-            playerURL.fetch();
-            output("Server Response: " + playerURL.getStatus().ToString(), "debug");
-            CookieCollection playerCookies = playerURL.getCookies();
-            //Add JS controlled required cookies
-            playerCookies.Add(new Cookie("sirius_consumer_type", "sirius_online_subscriber", "", "www.sirius.com"));
-            playerCookies.Add(new Cookie("sirius_login_type", "subscriber", "", "www.sirius.com"));
-            cookies = setCookies(playerCookies);
+            String captchaResponse;
+            String captchaID;
+            CookieCollection playerCookies;
 
-            output("Number of Cookies: " + cookieCount.ToString(), "debug");
-
-            String data = playerURL.response();
-
-            String captchaResponse = "";
-            String captchaID = "";
-            int start;
-            try
-            {
-                start = data.IndexOf("<!-- CAPTCHA:BEGIN -->");
-                int end = data.IndexOf("<!-- CAPTCHA:END -->");
-                if (start == -1 || end == -1)
-                {
-                    data = "";
-                }
-                else
-                {
-                    data = data.Substring(start, end - start);
-                }
-                start = data.IndexOf("/mp/captcha/image/");
-                String _captchaNum = data.Substring(start, 25);
-                String[] _captchaNumA = _captchaNum.Split('_');
-                int captchaNum = Convert.ToInt32(_captchaNumA[1]);
-
-                captchaResponse = getCaptchaResponse(captchaNum);
-
-                start = data.IndexOf("name=\"captchaID\"");
-                captchaID = data.Trim().Substring(start, 35);
-                String[] _captchaID = captchaID.Split(new String[] { "value=\"" }, StringSplitOptions.None);
-                captchaID = _captchaID[1].Trim().Replace("\">", "");
-            }
-            catch (ArgumentOutOfRangeException)
-            {
-                output("Failed to get Sirius captcha.", "error");
-                return false;
-            }
-
-
+            getSiriusCaptcha(out captchaResponse, out captchaID, out playerCookies);
 
             // Do Actual Login
-            String SiriusLoginURL;
-            if (isLive)
-            {
-                SiriusLoginURL = "http://www.sirius.com/player/login/siriuslogin.action";
-            }
-            else
+            String SiriusLoginURL = "http://www.sirius.com/player/login/siriuslogin.action";
+            if (!isLive)
             {
                 SiriusLoginURL = "http://users.pcfire.net/~wolf/XMReader/test.php";
             }
 
             output("Connecting to: " + SiriusLoginURL, "debug");
-            data = "userName=" + HttpUtility.UrlEncode(user) + "&password=" + HttpUtility.UrlEncode(getMD5Hash(password)) + "&__checkbox_remember=true&remember=true&captchaEnabled=true&captchaID=" + HttpUtility.UrlEncode(captchaID) + "&timeNow=null&captcha_response=" + captchaResponse;
+            String data = "userName=" + HttpUtility.UrlEncode(user) + "&password=" + HttpUtility.UrlEncode(getMD5Hash(password)) + "&__checkbox_remember=true&remember=true&captchaEnabled=true&captchaID=" + HttpUtility.UrlEncode(captchaID) + "&timeNow=null&captcha_response=" + captchaResponse;
             URL loginURL = new URL(SiriusLoginURL);
             loginURL.setRequestHeader("Cookie", cookies);
             loginURL.setCookieContainer(playerCookies);
             loginURL.fetch(data);
 
-            int responseCode = loginURL.getStatus();
-            output("Server Response: " + responseCode.ToString(), "debug");
             output("Server Response: " + loginURL.getStatusDescription(), "debug");
 
-            if (loginURL.getStatus() > 0 && loginURL.getStatus() < 400)
+            if (loginURL.isSuccess)
             {
                 CookieCollection loginCookies = loginURL.getCookies();
                 loginCookies.Add(playerCookies);
@@ -165,12 +113,77 @@ namespace XMTuner
             }
             else
             {
-                output("Login Failed: " + loginURL.getStatus(), "error");
+                output("Login Failed: " + loginURL.getStatusDescription(), "error");
                 loginResult = false;
             }
             loginURL.close();
             return loginResult;
         }
+
+        private Boolean getSiriusCaptcha(out String captchaResponse, out String captchaID, out CookieCollection playerCookies)
+        {
+            //Prefetch
+            String SiriusPlayerURL = "http://www.sirius.com/player/home/siriushome.action";
+            URL playerURL = new URL(SiriusPlayerURL);
+            output("Connecting to: " + SiriusPlayerURL, "debug");
+            playerURL.setCookieContainer();
+            playerURL.fetch();
+            output("Server Response: " + playerURL.getStatusDescription(), "debug");
+            if (playerURL.isSuccess == false)
+            {
+                captchaResponse = null;
+                captchaID = null;
+                playerCookies = null;
+                return false;
+            }
+            
+            //Continue, we have a page to work with...
+
+            playerCookies = playerURL.getCookies();
+            //Add JS controlled required cookies
+            playerCookies.Add(new Cookie("sirius_consumer_type", "sirius_online_subscriber", "", "www.sirius.com"));
+            playerCookies.Add(new Cookie("sirius_login_type", "subscriber", "", "www.sirius.com"));
+            cookies = setCookies(playerCookies);
+
+            output("Number of Cookies: " + cookieCount.ToString(), "debug");
+
+            String data = playerURL.response();
+
+            int start;
+            try
+            {
+                start = data.IndexOf("<!-- CAPTCHA:BEGIN -->");
+                int end = data.IndexOf("<!-- CAPTCHA:END -->");
+                if (start == -1 || end == -1)
+                {
+                    data = "";
+                }
+                else
+                {
+                    data = data.Substring(start, end - start);
+                }
+                start = data.IndexOf("/mp/captcha/image/");
+                String _captchaNum = data.Substring(start, 25);
+                String[] _captchaNumA = _captchaNum.Split('_');
+                int captchaNum = Convert.ToInt32(_captchaNumA[1]);
+
+                captchaResponse = getCaptchaResponse(captchaNum);
+
+                start = data.IndexOf("name=\"captchaID\"");
+                captchaID = data.Trim().Substring(start, 35);
+                String[] _captchaID = captchaID.Split(new String[] { "value=\"" }, StringSplitOptions.None);
+                captchaID = _captchaID[1].Trim().Replace("\">", "");
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                output("Failed to get Sirius captcha.", "error");
+                captchaID = null;
+                captchaResponse = null;
+                return false;
+            }
+            return true;
+        }
+        
 
         private String getMD5Hash(string input)
         {
@@ -210,11 +223,17 @@ namespace XMTuner
             }
             else
             {
-                //String URL = "http://users.pcfire.net/~wolf/XMReader/sirius/ContentServer2";
                 String URL = "http://www.sirius.com/servlet/ContentServer?pagename=Sirius/XML/ChannelGuideXML&c=ChannelLineup&cid=1218563499691&pid=SIR_AUD_EVT_SXM&catid=all"; //&pid=SIR_IP_EVT&catid=all";
                 URL channelGuideURL = new URL(URL);
                 channelGuideURL.fetch();
-                data = channelGuideURL.response().Trim();
+                if (channelGuideURL.isSuccess)
+                {
+                    data = channelGuideURL.response().Trim();
+                }
+                else
+                {
+                    return false;
+                }
             }
             XmlDocument xmldoc = new XmlDocument();
             try
@@ -387,8 +406,18 @@ namespace XMTuner
         }
 
 
-        protected override string playChannel(URL url)
+        protected override string playChannel(String address)
         {
+            URL url = new URL(address);
+            url.setRequestHeader("Cookie", cookies);
+            url.fetch();
+            output("Server Response: " + url.getStatusDescription(), "debug");
+            if (url.isSuccess == false)
+            {
+                output("Play Error: " + url.getStatusDescription(), "error");
+                return null;
+            }
+
             String contentURL = null;
             String pattern = "<PARAM (NAME|name)=\"FileName\" (VALUE|value)=\"(.*?)\">";
             String data = url.response();
