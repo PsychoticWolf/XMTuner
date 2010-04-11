@@ -13,7 +13,7 @@ namespace XMTuner
     class XMTuner
     {
         //Flags
-        protected bool isLive = true;
+        protected bool isLive = false;
 
         //Config options...
         protected String user;
@@ -110,12 +110,8 @@ namespace XMTuner
             Boolean loginResult = true;
             output("Logging into XM Radio Online", "info");
 
-            String XMURL;
-            if (isLive) 
-            {
-                XMURL = "http://www.xmradio.com/player/login/xmlogin.action";
-            }
-            else
+            String XMURL = "http://www.xmradio.com/player/login/xmlogin.action";
+            if (!isLive)
             {
                 XMURL = "http://users.pcfire.net/~wolf/XMReader/test.php";
             }
@@ -127,10 +123,9 @@ namespace XMTuner
             loginURL.fetch(data);
 
             int responseCode = loginURL.getStatus();
-            output("Server Response: " + responseCode.ToString(), "debug");
             output("Server Response: " + loginURL.getStatusDescription(), "debug");
 
-            if (loginURL.getStatus() > 0 && loginURL.getStatus() < 400)
+            if (loginURL.isSuccess)
             {
                 cookies = setCookies(loginURL.getCookies());
 
@@ -181,7 +176,7 @@ namespace XMTuner
             }
             else 
             {
-                output("Login Failed: " + loginURL.getStatus(), "error");
+                output("Login Failed: " + loginURL.getStatusDescription(), "error");
                 loginResult = false;
             }
             loginURL.close();
@@ -274,12 +269,8 @@ namespace XMTuner
             //We try 5 times...
             for (j = 1; j <= 5; j++)
             {
-                string url;
-                if (isLive)
-                {
-                   url = baseurl + "/player/channel/ajax.action?reqURL=player/2ft/channelData.jsp?remote=true&all_channels=true";
-                }
-                else
+                string url = baseurl + "/player/channel/ajax.action?reqURL=player/2ft/channelData.jsp?remote=true&all_channels=true";
+                if (!isLive)
                 {
                     url = baseurl + "/channeldata.jsp";
                 }
@@ -287,8 +278,10 @@ namespace XMTuner
                 URL channelURL = new URL(url);
                 channelURL.setRequestHeader("Cookie", cookies);
                 channelURL.fetch();
+                output("Server Response: " + channelURL.getStatusDescription(), "debug");
+
                 String data = channelURL.response();
-                if (channelURL.getStatus() >= 200 && channelURL.getStatus() < 300 && data.IndexOf(":[],") == -1)
+                if (channelURL.isSuccess && data.IndexOf(":[],") == -1)
                 {
                     //Returns Bool; False if invalid (null) channel data, true on success
                     goodData = setChannelData(data);
@@ -318,7 +311,8 @@ namespace XMTuner
                 else
                 {
                     isLoggedIn = false;
-                    output("Error downloading channel data.. Will try again in 5 seconds (Attempt " + j + " of 5, Error " + channelURL.getStatus().ToString() + ")", "error");
+                    output("Error downloading channel data.. Will try again in 5 seconds (Attempt " + j + " of 5)", "error");
+                    output("Error: " + channelURL.getStatusDescription() + "", "error");
                     System.Threading.Thread.Sleep(5000);
                 }
             }
@@ -448,12 +442,8 @@ namespace XMTuner
         private void loadWhatsOn()
         {
             output("Update What's On Data...", "debug");
-            String whatsOnURL;
-            if (isLive)
-            {
-                whatsOnURL = "http://www.xmradio.com/padData/pad_data_servlet.jsp?all_channels=true&remote=true&rpc=XMROUS";
-            }
-            else
+            String whatsOnURL = "http://www.xmradio.com/padData/pad_data_servlet.jsp?all_channels=true&remote=true&rpc=XMROUS";
+            if (!isLive)
             {
                 whatsOnURL = "http://users.pcfire.net/~wolf/XMReader/all_data.js";
             }
@@ -462,17 +452,19 @@ namespace XMTuner
             whatsOn.setRequestHeader("Cookie", cookies);
             whatsOn.fetch();
 
-            int responseCode = whatsOn.getStatus();
-            output("Server Response: " + responseCode.ToString(), "debug");
-            setWhatsonData(whatsOn.response());
+            output("Server Response: " + whatsOn.getStatusDescription(), "debug");
+            if (whatsOn.isSuccess)
+            {
+                setWhatsonData(whatsOn.response());
+                setRecentlyPlayed();
+            }
             whatsOn.close();
 
-            setRecentlyPlayed();
         }
 
         protected void setWhatsonData(String rawdata)
         {
-            if (rawdata.Equals(""))
+            if (rawdata.Equals("") || rawdata.Equals("xms.sendRPCDone(\"whatson\", [ ] );"))
             {
                 return;
             }
@@ -506,7 +498,6 @@ namespace XMTuner
             }
 
         }
-
 
         protected String setCookies(CookieCollection cookies)
         {
@@ -579,23 +570,28 @@ namespace XMTuner
             {
                 address = baseurl + "/play.action";
             }
-            URL playerURL = new URL(address);
-            playerURL.setRequestHeader("Cookie", cookies);
-            playerURL.fetch();
-            string URL = playChannel(playerURL);
-            //response is closed in playChannel();
-            lastChannelPlayed = channelnum;
-            setRecentlyPlayed();
+            String URL = playChannel(address);
             if (URL == null || URL.Contains("http") == false)
             {
                 output("Error fetching stream for " + cD.ToSimpleString(), "error");
                 return null;
             }
+            lastChannelPlayed = channelnum;
+            setRecentlyPlayed();
             return URL;
          }
 
-        protected virtual string playChannel(URL url)
+        protected virtual string playChannel(String address)
         {
+            URL url = new URL(address);
+            url.setRequestHeader("Cookie", cookies);
+            url.fetch();
+            output("Server Response: " + url.getStatusDescription(), "debug");
+            if (url.isSuccess == false) {
+                output("Play Error: " + url.getStatusDescription(), "error");
+                return null;
+            }
+
             String data = url.response();
             String contentURL;
             String pattern = "<PARAM NAME=\"FileName\" VALUE=\"(.*?)\">";
@@ -684,12 +680,8 @@ namespace XMTuner
         private void dnldChannelMetadata()
         {
             output("Downloading extended channel data...", "info");
-            String channelMetaURL;
-            if (isLive)
-            {
-                channelMetaURL = "http://www.xmradio.com/onxm/index.xmc";
-            }
-            else
+            String channelMetaURL = "http://www.xmradio.com/onxm/index.xmc";
+            if (!isLive)
             {
                 channelMetaURL = "http://users.pcfire.net/~wolf/XMReader/epg/index.xmc";
             }
@@ -698,14 +690,20 @@ namespace XMTuner
             channelMetaData.setRequestHeader("Cookie", cookies);
             channelMetaData.fetch();
 
-            int responseCode = channelMetaData.getStatus();
-            output("Server Response: " + responseCode.ToString(), "debug");
-            String rawChannelMetaData = channelMetaData.response();
-            loadedExtendedChannelData = setChannelMetadata(rawChannelMetaData);
-            if (loadedExtendedChannelData == true)
+            output("Server Response: " + channelMetaData.getStatusDescription(), "debug");
+            if (channelMetaData.isSuccess)
             {
-                output("Extended channel data loaded successfully", "info");
-                cache.saveFile("channelmetadata.cache", rawChannelMetaData);
+                String rawChannelMetaData = channelMetaData.response();
+                loadedExtendedChannelData = setChannelMetadata(rawChannelMetaData);
+                if (loadedExtendedChannelData == true)
+                {
+                    output("Extended channel data loaded successfully", "info");
+                    cache.saveFile("channelmetadata.cache", rawChannelMetaData);
+                }
+            }
+            else
+            {
+                output("Error encountered loading extended channel data", "error");
             }
             channelMetaData.close();
         }
@@ -794,12 +792,8 @@ namespace XMTuner
             //startDate	11122009000000 (date("dmYHis", time());)
             String startdate = DateTime.Now.ToString("ddMMyyyyHHmmss");
 
-            String programGuideURL;
-            if (isLive)
-            {
-                programGuideURL = "http://www.xmradio.com/epg.program_schedules.xmc?channelNums=" + channums + "&endDate=" + enddate + "&startDate=" + startdate;
-            }
-            else
+            String programGuideURL = "http://www.xmradio.com/epg.program_schedules.xmc?channelNums=" + channums + "&endDate=" + enddate + "&startDate=" + startdate;
+            if (!isLive)
             {
                 programGuideURL = "http://users.pcfire.net/~wolf/XMReader/epg/program_schedules.xmc";
             }
@@ -808,11 +802,14 @@ namespace XMTuner
             programGuideData.setRequestHeader("Cookie", cookies);
             programGuideData.fetch();
 
-            int responseCode = programGuideData.getStatus();
-            output("Server Response: " + responseCode.ToString(), "debug");
-            if (responseCode.Equals(200))
+            output("Server Response: " + programGuideData.getStatusDescription(), "debug");
+            if (programGuideData.isSuccess)
             {
                 isProgramDataCurrent = setProgramGuideData(programGuideData.response());
+            }
+            else
+            {
+                output("Error: " + programGuideData.getStatusDescription(), "error");
             }
             if (isProgramDataCurrent)
             {
@@ -937,41 +934,31 @@ namespace XMTuner
         protected Boolean testChannelData()
         {
             output("[Test] Downloading channel lineup...", "debug");
-            int j;
-            //We try 5 times...
-            for (j = 1; j <= 5; j++)
-            {
-                string url;
-                if (isLive)
-                {
-                   url = baseurl + "/player/channel/ajax.action?reqURL=player/2ft/channelData.jsp?remote=true&all_channels=true";
-                }
-                else
-                {
-                    url = baseurl + "/channeldata.jsp";
-                }
 
-                URL channelURL = new URL(url);
-                channelURL.setRequestHeader("Cookie", cookies);
-                channelURL.fetch();
-                String data = channelURL.response();
-                if (channelURL.getStatus() >= 200 && channelURL.getStatus() < 300 && data.IndexOf(":[],") == -1)
+            string url =  baseurl + "/player/channel/ajax.action?reqURL=player/2ft/channelData.jsp?remote=true&all_channels=true";
+            if (!isLive)
+            {
+                url = baseurl + "/channeldata.jsp";
+            }
+
+            URL channelURL = new URL(url);
+            channelURL.setRequestHeader("Cookie", cookies);
+            channelURL.fetch();
+
+            String data = channelURL.response();
+            if (channelURL.isSuccess && data.IndexOf(":[],") == -1)
+            {
+                //Returns Bool; False if invalid (null) channel data, true on success
+                if (data.Contains("\"allchannels\",null"))
                 {
-                    //Returns Bool; False if invalid (null) channel data, true on success
-                    if (data.Contains("\"allchannels\",null"))
-                    {
-                        output("[Test] Session dead. Downloaded channel data had no stations.", "error");
-                        isLoggedIn = false;
-                        return false;
-                    }
-                    output("[Test] Session alive.", "info");
-                    return true;
+                    output("[Test] Session dead. Downloaded channel data had no stations.", "error");
+                    isLoggedIn = false;
+                    return false;
                 }
+                output("[Test] Session alive.", "info");
+                return true;
             }
             return false;
         }
-		
-		
-
     }
 }
