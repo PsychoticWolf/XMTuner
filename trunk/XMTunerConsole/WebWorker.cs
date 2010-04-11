@@ -155,7 +155,7 @@ namespace XMTuner
                               "</td></tr>\n";
             if (npChannel.num != 0)
             {
-                NowPlayingPage += "<tr><td style=\"height: 1em; padding-left: 5px;\">" + npChannel.ToSimpleString() + "</td>";
+                NowPlayingPage += "<tr><td style=\"height: 1em; padding-left: 5px;\">" + npChannel.ToString() + "</td>";
                     
                         if (npChannel.logo != null) {
                             NowPlayingPage += "<td rowspan=3 width=\"138\"><a href=\""+npChannel.url+"\" target=\"_blank\"><img src=\"" + npChannel.logo + "\" border=0 alt=\"\" width=\"138\" height=\"50\" align=\"right\"></a></td>";
@@ -415,7 +415,7 @@ namespace XMTuner
 
                 //<title>XM " + chan.num + " - " + chan.name + "</title>
                 writer.WriteStartElement("title");
-                writer.WriteString(chan.ToSimpleString());
+                writer.WriteString(chan.ToString());
                 writer.WriteEndElement();
 
                 //<link>"+media+"</link>

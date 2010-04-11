@@ -564,7 +564,7 @@ namespace XMTuner
             {
                 channelKey = cD.channelKey;
             }
-            output("Playing " + cD.ToSimpleString(), "info");
+            output("Playing " + cD.ToString(), "info");
             String address = baseurl + "/player/listen/play.action?channelKey=" + channelKey + "&newBitRate=" + speed;
             if (!isLive)
             {
@@ -573,7 +573,7 @@ namespace XMTuner
             String URL = playChannel(address);
             if (URL == null || URL.Contains("http") == false)
             {
-                output("Error fetching stream for " + cD.ToSimpleString(), "error");
+                output("Error fetching stream for " + cD.ToString(), "error");
                 return null;
             }
             lastChannelPlayed = channelnum;

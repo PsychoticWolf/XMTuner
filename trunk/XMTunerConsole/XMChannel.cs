@@ -36,12 +36,6 @@ namespace XMTuner
 
         public override String ToString()
         {
-            String theString = category + " " + num + " " + name + " " + desc;
-            return theString;
-        }
-
-        public String ToSimpleString()
-        {
             String theString = network + " " + num + " - " + name;
             return theString;
         }
