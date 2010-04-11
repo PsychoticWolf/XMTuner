@@ -782,6 +782,10 @@ namespace XMTuner
 
         private void channelBox_DoubleClick(object sender, EventArgs e)
         {
+            if (channelBox.SelectedItems.Count < 1)
+            {
+                return;
+            }
             ListViewItem item = channelBox.SelectedItems[0];
             if (item.Name.Equals("")) { return; }
             int num = Convert.ToInt32(item.Name);
