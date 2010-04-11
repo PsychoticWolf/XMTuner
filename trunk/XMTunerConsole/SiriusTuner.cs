@@ -42,7 +42,7 @@ namespace XMTuner
             String SiriusLoginURL = "http://www.sirius.com/player/login/siriuslogin.action";
             if (!isLive)
             {
-                SiriusLoginURL = "http://users.pcfire.net/~wolf/XMReader/test.php";
+                SiriusLoginURL = "http://test.xmtuner.net/test.php";
             }
 
             output("Connecting to: " + SiriusLoginURL, "debug");

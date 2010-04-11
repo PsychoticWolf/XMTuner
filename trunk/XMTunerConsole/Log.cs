@@ -39,11 +39,15 @@ namespace XMTuner
             }
             DateTime currentTime = DateTime.Now;
             output = currentTime.ToString("%H:") + currentTime.ToString("mm:") + currentTime.ToString("ss") + "  " + output + "\n";
-            theLog = theLog + output;
 
             //Tell the Form to write to the messagebox in the UI
-            if (outputbox != null) {
+            if (outputbox != null)
+            {
                 Form1.output(output, level, ref outputbox);
+            }
+            else
+            {
+                theLog = theLog + output;
             }
 
             log();
@@ -71,9 +75,9 @@ namespace XMTuner
             StreamWriter textOut = new StreamWriter(fs);
 
             DateTime datetime = DateTime.Now;
-            String header = "XMTuner Output\n";
-            header = header + "Build: "+version+" \n";
-            header += datetime.ToString() + "\n\n";
+            String header = "XMTuner Log\r\n";
+            header = header + "Build: "+version+" \r\n";
+            header += datetime.ToString() + "\r\n\r\n";
             if (outputbox != null)
             {
                 if (outputbox.InvokeRequired)
