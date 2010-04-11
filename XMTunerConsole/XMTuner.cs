@@ -116,7 +116,7 @@ namespace XMTuner
             String XMURL = "http://www.xmradio.com/player/login/xmlogin.action";
             if (!isLive)
             {
-                XMURL = "http://users.pcfire.net/~wolf/XMReader/test.php";
+                XMURL = "http://test.xmtuner.net/test.php";
             }
 
             output("Connecting to: "+XMURL, "debug");
@@ -453,7 +453,7 @@ namespace XMTuner
             String whatsOnURL = "http://www.xmradio.com/padData/pad_data_servlet.jsp?all_channels=true&remote=true&rpc=XMROUS";
             if (!isLive)
             {
-                whatsOnURL = "http://users.pcfire.net/~wolf/XMReader/all_data.js";
+                whatsOnURL = "http://test.xmtuner.net/all_data.js";
             }
             URL whatsOn = new URL(whatsOnURL);
             output("Fetching: "+whatsOnURL, "debug");
@@ -693,7 +693,7 @@ namespace XMTuner
             String channelMetaURL = "http://www.xmradio.com/onxm/index.xmc";
             if (!isLive)
             {
-                channelMetaURL = "http://users.pcfire.net/~wolf/XMReader/epg/index.xmc";
+                channelMetaURL = "http://test.xmtuner.net/epg/index.xmc";
             }
             URL channelMetaData = new URL(channelMetaURL);
             output("Fetching: " + channelMetaURL, "debug");
@@ -805,7 +805,7 @@ namespace XMTuner
             String programGuideURL = "http://www.xmradio.com/epg.program_schedules.xmc?channelNums=" + channums + "&endDate=" + enddate + "&startDate=" + startdate;
             if (!isLive)
             {
-                programGuideURL = "http://users.pcfire.net/~wolf/XMReader/epg/program_schedules.xmc";
+                programGuideURL = "http://test.xmtuner.net/epg/program_schedules.xmc";
             }
             URL programGuideData = new URL(programGuideURL);
             output("Fetching: " + programGuideURL, "debug");
