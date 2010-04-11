@@ -64,7 +64,6 @@ namespace XMTuner
                 DwmIsCompositionEnabled(ref en);  //check if the desktop composition is enabled
                 if (en > 0)
                 {
-                    output("Aero Glass Enabled", "debug");
                     this.BackColor = Color.Gainsboro;
                     splitContainer2.BackColor = SystemColors.Control;
                     splitContainer2.Panel1.BackColor = Color.Gainsboro;
@@ -425,14 +424,13 @@ namespace XMTuner
         #endregion
 
         #region Log Tab / Outputbox
-        // This delegate enables asynchronous calls for setting
-        // the text property on a TextBox control.
         private void output(String output, String level)
         {
             logging.output(output, level);
         }
 
-
+        // This delegate enables asynchronous calls for setting
+        // the text property on a TextBox control.
         public delegate void SetTextCallback(ref RichTextBox outputbox, string text, Color color);
         public static void output(String output, String level, ref RichTextBox outputbox)
         {
