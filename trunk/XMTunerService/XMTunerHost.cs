@@ -93,7 +93,7 @@ namespace XMTuner
             }
             theTimer.Stop();
             started = false;
-            runTime = (DateTime.Now - serverStarted).ToString();
+            runTime = (DateTime.Now - serverStarted).ToString().Split('.')[0];
             logging.output("Server Uptime was " + runTime, "info"); 
             self = null;
             xmServer = null;
