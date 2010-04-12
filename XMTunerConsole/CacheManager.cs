@@ -56,6 +56,10 @@ namespace XMTuner
         {
             if (useCache == false) { return null; }
             String path = getDataPath(file);
+            if (isInvalidatedFile(path))
+            {
+                return null;
+            }
             FileStream fs = new FileStream(path, FileMode.OpenOrCreate, FileAccess.Read);
             StreamReader textIn = new StreamReader(fs);
             String data = textIn.ReadToEnd();
@@ -138,6 +142,19 @@ namespace XMTuner
             return false;
         }
 
+        public bool isInvalidatedFile(String file)
+        {
+            return isInvalidatedFileP(getDataPath(file));
+        }
+        private bool isInvalidatedFileP(String path)
+        {
+            if (File.GetLastWriteTime(path) == new DateTime(1985, 1, 1))
+            {
+                return true;
+            }
+            return false;
+        }
+
         public void invalidateFile(String file)
         {
             String path = getDataPath(file);
@@ -190,6 +207,7 @@ namespace XMTuner
         private Boolean isVersionCurrent(String file)
         {
             String data = getFile(file, false);
+            if (data == null) { return false; }
 
             int start = data.IndexOf(versionPrefix)+versionPrefix.Length;
             int length = data.IndexOf(versionSuffix);
