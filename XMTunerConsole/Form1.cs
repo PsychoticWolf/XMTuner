@@ -858,6 +858,9 @@ namespace XMTuner
 
         private void powerModeChanged(System.Object sender, Microsoft.Win32.PowerModeChangedEventArgs e)
         {
+            //If the server isn't running, we don't need to do any of this...
+            if (serverRunning == false) { return; }
+
             //Handle the PowerModes we care about... (Resume, Suspend)
             if (e.Mode == Microsoft.Win32.PowerModes.Suspend)
             {

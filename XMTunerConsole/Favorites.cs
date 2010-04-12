@@ -42,7 +42,6 @@ namespace XMTuner
                 if (newline.Contains(","))
                 {
                     parts = newline.Split(',');
-                    //config.Add(parts[0], parts[1]);
                     favorites.Add(Convert.ToInt32(parts[0]));
                 }
                 i++;

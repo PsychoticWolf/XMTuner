@@ -499,6 +499,13 @@ namespace XMTuner
                     name = "NPR";
                 }
 
+                if (name.ToUpper().Equals("MLB NETWORK RADIO")) {
+                    if (Find(name.ToUpper()).num == 0)
+                    {
+                        name = "MLB HOME PLATE";
+                    }
+                }
+
                 Find(name.ToUpper()).addChannelMetadataS(newdata);
             }
             return true;

@@ -570,7 +570,7 @@
             this.tAbout.Margin = new System.Windows.Forms.Padding(2);
             this.tAbout.Name = "tAbout";
             this.tAbout.Padding = new System.Windows.Forms.Padding(2);
-            this.tAbout.Size = new System.Drawing.Size(552, 210);
+            this.tAbout.Size = new System.Drawing.Size(552, 213);
             this.tAbout.TabIndex = 2;
             this.tAbout.Text = "About";
             // 
@@ -593,7 +593,7 @@
             this.aBuildDate.ReadOnly = true;
             this.aBuildDate.Size = new System.Drawing.Size(62, 19);
             this.aBuildDate.TabIndex = 17;
-            this.aBuildDate.Text = "20100411";
+            this.aBuildDate.Text = "20100412";
             this.aBuildDate.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // label8

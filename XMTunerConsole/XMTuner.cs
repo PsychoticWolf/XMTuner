@@ -392,9 +392,9 @@ namespace XMTuner
 
         public List<XMChannel> getChannels()
         {
-            channels.Sort();
-            channels.Reverse();
             List<XMChannel> channelsCopy = new List<XMChannel>(channels.AsReadOnly());
+            channelsCopy.Sort();
+            channelsCopy.Reverse();
             return channelsCopy;
         }
 
@@ -502,7 +502,6 @@ namespace XMTuner
 	            //String[] channel = explode($sep, $rawChannel); // num, artist, song, album
                 String[] channel = rawChannel.Split(new string[] { sep }, StringSplitOptions.None);
             	
-                //channels.Find(Find(Convert.ToInt32(channel[0])));
                 Find(Convert.ToInt32(channel[0]), true).addPlayingInfo(channel);
             }
 
@@ -999,12 +998,16 @@ namespace XMTuner
         private void preloadImages()
         {
             preloadedImages = true;
+            Boolean result = false;
             output("Image Cache: Populate...", "debug");
             int n = 0;
             try
             {
-                foreach (XMChannel chan in channels)
+                List<XMChannel> channelsCopy = new List<XMChannel>(channels.AsReadOnly());
+                int i = 0;
+                foreach (XMChannel rochan in channelsCopy)
                 {
+                    XMChannel chan = channels[i];
                     //Only load the image if it needs loading...
                     if (chan.logo_small_image == null)
                     {
@@ -1016,6 +1019,7 @@ namespace XMTuner
                             imageURL.fetch();
                             if (imageURL.isSuccess)
                             {
+                                result = true;
                                 output("Image Cache: Added Image for " + chan.ToString(), "debug");
                                 chan.logo_small_image = imageURL.responseAsImage();
                                 if (preloadedImages1R)
@@ -1034,6 +1038,7 @@ namespace XMTuner
                             output("Image Cache: No logo found for " + chan.ToString(), "error");
                         }
                     }
+                    i++;
                 }
             }
             catch (InvalidOperationException)
@@ -1043,6 +1048,10 @@ namespace XMTuner
             }
             output("Image Cache: Done.", "debug");
             preloadedImages1R = true;
+            if (result == false)
+            {
+                preloadedImages = result;
+            }
         }
     }
 }
