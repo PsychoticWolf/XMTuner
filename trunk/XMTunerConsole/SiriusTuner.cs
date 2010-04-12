@@ -477,6 +477,11 @@ namespace XMTuner
 
         protected override Boolean setChannelMetadata(String rawData)
         {
+            if (rawData == null)
+            {
+                return false;
+            }
+
             foreach (String _value in setChannelMetadataHelper(rawData))
             {
                 String[] value = _value.Replace("\\", "").Split(new string[] { "\"," }, StringSplitOptions.None);

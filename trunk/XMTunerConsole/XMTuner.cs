@@ -672,9 +672,16 @@ namespace XMTuner
             loadedChannelMetadataCache = setChannelMetadata(data);
             if (!loadedChannelMetadataCache)
             {
-                //Force expiration of bad data. (Don't delete it in case something useful is in the file for debugging)
-                cache.invalidateFile(file);
-                output("Failed to load extended channel data (from cache).", "error");
+                if (cache.isInvalidatedFile(file))
+                {
+                    output("No cache data to load, skipping...", "info");
+                }
+                else
+                {
+                    //Force expiration of bad data. (Don't delete it in case something useful is in the file for debugging)
+                    cache.invalidateFile(file);
+                    output("Failed to load extended channel data (from cache).", "error");
+                }
             }
             else
             {
@@ -720,6 +727,11 @@ namespace XMTuner
 
         protected virtual Boolean setChannelMetadata(String rawData)
         {
+            if (rawData == null)
+            {
+                return false;
+            }
+
             foreach (String _value in setChannelMetadataHelper(rawData))
             {
                 String[] value = _value.Replace("\\", "").Split(new string[] { "\"," }, StringSplitOptions.None);
