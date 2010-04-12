@@ -628,25 +628,25 @@ namespace XMTuner
         {
             if ((cbIconsLoaded == false && self.loadedExtendedChannelData == true) || self.preloadImagesUpdated == true)
             {
-                if (self.preloadImagesUpdated == true)
-                {
-                    output("Channels Tab: New Images in Cache Detected, Updating...", "debug");
-                }
-                else
-                {
-                    output("Channels Tab: Logos not loaded, refreshing...", "debug");
-                }
-
                 int j = (int)timerCB.Tag;
                 if (j == 0 || j >= 12)
                 {
-                    channelBox.Clear();
-                    loadChannels();
+                    if (self.preloadImagesUpdated == true)
+                    {
+                        output("Channels Tab: New Images in Cache Detected, Updating...", "debug");
+                    }
+                    else
+                    {
+                        output("Channels Tab: Logos not loaded, refreshing...", "debug");
+                    }
+
+                    //channelBox.Clear();
+                    loadChannels(true);
                     j = (int)timerCB.Tag;
+                    self.preloadImagesUpdated = false;
                 }
                 j++;
                 timerCB.Tag = j;
-                self.preloadImagesUpdated = false;
             }
 
             //Update What's On Data in the Channel Box
