@@ -60,6 +60,10 @@ namespace XMTuner
             {
                 return null;
             }
+            if (File.Exists(path) == false)
+            {
+                return null;
+            }
             FileStream fs = new FileStream(path, FileMode.OpenOrCreate, FileAccess.Read);
             StreamReader textIn = new StreamReader(fs);
             String data = textIn.ReadToEnd();
@@ -148,7 +152,8 @@ namespace XMTuner
         }
         private bool isInvalidatedFileP(String path)
         {
-            if (File.GetLastWriteTime(path) == new DateTime(1985, 1, 1))
+            if (File.Exists(path) == false ||
+                File.GetLastWriteTime(path) == new DateTime(1985, 1, 1))
             {
                 return true;
             }
