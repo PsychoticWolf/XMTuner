@@ -892,8 +892,9 @@ namespace XMTuner
             return true;
         }
 
-        private String[] getProgram(List<String[]> programs, Boolean getNext)
+        private String[] getProgram(List<String[]> _programs, Boolean getNext)
         {
+            List<String[]> programs = new List<String[]>(_programs.AsReadOnly());
             String[] program = null;
             Boolean foundFirstValidProgram = false;
             foreach (String[] _program in programs)
