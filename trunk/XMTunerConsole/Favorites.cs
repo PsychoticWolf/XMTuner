@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
-
 using System.Text;
 
 namespace XMTuner
@@ -22,7 +21,15 @@ namespace XMTuner
         }
 
         private void open() {
-            FileStream fs = new FileStream(path, FileMode.OpenOrCreate, FileAccess.Read);
+            FileStream fs;
+            try
+            {
+                fs = new FileStream(path, FileMode.Open, FileAccess.Read);
+            }
+            catch (FileNotFoundException)
+            {
+                return;
+            }
             StreamReader textIn = new StreamReader(fs);
             int i = 0;
             String newline = "";

@@ -36,53 +36,6 @@ namespace XMTuner
         String runTime = "";
         String ip = "";
 
-        Boolean cbIconsLoaded;
-
-        #region Aero
-        [StructLayout(LayoutKind.Sequential)]
-        public struct MARGINS
-        {
-            public int cxLeftWidth;
-            public int cxRightWidth;
-            public int cyTopHeight;
-            public int cyBottomHeight;
-        }
-
-        [DllImport("dwmapi.dll")]
-        public static extern int DwmExtendFrameIntoClientArea(
-               IntPtr hWnd,
-               ref MARGINS pMarInset
-               );
-        [DllImport("dwmapi.dll")]
-        public static extern int DwmIsCompositionEnabled(ref int en);
-
-        private void AeroLoad()
-        {
-            if (System.Environment.OSVersion.Version.Major >= 6)  //make sure you are not on a legacy OS 
-            {
-                int en = 0;
-                DwmIsCompositionEnabled(ref en);  //check if the desktop composition is enabled
-                if (en > 0)
-                {
-                    this.BackColor = Color.Gainsboro;
-                    splitContainer2.BackColor = SystemColors.Control;
-                    splitContainer2.Panel1.BackColor = Color.Gainsboro;
-
-                    MARGINS margins = new MARGINS();
-
-                    margins.cxLeftWidth = 0;
-                    margins.cxRightWidth = 0;
-                    margins.cyTopHeight = 45;
-                    margins.cyBottomHeight = 0;
-
-                    IntPtr hWnd = this.Handle;
-                    int result = DwmExtendFrameIntoClientArea(hWnd, ref margins);
-                }
-            }
-        }
-
-        #endregion
-
         #region Form1 Core
         public Form1()
         {
@@ -128,6 +81,51 @@ namespace XMTuner
             if (FormWindowState.Minimized == WindowState)
                 Hide();
         }
+        #endregion
+
+        #region Aero
+        [StructLayout(LayoutKind.Sequential)]
+        public struct MARGINS
+        {
+            public int cxLeftWidth;
+            public int cxRightWidth;
+            public int cyTopHeight;
+            public int cyBottomHeight;
+        }
+
+        [DllImport("dwmapi.dll")]
+        public static extern int DwmExtendFrameIntoClientArea(
+               IntPtr hWnd,
+               ref MARGINS pMarInset
+               );
+        [DllImport("dwmapi.dll")]
+        public static extern int DwmIsCompositionEnabled(ref int en);
+
+        public void AeroLoad()
+        {
+            if (System.Environment.OSVersion.Version.Major >= 6)  //make sure you are not on a legacy OS 
+            {
+                int en = 0;
+                DwmIsCompositionEnabled(ref en);  //check if the desktop composition is enabled
+                if (en > 0)
+                {
+                    this.BackColor = Color.Gainsboro;
+                    splitContainer2.BackColor = SystemColors.Control;
+                    splitContainer2.Panel1.BackColor = Color.Gainsboro;
+
+                    MARGINS margins = new MARGINS();
+
+                    margins.cxLeftWidth = 0;
+                    margins.cxRightWidth = 0;
+                    margins.cyTopHeight = 45;
+                    margins.cyBottomHeight = 0;
+
+                    IntPtr hWnd = this.Handle;
+                    int result = DwmExtendFrameIntoClientArea(hWnd, ref margins);
+                }
+            }
+        }
+
         #endregion
 
         #region Start/Stop
@@ -180,6 +178,7 @@ namespace XMTuner
             }
             syncStatusLabel();
             loadChannels();
+            setupURLBuilder();
             output("XMTuner Ready...", "info");
         }
 
@@ -516,17 +515,19 @@ namespace XMTuner
         #endregion
 
         #region Channels Tab
-        private void loadChannels() { loadChannels(false); }
-        private void loadChannels(Boolean force)
+        private void setupURLBuilder()
         {
-            if ((self == null || channelBox.Items.Count > 0) && force == false) { return; }
-
-            if (channelBox.Tag == null) { channelBox.Tag = ""; }
-
             // URL Builder
             typeBox.SelectedItem = "Channel";
             if (isMMS) { protocolBox.SelectedItem = "MMS"; } else { protocolBox.SelectedItem = "HTTP"; }
             if (bitrate.Equals("high")) { bitRateBox.SelectedItem = "High"; } else { bitRateBox.SelectedItem = "Low"; }
+            txtChannel.Enabled = true;
+        }
+
+        private void loadChannels()
+        {
+            if (self == null) { return; }
+            if (channelBox.Tag == null) { channelBox.Tag = ""; }
 
             //Channel ListView
             output("Channels Tab: Loading...", "debug");
@@ -546,8 +547,6 @@ namespace XMTuner
             channelBox.Groups.Add("cbGroupFavorite", "Favorite Channels");
             channelBox.Groups.Add("cbGroupNormal", network.ToUpper() + " Channels");
 
-            cbIconsLoaded = true;
-            int errcnt = 0;
             Int32 imagenum = 0;
             //Iterate through the channels (using a copy of the List)
             foreach (XMChannel chan in self.getChannels())
@@ -568,9 +567,7 @@ namespace XMTuner
                     if (imagelist.Images.Count.Equals(0) && image == null)
                     {
                         imagelist.ImageSize = new Size(30, 30);
-                        cbIconsLoaded = false;
                     }
-                    errcnt++;
                     imagelist.Images.Add(defaultImage);
                     output("Channels Tab: Using default logo for " + chan.ToString(), "debug");
                 }
@@ -609,45 +606,27 @@ namespace XMTuner
                 imagenum++;
             }
 
-            /* If we're missing 3 or more channel logos...
-             * Set loaded flag to false so periodic update retries setting them. 
-             * Disabled for testing of push-style updating of new image cache */
-            /* if (errcnt >= 3) { 
-                cbIconsLoaded = false;
-            } */
-
             channelBox.EndUpdate();
             output("Channels Tab: Complete", "debug");
             timerCB.Enabled = true;
             timerCB.Tag = 0;
-            txtChannel.Enabled = true;
-
         }
 
         private void updateChannels()
         {
-            if ((cbIconsLoaded == false && self.loadedExtendedChannelData == true) || self.preloadImagesUpdated == true)
+            int j = (int)timerCB.Tag;
+            if (j == 0 || j >= 12)
             {
-                int j = (int)timerCB.Tag;
-                if (j == 0 || j >= 12)
+                if (self.loadedExtendedChannelData == true && self.preloadImagesUpdated == true)
                 {
-                    if (self.preloadImagesUpdated == true)
-                    {
-                        output("Channels Tab: New Images in Cache Detected, Updating...", "debug");
-                    }
-                    else
-                    {
-                        output("Channels Tab: Logos not loaded, refreshing...", "debug");
-                    }
-
-                    //channelBox.Clear();
-                    loadChannels(true);
+                    output("Channels Tab: New Images in Cache Detected, Updating...", "debug");
+                    loadChannels();
                     j = (int)timerCB.Tag;
                     self.preloadImagesUpdated = false;
                 }
-                j++;
-                timerCB.Tag = j;
             }
+            j++;
+            timerCB.Tag = j;
 
             //Update What's On Data in the Channel Box
             int i = 0;
@@ -938,17 +917,18 @@ namespace XMTuner
         {
             favoriteChannelsToolStripMenuItem.Checked = false;
             allChannelsToolStripMenuItem.Checked = true;
+            byCategoryToolStripMenuItem.Checked = false;
             channelBox.Tag = "";
-            loadChannels(true);
+            loadChannels();
         }
 
         private void favoriteChannelsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             allChannelsToolStripMenuItem.Checked = false;
             favoriteChannelsToolStripMenuItem.Checked = true;
-            channelBox.ShowGroups = true;
+            byCategoryToolStripMenuItem.Checked = false;
             channelBox.Tag = "favorites";
-            loadChannels(true);
+            loadChannels();
         }
 
         private void byCategoryToolStripMenuItem_Click(object sender, EventArgs e)
@@ -957,7 +937,7 @@ namespace XMTuner
             favoriteChannelsToolStripMenuItem.Checked = false;
             byCategoryToolStripMenuItem.Checked = true;
             channelBox.Tag = "category";
-            loadChannels(true);
+            loadChannels();
         }
     }
 }
