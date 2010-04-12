@@ -467,6 +467,7 @@ namespace XMTuner
                 setRecentlyPlayed();
             }
             whatsOn.close();
+            output("What's On Update Complete", "debug");
 
         }
 
@@ -1038,6 +1039,7 @@ namespace XMTuner
             catch (InvalidOperationException)
             {
                 output("Image Cache: Fatal Error during operation. (" + n + ")", "error");
+                preloadedImages = false;
             }
             output("Image Cache: Done.", "debug");
             preloadedImages1R = true;

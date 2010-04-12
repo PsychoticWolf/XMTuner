@@ -56,7 +56,7 @@ namespace XMTuner
         {
             if (useCache == false) { return null; }
             String path = getDataPath(file);
-            if (isInvalidatedFile(path))
+            if (isInvalidatedFileP(path))
             {
                 return null;
             }
