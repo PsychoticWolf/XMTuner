@@ -858,18 +858,20 @@ namespace XMTuner
 
         private void powerModeChanged(System.Object sender, Microsoft.Win32.PowerModeChangedEventArgs e)
         {
-            //If the server isn't running, we don't need to do any of this...
-            if (serverRunning == false) { return; }
-
             //Handle the PowerModes we care about... (Resume, Suspend)
             if (e.Mode == Microsoft.Win32.PowerModes.Suspend)
             {
+                //If the server isn't running, we don't need to do any of this...
+                if (serverRunning == false) { return; }
+
                 //We're going to sleep.. Stop.
                 output("System is going to sleep, stopping server.", "info");
                 stop();
             }
             else if (e.Mode == Microsoft.Win32.PowerModes.Resume)
             {
+                //XXX This will probably unconditionally start the server regardless of it if was up before...
+
                 //We're waking up, resume server.
                 output("System has resumed, starting server.", "info");
                 start();
