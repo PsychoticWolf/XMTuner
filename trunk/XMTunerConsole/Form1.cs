@@ -47,7 +47,6 @@ namespace XMTuner
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            AeroLoad();
             logging = new Log(ref outputbox);
             aVersion.Text = configMan.version;
             outputbox.AppendText("XMTuner "+configMan.version+"\n");
