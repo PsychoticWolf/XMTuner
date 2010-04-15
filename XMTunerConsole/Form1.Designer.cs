@@ -867,7 +867,6 @@
             // 
             // splitContainer2.Panel2
             // 
-            this.splitContainer2.Panel2.BackColor = System.Drawing.SystemColors.Control;
             this.splitContainer2.Panel2.Controls.Add(this.bStart);
             this.splitContainer2.Panel2.Controls.Add(this.bConfigure);
             this.splitContainer2.Panel2.Controls.Add(this.bStop);
@@ -882,7 +881,6 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(560, 349);
             this.Controls.Add(this.splitContainer2);
             this.Controls.Add(this.playerPanel);
@@ -893,7 +891,6 @@
             this.Name = "Form1";
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.Text = "XMTuner";
-            this.TransparencyKey = System.Drawing.Color.Gainsboro;
             this.Load += new System.EventHandler(this.Form1_Load);
             this.Shown += new System.EventHandler(this.Form1_Shown);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
