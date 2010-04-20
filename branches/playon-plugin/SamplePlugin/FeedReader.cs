@@ -19,10 +19,10 @@ namespace XMTunerPlugin
         public FeedReader(IPlayOnHost p)
         {
             this.p = p;
-            if (p.Properties["hostname"] != null)
+            if (p.Properties["hostname"] != null && p.Properties["hostname"] != "")
                 host = p.Properties["hostname"];
 
-            if (p.Properties["port"] != null)
+            if (p.Properties["port"] != null && p.Properties["port"] != "")
                 port = p.Properties["port"];
 
             //Fetch feed and turn it into an XMChannel Object...
