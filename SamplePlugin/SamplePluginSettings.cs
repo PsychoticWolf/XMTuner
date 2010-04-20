@@ -30,7 +30,7 @@ namespace XMTunerPlugin {
 		public System.Drawing.Image Image {
 			get {
 				Image image = null;
-				Stream imageStream = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("SamplePlugin.Sample.png");
+                Stream imageStream = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("XMTunerPlugin.xmtuner.png");
 				if (imageStream != null) {
 					image = System.Drawing.Image.FromStream(imageStream);
 					imageStream.Close();
@@ -51,7 +51,7 @@ namespace XMTunerPlugin {
 
 		public string Name {
 			get {
-				return "XMTuner Plugin";
+				return "XMTuner";
 			}
 		}
 
@@ -68,7 +68,7 @@ namespace XMTunerPlugin {
 
 		public string Description {
 			get {
-				return "Play Sirius|XM Satelite Radio via XMTuner with PlayOn";
+				return "Play SIRIUS|XM Satelite Radio via XMTuner";
 			}
 		}
 
@@ -91,7 +91,7 @@ namespace XMTunerPlugin {
 
 		public string CheckForUpdate() {
 			try {
-				HttpWebRequest req = (HttpWebRequest)HttpWebRequest.Create("http://www.themediamall.com/downloads/playon/plugins/api/sample/version.xml");
+				HttpWebRequest req = (HttpWebRequest)HttpWebRequest.Create("http://www.xmtuner.net/playon/version.xml");
 				StreamReader sr = new StreamReader(req.GetResponse().GetResponseStream());
 				string xml = sr.ReadToEnd();
 				sr.Close();

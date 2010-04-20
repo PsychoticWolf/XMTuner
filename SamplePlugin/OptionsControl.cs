@@ -41,9 +41,6 @@ namespace XMTunerPlugin {
 			this.changeHandler = e;
 
 			// load our properties from previously cached runs
-			if (this.options["testValue"] != null)
-				this.testValueTextBox.Text = this.options["testValue"];
-
             if (this.options["hostname"] != null)
                 this.textHost.Text = this.options["hostname"];
 
@@ -51,7 +48,7 @@ namespace XMTunerPlugin {
                 this.textPort.Text = this.options["port"];
 
             if (this.options["useDuration"] != null)
-                this.checkBox1.Checked = Convert.ToBoolean(this.options["useDuration"]);
+                this.checkDuration.Checked = Convert.ToBoolean(this.options["useDuration"]);
 		}
 
 
@@ -61,18 +58,10 @@ namespace XMTunerPlugin {
 
         private void setTooltips()
         {
-            toolTip1.SetToolTip(textHost, "IP Address or Hostname of the Computer running XMTuner (Ex: 192.168.1.100) (Leave Blank for localhost)");
-            toolTip1.SetToolTip(textPort, "Port number that XMTuner is listening on (Leave blank for default: 19081)");
-            toolTip1.SetToolTip(checkBox1, "Force non-zero duration values (will return duration of 24 hours instead)");
+            toolTip1.SetToolTip(textHost, "IP Address or Hostname of the Computer running XMTuner\n(Ex: 192.168.1.100) (Leave Blank for localhost)");
+            toolTip1.SetToolTip(textPort, "Port number that XMTuner is listening on\n(Leave blank for default: 19081)");
+            toolTip1.SetToolTip(checkDuration, "Force non-zero duration values (will return duration of 24 hours instead)");
         }
-
-		private void testValueTextBox_TextChanged(object sender, EventArgs e) {
-			// set our arbitrary values
-			this.options["testValue"] = this.testValueTextBox.Text;
-			
-			// notify of change
-			this.changeHandler.Invoke(this, new EventArgs());
-		}
 
         private void textHost_TextChanged(object sender, EventArgs e)
         {
@@ -88,7 +77,7 @@ namespace XMTunerPlugin {
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
-            this.options["useDuration"] = this.checkBox1.Checked.ToString();
+            this.options["useDuration"] = this.checkDuration.Checked.ToString();
             this.changeHandler.Invoke(this, new EventArgs());
         }
 	}

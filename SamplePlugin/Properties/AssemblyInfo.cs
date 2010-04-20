@@ -18,12 +18,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("PlayOn Sample Plugin")]
-[assembly: AssemblyDescription("PlayOn Sample Plugin")]
+[assembly: AssemblyTitle("XMTuner Plugin")]
+[assembly: AssemblyDescription("Play Sirius|XM Satelite Radio (using XMTuner) on Playon")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("MediaMall Technologies, Inc.")]
-[assembly: AssemblyProduct("PlayOn Sample Plugin")]
-[assembly: AssemblyCopyright("Copyright © 2003-2009 MediaMall Technologies, Inc. All rights reserved.")]
+[assembly: AssemblyCompany("PCFire Software")]
+[assembly: AssemblyProduct("XMTuner Plugin for PlayOn")]
+[assembly: AssemblyCopyright("Copyright © 2010 PCFire Software / XMTuner.net")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -44,5 +44,5 @@ using System.Runtime.InteropServices;
 //
 // You can specify all the values or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
-[assembly: AssemblyVersion("1.0.0.4")]
-[assembly: AssemblyFileVersion("1.0.0.4")]
+[assembly: AssemblyVersion("0.1.0.0")]
+[assembly: AssemblyFileVersion("0.1.0.0")]
