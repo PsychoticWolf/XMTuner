@@ -37,9 +37,12 @@ namespace XMTuner
         Boolean loadedChannelMetadataCache = false;
         Boolean isProgramDataCurrent = false;
         Boolean useProgramGuide = true;
+
+        Boolean preloadImageRunning = false;
         Boolean preloadedImages1R = false;
         Boolean preloadedImages = false;
         public Boolean preloadImagesUpdated = false;
+        int preloadImageTimeout = 500;
 
         //General Globals
         protected int cookieCount = 0;
@@ -1000,6 +1003,11 @@ namespace XMTuner
 
         private void preloadImages()
         {
+            //Don't run this more than once at a time... really.
+            if (preloadImageRunning == true) { return; }
+            int timeout = preloadImageTimeout;
+            int errcnt = 0;
+            preloadImageRunning = true;
             preloadedImages = true;
             Boolean result = false;
             output("Image Cache: Populate...", "debug");
@@ -1018,7 +1026,7 @@ namespace XMTuner
                         {
                             n = chan.num;
                             URL imageURL = new URL(chan.logo_small);
-                            imageURL.setTimeout(500);
+                            imageURL.setTimeout(timeout);
                             imageURL.fetch();
                             if (imageURL.isSuccess)
                             {
@@ -1032,13 +1040,22 @@ namespace XMTuner
                             }
                             else
                             {
-                                output("Image Cache: Error adding image for " + chan.ToString(), "error");
+                                output("Image Cache: Error adding image for " + chan.ToString(), "notice");
                                 preloadedImages = false;
+                                if (preloadedImages1R == true)
+                                {
+                                    errcnt++;
+                                    if (errcnt > 3)
+                                    {
+                                        timeout = timeout + 500;
+                                        errcnt = 0;
+                                    }
+                                }
                             }
                         }
                         else
                         {
-                            output("Image Cache: No logo found for " + chan.ToString(), "error");
+                            output("Image Cache: No logo found for " + chan.ToString(), "notice");
                         }
                     }
                     i++;
@@ -1050,10 +1067,12 @@ namespace XMTuner
                 preloadedImages = false;
             }
             output("Image Cache: Done.", "debug");
+            preloadImageRunning = false;
             preloadedImages1R = true;
             if (result == false)
             {
                 preloadedImages = result;
+                preloadImageTimeout = timeout;
             }
         }
     }
