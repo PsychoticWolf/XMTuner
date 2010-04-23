@@ -192,6 +192,12 @@ namespace XMTuner
             //do work
             HttpListenerRequest request = context.Request;
             serverHost = request.UserHostName;
+            if (serverHost.Contains(":") == false)
+            {
+                String port = request.LocalEndPoint.Port.ToString();
+                serverHost = serverHost + ":" + port;
+            }
+
             String requestURL = request.Url.PathAndQuery;
             myTuner.output("Incoming Request: (Source: " + request.RemoteEndPoint + ") " + request.HttpMethod + " - " + requestURL, "debug");
 
