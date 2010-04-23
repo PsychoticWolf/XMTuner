@@ -395,6 +395,10 @@ namespace XMTuner
             {
                 color = Color.CornflowerBlue;
             }
+            if (level.ToLower().Equals("notice"))
+            {
+                color = Color.OrangeRed;
+            }
             if (level.ToLower().Equals("player"))
             {
                 color = Color.Green;
@@ -583,9 +587,10 @@ namespace XMTuner
 
             //Update What's On Data in the Channel Box
             int i = 0;
+            int c = channelBox.Items.Count - 1;
             foreach (XMChannel chan in self.getChannels())
             {
-                if (chan.artist != null && chan.song != null)
+                if (chan.artist != null && chan.song != null && i <= c)
                 {
                     channelBox.Items[i].SubItems[1].Text = chan.artist + " - " + chan.song;
                 }
