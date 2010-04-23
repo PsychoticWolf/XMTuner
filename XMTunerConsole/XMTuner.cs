@@ -875,19 +875,21 @@ namespace XMTuner
 	            rPData = rPData.Replace("\"}],",sep); //Break off leftover junk (Final Line)
             	
 	            String[] PData = rPData.Split(new String[] { sep }, StringSplitOptions.None);
-            	
-	            //ChannelNum, Program ID, Program Name, Duration, Start Time, End Time
-	            Int32 num = Convert.ToInt32(PData[8]);
-                XMChannel channel = Find(num, true);
-                String[] program = new String[6];
-                        program[0] = PData[8];
-                        program[1] = PData[0];
-                        program[2] = PData[1];
-                        program[3] = PData[7];
-                        program[4] = PData[3];
-                        program[5] = PData[9];
-                
-                channel.addProgram(program);
+                if (PData.Length >= 10)
+                {
+                    //ChannelNum, Program ID, Program Name, Duration, Start Time, End Time
+                    Int32 num = Convert.ToInt32(PData[8]);
+                    XMChannel channel = Find(num, true);
+                    String[] program = new String[6];
+                    program[0] = PData[8];
+                    program[1] = PData[0];
+                    program[2] = PData[1];
+                    program[3] = PData[7];
+                    program[4] = PData[3];
+                    program[5] = PData[9];
+
+                    channel.addProgram(program);
+                }
             }
             return true;
         }
