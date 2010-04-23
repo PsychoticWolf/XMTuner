@@ -120,9 +120,7 @@ namespace XMTuner
             timer2.Enabled = true;
             linkServer.Text = "Server is Running...";
             linkServer.Enabled = true;
-#if DEBUG
             timerTest.Enabled = true;
-#endif
 
             loggedIn = true;
             if (loggedIn) {
