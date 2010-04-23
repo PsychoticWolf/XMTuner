@@ -33,7 +33,7 @@ namespace XMTuner
 
         public void output(String output, String level)
         {
-            if (level.Equals("debug") && !isDebug)
+            if ((level.Equals("debug") || level.Equals("notice")) && !isDebug)
             {
                 return;
             }
