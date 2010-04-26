@@ -24,31 +24,45 @@ namespace XMTuner
         public NameValueCollection parseStreamURL(string methodURL)
         {
             NameValueCollection collection = new NameValueCollection();
-            String streamtype = null;
             String[] args = methodURL.Split('/');
-            if (args.Length > 0)
+            foreach (String arg in args)
             {
-                String ChanNum = args[0];
-                String bitrate = "";
-                if (args.Length > 1)
+                if (collection["num"] == null)
                 {
-                    if (args[1].ToLower().Equals("mp3"))
+                    int n;
+                    if (int.TryParse(arg, out n) == true)
                     {
-                        streamtype = "mp3";
-                        if (args.Length > 2)
-                        {
-                            bitrate = args[2];
-                        }
-                    }
-                    else
-                    {
-                        bitrate = args[1];
+                        collection.Add("num", arg);
                     }
                 }
-                collection.Add("num", ChanNum);
-                collection.Add("bitrate", bitrate);
-                collection.Add("streamtype", streamtype); // Null (default) or mp3 for transcoded version
+                if (collection["bitrate"] == null)
+                {
+                    if (arg.ToLower().Equals("high") || arg.ToLower().Equals("low"))
+                    {
+                        collection.Add("bitrate", arg);
+                    }
+                }
+                // Null (default) or mp3 for transcoded version
+                if (collection["streamtype"] == null)
+                {
+                    if (arg.ToLower().Equals("mp3") || arg.ToLower().Equals("wav"))
+                    {
+                        collection.Add("streamtype", arg);
+                    }
+                }
 
+                //Type: Playlist container type, or null for none.
+                if (collection["type"] == null)
+                {
+                    if (arg.ToLower().Equals("m3u") || arg.ToLower().Equals("asx"))
+                    {
+                        collection.Add("type", arg.ToUpper());
+                    }
+                }
+
+            }
+            if (args.Length > 0)
+            {
                 return collection;
             }
             return null;
@@ -83,32 +97,45 @@ namespace XMTuner
             return hostname;
         }
 
-        public NameValueCollection DoStream(NameValueCollection streamParams, String fullurl, String serverHost)
+        public NameValueCollection DoStream(NameValueCollection streamParams, String serverHost)
         {
             NameValueCollection streamCollection = new NameValueCollection();
             String msg;
-            String tversityHost = config["Tversity"];
             String isErr = "false";
             int ChanNum = Convert.ToInt32(streamParams["num"]);
             String bitrate = TheConstructor.getBitRate(streamParams, config);
-            serverHost = getHostName(serverHost);
+            String type = streamParams["type"];
+
             if (streamParams.Get("streamtype") != null)
             {
-                fullurl = fullurl.Replace("/mp3","");
-                String redirectURL = HttpUtility.UrlEncode("rtsp://" + serverHost + fullurl);
-                myTuner.output("MP3 Request forwarding to" + redirectURL, "debug");
-                msg = "http://" + tversityHost + "/geturl/stream.mp3?type=audio/x-ms-wma&ttype=audio/mpeg&url=" + redirectURL+"&ext=.mp3";
-                myTuner.output(msg, "debug");
+                msg = buildTranscoderURL(streamParams, serverHost);
             }
             else
             {
                 msg = myTuner.play(ChanNum, bitrate);
             }
+
+            //Playlist Container for Single Channel...
+            if (msg != null && type != null) 
+            {
+                String mimetype = null;
+                if (type.Equals("ASX"))
+                {
+                    mimetype = "audio/x-ms-wax";
+                }
+                else if (type.Equals("M3U"))
+                {
+                    mimetype = "audio/x-mpegurl";
+                }
+
+                msg = buildPlaylistContainer(ChanNum, type, msg);
+                streamCollection.Add("playlist", mimetype);
+            }
             if (msg == null)
             {
                 isErr = "true";
                 msg = "<html><body><h1>Service Unavailable</h1> " +
-                      "<p>Stream Error: Unable to fetch "+network+" stream URL. (Not Logged In or Down)</p>" +
+                      "<p>Stream Error: Unable to fetch " + network + " stream URL. (Not Logged In or Down)</p>" +
                       "</body></html>";
             }
             streamCollection.Add("msg", msg);
@@ -467,7 +494,6 @@ namespace XMTuner
 
         public String DoBuildPlaylist(string methodURL, NameValueCollection URLparams, String serverHost)
         {
-            //Weblistner: 288
             String type = URLparams["type"].ToUpper();
             List<XMChannel> ChannelList = myTuner.getChannels();
             String media = "";
@@ -522,6 +548,61 @@ namespace XMTuner
                 }
             }
             return playlist;
+        }
+
+        private String buildPlaylistContainer(int num, String type, String media)
+        {
+            String playlist = null;
+            XMChannel channel = myTuner.Find(num);
+
+            if (type == "ASX")
+            {
+                playlist += "<asx version=\"3.0\">\r\n";
+                playlist += "\t<title>XM Tuner</title>\r\n";
+                playlist += "\r\n";
+
+                    playlist += "\t<entry>\r\n";
+                    playlist += "\t\t<title>" + channel.name + "</title>\r\n";
+                    playlist += "\t\t<ref href=\"" + media + "\"/>\r\n";
+                    playlist += "\t</entry>\r\n";
+                playlist += "</asx>";
+            }
+            else if (type == "M3U")
+            {
+                playlist += "#EXTM3U\r\n";
+                    playlist += "#EXTINF:-1," + channel.name + "\r\n";
+                    playlist += media + "\r\n";
+            }
+            return playlist;
+        }
+
+        private String buildTranscoderURL(NameValueCollection streamParams, String serverHost)
+        {   
+            String tversityHost = config["Tversity"];
+            if (tversityHost == null) { return null; }
+
+            String streamtype = streamParams["streamtype"].ToLower();
+            String mimetype = null;
+            streamParams.Remove("streamtype");
+            serverHost = getHostName(serverHost);
+
+            myTuner.output("Stream using transcoder. Output type: " + streamtype, "info");
+            if (streamtype.Equals("mp3"))
+            {
+                mimetype = "audio/mpeg";
+            }
+            else if (streamtype.Equals("wav"))
+            {
+                mimetype = "audio/wav";
+            }
+
+            int num = Convert.ToInt32(streamParams["num"]);
+            String redirectURL = TheConstructor.buildLink("stream", serverHost, streamParams, "TVersity", num, config);
+            myTuner.output("RedirectURL: " + redirectURL, "debug");
+
+            String msg = "http://" + tversityHost + "/geturl/stream."+streamtype+"?type=audio/x-ms-wma&ttype="+mimetype+"&url=" + HttpUtility.UrlEncode(redirectURL) + "&ext=."+streamtype;
+            myTuner.output(msg, "debug");
+            return msg;
         }
     }
 }

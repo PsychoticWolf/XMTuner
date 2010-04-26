@@ -261,7 +261,7 @@ namespace XMTuner
                 {
                     myTuner.output("Incoming Stream Request for XM" + streamParams[0] + " - " + chanName + "", "info");
                     //Do Action for Stream
-                    NameValueCollection streamCollection = worker.DoStream(streamParams, request.RawUrl, serverHost);
+                    NameValueCollection streamCollection = worker.DoStream(streamParams, serverHost);
                     response = streamCollection["msg"];
                     if (streamCollection["isErr"].Equals("true"))
                     {
@@ -270,7 +270,15 @@ namespace XMTuner
                     }
                     else
                     {
-                        redirect = true;
+                        if (streamCollection["playlist"] != null && streamCollection["playlist"].Contains("audio/") == true)
+                        {
+                            myTuner.output("Using playlist wrapper for "+streamCollection["playlist"], "debug");
+                            contentType = streamCollection["playlist"];
+                        }
+                        else
+                        {
+                            redirect = true;
+                        }
                     }
                 }
                 else
@@ -323,7 +331,7 @@ namespace XMTuner
                }
                else if (URLParams["type"].ToLower() == "m3u")
                {
-                   servtype = "audio/x-ms-wax";
+                   servtype = "audio/x-mpegurl";
                }
                else if (URLParams["type"].ToLower() == "asx")
                {
