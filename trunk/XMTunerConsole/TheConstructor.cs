@@ -15,10 +15,10 @@ namespace XMTuner
             {
                 String type = getStreamType(useragent, URLparams, config);
                 String bitrate = getBitRate(URLparams, config);
-                if (type.Equals("mp3"))
+                if (type.Equals("mp3") || type.Equals("wav"))
                 {
-                    type = "http"; //mp3 is a http variant type
-                    URLparams["streamtype"] = "mp3"; //with a special option turned on
+                    URLparams["streamtype"] = type; //turn on transcoder
+                    type = "http"; //Force http type.
                 }
                 String streamtype = "";
                 if (URLparams.Get("streamtype") != null)
