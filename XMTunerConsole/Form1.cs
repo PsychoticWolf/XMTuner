@@ -127,7 +127,6 @@ namespace XMTuner
                 bStart.Enabled = false;
                 bStop.Enabled = true;
                 channelBox.Enabled = true;
-                if (!tversityHost.Equals("")) { protocolBox.Items.Add("MP3"); }
             }
             syncStatusLabel();
             loadChannels();
@@ -687,6 +686,14 @@ namespace XMTuner
                 protocolBox.Items.Add("Protocol:");
                 protocolBox.Items.Add("HTTP");
                 protocolBox.Items.Add("MMS");
+                protocolBox.Items.Add("ASX");
+                protocolBox.Items.Add("M3U");
+
+                if (!tversityHost.Equals(""))
+                {
+                    protocolBox.Items.Add("MP3");
+                    protocolBox.Items.Add("WAV");
+                }
                 if (isMMS) { protocolBox.SelectedItem = "MMS"; } else { protocolBox.SelectedItem = "HTTP"; }
             }
             makeAddress(sender, e);

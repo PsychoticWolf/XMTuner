@@ -15,6 +15,7 @@ namespace XMTuner
             {
                 String type = getStreamType(useragent, URLparams, config);
                 String bitrate = getBitRate(URLparams, config);
+                String format = getFormat(URLparams);
                 if (type.Equals("mp3") || type.Equals("wav"))
                 {
                     URLparams["streamtype"] = type; //turn on transcoder
@@ -25,13 +26,18 @@ namespace XMTuner
                 {
                     streamtype = URLparams["streamtype"] + "/";
                 }
+                if (format != null)
+                {
+                    type = "http";
+                    format = "/" + format;
+                }
                 if (num == 0)
                 {
                     num = Convert.ToInt32(URLparams["num"]);
                 }
 
                 //if needed it'll be "streamtype/"
-                link = type + "://" + serverHost + "/streams/" + num + "/" + streamtype + bitrate;
+                link = type + "://" + serverHost + "/streams/" + num + "/" + streamtype + bitrate + format;
 
             }
             else if (linkType.Equals("playlist"))
@@ -41,6 +47,7 @@ namespace XMTuner
                 link = "http://" + serverHost + "/playlists/"+"?type=" + type + "&bitrate=" + bitrate;
             }
             else
+            //Feeds
             {
                 String category = ""; //XXX not implemented yet.
                 String type = getStreamType(null, URLparams, config);
@@ -106,8 +113,44 @@ namespace XMTuner
                 {
                     return "mp3";
                 }
+                else if (URLparams.Get("type").ToLower().Equals("wav"))
+                {
+                    return "wav";
+                }
+                else if (URLparams.Get("type").ToLower().Equals("m3u"))
+                {
+                    return "m3u";
+                }
+                else if (URLparams.Get("type").ToLower().Equals("asx"))
+                {
+                    return "asx";
+                }
             }
             return type;
+        }
+
+        private static String getFormat(NameValueCollection URLparams)
+        {
+            String format = null;
+            if (URLparams["type"] != null)
+            {
+                if (URLparams["type"].ToLower().Equals("asx") ||
+                    URLparams["type"].ToLower().Equals("m3u"))
+                {
+                    format = URLparams["type"];
+                }
+
+            }
+
+            if (URLparams["format"] != null)
+            {
+                if (URLparams["format"].ToLower().Equals("m3u") ||
+                    URLparams["format"].ToLower().Equals("asx"))
+                {
+                    format = URLparams["format"];
+                }
+            }
+            return format;
         }
 
     }
