@@ -57,6 +57,7 @@ namespace XMTuner
                 defaultConfig.Add("alwaysOnTop", false.ToString());
                 defaultConfig.Add("showURLBuilder", true.ToString());
                 defaultConfig.Add("numRecentHistory", "25");
+                defaultConfig.Add("channelListStyle", "Favorite Channels");
                 return defaultConfig;
             }
         }
@@ -113,6 +114,21 @@ namespace XMTuner
             NameValueCollection sConfig = getConfig();
             if (Convert.ToBoolean(sConfig["bitrate"])) { sConfig["bitrate"] = "high"; } else { sConfig["bitrate"] = "low"; }
             if (sConfig["hostname"] != "") { sConfig["hostname"] = sConfig["hostname"] + ":" + sConfig["port"]; }
+
+            // Channel List View
+            if (sConfig["channelListStyle"].ToLower().Contains("all"))
+            {
+                sConfig["channelListStyle"] = "all";
+            }
+            else if (sConfig["channelListStyle"].ToLower().Contains("category"))
+            {
+                sConfig["channelListStyle"] = "category";
+            }
+            else
+            {
+                sConfig["channelListStyle"] = "favorites";
+            }
+
             return sConfig;
         }
 

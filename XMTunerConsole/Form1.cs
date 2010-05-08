@@ -384,6 +384,7 @@ namespace XMTuner
             onTop = cfg.getConfigItemAsBoolean(config, "alwaysOnTop");
             showURLBuilder = cfg.getConfigItemAsBoolean(config, "showURLBuilder");
             numRecentHistory = Convert.ToInt32(config["numRecentHistory"]);
+            setChannelsListStyle(config["channelListStyle"]);
         }
         #endregion
 
@@ -839,30 +840,45 @@ namespace XMTuner
             }
         }
 
-        private void allChannelsToolStripMenuItem_Click(object sender, EventArgs e)
+        private void setChannelsListStyle(String style)
         {
             favoriteChannelsToolStripMenuItem.Checked = false;
-            allChannelsToolStripMenuItem.Checked = true;
+            allChannelsToolStripMenuItem.Checked = false;
             byCategoryToolStripMenuItem.Checked = false;
-            channelBox.Tag = "";
+
+            if (style.ToLower().Equals("all"))
+            {
+                allChannelsToolStripMenuItem.Checked = true;
+                channelBox.Tag = "";
+            }
+            else if (style.ToLower().Equals("category"))
+            {
+                byCategoryToolStripMenuItem.Checked = true;
+                channelBox.Tag = "category";
+            }
+            else if (style.ToLower().Equals("favorites"))
+            {
+                favoriteChannelsToolStripMenuItem.Checked = true;
+                channelBox.Tag = "favorites";
+                
+            }
+        }
+
+        private void allChannelsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            setChannelsListStyle("all");
             loadChannels();
         }
 
         private void favoriteChannelsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            allChannelsToolStripMenuItem.Checked = false;
-            favoriteChannelsToolStripMenuItem.Checked = true;
-            byCategoryToolStripMenuItem.Checked = false;
-            channelBox.Tag = "favorites";
+            setChannelsListStyle("favorites");
             loadChannels();
         }
 
         private void byCategoryToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            allChannelsToolStripMenuItem.Checked = false;
-            favoriteChannelsToolStripMenuItem.Checked = false;
-            byCategoryToolStripMenuItem.Checked = true;
-            channelBox.Tag = "category";
+            setChannelsListStyle("category");
             loadChannels();
         }
         #endregion
