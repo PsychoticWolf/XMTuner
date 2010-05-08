@@ -29,6 +29,18 @@ namespace XMTuner
             {
                 bUpdateLineup.Enabled = true;
             }
+
+            toolTip1.SetToolTip(channelListStyle, "Which channel list style should XMTuner use for displaying your channels (by default).\n"+
+                                                  "During a session, you can change the style shown from the channels tab context-menu"+
+                                                  "Options:\n"+
+                                                  "All: Plain full channel list\n"+
+                                                  "Favorites: plain list with favorites above (Default)\n" +
+                                                  "By Category: Organize channels by Sirius|XM's neighborhoods.");
+
+            toolTip1.SetToolTip(chkShowURL, "Show the URL Builder pane in the Channels tab (at startup). Primarily useful when first \n"+
+                                            "setting up XMTuner, the default is for it to be shown, but once you have XMTuner working \n"+
+                                            "as you like, you can turn it off to get it out of your way.\n"+
+                                            "(The URL Builder can be easily accessed for short times from the channels tab context-menu)");
         }
 
         private void bSave_Click(object sender, EventArgs e)

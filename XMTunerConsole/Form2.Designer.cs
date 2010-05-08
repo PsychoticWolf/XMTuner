@@ -106,7 +106,7 @@
             this.label2.Location = new System.Drawing.Point(11, 54);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(59, 13);
-            this.label2.TabIndex = 1;
+            this.label2.TabIndex = 0;
             this.label2.Text = "Password: ";
             // 
             // label3
@@ -115,15 +115,18 @@
             this.label3.Location = new System.Drawing.Point(4, 15);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(75, 13);
-            this.label3.TabIndex = 2;
+            this.label3.TabIndex = 0;
             this.label3.Text = "Listen on Port:";
+            this.toolTip1.SetToolTip(this.label3, "XMTuner\'s built-in webserver needs a port ot listen on, its default is 19081, if " +
+                    "this is already in use on your system, or you would prefer a different port numb" +
+                    "er, enter it here.");
             // 
             // bSave
             // 
             this.bSave.Location = new System.Drawing.Point(128, 262);
             this.bSave.Name = "bSave";
             this.bSave.Size = new System.Drawing.Size(112, 23);
-            this.bSave.TabIndex = 3;
+            this.bSave.TabIndex = 6;
             this.bSave.Text = "Save Configuration";
             this.bSave.UseVisualStyleBackColor = true;
             this.bSave.Click += new System.EventHandler(this.bSave_Click);
@@ -133,7 +136,8 @@
             this.txtUser.Location = new System.Drawing.Point(75, 22);
             this.txtUser.Name = "txtUser";
             this.txtUser.Size = new System.Drawing.Size(138, 20);
-            this.txtUser.TabIndex = 4;
+            this.txtUser.TabIndex = 1;
+            this.toolTip1.SetToolTip(this.txtUser, "Username for your Sirius/XM radio online account.");
             // 
             // txtPassword
             // 
@@ -141,14 +145,18 @@
             this.txtPassword.Name = "txtPassword";
             this.txtPassword.PasswordChar = '•';
             this.txtPassword.Size = new System.Drawing.Size(138, 20);
-            this.txtPassword.TabIndex = 5;
+            this.txtPassword.TabIndex = 2;
+            this.toolTip1.SetToolTip(this.txtPassword, "Password for your Sirius/XM radio online account.");
             // 
             // txtPort
             // 
             this.txtPort.Location = new System.Drawing.Point(86, 12);
             this.txtPort.Name = "txtPort";
             this.txtPort.Size = new System.Drawing.Size(117, 20);
-            this.txtPort.TabIndex = 6;
+            this.txtPort.TabIndex = 2;
+            this.toolTip1.SetToolTip(this.txtPort, "XMTuner\'s built-in webserver needs a port ot listen on, its default is 19081, if " +
+                    "this is already in use on your system, or you would prefer a different port numb" +
+                    "er, enter it here.");
             // 
             // chkAutologin
             // 
@@ -157,8 +165,10 @@
             this.chkAutologin.Margin = new System.Windows.Forms.Padding(2);
             this.chkAutologin.Name = "chkAutologin";
             this.chkAutologin.Size = new System.Drawing.Size(70, 17);
-            this.chkAutologin.TabIndex = 8;
+            this.chkAutologin.TabIndex = 5;
             this.chkAutologin.Text = "Autologin";
+            this.toolTip1.SetToolTip(this.chkAutologin, "When XMTuner starts, automatically login without waiting for the start button to " +
+                    "be pressed.");
             this.chkAutologin.UseVisualStyleBackColor = true;
             // 
             // chkMMS
@@ -168,8 +178,9 @@
             this.chkMMS.Margin = new System.Windows.Forms.Padding(2);
             this.chkMMS.Name = "chkMMS";
             this.chkMMS.Size = new System.Drawing.Size(241, 17);
-            this.chkMMS.TabIndex = 12;
+            this.chkMMS.TabIndex = 3;
             this.chkMMS.Text = "Use MMS (instead of HTTP) for Stream URLs";
+            this.toolTip1.SetToolTip(this.chkMMS, resources.GetString("chkMMS.ToolTip"));
             this.chkMMS.UseVisualStyleBackColor = true;
             // 
             // tabControl1
@@ -183,7 +194,7 @@
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
             this.tabControl1.Size = new System.Drawing.Size(348, 245);
-            this.tabControl1.TabIndex = 12;
+            this.tabControl1.TabIndex = 1;
             this.tabControl1.Selected += new System.Windows.Forms.TabControlEventHandler(this.tabControl1_Selected);
             // 
             // tabPage1
@@ -236,6 +247,7 @@
             this.bUpdateLineup.Name = "bUpdateLineup";
             this.bUpdateLineup.Size = new System.Drawing.Size(129, 23);
             this.bUpdateLineup.TabIndex = 0;
+            this.bUpdateLineup.TabStop = false;
             this.bUpdateLineup.Text = "Update Channel Lineup";
             this.bUpdateLineup.UseVisualStyleBackColor = true;
             this.bUpdateLineup.Click += new System.EventHandler(this.bUpdateLineup_Click);
@@ -246,8 +258,10 @@
             this.chkBitrate.Location = new System.Drawing.Point(75, 78);
             this.chkBitrate.Name = "chkBitrate";
             this.chkBitrate.Size = new System.Drawing.Size(186, 17);
-            this.chkBitrate.TabIndex = 11;
+            this.chkBitrate.TabIndex = 4;
             this.chkBitrate.Text = "Default to High Bandwidth Stream";
+            this.toolTip1.SetToolTip(this.chkBitrate, "Prefer Sirius/XM\'s 128k \"Premium\" stream (if available), over the standard 32k st" +
+                    "ream for channels. (Recommended)");
             this.chkBitrate.UseVisualStyleBackColor = true;
             // 
             // groupBox2
@@ -271,7 +285,8 @@
             this.boxNetwork.Location = new System.Drawing.Point(218, 48);
             this.boxNetwork.Name = "boxNetwork";
             this.boxNetwork.Size = new System.Drawing.Size(67, 21);
-            this.boxNetwork.TabIndex = 0;
+            this.boxNetwork.TabIndex = 3;
+            this.toolTip1.SetToolTip(this.boxNetwork, "Which network to log in to. (Default: XM)");
             // 
             // tabPage2
             // 
@@ -296,7 +311,7 @@
             this.groupBox5.Name = "groupBox5";
             this.groupBox5.Padding = new System.Windows.Forms.Padding(2);
             this.groupBox5.Size = new System.Drawing.Size(328, 98);
-            this.groupBox5.TabIndex = 15;
+            this.groupBox5.TabIndex = 0;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "DNS";
             // 
@@ -308,7 +323,7 @@
             this.label8.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(148, 13);
-            this.label8.TabIndex = 15;
+            this.label8.TabIndex = 0;
             this.label8.Text = "(Example: www.example.com)";
             // 
             // txtHostname
@@ -317,7 +332,7 @@
             this.txtHostname.Margin = new System.Windows.Forms.Padding(2);
             this.txtHostname.Name = "txtHostname";
             this.txtHostname.Size = new System.Drawing.Size(265, 20);
-            this.txtHostname.TabIndex = 14;
+            this.txtHostname.TabIndex = 4;
             // 
             // label4
             // 
@@ -325,7 +340,7 @@
             this.label4.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(319, 31);
-            this.label4.TabIndex = 13;
+            this.label4.TabIndex = 0;
             this.label4.Text = "If you would like a hostname to appear in generated feed and stream URLs instead " +
                 "of your IP address, enter it below:";
             // 
@@ -351,7 +366,7 @@
             this.label9.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(83, 13);
-            this.label9.TabIndex = 13;
+            this.label9.TabIndex = 0;
             this.label9.Text = "(Default: 19081)";
             // 
             // tabPage3
@@ -405,6 +420,7 @@
             this.tbtnFeed.Name = "tbtnFeed";
             this.tbtnFeed.Size = new System.Drawing.Size(65, 20);
             this.tbtnFeed.TabIndex = 3;
+            this.tbtnFeed.TabStop = false;
             this.tbtnFeed.Text = "Add Feed";
             this.tbtnFeed.UseVisualStyleBackColor = true;
             this.tbtnFeed.Click += new System.EventHandler(this.tbtnFeed_Click);
@@ -445,7 +461,7 @@
             this.tbtnValidate.Location = new System.Drawing.Point(186, 41);
             this.tbtnValidate.Name = "tbtnValidate";
             this.tbtnValidate.Size = new System.Drawing.Size(53, 22);
-            this.tbtnValidate.TabIndex = 4;
+            this.tbtnValidate.TabIndex = 3;
             this.tbtnValidate.Text = "Validate";
             this.tbtnValidate.UseVisualStyleBackColor = true;
             this.tbtnValidate.Click += new System.EventHandler(this.button1_Click);
@@ -479,7 +495,8 @@
             this.txtTversity.Margin = new System.Windows.Forms.Padding(2);
             this.txtTversity.Name = "txtTversity";
             this.txtTversity.Size = new System.Drawing.Size(174, 20);
-            this.txtTversity.TabIndex = 1;
+            this.txtTversity.TabIndex = 2;
+            this.toolTip1.SetToolTip(this.txtTversity, "IP Address or Hostname and port number for TVersity running on your network.");
             this.txtTversity.TextChanged += new System.EventHandler(this.txtTversity_TextChanged);
             // 
             // label6
@@ -529,14 +546,14 @@
             this.channelListStyle.Location = new System.Drawing.Point(105, 122);
             this.channelListStyle.Name = "channelListStyle";
             this.channelListStyle.Size = new System.Drawing.Size(121, 21);
-            this.channelListStyle.TabIndex = 5;
+            this.channelListStyle.TabIndex = 6;
             // 
             // numRecent
             // 
             this.numRecent.Location = new System.Drawing.Point(40, 87);
             this.numRecent.Name = "numRecent";
             this.numRecent.Size = new System.Drawing.Size(45, 20);
-            this.numRecent.TabIndex = 3;
+            this.numRecent.TabIndex = 5;
             this.numRecent.Value = new decimal(new int[] {
             25,
             0,
@@ -560,7 +577,7 @@
             this.chkShowURL.Location = new System.Drawing.Point(7, 64);
             this.chkShowURL.Name = "chkShowURL";
             this.chkShowURL.Size = new System.Drawing.Size(113, 17);
-            this.chkShowURL.TabIndex = 2;
+            this.chkShowURL.TabIndex = 4;
             this.chkShowURL.Text = "Show URL Builder";
             this.chkShowURL.UseVisualStyleBackColor = true;
             // 
@@ -570,8 +587,9 @@
             this.chkOnTop.Location = new System.Drawing.Point(7, 40);
             this.chkOnTop.Name = "chkOnTop";
             this.chkOnTop.Size = new System.Drawing.Size(229, 17);
-            this.chkOnTop.TabIndex = 1;
+            this.chkOnTop.TabIndex = 3;
             this.chkOnTop.Text = "Keep XMTuner on top of other applications";
+            this.toolTip1.SetToolTip(this.chkOnTop, "Make XMTuner stay on top of other applications.");
             this.chkOnTop.UseVisualStyleBackColor = true;
             // 
             // chkShowNote
@@ -582,8 +600,10 @@
             this.chkShowNote.Location = new System.Drawing.Point(7, 16);
             this.chkShowNote.Name = "chkShowNote";
             this.chkShowNote.Size = new System.Drawing.Size(192, 17);
-            this.chkShowNote.TabIndex = 0;
+            this.chkShowNote.TabIndex = 2;
             this.chkShowNote.Text = "Show Notification on Song Change";
+            this.toolTip1.SetToolTip(this.chkShowNote, "XMTuner, by default, shows a notification box when a song changes, if you\'d prefe" +
+                    "r not to have these notifications appear, uncheck this box.");
             this.chkShowNote.UseVisualStyleBackColor = true;
             // 
             // toolTip1
