@@ -68,6 +68,7 @@
             this.label6 = new System.Windows.Forms.Label();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
             this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.channelListStyle = new System.Windows.Forms.ComboBox();
             this.numRecent = new System.Windows.Forms.NumericUpDown();
             this.label10 = new System.Windows.Forms.Label();
             this.chkShowURL = new System.Windows.Forms.CheckBox();
@@ -75,6 +76,7 @@
             this.chkShowNote = new System.Windows.Forms.CheckBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
+            this.label11 = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -502,6 +504,8 @@
             // tabPage4
             // 
             this.tabPage4.BackColor = System.Drawing.SystemColors.Control;
+            this.tabPage4.Controls.Add(this.label11);
+            this.tabPage4.Controls.Add(this.channelListStyle);
             this.tabPage4.Controls.Add(this.numRecent);
             this.tabPage4.Controls.Add(this.label10);
             this.tabPage4.Controls.Add(this.chkShowURL);
@@ -513,6 +517,19 @@
             this.tabPage4.Size = new System.Drawing.Size(340, 219);
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "UI";
+            // 
+            // channelListStyle
+            // 
+            this.channelListStyle.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.channelListStyle.FormattingEnabled = true;
+            this.channelListStyle.Items.AddRange(new object[] {
+            "All Channels",
+            "Favorite Channels",
+            "By Category"});
+            this.channelListStyle.Location = new System.Drawing.Point(105, 122);
+            this.channelListStyle.Name = "channelListStyle";
+            this.channelListStyle.Size = new System.Drawing.Size(121, 21);
+            this.channelListStyle.TabIndex = 5;
             // 
             // numRecent
             // 
@@ -542,9 +559,9 @@
             this.chkShowURL.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkShowURL.Location = new System.Drawing.Point(7, 64);
             this.chkShowURL.Name = "chkShowURL";
-            this.chkShowURL.Size = new System.Drawing.Size(163, 17);
+            this.chkShowURL.Size = new System.Drawing.Size(113, 17);
             this.chkShowURL.TabIndex = 2;
-            this.chkShowURL.Text = "Show URL Builder on startup";
+            this.chkShowURL.Text = "Show URL Builder";
             this.chkShowURL.UseVisualStyleBackColor = true;
             // 
             // chkOnTop
@@ -582,6 +599,15 @@
             // 
             this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
             this.backgroundWorker1.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker1_RunWorkerCompleted);
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(7, 126);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(94, 13);
+            this.label11.TabIndex = 6;
+            this.label11.Text = "Channel List View:";
             // 
             // Form2
             // 
@@ -663,5 +689,7 @@
         private System.Windows.Forms.CheckBox chkOnTop;
         private System.Windows.Forms.CheckBox chkShowNote;
         private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.ComboBox channelListStyle;
+        private System.Windows.Forms.Label label11;
     }
 }

@@ -67,9 +67,8 @@ namespace XMTuner
             txtTversity.Text = config["Tversity"];
             txtHostname.Text = config["hostname"];
             boxNetwork.SelectedItem = config["network"];
+            channelListStyle.SelectedItem = config["channelListStyle"];
 
-            //Defaults
-            if (boxNetwork.SelectedItem == null) { boxNetwork.SelectedItem = "XM"; }
         }
 
         private void writeConfig()
@@ -89,6 +88,7 @@ namespace XMTuner
             config.Add("alwaysOnTop", chkOnTop.Checked.ToString());
             config.Add("showURLBuilder", chkShowURL.Checked.ToString());
             config.Add("numRecentHistory", numRecent.Value.ToString());
+            config.Add("channelListStyle", channelListStyle.SelectedItem.ToString());
             configuration.writeConfig(config);
         }
 
