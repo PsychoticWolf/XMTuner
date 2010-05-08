@@ -32,11 +32,11 @@ namespace XMTuner
         //Runtime Flags
         public Boolean isLoggedIn;
         public Boolean tryingLogin = false;
-        public Boolean loadedExtendedChannelData = false;
         protected Boolean firstLogin = false;
+        public Boolean loadedChannelMetadata = false;
         Boolean loadedChannelMetadataCache = false;
-        Boolean isProgramDataCurrent = false;
         Boolean useProgramGuide = true;
+        Boolean isProgramDataCurrent = false;
 
         Boolean preloadImageRunning = false;
         Boolean preloadedImages1R = false;
@@ -104,11 +104,6 @@ namespace XMTuner
             tryingLogin = false;
 
             attempts = 1;
-        }
-
-        private void OnTimer(object source, System.Timers.ElapsedEventArgs e)
-        {
-            handleLogin(login());
         }
 
         protected virtual Boolean login()
@@ -198,7 +193,7 @@ namespace XMTuner
             cookieCount = 0;
             cookies = null;
             channels.Clear();
-            loadedExtendedChannelData = false;
+            loadedChannelMetadata = false;
             loadedChannelMetadataCache = false;
             isProgramDataCurrent = false;
             lastChannelPlayed = 0;
@@ -333,11 +328,11 @@ namespace XMTuner
                 //isLoggedIn = false;
                 return false;
             }
-
+            Boolean channelsReset = false;
             if (channels != null)
             {
                 channels.Clear();
-                loadedExtendedChannelData = false;
+                channelsReset = true;
             }
             XMChannel tempChannel;
 
@@ -390,7 +385,22 @@ namespace XMTuner
 
                 }
             }
+            if (channelsReset == true)
+            {
+                loadedChannelMetadata = false;
+                isProgramDataCurrent = false;
+                loadChannelData_hook();
+            }
+
             return true;
+        }
+
+        protected virtual void loadChannelData_hook()
+        {
+            /* The purpose of this method is to allow derived classes to 
+             * do work when the channel data is (re)loaded.
+             * For XM - no work is needed so this method is empty.
+             */
         }
 
         public List<XMChannel> getChannels()
@@ -408,6 +418,7 @@ namespace XMTuner
 
         public void doWhatsOn()
         {
+            /* Check for notification of login failure, and relogin as needed */
             if (isLoggedIn == false)
             {
                 output(network.ToUpper()+" Session Timed-out. Reconnecting...", "info");
@@ -415,38 +426,47 @@ namespace XMTuner
                 return;
             }
 
+            //Update cached channel data
             if (cache.enabled == true && !isChannelDataCurrent())
             {
                 dnldChannelData();
             }
 
-            if (loadedExtendedChannelData == false || (useProgramGuide == true && isProgramDataCurrent == false))
+            //Update "What's On" data...
+            doWhatsOn(false);
+
+            /* Do the rest of the periodic data checks */
+            doWhatsOnExtra();
+
+        }
+
+        protected void doWhatsOn(Boolean atstartup)
+        {
+            //Update "What's On" data... (in background thread)
+            MethodInvoker simpleDelegate = new MethodInvoker(loadWhatsOn);
+            simpleDelegate.BeginInvoke(null, null);
+        }
+
+        private void doWhatsOnExtra()
+        {
+            // "Extended Channel Data" -> Channel Metadata (URL, Logos, etc)
+            if (loadedChannelMetadata == false)
             {
-                MethodInvoker extendedChannelDataDelegate = new MethodInvoker(loadExtendedChannelData);
+                MethodInvoker extendedChannelDataDelegate = new MethodInvoker(loadChannelMetadata);
                 extendedChannelDataDelegate.BeginInvoke(null, null);
             }
 
-            MethodInvoker simpleDelegate = new MethodInvoker(loadWhatsOn);
-            simpleDelegate.BeginInvoke(null, null);
+            // Program Guide
+            if (useProgramGuide == true && isProgramDataCurrent == false)
+            {
+                MethodInvoker extendedChannelDataDelegate = new MethodInvoker(loadProgramGuideData);
+                extendedChannelDataDelegate.BeginInvoke(null, null);
+            }
 
+            //Image Preload (Async)
             if (preloadedImages == false)
             {
                 doPreloadImages();
-            }
-
-        }
-        protected void doWhatsOn(Boolean atstartup)
-        {
-            MethodInvoker simpleDelegate = new MethodInvoker(loadWhatsOn);
-            simpleDelegate.BeginInvoke(null, null);
-        }
-
-        private void loadExtendedChannelData()
-        {
-            loadChannelMetadata();
-            if (useProgramGuide == true && isProgramDataCurrent == false)
-            {
-                loadProgramGuideData();
             }
         }
 
@@ -666,7 +686,7 @@ namespace XMTuner
                 output("Extended channel data is loaded and current, no update needed.", "info");
                 if (fastLoad == false)
                 {
-                    loadedExtendedChannelData = true; 
+                    loadedChannelMetadata = true; 
                 }
                 return;
             } 
@@ -691,7 +711,7 @@ namespace XMTuner
                 output("Extended channel data loaded successfully (from cache)", "info");
                 if (fastLoad == false)
                 {
-                    loadedExtendedChannelData = true;
+                    loadedChannelMetadata = true;
                 }
                 preloadImages();
             }
@@ -714,8 +734,8 @@ namespace XMTuner
             if (channelMetaData.isSuccess)
             {
                 String rawChannelMetaData = channelMetaData.response();
-                loadedExtendedChannelData = setChannelMetadata(rawChannelMetaData);
-                if (loadedExtendedChannelData == true)
+                loadedChannelMetadata = setChannelMetadata(rawChannelMetaData);
+                if (loadedChannelMetadata == true)
                 {
                     output("Extended channel data loaded successfully", "info");
                     cache.saveFile("channelmetadata.cache", rawChannelMetaData);
