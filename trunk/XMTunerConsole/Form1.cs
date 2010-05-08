@@ -48,8 +48,6 @@ namespace XMTuner
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            AeroLoad(); //Aero
-
             logging = new Log(ref outputbox);
             aVersion.Text = configMan.version;
             outputbox.AppendText("XMTuner "+configMan.version+"\n");
@@ -60,6 +58,11 @@ namespace XMTuner
 #if !DEBUG
             Updater update = new Updater(outputbox);
 #endif
+        }
+
+        private void Form1_Paint(object sender, PaintEventArgs e)
+        {
+            AeroLoad();
         }
 
         private void Form1_Shown(object sender, EventArgs e)
@@ -88,6 +91,36 @@ namespace XMTuner
             get
             {
                 return false;
+            }
+        }
+
+        private void powerModeChanged(System.Object sender, Microsoft.Win32.PowerModeChangedEventArgs e)
+        {
+            //Handle the PowerModes we care about... (Resume, Suspend)
+            if (e.Mode == Microsoft.Win32.PowerModes.Suspend)
+            {
+                //If the server isn't running, we don't need to do any of this...
+                if (serverRunning == false) { return; }
+
+                //We're going to sleep.. Stop.
+                output("System is going to sleep, stopping server.", "info");
+                stop();
+            }
+            else if (e.Mode == Microsoft.Win32.PowerModes.Resume)
+            {
+                //XXX This will probably unconditionally start the server regardless of it if was up before...
+
+                //We're waking up, resume server.
+                output("System has resumed, starting server.", "info");
+                start();
+
+                //If we were playing, resume.
+                playerNum = sleepPlayerNum;
+                if (playerNum > 0)
+                {
+                    output("Resuming playback...", "info");
+                    play(playerNum);
+                }
             }
         }
         #endregion
@@ -747,6 +780,14 @@ namespace XMTuner
             play(num);
         }
 
+        private void channelBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Return)
+            {
+                channelBox_DoubleClick(sender, e);
+            }
+        }
+
         private void timerCB_Tick(object sender, EventArgs e)
         {
             updateChannels();
@@ -764,6 +805,65 @@ namespace XMTuner
             enabledToolStripMenuItem.Checked = false;
             disabledToolStripMenuItem.Checked = true;
             splitContainer1.Panel2Collapsed = true;
+        }
+
+        private void addToFavoritesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ListViewItem item = channelBox.SelectedItems[0];
+            if (item.Name.Equals("")) { return; }
+            int num = Convert.ToInt32(item.Name);
+            XMChannel ch = self.Find(num);
+            if (self.favorites.isFavorite(num) == false)
+            {
+                //Add to Favorites...
+                DialogResult result = MessageBox.Show("Add \"" + ch.ToString() + "\" to Favorites?", "Add to Favorites", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (result == DialogResult.Yes)
+                {
+                    if (self.favorites.addFavoriteChannel(num))
+                    {
+                        item.Group = channelBox.Groups["cbGroupFavorite"];
+                    }
+                }
+            }
+            else
+            {
+                //Already in favorites, offer to remove...
+                DialogResult result = MessageBox.Show("Remove \"" + ch.ToString() + "\" from Favorites?", "Remove from Favorites", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (result == DialogResult.Yes)
+                {
+                    if (self.favorites.removeFavoriteChannel(num))
+                    {
+                        item.Group = channelBox.Groups["cbGroupNormal"];
+                    }
+                }
+            }
+        }
+
+        private void allChannelsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            favoriteChannelsToolStripMenuItem.Checked = false;
+            allChannelsToolStripMenuItem.Checked = true;
+            byCategoryToolStripMenuItem.Checked = false;
+            channelBox.Tag = "";
+            loadChannels();
+        }
+
+        private void favoriteChannelsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            allChannelsToolStripMenuItem.Checked = false;
+            favoriteChannelsToolStripMenuItem.Checked = true;
+            byCategoryToolStripMenuItem.Checked = false;
+            channelBox.Tag = "favorites";
+            loadChannels();
+        }
+
+        private void byCategoryToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            allChannelsToolStripMenuItem.Checked = false;
+            favoriteChannelsToolStripMenuItem.Checked = false;
+            byCategoryToolStripMenuItem.Checked = true;
+            channelBox.Tag = "category";
+            loadChannels();
         }
         #endregion
 
@@ -873,100 +973,6 @@ namespace XMTuner
         private void timerTest_Tick(object sender, EventArgs e)
         {
             self.doTest();
-        }
-
-        private void powerModeChanged(System.Object sender, Microsoft.Win32.PowerModeChangedEventArgs e)
-        {
-            //Handle the PowerModes we care about... (Resume, Suspend)
-            if (e.Mode == Microsoft.Win32.PowerModes.Suspend)
-            {
-                //If the server isn't running, we don't need to do any of this...
-                if (serverRunning == false) { return; }
-
-                //We're going to sleep.. Stop.
-                output("System is going to sleep, stopping server.", "info");
-                stop();
-            }
-            else if (e.Mode == Microsoft.Win32.PowerModes.Resume)
-            {
-                //XXX This will probably unconditionally start the server regardless of it if was up before...
-
-                //We're waking up, resume server.
-                output("System has resumed, starting server.", "info");
-                start();
-
-                //If we were playing, resume.
-                playerNum = sleepPlayerNum;
-                if (playerNum >0)
-                {
-                    output("Resuming playback...", "info");
-                    play(playerNum);
-                }
-            }
-        }
-
-        private void addToFavoritesToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ListViewItem item = channelBox.SelectedItems[0];
-            if (item.Name.Equals("")) { return; }
-            int num = Convert.ToInt32(item.Name);
-            XMChannel ch = self.Find(num);
-            if (self.favorites.isFavorite(num) == false)
-            {
-                //Add to Favorites...
-                DialogResult result = MessageBox.Show("Add \"" + ch.ToString() + "\" to Favorites?", "Add to Favorites", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                if (result == DialogResult.Yes)
-                {
-                    if (self.favorites.addFavoriteChannel(num))
-                    {
-                        item.Group = channelBox.Groups["cbGroupFavorite"];
-                    }
-                }
-            }
-            else
-            {
-                //Already in favorites, offer to remove...
-                DialogResult result = MessageBox.Show("Remove \"" + ch.ToString() + "\" from Favorites?", "Remove from Favorites", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                if (result == DialogResult.Yes)
-                {
-                    if (self.favorites.removeFavoriteChannel(num))
-                    {
-                        item.Group = channelBox.Groups["cbGroupNormal"];
-                    }
-                }
-            }
-        }
-
-        private void allChannelsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            favoriteChannelsToolStripMenuItem.Checked = false;
-            allChannelsToolStripMenuItem.Checked = true;
-            byCategoryToolStripMenuItem.Checked = false;
-            channelBox.Tag = "";
-            loadChannels();
-        }
-
-        private void favoriteChannelsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            allChannelsToolStripMenuItem.Checked = false;
-            favoriteChannelsToolStripMenuItem.Checked = true;
-            byCategoryToolStripMenuItem.Checked = false;
-            channelBox.Tag = "favorites";
-            loadChannels();
-        }
-
-        private void byCategoryToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            allChannelsToolStripMenuItem.Checked = false;
-            favoriteChannelsToolStripMenuItem.Checked = false;
-            byCategoryToolStripMenuItem.Checked = true;
-            channelBox.Tag = "category";
-            loadChannels();
-        }
-
-        private void Form1_Paint(object sender, PaintEventArgs e)
-        {
-            AeroLoad();
         }
     }
 }
