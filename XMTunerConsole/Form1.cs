@@ -963,5 +963,10 @@ namespace XMTuner
             channelBox.Tag = "category";
             loadChannels();
         }
+
+        private void Form1_Paint(object sender, PaintEventArgs e)
+        {
+            AeroLoad();
+        }
     }
 }

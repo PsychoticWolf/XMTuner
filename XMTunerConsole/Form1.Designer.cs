@@ -321,7 +321,7 @@
             this.tChannels.Margin = new System.Windows.Forms.Padding(2);
             this.tChannels.Name = "tChannels";
             this.tChannels.Padding = new System.Windows.Forms.Padding(3);
-            this.tChannels.Size = new System.Drawing.Size(552, 213);
+            this.tChannels.Size = new System.Drawing.Size(552, 210);
             this.tChannels.TabIndex = 1;
             this.tChannels.Text = "Channels";
             // 
@@ -350,8 +350,8 @@
             this.splitContainer1.Panel2.Controls.Add(this.protocolBox);
             this.splitContainer1.Panel2.Controls.Add(this.txtChannel);
             this.splitContainer1.Panel2MinSize = 0;
-            this.splitContainer1.Size = new System.Drawing.Size(546, 207);
-            this.splitContainer1.SplitterDistance = 158;
+            this.splitContainer1.Size = new System.Drawing.Size(546, 204);
+            this.splitContainer1.SplitterDistance = 155;
             this.splitContainer1.SplitterIncrement = 5;
             this.splitContainer1.SplitterWidth = 2;
             this.splitContainer1.TabIndex = 14;
@@ -368,7 +368,7 @@
             this.channelBox.MultiSelect = false;
             this.channelBox.Name = "channelBox";
             this.channelBox.ShowItemToolTips = true;
-            this.channelBox.Size = new System.Drawing.Size(544, 156);
+            this.channelBox.Size = new System.Drawing.Size(544, 153);
             this.channelBox.TabIndex = 11;
             this.channelBox.TileSize = new System.Drawing.Size(515, 30);
             this.channelBox.UseCompatibleStateImageBehavior = false;
@@ -891,6 +891,7 @@
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.Text = "XMTuner";
             this.Load += new System.EventHandler(this.Form1_Load);
+            this.Paint += new System.Windows.Forms.PaintEventHandler(this.Form1_Paint);
             this.Shown += new System.EventHandler(this.Form1_Shown);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Resize += new System.EventHandler(this.Form1_Resize);
