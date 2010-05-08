@@ -208,6 +208,15 @@ namespace XMTuner
             return sBuilder.ToString();
         }
 
+        protected override void loadChannelData_hook()
+        {
+            Boolean result = loadSiriusChannelGuide();
+            if (result == false)
+            {
+                output("Fatal error encountered loading Sirius Channel Data Extensions, errors " +
+                       "will occur. Restarting XMTuner is recommended.", "error");
+            }
+        }
 
         private Boolean loadSiriusChannelGuide()
         {
@@ -497,13 +506,6 @@ namespace XMTuner
                 if (name.ToUpper().Equals("NPR NOW"))
                 {
                     name = "NPR";
-                }
-
-                if (name.ToUpper().Equals("MLB NETWORK RADIO")) {
-                    if (Find(name.ToUpper()).num == 0)
-                    {
-                        name = "MLB HOME PLATE";
-                    }
                 }
 
                 Find(name.ToUpper()).addChannelMetadataS(newdata);
