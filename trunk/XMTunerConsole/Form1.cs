@@ -5,6 +5,7 @@ using System.Collections.Specialized;
 using System.Drawing;
 using System.Net;
 using System.Reflection;
+using System.Runtime.InteropServices;
 
 namespace XMTuner
 {
@@ -47,6 +48,8 @@ namespace XMTuner
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            AeroLoad(); //Aero
+
             logging = new Log(ref outputbox);
             aVersion.Text = configMan.version;
             outputbox.AppendText("XMTuner "+configMan.version+"\n");
@@ -78,6 +81,14 @@ namespace XMTuner
         {
             if (FormWindowState.Minimized == WindowState)
                 Hide();
+        }
+
+        public static Boolean isService
+        {
+            get
+            {
+                return false;
+            }
         }
         #endregion
 
@@ -573,7 +584,7 @@ namespace XMTuner
             int j = (int)timerCB.Tag;
             if (j == 0 || j >= 12)
             {
-                if (self.loadedExtendedChannelData == true && self.preloadImagesUpdated == true)
+                if (self.loadedChannelMetadata == true && self.preloadImagesUpdated == true)
                 {
                     output("Channels Tab: New Images in Cache Detected, Updating...", "debug");
                     loadChannels();
@@ -808,17 +819,60 @@ namespace XMTuner
         }
         #endregion
 
+        #region Aero
+        [StructLayout(LayoutKind.Sequential)]
+        public struct MARGINS
+        {
+            public int cxLeftWidth;
+            public int cxRightWidth;
+            public int cyTopHeight;
+            public int cyBottomHeight;
+        }
+
+        [DllImport("dwmapi.dll")]
+        public static extern int DwmExtendFrameIntoClientArea(
+               IntPtr hWnd,
+               ref MARGINS pMarInset
+               );
+        [DllImport("dwmapi.dll")]
+        public static extern int DwmIsCompositionEnabled(ref int en);
+
+        private void AeroLoad()
+        {
+            if (System.Environment.OSVersion.Version.Major >= 6)  //make sure you are not on a legacy OS 
+            {
+                int en = 0;
+                DwmIsCompositionEnabled(ref en);  //check if the desktop composition is enabled
+                if (en > 0)
+                {
+                    this.TransparencyKey = Color.Gainsboro;
+                    this.BackColor = Color.Gainsboro;
+                    splitContainer2.BackColor = SystemColors.Control;
+                    splitContainer2.Panel1.BackColor = Color.Gainsboro;
+
+                    MARGINS margins = new MARGINS();
+
+                    margins.cxLeftWidth = 0;
+                    margins.cxRightWidth = 0;
+                    margins.cyTopHeight = -1;
+                    margins.cyBottomHeight = 0;
+
+                    IntPtr hWnd = this.Handle;
+                    int result = DwmExtendFrameIntoClientArea(hWnd, ref margins);
+                }
+                else
+                {
+                    this.TransparencyKey = Color.Empty;
+                    this.BackColor = SystemColors.Control;
+                }
+            }
+        }
+
+        #endregion
+
         private void timerTest_Tick(object sender, EventArgs e)
         {
             self.doTest();
-        }
-
-        public static Boolean isService
-        {
-            get
-            {
-                return false;
-            }
         }
 
         private void powerModeChanged(System.Object sender, Microsoft.Win32.PowerModeChangedEventArgs e)
