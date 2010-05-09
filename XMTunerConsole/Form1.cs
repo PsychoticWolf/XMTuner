@@ -164,7 +164,6 @@ namespace XMTuner
             timer2.Enabled = true;
             linkServer.Text = "Server is Running...";
             linkServer.Enabled = true;
-            timerTest.Enabled = true;
 
             loggedIn = true;
             if (loggedIn) {
@@ -228,7 +227,6 @@ namespace XMTuner
             lblClock.Text = "0:00:00";
             i = 0;
             timer2.Enabled = false;
-            timerTest.Enabled = false;
             bStart.Enabled = true;
             bStop.Enabled = false;
             unloadChannels();
@@ -985,10 +983,5 @@ namespace XMTuner
         }
 
         #endregion
-
-        private void timerTest_Tick(object sender, EventArgs e)
-        {
-            self.doTest();
-        }
     }
 }
