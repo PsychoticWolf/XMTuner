@@ -31,8 +31,8 @@
             this.components = new System.ComponentModel.Container();
             System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("Recently Played", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem("Nothing Played Yet...");
+            System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("Recently Played", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("Nothing Played Yet...");
             this.allChannelsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.favoriteChannelsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.byCategoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -99,7 +99,6 @@
             this.pHoverTimer = new System.Windows.Forms.Timer(this.components);
             this.timerCB = new System.Windows.Forms.Timer(this.components);
             this.linkServer = new System.Windows.Forms.LinkLabel();
-            this.timerTest = new System.Windows.Forms.Timer(this.components);
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.trayIconContextMenu.SuspendLayout();
@@ -321,7 +320,7 @@
             this.tChannels.Margin = new System.Windows.Forms.Padding(2);
             this.tChannels.Name = "tChannels";
             this.tChannels.Padding = new System.Windows.Forms.Padding(3);
-            this.tChannels.Size = new System.Drawing.Size(552, 213);
+            this.tChannels.Size = new System.Drawing.Size(552, 210);
             this.tChannels.TabIndex = 1;
             this.tChannels.Text = "Channels";
             // 
@@ -351,8 +350,8 @@
             this.splitContainer1.Panel2.Controls.Add(this.protocolBox);
             this.splitContainer1.Panel2.Controls.Add(this.txtChannel);
             this.splitContainer1.Panel2MinSize = 0;
-            this.splitContainer1.Size = new System.Drawing.Size(546, 207);
-            this.splitContainer1.SplitterDistance = 159;
+            this.splitContainer1.Size = new System.Drawing.Size(546, 204);
+            this.splitContainer1.SplitterDistance = 158;
             this.splitContainer1.SplitterIncrement = 5;
             this.splitContainer1.SplitterWidth = 2;
             this.splitContainer1.TabIndex = 14;
@@ -369,7 +368,7 @@
             this.channelBox.MultiSelect = false;
             this.channelBox.Name = "channelBox";
             this.channelBox.ShowItemToolTips = true;
-            this.channelBox.Size = new System.Drawing.Size(544, 157);
+            this.channelBox.Size = new System.Drawing.Size(544, 156);
             this.channelBox.TabIndex = 11;
             this.channelBox.TileSize = new System.Drawing.Size(515, 30);
             this.channelBox.UseCompatibleStateImageBehavior = false;
@@ -536,14 +535,14 @@
             this.recentlyPlayedBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.recentlyPlayedBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.recentlyPlayedBox.FullRowSelect = true;
-            listViewGroup2.Header = "Recently Played";
-            listViewGroup2.Name = "listViewGroup1";
+            listViewGroup1.Header = "Recently Played";
+            listViewGroup1.Name = "listViewGroup1";
             this.recentlyPlayedBox.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
-            listViewGroup2});
+            listViewGroup1});
             this.recentlyPlayedBox.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
-            listViewItem2.Group = listViewGroup2;
+            listViewItem1.Group = listViewGroup1;
             this.recentlyPlayedBox.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem2});
+            listViewItem1});
             this.recentlyPlayedBox.Location = new System.Drawing.Point(3, 3);
             this.recentlyPlayedBox.Margin = new System.Windows.Forms.Padding(0);
             this.recentlyPlayedBox.MultiSelect = false;
@@ -571,7 +570,7 @@
             this.tAbout.Margin = new System.Windows.Forms.Padding(2);
             this.tAbout.Name = "tAbout";
             this.tAbout.Padding = new System.Windows.Forms.Padding(2);
-            this.tAbout.Size = new System.Drawing.Size(552, 213);
+            this.tAbout.Size = new System.Drawing.Size(552, 210);
             this.tAbout.TabIndex = 2;
             this.tAbout.Text = "About";
             // 
@@ -848,11 +847,6 @@
             this.linkServer.Text = "Server is Stopped...";
             this.linkServer.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkServer_LinkClicked);
             // 
-            // timerTest
-            // 
-            this.timerTest.Interval = 1800000;
-            this.timerTest.Tick += new System.EventHandler(this.timerTest_Tick);
-            // 
             // splitContainer2
             // 
             this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -977,7 +971,6 @@
         private System.Windows.Forms.ListView channelBox;
         private System.Windows.Forms.ComboBox typeBox;
         private System.Windows.Forms.LinkLabel linkServer;
-        private System.Windows.Forms.Timer timerTest;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ContextMenuStrip channelContextMenu;
         private System.Windows.Forms.ToolStripMenuItem uRLBuilderToolStripMenuItem;

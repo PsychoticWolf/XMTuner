@@ -49,6 +49,7 @@ namespace XMTuner
         public int lastChannelPlayed;
         public DateTime lastLoggedIn;
         int attempts = 1;
+        System.Timers.Timer pulseTimer = new System.Timers.Timer(1800000);
 
         protected virtual String baseurl
         {
@@ -162,6 +163,9 @@ namespace XMTuner
 
                             //Continue to preloading whatsOn data
                             doWhatsOn(true);
+
+                            //Pulse Timer
+                            startPulseTimer();
                         }
                         else
                         {
@@ -199,6 +203,7 @@ namespace XMTuner
             lastChannelPlayed = 0;
             isLoggedIn = false;
             firstLogin = false;
+            pulseTimer.Stop();
         }
 
         private void relogin()
@@ -220,6 +225,19 @@ namespace XMTuner
             {
                 output("Relogin unsuccessful, will keep trying...", "info");
             }
+        }
+
+        private void startPulseTimer()
+        {
+            pulseTimer.Elapsed += new System.Timers.ElapsedEventHandler(onPulse);
+            pulseTimer.AutoReset = true;
+            pulseTimer.Enabled = true;
+        }
+
+        private void onPulse(object source, System.Timers.ElapsedEventArgs e)
+        {
+            MethodInvoker simpleDelegate = new MethodInvoker(doPulse);
+            simpleDelegate.BeginInvoke(null, null);
         }
 
         private Boolean isChannelDataCurrent()
@@ -401,6 +419,33 @@ namespace XMTuner
              * do work when the channel data is (re)loaded.
              * For XM - no work is needed so this method is empty.
              */
+        }
+
+        private void doPulse()
+        {
+            if (!isLive) { return; }
+            output("[Pulse] Checking session status...", "debug");
+
+            string url = baseurl + "/player/channel/ajax.action?reqURL=player/2ft/channelData.jsp?remote=true&all_channels=true";
+
+            URL channelURL = new URL(url);
+            channelURL.setRequestHeader("Cookie", cookies);
+            channelURL.fetch();
+
+            String data = channelURL.response();
+            if (channelURL.isSuccess && data.IndexOf(":[],") == -1)
+            {
+                //Returns Bool; False if invalid (null) channel data, true on success
+                if (data.Contains("\"allchannels\",null"))
+                {
+                    output("[Pulse] Session dead Scheduling relogin...", "notice");
+                    isLoggedIn = false;
+                    return;
+                }
+                output("[Pulse] Session alive.", "debug");
+                return;
+            }
+            return;
         }
 
         public List<XMChannel> getChannels()
@@ -967,46 +1012,6 @@ namespace XMTuner
                 //Reconstruct program data...
             }
             return true;
-        }
-
-        public void doTest()
-        {
-            MethodInvoker simpleDelegate = new MethodInvoker(do_testChannelData);
-            simpleDelegate.BeginInvoke(null, null);
-        }
-        protected void do_testChannelData()
-        {
-            testChannelData();
-        }
-
-        protected Boolean testChannelData()
-        {
-            output("[Test] Downloading channel lineup...", "debug");
-
-            string url =  baseurl + "/player/channel/ajax.action?reqURL=player/2ft/channelData.jsp?remote=true&all_channels=true";
-            if (!isLive)
-            {
-                url = baseurl + "/channeldata.jsp";
-            }
-
-            URL channelURL = new URL(url);
-            channelURL.setRequestHeader("Cookie", cookies);
-            channelURL.fetch();
-
-            String data = channelURL.response();
-            if (channelURL.isSuccess && data.IndexOf(":[],") == -1)
-            {
-                //Returns Bool; False if invalid (null) channel data, true on success
-                if (data.Contains("\"allchannels\",null"))
-                {
-                    output("[Test] Session dead. Downloaded channel data had no stations.", "error");
-                    isLoggedIn = false;
-                    return false;
-                }
-                output("[Test] Session alive.", "info");
-                return true;
-            }
-            return false;
         }
 
         private void doPreloadImages()
