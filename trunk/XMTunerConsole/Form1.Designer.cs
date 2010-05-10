@@ -31,8 +31,8 @@
             this.components = new System.ComponentModel.Container();
             System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("Recently Played", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("Nothing Played Yet...");
+            System.Windows.Forms.ListViewGroup listViewGroup5 = new System.Windows.Forms.ListViewGroup("Recently Played", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewItem listViewItem5 = new System.Windows.Forms.ListViewItem("Nothing Played Yet...");
             this.allChannelsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.favoriteChannelsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.byCategoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -63,13 +63,12 @@
             this.uRLBuilderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.enabledToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.disabledToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.label1 = new System.Windows.Forms.Label();
             this.typeBox = new System.Windows.Forms.ComboBox();
             this.bitRateBox = new System.Windows.Forms.ComboBox();
             this.addressBox = new System.Windows.Forms.TextBox();
             this.cpyToClip = new System.Windows.Forms.Button();
             this.protocolBox = new System.Windows.Forms.ComboBox();
-            this.txtChannel = new System.Windows.Forms.TextBox();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.tHistory = new System.Windows.Forms.TabPage();
             this.recentlyPlayedBox = new System.Windows.Forms.ListView();
             this.tAbout = new System.Windows.Forms.TabPage();
@@ -320,7 +319,7 @@
             this.tChannels.Margin = new System.Windows.Forms.Padding(2);
             this.tChannels.Name = "tChannels";
             this.tChannels.Padding = new System.Windows.Forms.Padding(3);
-            this.tChannels.Size = new System.Drawing.Size(552, 210);
+            this.tChannels.Size = new System.Drawing.Size(552, 213);
             this.tChannels.TabIndex = 1;
             this.tChannels.Text = "Channels";
             // 
@@ -342,16 +341,15 @@
             // 
             this.splitContainer1.Panel2.BackColor = System.Drawing.Color.LightSteelBlue;
             this.splitContainer1.Panel2.ContextMenuStrip = this.channelContextMenu;
-            this.splitContainer1.Panel2.Controls.Add(this.label1);
             this.splitContainer1.Panel2.Controls.Add(this.typeBox);
             this.splitContainer1.Panel2.Controls.Add(this.bitRateBox);
             this.splitContainer1.Panel2.Controls.Add(this.addressBox);
             this.splitContainer1.Panel2.Controls.Add(this.cpyToClip);
             this.splitContainer1.Panel2.Controls.Add(this.protocolBox);
-            this.splitContainer1.Panel2.Controls.Add(this.txtChannel);
+            this.splitContainer1.Panel2.Controls.Add(this.groupBox2);
             this.splitContainer1.Panel2MinSize = 0;
-            this.splitContainer1.Size = new System.Drawing.Size(546, 204);
-            this.splitContainer1.SplitterDistance = 158;
+            this.splitContainer1.Size = new System.Drawing.Size(546, 207);
+            this.splitContainer1.SplitterDistance = 160;
             this.splitContainer1.SplitterIncrement = 5;
             this.splitContainer1.SplitterWidth = 2;
             this.splitContainer1.TabIndex = 14;
@@ -368,7 +366,7 @@
             this.channelBox.MultiSelect = false;
             this.channelBox.Name = "channelBox";
             this.channelBox.ShowItemToolTips = true;
-            this.channelBox.Size = new System.Drawing.Size(544, 156);
+            this.channelBox.Size = new System.Drawing.Size(544, 158);
             this.channelBox.TabIndex = 11;
             this.channelBox.TileSize = new System.Drawing.Size(515, 30);
             this.channelBox.UseCompatibleStateImageBehavior = false;
@@ -441,15 +439,6 @@
             this.disabledToolStripMenuItem.Text = "Disabled";
             this.disabledToolStripMenuItem.Click += new System.EventHandler(this.disabledToolStripMenuItem_Click);
             // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(3, 4);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(64, 13);
-            this.label1.TabIndex = 13;
-            this.label1.Text = "URL Builder";
-            // 
             // typeBox
             // 
             this.typeBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -458,7 +447,7 @@
             "Channel",
             "Feed",
             "Playlist"});
-            this.typeBox.Location = new System.Drawing.Point(3, 21);
+            this.typeBox.Location = new System.Drawing.Point(8, 14);
             this.typeBox.Name = "typeBox";
             this.typeBox.Size = new System.Drawing.Size(64, 21);
             this.typeBox.TabIndex = 12;
@@ -472,7 +461,7 @@
             "Bitrate:",
             "High",
             "Low"});
-            this.bitRateBox.Location = new System.Drawing.Point(139, 21);
+            this.bitRateBox.Location = new System.Drawing.Point(144, 14);
             this.bitRateBox.Margin = new System.Windows.Forms.Padding(2);
             this.bitRateBox.Name = "bitRateBox";
             this.bitRateBox.Size = new System.Drawing.Size(64, 21);
@@ -481,14 +470,14 @@
             // 
             // addressBox
             // 
-            this.addressBox.Location = new System.Drawing.Point(206, 22);
+            this.addressBox.Location = new System.Drawing.Point(212, 15);
             this.addressBox.Name = "addressBox";
-            this.addressBox.Size = new System.Drawing.Size(260, 20);
+            this.addressBox.Size = new System.Drawing.Size(278, 20);
             this.addressBox.TabIndex = 3;
             // 
             // cpyToClip
             // 
-            this.cpyToClip.Location = new System.Drawing.Point(469, 21);
+            this.cpyToClip.Location = new System.Drawing.Point(495, 14);
             this.cpyToClip.Margin = new System.Windows.Forms.Padding(0, 2, 0, 2);
             this.cpyToClip.Name = "cpyToClip";
             this.cpyToClip.Size = new System.Drawing.Size(42, 23);
@@ -504,20 +493,20 @@
             this.protocolBox.Items.AddRange(new object[] {
             "Protocol:",
             "HTTP"});
-            this.protocolBox.Location = new System.Drawing.Point(71, 21);
+            this.protocolBox.Location = new System.Drawing.Point(76, 14);
             this.protocolBox.Name = "protocolBox";
             this.protocolBox.Size = new System.Drawing.Size(64, 21);
             this.protocolBox.TabIndex = 5;
             this.protocolBox.SelectedIndexChanged += new System.EventHandler(this.makeAddress);
             // 
-            // txtChannel
+            // groupBox2
             // 
-            this.txtChannel.Enabled = false;
-            this.txtChannel.Location = new System.Drawing.Point(515, 22);
-            this.txtChannel.Name = "txtChannel";
-            this.txtChannel.Size = new System.Drawing.Size(27, 20);
-            this.txtChannel.TabIndex = 2;
-            this.txtChannel.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtChannel_KeyPress);
+            this.groupBox2.Location = new System.Drawing.Point(4, 0);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(538, 40);
+            this.groupBox2.TabIndex = 13;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "URL Builder";
             // 
             // tHistory
             // 
@@ -535,14 +524,14 @@
             this.recentlyPlayedBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.recentlyPlayedBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.recentlyPlayedBox.FullRowSelect = true;
-            listViewGroup1.Header = "Recently Played";
-            listViewGroup1.Name = "listViewGroup1";
+            listViewGroup5.Header = "Recently Played";
+            listViewGroup5.Name = "listViewGroup1";
             this.recentlyPlayedBox.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
-            listViewGroup1});
+            listViewGroup5});
             this.recentlyPlayedBox.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
-            listViewItem1.Group = listViewGroup1;
+            listViewItem5.Group = listViewGroup5;
             this.recentlyPlayedBox.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem1});
+            listViewItem5});
             this.recentlyPlayedBox.Location = new System.Drawing.Point(3, 3);
             this.recentlyPlayedBox.Margin = new System.Windows.Forms.Padding(0);
             this.recentlyPlayedBox.MultiSelect = false;
@@ -570,7 +559,7 @@
             this.tAbout.Margin = new System.Windows.Forms.Padding(2);
             this.tAbout.Name = "tAbout";
             this.tAbout.Padding = new System.Windows.Forms.Padding(2);
-            this.tAbout.Size = new System.Drawing.Size(552, 210);
+            this.tAbout.Size = new System.Drawing.Size(552, 213);
             this.tAbout.TabIndex = 2;
             this.tAbout.Text = "About";
             // 
@@ -593,7 +582,7 @@
             this.aBuildDate.ReadOnly = true;
             this.aBuildDate.Size = new System.Drawing.Size(62, 19);
             this.aBuildDate.TabIndex = 17;
-            this.aBuildDate.Text = "20100508";
+            this.aBuildDate.Text = "20100509";
             this.aBuildDate.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // label8
@@ -954,7 +943,6 @@
         private System.Windows.Forms.Button bUpdate;
         private System.Windows.Forms.Timer timerUpdater;
         private System.Windows.Forms.TabPage tHistory;
-        private System.Windows.Forms.TextBox txtChannel;
         private AxWMPLib.AxWindowsMediaPlayer axWindowsMediaPlayer1;
         private System.Windows.Forms.Label pLabel4;
         private System.Windows.Forms.Label pLabel3;
@@ -971,7 +959,6 @@
         private System.Windows.Forms.ListView channelBox;
         private System.Windows.Forms.ComboBox typeBox;
         private System.Windows.Forms.LinkLabel linkServer;
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ContextMenuStrip channelContextMenu;
         private System.Windows.Forms.ToolStripMenuItem uRLBuilderToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem enabledToolStripMenuItem;
@@ -986,6 +973,7 @@
         private System.Windows.Forms.ToolStripMenuItem addToFavoritesToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripMenuItem byCategoryToolStripMenuItem;
+        private System.Windows.Forms.GroupBox groupBox2;
     }
 }
 

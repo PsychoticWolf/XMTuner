@@ -406,6 +406,7 @@ namespace XMTuner
             if (channelsReset == true)
             {
                 loadedChannelMetadata = false;
+                loadedChannelMetadataCache = false;
                 isProgramDataCurrent = false;
                 loadChannelData_hook();
             }
