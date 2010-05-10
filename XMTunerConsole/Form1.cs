@@ -129,7 +129,13 @@ namespace XMTuner
         //Start / Login
         private void bStart_Click(object sender, EventArgs e)
         {
+            bStart.Text = "Wait...";
+            bStart.Enabled = false;
             start();
+            if (bStop.Enabled == true)
+            {
+                bStart.Text = "Start";
+            }
         }
         private void start()
         {
@@ -520,7 +526,6 @@ namespace XMTuner
             typeBox.SelectedItem = "Channel";
             if (isMMS) { protocolBox.SelectedItem = "MMS"; } else { protocolBox.SelectedItem = "HTTP"; }
             if (bitrate.Equals("high")) { bitRateBox.SelectedItem = "High"; } else { bitRateBox.SelectedItem = "Low"; }
-            txtChannel.Enabled = true;
         }
 
         private void loadChannels()
@@ -750,21 +755,6 @@ namespace XMTuner
             {
                 Clipboard.SetText(addressBox.Text);
             }
-        }
-
-        private void txtChannel_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            if (e.KeyChar == (char)Keys.Back || e.KeyChar == (char)Keys.Delete) { return; }
-
-            if (e.KeyChar == (char)Keys.Return)
-            {
-                if (txtChannel.Text.Equals("")) { return; }
-                int num = Convert.ToInt32(txtChannel.Text);
-                play(num);
-                return;
-            }
-            if (!System.Text.RegularExpressions.Regex.IsMatch(e.KeyChar.ToString(), "\\d+"))
-                e.Handled = true;
         }
 
         private void channelBox_DoubleClick(object sender, EventArgs e)
