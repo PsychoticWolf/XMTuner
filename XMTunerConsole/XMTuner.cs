@@ -860,7 +860,7 @@ namespace XMTuner
                 recentlyPlayed.RemoveRange(numItems, recentlyPlayed.Count - numItems);
             }
         }
-
+        
         protected virtual String getChannelsNums()
         {
             String channels = "";

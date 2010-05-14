@@ -902,7 +902,7 @@ namespace XMTuner
 
             if (self.recentlyPlayed.Count == 0)
             {
-                recentlyPlayedBox.Items.Add("Nothing yet.. Play a channel...");
+                recentlyPlayedBox.Items.Add(new ListViewItem("Nothing played yet...", recentlyPlayedBox.Groups[0]));
                 return;
             }
 
@@ -920,6 +920,28 @@ namespace XMTuner
             }
             catch (InvalidOperationException) {}
             recentlyPlayedBox.EndUpdate();
+        }
+
+        private void copyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            String data = "";
+            foreach (ListViewItem item in recentlyPlayedBox.SelectedItems)
+            {
+                if (data.Equals("") == false)
+                {
+                    data += Environment.NewLine;
+                }
+
+                data += item.Text;
+            }
+            Clipboard.SetText(data);
+        }
+
+        private void clearToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            self.recentlyPlayed.Clear();
+            recentlyPlayedBox.Clear();
+            updateRecentlyPlayedBox();
         }
         #endregion
 
