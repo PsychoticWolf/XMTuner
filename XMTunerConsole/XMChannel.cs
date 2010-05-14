@@ -41,9 +41,12 @@ namespace XMTuner
             return theString;
         }
 
-        public String ShortName()
+        public String ShortName
         {
-            return network + " " + num;
+            get
+            {
+                return network + " " + num;
+            }
         }
 
         public void addPlayingInfo(String[] stringyInfo)

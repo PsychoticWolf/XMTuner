@@ -447,7 +447,7 @@ namespace XMTuner
             {
                 color = Color.OrangeRed;
             }
-            if (level.ToLower().Equals("player"))
+            if (level.ToLower().Contains("player"))
             {
                 color = Color.Green;
             }

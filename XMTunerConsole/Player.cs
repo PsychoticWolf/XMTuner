@@ -153,18 +153,19 @@ namespace XMTuner
                 pLabel5.Text = status;
                 if (status.Equals("") == false)
                 {
-                    output("Player (Status Change): " + status, "player");
+                    output("Player (" + self.Find(playerNum).ShortName + "): " + status, "player");
                 }
             }
         }
 
         private void axWindowsMediaPlayer1_PlayStateChange(object sender, AxWMPLib._WMPOCXEvents_PlayStateChangeEvent e)
         {
-            output("Player (State Change): " + axWindowsMediaPlayer1.playState, "player");
+            output("Player ("+self.Find(playerNum).ShortName+"): " + axWindowsMediaPlayer1.playState, "player-debug");
 
             // If Windows Media Player is in the playing state, enable the data update timer. 
             if (axWindowsMediaPlayer1.playState == WMPLib.WMPPlayState.wmppsPlaying)
             {
+                pRetryTimer.Enabled = false;
                 axWindowsMediaPlayer1.enableContextMenu = true;
                 pTimer.Enabled = true;
                 showWMPPlayerUI();
@@ -283,11 +284,23 @@ namespace XMTuner
             //Handle things like stopping and trying to retune...
             int cnum = playerNum;
             axWindowsMediaPlayer1.Ctlcontrols.stop();
-            pLabel2.Text = "Error!";
-            pLabel3.Text = "Attempting to retune channel...";
+            pLabel1.Text = "Error!";
+            pLabel2.Text = "A problem occured while playing your channel.";
+            pLabel3.Text = "Attempting to retune (in 10 seconds)...";
             pLabel4.Text = errDesc;
-            output("Attempting to retune to channel "+cnum+"...", "info");
+            pStatusLabel.Text = "";
+            output("Error! Attempting to retune channel "+self.Find(cnum).ToString()+" (in 10 seconds)...", "error");
+            pRetryTimer.Tag = cnum;
+            pRetryTimer.Start();
+        }
+
+        private void pRetryTimer_Tick(object sender, EventArgs e)
+        {
+            int cnum = (int)pRetryTimer.Tag;
+            output("Attempting to retune to channel " + self.Find(cnum).ToString() + "...", "info");
             play(cnum);
+
+
         }
 
         #endregion
