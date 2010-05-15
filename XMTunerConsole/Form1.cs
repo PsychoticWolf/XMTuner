@@ -60,8 +60,9 @@ namespace XMTuner
 #endif
         }
 
-        private void Form1_Paint(object sender, PaintEventArgs e)
+        protected override void OnPaintBackground(PaintEventArgs e)
         {
+            base.OnPaint(e);
             AeroLoad();
         }
 
