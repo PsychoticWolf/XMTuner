@@ -36,7 +36,12 @@ namespace XMTuner
             String captchaID;
             CookieCollection playerCookies;
 
-            getSiriusCaptcha(out captchaResponse, out captchaID, out playerCookies);
+            Boolean result = getSiriusCaptcha(out captchaResponse, out captchaID, out playerCookies);
+            if (result == false)
+            {
+                output("Error fetching Sirius Captcha for Login", "error");
+                return false;
+            }
 
             // Do Actual Login
             String SiriusLoginURL = "http://www.sirius.com/player/login/siriuslogin.action";
@@ -131,6 +136,7 @@ namespace XMTuner
             output("Server Response: " + playerURL.getStatusDescription(), "debug");
             if (playerURL.isSuccess == false)
             {
+                output("Error: " + playerURL.getStatusDescription(), "error");
                 captchaResponse = null;
                 captchaID = null;
                 playerCookies = null;

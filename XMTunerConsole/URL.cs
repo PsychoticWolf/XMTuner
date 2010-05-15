@@ -41,6 +41,7 @@ namespace XMTuner
         public void setCookieContainer(CookieCollection cookiejar)
         {
             TheRequest.CookieContainer = new CookieContainer();
+            if (cookiejar == null) return; 
             TheRequest.CookieContainer.Add(cookiejar);
         }
 
