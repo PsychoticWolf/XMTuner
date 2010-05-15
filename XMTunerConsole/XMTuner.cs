@@ -38,7 +38,7 @@ namespace XMTuner
         Boolean useProgramGuide = true;
         Boolean isProgramDataCurrent = false;
 
-        Boolean preloadImageRunning = false;
+        public Boolean preloadImageRunning = false;
         Boolean preloadedImages1R = false;
         Boolean preloadedImages = false;
         public Boolean preloadImagesUpdated = false;
@@ -785,6 +785,12 @@ namespace XMTuner
                 {
                     output("Extended channel data loaded successfully", "info");
                     cache.saveFile("channelmetadata.cache", rawChannelMetaData);
+
+                    //Trigger the image preloader...
+                    if (preloadedImages1R == false)
+                    {
+                        doPreloadImages();
+                    }
                 }
             }
             else
@@ -1030,7 +1036,8 @@ namespace XMTuner
         private void preloadImages()
         {
             //Don't run this more than once at a time... really.
-            if (preloadImageRunning == true) { return; }
+            //Don't run this if there's nothing to work from at all...
+            if (loadedChannelMetadata == false || preloadImageRunning == true) { return; }
             int timeout = preloadImageTimeout;
             int errcnt = 0;
             preloadImageRunning = true;
@@ -1059,10 +1066,7 @@ namespace XMTuner
                                 result = true;
                                 output("Image Cache: Added Image for " + chan.ToString(), "debug");
                                 chan.logo_small_image = imageURL.responseAsImage();
-                                if (preloadedImages1R)
-                                {
-                                    preloadImagesUpdated = true;
-                                }
+                                preloadImagesUpdated = true;
                             }
                             else
                             {
