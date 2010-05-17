@@ -491,6 +491,8 @@ namespace XMTuner
             //Update "What's On" data... (in background thread)
             MethodInvoker simpleDelegate = new MethodInvoker(loadWhatsOn);
             simpleDelegate.BeginInvoke(null, null);
+
+            doWhatsOnExtra();
         }
 
         private void doWhatsOnExtra()
@@ -1037,7 +1039,7 @@ namespace XMTuner
         {
             //Don't run this more than once at a time... really.
             //Don't run this if there's nothing to work from at all...
-            if (loadedChannelMetadata == false || preloadImageRunning == true) { return; }
+            if ((loadedChannelMetadata == false && loadedChannelMetadataCache == false) || preloadImageRunning == true) { return; }
             int timeout = preloadImageTimeout;
             int errcnt = 0;
             preloadImageRunning = true;
