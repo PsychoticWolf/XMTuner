@@ -619,19 +619,12 @@ namespace XMTuner
 
         private void updateChannels()
         {
-            int j = (int)timerCB.Tag;
-            if (j == 0 || j >= 3)
+            if (self.preloadImageRunning == false && self.preloadImagesUpdated == true)
             {
-                if (self.preloadImageRunning == false && self.preloadImagesUpdated == true)
-                {
-                    output("Channels Tab: New Images in Cache Detected, Updating...", "debug");
-                    loadChannels();
-                    j = (int)timerCB.Tag;
-                    self.preloadImagesUpdated = false;
-                }
+                output("Channels Tab: New Images in Cache Detected, Updating...", "debug");
+                loadChannels();
+                self.preloadImagesUpdated = false;
             }
-            j++;
-            timerCB.Tag = j;
 
             //Update What's On Data in the Channel Box
             int i = 0;
