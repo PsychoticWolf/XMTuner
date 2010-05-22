@@ -50,9 +50,10 @@ namespace XMTuner
                 SiriusLoginURL = "http://test.xmtuner.net/test.php";
             }
 
-            output("Connecting to: " + SiriusLoginURL, "debug");
+
             String data = "userName=" + HttpUtility.UrlEncode(user) + "&password=" + HttpUtility.UrlEncode(getMD5Hash(password)) + "&__checkbox_remember=true&remember=true&captchaEnabled=true&captchaID=" + HttpUtility.UrlEncode(captchaID) + "&timeNow=null&captcha_response=" + captchaResponse;
             URL loginURL = new URL(SiriusLoginURL);
+            output("Connecting to: " + SiriusLoginURL + " (" + loginURL.getIP() + ")", "debug");
             loginURL.setRequestHeader("Cookie", cookies);
             loginURL.setCookieContainer(playerCookies);
             loginURL.fetch(data);
@@ -424,6 +425,7 @@ namespace XMTuner
         protected override string playChannel(String address)
         {
             URL url = new URL(address);
+            output("Fetch: " + address + " (" + url.getIP() + ")", "debug");
             url.setRequestHeader("Cookie", cookies);
             url.fetch();
             output("Server Response: " + url.getStatusDescription(), "debug");

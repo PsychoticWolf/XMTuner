@@ -118,10 +118,9 @@ namespace XMTuner
                 XMURL = "http://test.xmtuner.net/test.php";
             }
 
-            output("Connecting to: "+XMURL, "debug");
-            
             String data = "playerToLaunch=xm&encryptPassword=true&userName="+user+"&password="+password;
             URL loginURL = new URL(XMURL);
+            output("Connecting to: " + XMURL + " ("+loginURL.getIP()+")", "debug");
             loginURL.fetch(data);
 
             int responseCode = loginURL.getStatus();
@@ -664,6 +663,7 @@ namespace XMTuner
         protected virtual string playChannel(String address)
         {
             URL url = new URL(address);
+            output("Fetch: " + address + " ("+url.getIP()+")", "debug");
             url.setRequestHeader("Cookie", cookies);
             url.fetch();
             output("Server Response: " + url.getStatusDescription(), "debug");
