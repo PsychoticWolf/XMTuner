@@ -130,8 +130,9 @@ namespace XMTuner
                 pStatusLabel.Text = "";
                 return;
             }
-            axWindowsMediaPlayer1.URL = url;
             playerNum = num;
+            axWindowsMediaPlayer1.URL = url;
+            
             updateNowPlayingData(false, false, num);
 
             updateRecentlyPlayedBox();
@@ -153,7 +154,14 @@ namespace XMTuner
                 pLabel5.Text = status;
                 if (status.Equals("") == false)
                 {
-                    output("Player (" + self.Find(playerNum).ShortName + "): " + status, "player");
+                    if (playerNum != 0)
+                    {
+                        output("Player (" + self.Find(playerNum).ShortName + "): " + status, "player");
+                    }
+                    else
+                    {
+                        output("Player: " + status, "player");
+                    }
                 }
             }
         }
@@ -299,8 +307,6 @@ namespace XMTuner
             int cnum = (int)pRetryTimer.Tag;
             output("Attempting to retune to channel " + self.Find(cnum).ToString() + "...", "info");
             play(cnum);
-
-
         }
 
         #endregion

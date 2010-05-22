@@ -85,6 +85,21 @@ namespace XMTuner
             }
         }
 
+        public String getIP()
+        {
+            if (TheRequest == null) return "";
+            try
+            {
+                IPAddress[] addresses = Dns.GetHostEntry(TheRequest.ServicePoint.Address.DnsSafeHost).AddressList;
+                if (addresses.Length > 0)
+                {
+                    return addresses[0].ToString();
+                }
+            }
+            catch (Exception) { }
+            return "";
+        }
+
         public int getStatus()
         {
             if (TheReply == null)
