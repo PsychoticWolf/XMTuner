@@ -114,7 +114,10 @@ namespace XMTuner
         protected override void OnStop()
         {
             base.OnStop();
-            tuner.stop();
+            if (tuner != null)
+            {
+                tuner.stop();
+            }
             removePID();
         }
 
