@@ -226,7 +226,7 @@ namespace XMTuner
             }
         }
 
-        private void startPulseTimer()
+        protected void startPulseTimer()
         {
             pulseTimer.Elapsed += new System.Timers.ElapsedEventHandler(onPulse);
             pulseTimer.AutoReset = true;
@@ -346,7 +346,7 @@ namespace XMTuner
                 return false;
             }
             Boolean channelsReset = false;
-            if (channels != null)
+            if (channels.Count > 0)
             {
                 channels.Clear();
                 channelsReset = true;
@@ -419,6 +419,7 @@ namespace XMTuner
              * do work when the channel data is (re)loaded.
              * For XM - no work is needed so this method is empty.
              */
+            output("Load Channel Data Hook Called!", "notice");
         }
 
         private void doPulse()

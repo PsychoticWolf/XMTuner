@@ -104,6 +104,9 @@ namespace XMTuner
                             //Continue to preloading whatsOn data
                             doWhatsOn(true);
 
+                            //Pulse Timer
+                            startPulseTimer();
+
                         }
                         else
                         {
