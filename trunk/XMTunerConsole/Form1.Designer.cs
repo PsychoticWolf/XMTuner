@@ -31,8 +31,8 @@
             this.components = new System.ComponentModel.Container();
             System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("Recently Played", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem("Nothing Played Yet...");
+            System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("Recently Played", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("Nothing Played Yet...");
             this.allChannelsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.favoriteChannelsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.byCategoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -325,7 +325,7 @@
             this.tChannels.Margin = new System.Windows.Forms.Padding(2);
             this.tChannels.Name = "tChannels";
             this.tChannels.Padding = new System.Windows.Forms.Padding(3);
-            this.tChannels.Size = new System.Drawing.Size(552, 217);
+            this.tChannels.Size = new System.Drawing.Size(552, 214);
             this.tChannels.TabIndex = 1;
             this.tChannels.Text = "Channels";
             // 
@@ -354,8 +354,8 @@
             this.splitContainer1.Panel2.Controls.Add(this.protocolBox);
             this.splitContainer1.Panel2.Controls.Add(this.groupBox2);
             this.splitContainer1.Panel2MinSize = 0;
-            this.splitContainer1.Size = new System.Drawing.Size(546, 211);
-            this.splitContainer1.SplitterDistance = 161;
+            this.splitContainer1.Size = new System.Drawing.Size(546, 208);
+            this.splitContainer1.SplitterDistance = 160;
             this.splitContainer1.SplitterIncrement = 5;
             this.splitContainer1.SplitterWidth = 2;
             this.splitContainer1.TabIndex = 14;
@@ -372,7 +372,7 @@
             this.channelBox.MultiSelect = false;
             this.channelBox.Name = "channelBox";
             this.channelBox.ShowItemToolTips = true;
-            this.channelBox.Size = new System.Drawing.Size(544, 159);
+            this.channelBox.Size = new System.Drawing.Size(544, 158);
             this.channelBox.TabIndex = 11;
             this.channelBox.TileSize = new System.Drawing.Size(515, 30);
             this.channelBox.UseCompatibleStateImageBehavior = false;
@@ -531,14 +531,14 @@
             this.recentlyPlayedBox.ContextMenuStrip = this.historyContextMenu;
             this.recentlyPlayedBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.recentlyPlayedBox.FullRowSelect = true;
-            listViewGroup2.Header = "Recently Played";
-            listViewGroup2.Name = "listViewGroup1";
+            listViewGroup1.Header = "Recently Played";
+            listViewGroup1.Name = "listViewGroup1";
             this.recentlyPlayedBox.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
-            listViewGroup2});
+            listViewGroup1});
             this.recentlyPlayedBox.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
-            listViewItem2.Group = listViewGroup2;
+            listViewItem1.Group = listViewGroup1;
             this.recentlyPlayedBox.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem2});
+            listViewItem1});
             this.recentlyPlayedBox.Location = new System.Drawing.Point(3, 3);
             this.recentlyPlayedBox.Margin = new System.Windows.Forms.Padding(0);
             this.recentlyPlayedBox.Name = "recentlyPlayedBox";
@@ -617,7 +617,7 @@
             this.aBuildDate.ReadOnly = true;
             this.aBuildDate.Size = new System.Drawing.Size(62, 19);
             this.aBuildDate.TabIndex = 17;
-            this.aBuildDate.Text = "20100517";
+            this.aBuildDate.Text = "20100523";
             this.aBuildDate.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // label8
