@@ -13,7 +13,9 @@ namespace XMTuner
     public partial class Form1 : Form
     {
         ServiceController serviceControl = new ServiceController();
+        String serviceName = "XMTunerService";
         String logFile = "XMTunerService.log";
+        TimeSpan delay = TimeSpan.FromSeconds(10);
 
         #region Aero
         [StructLayout(LayoutKind.Sequential)]
@@ -32,6 +34,12 @@ namespace XMTuner
                );
         [DllImport("dwmapi.dll")]
         public static extern int DwmIsCompositionEnabled(ref int en);
+
+        protected override void OnPaintBackground(PaintEventArgs e)
+        {
+            base.OnPaintBackground(e);
+            AeroLoad();
+        }
         
         private void AeroLoad()
         {
@@ -40,18 +48,25 @@ namespace XMTuner
                 int en = 0;
                 DwmIsCompositionEnabled(ref en);  //check if the desktop composition is enabled
                 if (en > 0)
-                {
+                {                    
                     this.BackColor = Color.Gainsboro;
+                    this.TransparencyKey = Color.Gainsboro;
+
 
                     MARGINS margins = new MARGINS();
 
                     margins.cxLeftWidth = 0;
                     margins.cxRightWidth = 0;
-                    margins.cyTopHeight = 45;
+                    margins.cyTopHeight = 80;
                     margins.cyBottomHeight = 0;
 
                     IntPtr hWnd = this.Handle;
                     int result = DwmExtendFrameIntoClientArea(hWnd, ref margins);
+                }
+                else
+                {
+                    this.TransparencyKey = Color.Empty;
+                    this.BackColor = SystemColors.Control;
                 }
             }
         }
@@ -66,7 +81,6 @@ namespace XMTuner
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            AeroLoad(); //Aero
             serviceControl.ServiceName = "XMTunerService";
             service_button_reset();
         }
@@ -75,6 +89,7 @@ namespace XMTuner
         #region Service Tab
         private void service_button_reset()
         {
+            serviceControl.Refresh();
             try
             {
                 lblServiceStat.Text = serviceControl.Status.ToString();
@@ -115,50 +130,124 @@ namespace XMTuner
                 btnSerUninstall.Enabled = false;
                 btnSerInstall.Enabled = true;
             }
-
         }
 
         private void btnSerStart_Click(object sender, EventArgs e)
         {
-            serviceControl.Start();
-            serviceControl.WaitForStatus(System.ServiceProcess.ServiceControllerStatus.Running);
-            service_button_reset();
+            setProgressValue();
+            if (start())
+            {
+                setProgressValue(10);
+                service_button_reset();
+            }
+            
 
         }
 
         private void btnSerStop_Click(object sender, EventArgs e)
         {
-            serviceControl.Stop();
-            serviceControl.WaitForStatus(System.ServiceProcess.ServiceControllerStatus.Stopped);
-            service_button_reset();
+            setProgressValue();
+            if (stop())
+            {
+                setProgressValue(10);
+                service_button_reset();
+            }
 
         }
 
         private void btnSerRestart_Click(object sender, EventArgs e)
         {
-            serviceControl.Stop();
-            serviceControl.WaitForStatus(System.ServiceProcess.ServiceControllerStatus.Stopped);
-            serviceControl.Start();
-            serviceControl.WaitForStatus(System.ServiceProcess.ServiceControllerStatus.Running);
-            service_button_reset();
+            setProgressValue();
+            if (stop())
+            {
+                setProgressValue(5);
+                setProgressValue(6);
+                if (start())
+                {
+                    setProgressValue(10);
+                    service_button_reset();
+                }
+            }
         }
 
         private void btnSerInstall_Click(object sender, EventArgs e)
         {
-            servicemanager sm = new servicemanager("XMTunerService", "Provides XMRO to Devices", "XM Tuner");
-            bool sucess = sm.Install(ServiceStartMode.Automatic);
+            setProgressValue();
+            servicemanager sm = new servicemanager(serviceName, "Provides Sirius|XM Satelite Radio Streams to DLNA Compatible Media Players", "XMTuner");
+            sm.addDependency(new String[1] { "tcpip" });
+            bool success = sm.Install(ServiceStartMode.Automatic);
+            setProgressValue(10);
             service_button_reset();
-
         }
 
         private void btnSerUninstall_Click(object sender, EventArgs e)
         {
-            servicemanager sm = new servicemanager("XMTunerService", "Provides XMRO to Devices", "XM Tuner");
-            bool sucess = sm.Uninstall();
+            setProgressValue(5);
+            servicemanager sm = new servicemanager(serviceName);
+            bool success = sm.Uninstall();
             service_button_reset();
-            MessageBox.Show("If you wish to reinstall the service, please restart XMTuner");
-            btnSerUninstall.Enabled = false;
-            btnSerStart.Enabled = false;
+            setProgressValue(10);
+        }
+
+        private Boolean stop()
+        {
+            try
+            {
+                serviceControl.Stop();
+                serviceControl.WaitForStatus(System.ServiceProcess.ServiceControllerStatus.Stopped, delay);
+            }
+            catch (InvalidOperationException)
+            {
+                MessageBox.Show("Failed to Stop Service", "Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                resetProgressValue();
+                return false;
+            }
+            catch (System.ServiceProcess.TimeoutException)
+            {
+                MessageBox.Show("Timed out waiting for service to stop.", "Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                resetProgressValue();
+                return false;
+            }
+            return true;
+        }
+
+        private Boolean start()
+        {
+            try
+            {
+                serviceControl.Start();
+                serviceControl.WaitForStatus(System.ServiceProcess.ServiceControllerStatus.Running, delay);
+            }
+            catch (InvalidOperationException)
+            {
+                MessageBox.Show("Failed to Start Service", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                resetProgressValue();
+                return false;
+            }
+            catch (System.ServiceProcess.TimeoutException)
+            {
+                MessageBox.Show("Timed out waiting for service to start.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                resetProgressValue();
+                return false;
+            }
+            return true;
+        }
+
+        private void setProgressValue()
+        {
+            setProgressValue(1);
+        }
+        private void setProgressValue(int value)
+        {
+            progressBar1.Value = value;
+            if (progressBar1.Maximum == value)
+            {
+                timer2.Start();
+            }
+        }
+        private void resetProgressValue()
+        {
+            progressBar1.Value = 0;
         }
         #endregion
 
@@ -170,7 +259,11 @@ namespace XMTuner
 
             Form2 form2 = new Form2(null, false, configMan.getLocalIP());
             form2.ShowDialog();
-            btnSerRestart_Click(sender, e);
+            if (DialogResult.Yes ==
+                MessageBox.Show("The service must be restarted for your changes to take effect.\n Restart service now?", "Updated configuration saved", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1))
+            {
+                btnSerRestart_Click(sender, e);
+            }
         }
         #endregion
 
@@ -194,10 +287,7 @@ namespace XMTuner
             {
                 rtbServiceLog.Text = "No XMTuner Service Log Found";
             }
-            catch (IOException)
-            {
-                loadServiceLog();
-            }
+            catch (IOException) {}
         }
 
         private void refreshToolStripMenuItem_Click(object sender, EventArgs e)
@@ -221,6 +311,18 @@ namespace XMTuner
         private void fileSystemWatcher1_Changed(object sender, FileSystemEventArgs e)
         {
             loadServiceLog();
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            service_button_reset();
+            loadServiceLog();
+        }
+
+        private void timer2_Tick(object sender, EventArgs e)
+        {
+            timer2.Stop();
+            resetProgressValue();
         }
     }
 }

@@ -50,6 +50,9 @@
             this.logContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.refreshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.fileSystemWatcher1 = new System.IO.FileSystemWatcher();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.timer2 = new System.Windows.Forms.Timer(this.components);
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.tabControl1.SuspendLayout();
@@ -200,6 +203,7 @@
             // tServiceControl
             // 
             this.tServiceControl.BackColor = System.Drawing.SystemColors.Control;
+            this.tServiceControl.Controls.Add(this.progressBar1);
             this.tServiceControl.Controls.Add(this.groupBox1);
             this.tServiceControl.Controls.Add(this.groupBox2);
             this.tServiceControl.Controls.Add(this.groupBox3);
@@ -227,7 +231,7 @@
             this.tLog.Location = new System.Drawing.Point(4, 22);
             this.tLog.Name = "tLog";
             this.tLog.Padding = new System.Windows.Forms.Padding(3);
-            this.tLog.Size = new System.Drawing.Size(421, 226);
+            this.tLog.Size = new System.Drawing.Size(429, 230);
             this.tLog.TabIndex = 1;
             this.tLog.Text = "Service Log";
             // 
@@ -239,7 +243,7 @@
             this.rtbServiceLog.Location = new System.Drawing.Point(3, 3);
             this.rtbServiceLog.Name = "rtbServiceLog";
             this.rtbServiceLog.ReadOnly = true;
-            this.rtbServiceLog.Size = new System.Drawing.Size(415, 220);
+            this.rtbServiceLog.Size = new System.Drawing.Size(423, 224);
             this.rtbServiceLog.TabIndex = 0;
             this.rtbServiceLog.Text = "";
             // 
@@ -248,12 +252,12 @@
             this.logContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.refreshToolStripMenuItem});
             this.logContextMenu.Name = "logContextMenu";
-            this.logContextMenu.Size = new System.Drawing.Size(124, 26);
+            this.logContextMenu.Size = new System.Drawing.Size(114, 26);
             // 
             // refreshToolStripMenuItem
             // 
             this.refreshToolStripMenuItem.Name = "refreshToolStripMenuItem";
-            this.refreshToolStripMenuItem.Size = new System.Drawing.Size(123, 22);
+            this.refreshToolStripMenuItem.Size = new System.Drawing.Size(113, 22);
             this.refreshToolStripMenuItem.Text = "Refresh";
             this.refreshToolStripMenuItem.Click += new System.EventHandler(this.refreshToolStripMenuItem_Click);
             // 
@@ -263,6 +267,28 @@
             this.fileSystemWatcher1.SynchronizingObject = this;
             this.fileSystemWatcher1.Created += new System.IO.FileSystemEventHandler(this.fileSystemWatcher1_Changed);
             this.fileSystemWatcher1.Changed += new System.IO.FileSystemEventHandler(this.fileSystemWatcher1_Changed);
+            // 
+            // timer1
+            // 
+            this.timer1.Enabled = true;
+            this.timer1.Interval = 5000;
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            // 
+            // progressBar1
+            // 
+            this.progressBar1.Location = new System.Drawing.Point(6, 206);
+            this.progressBar1.MarqueeAnimationSpeed = 5;
+            this.progressBar1.Maximum = 10;
+            this.progressBar1.Name = "progressBar1";
+            this.progressBar1.Size = new System.Drawing.Size(417, 23);
+            this.progressBar1.Step = 2;
+            this.progressBar1.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
+            this.progressBar1.TabIndex = 6;
+            // 
+            // timer2
+            // 
+            this.timer2.Interval = 1500;
+            this.timer2.Tick += new System.EventHandler(this.timer2_Tick);
             // 
             // Form1
             // 
@@ -275,7 +301,6 @@
             this.MinimumSize = new System.Drawing.Size(445, 290);
             this.Name = "Form1";
             this.Text = "XMTuner Service Control";
-            this.TransparencyKey = System.Drawing.Color.Gainsboro;
             this.Load += new System.EventHandler(this.Form1_Load);
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
@@ -313,6 +338,9 @@
         private System.Windows.Forms.ToolStripMenuItem refreshToolStripMenuItem;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.IO.FileSystemWatcher fileSystemWatcher1;
+        private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.ProgressBar progressBar1;
+        private System.Windows.Forms.Timer timer2;
     }
 }
 

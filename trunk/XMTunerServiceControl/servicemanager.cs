@@ -14,6 +14,13 @@ namespace XMTuner
         String serDisp;
         String context = Application.StartupPath;
 
+        ServiceInstaller SIO = new ServiceInstaller();
+
+        public servicemanager(String serviceName)
+        {
+            serName = serviceName;
+        }
+
         public servicemanager(String serviceName, String serviceDescription, String serviceDisplay)
         {
             serName = serviceName;
@@ -25,7 +32,6 @@ namespace XMTuner
         public bool Install(ServiceStartMode serviceMode)
         {
             ServiceProcessInstaller PSI = new ServiceProcessInstaller();
-            ServiceInstaller SIO = new ServiceInstaller();
 
             String path =String.Format("/assemblypath={0}",context + "\\XMTunerService.exe");
             String[] cmdline = { path };
@@ -48,14 +54,21 @@ namespace XMTuner
 
         public bool Uninstall()
         {
-            ServiceInstaller SIO = new ServiceInstaller();
             InstallContext iContext = new InstallContext("", null);
 
             SIO.Context = iContext;
             SIO.ServiceName = serName;
-            SIO.Uninstall(null);
-
+            try {
+                SIO.Uninstall(null);
+            } catch (System.ComponentModel.Win32Exception) {
+                return false;
+            }
             return true;
+        }
+
+        public void addDependency(String[] dependency)
+        {
+            SIO.ServicesDependedOn = dependency;
         }
     }
 }
