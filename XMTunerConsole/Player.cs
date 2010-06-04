@@ -130,8 +130,9 @@ namespace XMTuner
                 pStatusLabel.Text = "";
                 return;
             }
-            playerNum = num;
+            
             axWindowsMediaPlayer1.URL = url;
+            playerNum = num;
             
             updateNowPlayingData(false, false, num);
 
