@@ -1,39 +1,35 @@
 XM Tuner
-February 13, 2010
-Release 0.5
+June 8, 2010
+Release 0.6
 ------------------
 
-This application is designed as an intermediate between the XM Radio Online platform
-and a UPnP service provider (such as TVersity or Orb). 
+XMTuner is a media application that provides Sirius and XM Satelite Radio streams to media servers,
+set-top media players, game consoles, smart phones and virtually any device capable of playing
+streaming media. XMTuner also has its own built in player to play XM Radio right from your desktop.
 
 If you encounter any issues, please send us an email at xmtuner@pcfire.net.
 
 Usability notes:
-	- You will need an XMRO or SIR account to utilize this application.
+	- You will need an XM Radio Online or Sirus Internet Radio account to utilize this application.
 	- The default address for the feed is http://localhost:19081/feeds/
 	- "Playing now" information is available at http://localhost:19081/
 	- You may need to open port 19081 on your Windows firewall
-	- The port number can be changed in the configuration
-	- If upgrading from XMTuner before 0.3 you'll need to reconfigure the application.
 	- If after installing the service you wish to not automatically start the service:
 		Control Panel> Administrative Tools> Services > XMTuner
 		Right-click, Properties. Toggle "Startup type" to "Manual"
-	- Service requires that you check the "Autologin" box in your configuration
 
-Release Comments:
+System Requirements:
 	- XM Tuner requires Windows XP SP2 or higher with Microsoft .NET Framework 3.5
 
 The Service:
 		With the release of 0.3 XMTuner added the ability the ability to install a Windows
 	service version of the application. This means a lot of things for users, including no
     longer havine the requirement of being logged into the PC to have XMRO on your devices.
-    The service installs and will automatically start with Windows by default. The service will
-    read your configuration file and run with the same settings (you MUST check the AUTOLOGIN 
-	box in Configuration). If you make configuration changes while the service is running, 
-	be sure to save the changes and then using the Service Control tab, click Restart.
-		The service opperates the same way as the application normally does, except without
-	a user interface, although, you may still launch XMTuner to make changes to the service
-	or remove it completely if you wish. 
+    The service installs and will automatically start with Windows by default. The service
+    will read your configuration file and run with the same settings. If you make configuration
+    changes while the service is running, be sure to save the changes and then using the Service
+    Control, click Restart.	The service opperates the same way as the application normally does,
+    except without a user interface. 
 	
 Special Notes for TVersity Users: 
 	-If you have a limit of 20 channels on Tversity:
