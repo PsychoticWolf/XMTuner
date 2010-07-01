@@ -810,15 +810,30 @@ namespace XMTuner
                 return false;
             }
 
-            foreach (String _value in setChannelMetadataHelper(rawData))
+            foreach (String __value in setChannelMetadataHelper(rawData))
             {
-                String[] value = _value.Replace("\\", "").Split(new string[] { "\"," }, StringSplitOptions.None);
+                String[] _value = __value.Replace("\\", "").Split(new string[] { "\"," }, StringSplitOptions.None);
+                String[] value = new String[_value.Length];
+                int i = 0;
+                foreach (String _item in _value) {
+                    value[i] = _item.Replace("\"", "");
+                    i++;
+                }
 
                 String[] newdata = new String[4];
-                newdata[0] = value[2].Replace("\"", ""); //Num
-                newdata[1] = baseurl + value[5].Replace("\"", ""); //URL for channel
-                newdata[2] = baseurl + value[6].Replace("\"", ""); // Logo (45x40)
-                newdata[3] = baseurl + value[10].Replace("\"", ""); // Logo (138x50)
+                newdata[0] = value[2]; //Num
+                if (value[5] != null && !value[5].Equals(""))
+                {
+                    newdata[1] = baseurl + value[5]; //URL for channel
+                }
+                if (value[6] != null && !value[6].Equals(""))
+                {
+                    newdata[2] = baseurl + value[6]; // Logo (45x40)
+                }
+                if (value[10] != null && !value[10].Equals(""))
+                {
+                    newdata[3] = baseurl + value[10]; // Logo (138x50)
+                }
 
                 Find(Convert.ToInt32(newdata[0])).addChannelMetadata(newdata);
             }
