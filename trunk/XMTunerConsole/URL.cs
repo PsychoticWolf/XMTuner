@@ -169,7 +169,15 @@ namespace XMTuner
                 return null;
             }
             Stream stream = TheReply.GetResponseStream();
-            Image image = Image.FromStream(stream);
+            Image image;
+            try
+            {
+                image = Image.FromStream(stream);
+            }
+            catch (ArgumentException)
+            {
+                return null;
+            }
             TheReply.Close();
             stream.Close();
             return image;
