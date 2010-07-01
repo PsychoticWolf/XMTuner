@@ -48,6 +48,7 @@ namespace XMTuner
         protected int cookieCount = 0;
         public int lastChannelPlayed;
         public DateTime lastLoggedIn;
+        public DateTime lastWhatsOnUpdate;
         int attempts = 1;
         System.Timers.Timer pulseTimer = new System.Timers.Timer(1800000);
 
@@ -536,6 +537,7 @@ namespace XMTuner
             {
                 setWhatsonData(whatsOn.response());
                 setRecentlyPlayed();
+                lastWhatsOnUpdate = DateTime.Now;
             }
             whatsOn.close();
             output("What's On Update Complete", "debug");
