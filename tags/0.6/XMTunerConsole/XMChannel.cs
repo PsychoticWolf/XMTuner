@@ -58,10 +58,18 @@ namespace XMTuner
 
         public virtual void addChannelMetadata(String[] stringyInfo)
         {
-            url = stringyInfo[1];
-            logo_small = stringyInfo[2];
-            logo = stringyInfo[3];
-
+            if (stringyInfo[1] != null)
+            {
+                url = stringyInfo[1];
+            }
+            if (stringyInfo[2] != null)
+            {
+                logo_small = stringyInfo[2];
+            }
+            if (stringyInfo[3] != null)
+            {
+                logo = stringyInfo[3];
+            }
         }
 
         public void addProgram(String[] program)
@@ -77,9 +85,18 @@ namespace XMTuner
         #region Sirius Specific Methods
         public void addChannelMetadataS(String[] stringyInfo)
         {
-            logo_small = stringyInfo[2];
-            logo = stringyInfo[3];
-            xmxref = Convert.ToInt32(stringyInfo[0]);
+            if (stringyInfo[0] != null)
+            {
+                xmxref = Convert.ToInt32(stringyInfo[0]);
+            }
+            if (stringyInfo[2] != null)
+            {
+                logo_small = stringyInfo[2];
+            }
+            if (stringyInfo[3] != null)
+            {
+                logo = stringyInfo[3];
+            }
 
         }
 
