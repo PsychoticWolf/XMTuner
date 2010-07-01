@@ -346,6 +346,10 @@ namespace XMTuner
                 String playlist = worker.DoBuildPlaylist(methodURL, URLParams, serverHost);
                 SendRequest(context, null, playlist, servtype, false, HttpStatusCode.OK);
             }
+            else if (baseURL.Equals("log"))
+            {
+                SendRequest(context, null, myTuner.log, "text/plain", false, HttpStatusCode.OK);
+            }
             else
             {
                 string responseString = "<HTML><BODY>Unknown Request</BODY></HTML>";

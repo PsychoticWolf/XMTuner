@@ -22,7 +22,7 @@ namespace XMTuner
         public int numItems = Convert.ToInt32(new configMan().getConfigItem("numRecentHistory"));
 
         //Objects
-        Log log;
+        Log logSvc;
         public CacheManager cache;
         protected String cookies;
         protected List<XMChannel> channels = new List<XMChannel>();
@@ -65,11 +65,11 @@ namespace XMTuner
         {
             user = username;
             password = passw;
-            log = logging;
+            logSvc = logging;
 
             if (netw != null) { network = netw; }
 
-            cache = new CacheManager(log, network);
+            cache = new CacheManager(logSvc, network);
 #if !DEBUG
             isLive = true;
 #endif
@@ -708,7 +708,15 @@ namespace XMTuner
         //Helper method so we don't have to pass log around everywhere....
         public void output(String output, String level)
         {
-            log.output(output, level);
+            logSvc.output(output, level);
+        }
+
+        public String log
+        {
+            get
+            {
+                return logSvc.getLog;
+            }
         }
 
         protected void loadChannelMetadata()
