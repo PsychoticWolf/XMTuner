@@ -230,13 +230,14 @@ namespace XMTuner
                 }
                 NowPlayingPage += "\t<td style=\"text-align: center;\" nowrap>";
                 if (channel.url != null) { NowPlayingPage += "<a href=\"" + channel.url + "\" target=\"_blank\">"; }
+                String int_logo_url = "/logo/" + channel.num;
                 if (channel.category.ToLower().Contains("talk") || channel.category.ToLower().Contains("sports"))
                 {
-                    NowPlayingPage += "<div style=\"float: left;\"><img src=\"" + channel.logo_small + "\" border=\"0\" width=\"45\" height=\"40\"></div>";
+                    NowPlayingPage += "<div style=\"float: left;\"><img src=\"" + int_logo_url + "\" border=\"0\" width=\"45\" height=\"40\"></div>";
                 }
                 else
                 {
-                    NowPlayingPage += "<div style=\"overflow: hidden; height: 25px; float: left;\"><img src=\"" + channel.logo_small + "\" border=\"0\" width=\"45\" height=\"40\" style=\"position: relative; top: -5px;\"></div>";
+                    NowPlayingPage += "<div style=\"overflow: hidden; height: 25px; float: left;\"><img src=\"" + int_logo_url + "\" border=\"0\" width=\"45\" height=\"40\" style=\"position: relative; top: -5px;\"></div>";
                 }
 
                 String[] currentProgram = myTuner.getCurrentProgram(channel.programData);
@@ -604,6 +605,17 @@ namespace XMTuner
             String msg = "http://" + tversityHost + "/geturl/stream."+streamtype+"?type=audio/x-ms-wma&ttype="+mimetype+"&url=" + HttpUtility.UrlEncode(redirectURL) + "&ext=."+streamtype;
             myTuner.output(msg, "debug");
             return msg;
+        }
+
+        public String GetMimeType(System.Drawing.Image i)
+        {
+            foreach (System.Drawing.Imaging.ImageCodecInfo codec in System.Drawing.Imaging.ImageCodecInfo.GetImageDecoders())
+            {
+                if (codec.FormatID == i.RawFormat.Guid)
+                    return codec.MimeType;
+            }
+
+            return "image/unknown";
         }
     }
 }
