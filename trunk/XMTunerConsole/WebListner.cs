@@ -366,6 +366,15 @@ namespace XMTuner
 
                 SendRequest(context, imgstream, null, mimeType, false, HttpStatusCode.OK);
             }
+            else if (baseURL.Equals("info"))
+            {
+                NameValueCollection logoParams = worker.parseStreamURL(methodURL);
+                int num = Convert.ToInt32(logoParams[0]);
+                myTuner.output("Incoming 'What's On' Request", "info");
+                String responseString = worker.DoChannelInfo(num);
+                SendRequest(context, null, responseString, "text/html", false, HttpStatusCode.OK);
+
+            }
             else
             {
                 string responseString = "<HTML><BODY>Unknown Request</BODY></HTML>";
