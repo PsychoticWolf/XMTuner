@@ -346,35 +346,6 @@ namespace XMTuner
                 String playlist = worker.DoBuildPlaylist(methodURL, URLParams, serverHost);
                 SendRequest(context, null, playlist, servtype, false, HttpStatusCode.OK);
             }
-            else if (baseURL.Equals("log"))
-            {
-                SendRequest(context, null, myTuner.log, "text/plain", false, HttpStatusCode.OK);
-            }
-            else if (baseURL.Equals("logo"))
-            {
-                NameValueCollection logoParams = worker.parseStreamURL(methodURL);
-                int num = Convert.ToInt32(logoParams[0]);
-                MemoryStream imgstream = new MemoryStream();
-                System.Drawing.Image img = myTuner.Find(num).logo_small_image;
-                if (img == null)
-                {
-                    SendRequest(context, null, null, null, false, HttpStatusCode.NotFound);
-                    return;
-                }
-                String mimeType = worker.GetMimeType(img);
-                img.Save(imgstream, img.RawFormat);
-
-                SendRequest(context, imgstream, null, mimeType, false, HttpStatusCode.OK);
-            }
-            else if (baseURL.Equals("info"))
-            {
-                NameValueCollection logoParams = worker.parseStreamURL(methodURL);
-                int num = Convert.ToInt32(logoParams[0]);
-                myTuner.output("Incoming 'What's On' Request", "info");
-                String responseString = worker.DoChannelInfo(num);
-                SendRequest(context, null, responseString, "text/html", false, HttpStatusCode.OK);
-
-            }
             else
             {
                 string responseString = "<HTML><BODY>Unknown Request</BODY></HTML>";

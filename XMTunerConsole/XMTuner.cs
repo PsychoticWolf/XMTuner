@@ -22,7 +22,7 @@ namespace XMTuner
         public int numItems = Convert.ToInt32(new configMan().getConfigItem("numRecentHistory"));
 
         //Objects
-        Log logSvc;
+        Log log;
         public CacheManager cache;
         protected String cookies;
         protected List<XMChannel> channels = new List<XMChannel>();
@@ -48,7 +48,6 @@ namespace XMTuner
         protected int cookieCount = 0;
         public int lastChannelPlayed;
         public DateTime lastLoggedIn;
-        public DateTime lastWhatsOnUpdate;
         int attempts = 1;
         System.Timers.Timer pulseTimer = new System.Timers.Timer(1800000);
 
@@ -65,11 +64,11 @@ namespace XMTuner
         {
             user = username;
             password = passw;
-            logSvc = logging;
+            log = logging;
 
             if (netw != null) { network = netw; }
 
-            cache = new CacheManager(logSvc, network);
+            cache = new CacheManager(log, network);
 #if !DEBUG
             isLive = true;
 #endif
@@ -119,7 +118,7 @@ namespace XMTuner
                 XMURL = "http://test.xmtuner.net/test.php";
             }
 
-            String data = "playerToLaunch=xm&encryptPassword=true&userName="+user+"&password="+password;
+            String data = "playerToLaunch=xm&encryptPassword=false&userName="+user+"&password="+password;
             URL loginURL = new URL(XMURL);
             output("Connecting to: " + XMURL + " ("+loginURL.getIP()+")", "debug");
             loginURL.fetch(data);
@@ -537,7 +536,6 @@ namespace XMTuner
             {
                 setWhatsonData(whatsOn.response());
                 setRecentlyPlayed();
-                lastWhatsOnUpdate = DateTime.Now;
             }
             whatsOn.close();
             output("What's On Update Complete", "debug");
@@ -708,15 +706,7 @@ namespace XMTuner
         //Helper method so we don't have to pass log around everywhere....
         public void output(String output, String level)
         {
-            logSvc.output(output, level);
-        }
-
-        public String log
-        {
-            get
-            {
-                return logSvc.getLog;
-            }
+            log.output(output, level);
         }
 
         protected void loadChannelMetadata()

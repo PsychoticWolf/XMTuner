@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Web;
-using System.Linq;
 
 
 namespace XMTuner
@@ -23,7 +22,6 @@ namespace XMTuner
         public String logo_small;
         public System.Drawing.Image logo_small_image = null;
         public List<String[]> programData = new List<string[]>();
-        public List<String> history = new List<String>();
 
         public String channelKey;
         public int xmxref;
@@ -56,30 +54,6 @@ namespace XMTuner
             artist = HttpUtility.HtmlDecode(stringyInfo[1]);
             song = HttpUtility.HtmlDecode(stringyInfo[2]);
             album = HttpUtility.HtmlDecode(stringyInfo[3]);
-
-            addSongToHistory();
-        }
-
-        private void addSongToHistory()
-        {
-            int numItems = 25;
-            String currentTime = DateTime.Now.ToString("T");
-            String entry = network + " " + num + " - " + artist + " - " + song;
-
-            if (history.Count > 0)
-            {
-                String[] lastEntry = history.FirstOrDefault().Split(':');
-                if (lastEntry[3].Trim() == entry)
-                {
-                    return;
-                }
-            }
-
-            history.Insert(0, currentTime + ": " + entry);
-            if (history.Count > numItems)
-            {
-                history.RemoveRange(numItems, history.Count - numItems);
-            }
         }
 
         public virtual void addChannelMetadata(String[] stringyInfo)
