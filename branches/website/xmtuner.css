@@ -1,0 +1,185 @@
+body {
+	margin: 0px;
+	font-family: Arial;
+	font-size: 10pt;
+}
+
+a, a:visited { 
+	color: blue;
+	text-decoration: none;
+}
+
+a:hover, #show-index a:hover {
+	color: red;
+	text-decoration: underline;
+}
+
+h1 {
+	margin: 0px;
+	margin-top: 5px;
+	font-size: 38pt;
+	height: 85px;
+}
+
+h1 div {
+	position: relative;
+	top: 32px;
+}
+
+#body {
+	margin: 5px 10px;
+}
+
+#navbar {
+	height: 38px;
+	padding: 0px 30px 1px;
+	background: url(/images/header-menu-bg.png) repeat-x;
+}
+
+#navbar-content {
+	position: relative;
+	top: 5px;
+	color: #DFDFDF;
+	font-size: 16pt;
+}
+
+#navbar-content a, #navbar-content a:visited {
+	color: #DFDFDF;
+}
+#navbar-content a:hover {
+	color: white;
+	text-decoration: underline overline;
+}
+
+
+h2 {
+	background: url(/images/heading-background-blue.png) no-repeat;
+	font-size: 12pt;
+	padding-left: 20px;
+	padding-top: 5px;
+	color: #333;
+	
+}
+h2.red {
+	background-image: url(/images/heading-background-red.png);
+}
+
+h2.green {
+	background-image: url(/images/heading-background-green.png);
+}
+
+#superbar {
+	float: right;
+	position: fixed;
+	right: 0px;
+	top: 0px;
+	padding-top: 3px;
+	width: 350px;
+	height: 25px;
+	background-color: #CCC;
+	color: white;
+	text-align: center;
+	font-size: 16px;
+	font-weight: bold;
+	-moz-border-radius-bottomleft: 10px;
+	z-index: 1000;
+}
+
+#superbar a, #superbar a:visited {
+	color: white;
+}
+#superbar a:hover {
+	color: yellow;
+	text-decoration: underline;
+}
+
+#show-parent {
+	width: 100%;
+	background-color: black;
+	}
+
+#show {
+	background: #000 url(/images/XMTuner.png) no-repeat right;
+	width: 994px;
+	height: 348px;
+}
+#show-index {
+	width: 989px;
+	//background-color: black;
+	color: #666;
+	font-size: 8pt;
+	padding-bottom: 2px;
+	padding-left: 5px;
+	float: right; z-index: 10; position: relative; top: 329px;
+	
+}
+#show-index a { color: #666; }
+
+
+#footer {
+	background: url(/images/footer-border.png) repeat-x;
+	height: 103px;
+	width: 100%;
+	padding-top: 25px;
+}
+
+#footer-copy {
+	text-align: right;
+	font-size: 8pt;
+	color: #666;
+	margin-right: 10px;
+}
+#footer-copy a { color: #666;}
+#footer-copy a:hover { text-decoration: underline; }
+
+
+#sidebar {
+	width: 150px;
+}
+
+table#contact {
+	margin-left: 50px;
+}
+
+div.contact {
+	padding-left: 135px;
+	color: white !important;
+	font-size: 20pt !important;
+	font-weight: bold;
+	top: 2px !important;
+}
+
+.caption {
+	font-size: 10pt;
+	color: #666;
+}
+
+h3 { margin: 0px; }
+
+ul { margin-top: 5px; }
+
+#download h3 {
+	margin: 0px;
+	border-bottom: 1px solid #CCC;
+}
+
+#download-list {
+	padding-left: 25px;
+}
+
+#download-list li {
+	list-style: none inside none;
+	background: url(/images/download_small.png) left center no-repeat;
+	padding-left: 28px;
+	padding-top: 10px;
+	height: 25px;
+}
+
+#download {
+	width: 280px;
+	height: 100px;
+	position: absolute;
+	right: 5px;
+	color: #666;
+
+}

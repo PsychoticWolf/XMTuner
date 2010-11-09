@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>  
+<xmtuner>  
+  <version>0.6.0.0</version>  
+  <url>http://www.xmtuner.net/releases/0.6</url>
+  <download>http://www.xmtuner.net/download/InstallXMTuner0-6.msi</download>
+  <details>* Favorite Channels
+* New History Tab
+* URL Builder
+* Aero for Windows Vista / Windows 7 users
+* UI Improvements: Resizable, always on top, etc.
+* Channels tab now supports sorting by category
+* Improved Service Control with new XMTuner Service Control utility
+* History length can now be customized and the notification box can be disabled, if desired.
+* Improvements to TVersity transcoder support - can now transcode to WAV as well as MP3
+* Channel Playlists now supported for feeds for servers and devices that need them.
+* Support for Windows Power Management
+* Auto relogin on login failure
+* Auto-retry on player errors. 
+* Lots of fixes for long-term usage and playback (can now stream reliably for 24+ hours)
+* Improved error messages for when things inevitably go wrong.
+* Lots of crash (exception) errors fixed
+* Performance has been improved (both for UI like the channels tab and things like startup time.)
+* Automatically check for relogin in the background in addition to when things happen
+* and more...</li>
+  </details>
+</xmtuner>
