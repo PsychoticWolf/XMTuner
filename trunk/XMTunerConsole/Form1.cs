@@ -11,6 +11,7 @@ namespace XMTuner
 {
     public partial class Form1 : Form
     {
+        Core c;
         XMTuner self;
         Log logging;
         WebListner xmServer;
@@ -21,15 +22,10 @@ namespace XMTuner
         String username = "";
         String password = "";
         String port = "";
-        String bitrate;
         bool autologin = false;
-        bool isMMS = false;
         bool showNotification;
         bool onTop;
-        bool showURLBuilder;
         int numRecentHistory;
-        String tversityHost;
-        String hostname;
 
         int i = 0;
 
@@ -77,8 +73,6 @@ namespace XMTuner
 
         private void Form1_FormClosing(Object sender, FormClosingEventArgs e)
         {
-            if (logging == null) { return; }
-            //logging.doLog();
         }
 
         private void Form1_Resize(object sender, EventArgs e)
@@ -141,47 +135,72 @@ namespace XMTuner
         private void start()
         {
             output("Please wait... logging in", "info");
-            if (network.ToUpper().Equals("SIRIUS"))
-            {
-                self = new SiriusTuner(username, password, logging);
-            }
-            else
-            {
-                self = new XMTuner(username, password, logging);
-            }
-            if (self.isLoggedIn == false)
-            {
-                //Not logged in successfully.. Bail!
-                return;
-            }
-            i = 0;
-
-            xmServer = new WebListner(self, port);
-            serverRunning = true;
-            xmServer.start();
-            if (xmServer.isRunning == false)
-            {
-                serverRunning = false;
-                //Server failed to start.
-                return;
-            }
-            viewServerToolStripMenuItem.Enabled = true;
-            loginToolStripMenuItem.Enabled = false;
-            timer1.Enabled = true;
-            timer2.Enabled = true;
-            linkServer.Text = "Server is Running...";
-            linkServer.Enabled = true;
-
-            loggedIn = true;
-            if (loggedIn) {
-                bStart.Enabled = false;
-                bStop.Enabled = true;
-                channelBox.Enabled = true;
-            }
-            syncStatusLabel();
-            loadChannels();
-            setupURLBuilder();
+            c = new Core(logging);
+            c.tick += new Core.TickHandler(coreEvent_Do);
+            c.Start();
             output("XMTuner Ready...", "info");
+        }
+
+        private void coreEvent_Do(Core c, XMTunerEventArgs e)
+        {
+            self = c.tuner;
+            switch (e.source)
+            {
+                case "xmtuner":
+                    switch(e.data) 
+                    {
+                        case "isLoggedIn":
+                            timer2.Enabled = true;
+                            loggedIn = true;
+                            if (loggedIn)
+                            {
+                                bStart.Enabled = false;
+                                bStop.Enabled = true;
+                                channelBox.Enabled = true;
+                            }
+                            syncStatusLabel();
+                            loadChannels();
+
+                            break;
+                        case "isLoggedOut":
+                            loggedIn = false;
+                            timer2.Enabled = false;
+                            bStart.Enabled = true;
+                            bStop.Enabled = false;
+
+                            unloadChannels();
+                            recentlyPlayedBox.Clear();
+                            syncStatusLabel();
+
+                            break;
+                    }
+                    break;
+                case "server":
+                    switch (e.data)
+                    {
+                        case "isRunning":
+                            serverRunning = true;
+                            viewServerToolStripMenuItem.Enabled = true;
+                            loginToolStripMenuItem.Enabled = false;
+                            timer1.Enabled = true;
+
+                            linkServer.Text = "Server is Running...";
+                            linkServer.Enabled = true;
+
+
+                            output("XMTuner Ready...", "info");
+                            break;
+                        case "isStopped":
+                            serverRunning = false;
+                            linkServer.Text = "Server is Stopped";
+                            output("Server Uptime was " + runTime, "info");
+                            linkServer.Enabled = false;
+                            timer1.Enabled = false;
+                            lblClock.Text = "0:00:00";
+                            break;
+                    }
+                    break;
+            }
         }
 
         private void timer1_Tick(object sender, EventArgs e)
@@ -215,8 +234,6 @@ namespace XMTuner
             self.doWhatsOn();
         }
 
-
-
         //Stop
         private void bStop_Click(object sender, EventArgs e)
         {
@@ -224,25 +241,8 @@ namespace XMTuner
         }
         private void stop()
         {
+            c.Stop();
             shutdownPlayer();
-            xmServer.stop();
-            serverRunning = false;
-            linkServer.Text = "Server is Stopped";
-            output("Server Uptime was "+runTime, "info");
-            linkServer.Enabled = false;
-            timer1.Enabled = false;
-            lblClock.Text = "0:00:00";
-            i = 0;
-            timer2.Enabled = false;
-            bStart.Enabled = true;
-            bStop.Enabled = false;
-            unloadChannels();
-            self = null;
-            xmServer = null;
-            loggedIn = false;
-            recentlyPlayedBox.Clear();
-            syncStatusLabel();
-            GC.Collect();
         }
 
         private void linkServer_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -322,16 +322,8 @@ namespace XMTuner
                 }
             }
 
-            //Set alwaysOnTop and URL Builder settings...
+            //Set alwaysOnTop...
             this.TopMost = onTop; //Make XMTuner always on top
-            //Hide URL Builder on Top
-            enabledToolStripMenuItem.Checked = true;
-            if (showURLBuilder == false)
-            {
-                enabledToolStripMenuItem.Checked = false;
-                disabledToolStripMenuItem.Checked = true;
-                splitContainer1.Panel2Collapsed = true;
-            }
 
             //Messages & Item Twiddling
             if (!serverRunning)
@@ -379,15 +371,10 @@ namespace XMTuner
             username = config["username"];
             password = config["password"];
             port = config["port"];
-            bitrate = cfg.getConfigItem(config, "bitrate");
-            autologin = cfg.getConfigItemAsBoolean(config, "autologin");
-            isMMS = cfg.getConfigItemAsBoolean(config, "isMMS");
-            tversityHost = config["Tversity"];
-            hostname = config["hostname"];
+            autologin = cfg.getConfigItemAsBoolean("autologin");
             network = config["network"];
-            showNotification = cfg.getConfigItemAsBoolean(config, "showNotice");
-            onTop = cfg.getConfigItemAsBoolean(config, "alwaysOnTop");
-            showURLBuilder = cfg.getConfigItemAsBoolean(config, "showURLBuilder");
+            showNotification = cfg.getConfigItemAsBoolean("showNotice");
+            onTop = cfg.getConfigItemAsBoolean("alwaysOnTop");
             numRecentHistory = Convert.ToInt32(config["numRecentHistory"]);
             setChannelsListStyle(config["channelListStyle"]);
         }
@@ -521,13 +508,6 @@ namespace XMTuner
         #endregion
 
         #region Channels Tab
-        private void setupURLBuilder()
-        {
-            // URL Builder
-            typeBox.SelectedItem = "Channel";
-            if (isMMS) { protocolBox.SelectedItem = "MMS"; } else { protocolBox.SelectedItem = "HTTP"; }
-            if (bitrate.Equals("high")) { bitRateBox.SelectedItem = "High"; } else { bitRateBox.SelectedItem = "Low"; }
-        }
 
         private void loadChannels()
         {
@@ -646,110 +626,6 @@ namespace XMTuner
             channelBox.LargeImageList.Dispose();
         }
 
-        private String getChannelAddress(String channelString, String protocol, String altBitrate)
-        {
-            if (channelBox.SelectedItems.Count == 0) { return ""; }
-            Int32 channelNum = Convert.ToInt32(channelBox.SelectedItems[0].Name);
-            return getAddress("stream", protocol, altBitrate, channelNum);
-        }
-
-        private String getFeedAddress(String protocol, String altBitrate)
-        {
-            return getAddress("feed", protocol, altBitrate, 0);
-        }
-
-        private String getPlaylistAddress(string protocol, string altBitrate)
-        {
-            return getAddress("playlist", protocol, altBitrate, 0);
-        }
-
-        private String getAddress(String type, String protocol, String altBitrate, Int32 channelNum)
-        {
-            NameValueCollection collectionForAdd = new NameValueCollection();
-            collectionForAdd.Add("type", protocol.ToLower());
-            collectionForAdd.Add("bitrate", altBitrate.ToLower());
-            NameValueCollection config = new NameValueCollection();
-            config.Add("bitrate", bitrate);
-            config.Add("isMMS", isMMS.ToString());
-            if (bitRateBox.SelectedIndex == -1) { altBitrate = bitrate; }
-
-            String host;
-            if (hostname.Equals("")) { host = ip; } else { host = hostname; }
-            host = host + ":" + port;
-
-            String address = TheConstructor.buildLink(type, host, collectionForAdd, null, channelNum, config);
-            return address;
-        }
-
-        private void makeAddress(object sender, EventArgs e)
-        {
-            
-            if (channelBox.Items.Count == 0) { return; }
-
-            String protocol;
-            String channel;
-            String altBitrate; 
-            protocol = (String) protocolBox.SelectedItem;
-            if (channelBox.SelectedItems.Count > 0)
-            {
-
-                channel = channelBox.SelectedItems[0].Name;
-            }
-            else
-            {
-                channel = channelBox.Items[0].Name;
-            }
-            altBitrate = (String)bitRateBox.SelectedItem;
-            if (typeBox.SelectedItem.ToString().ToLower().Equals("feed"))
-            {
-                addressBox.Text = getFeedAddress(protocol, altBitrate);
-            }
-            else if (typeBox.SelectedItem.ToString().ToLower().Equals("playlist"))
-            {
-                addressBox.Text = getPlaylistAddress(protocol, altBitrate);
-            }
-            else
-            {
-                addressBox.Text = getChannelAddress(channel, protocol, altBitrate);
-            }
-        }
-
-        private void updateTypeList(object sender, EventArgs e)
-        {
-            if (typeBox.SelectedItem.ToString().ToLower().Equals("playlist")) {
-                protocolBox.Items.Clear();
-                protocolBox.Items.Add("Type:");
-                protocolBox.Items.Add("ASX");
-                protocolBox.Items.Add("PLS");
-                protocolBox.Items.Add("M3U");
-                protocolBox.SelectedItem = "ASX";
-            } else {
-                protocolBox.Items.Clear();
-                protocolBox.Items.Add("Protocol:");
-                protocolBox.Items.Add("HTTP");
-                protocolBox.Items.Add("MMS");
-                protocolBox.Items.Add("ASX");
-                protocolBox.Items.Add("M3U");
-
-                if (!tversityHost.Equals(""))
-                {
-                    protocolBox.Items.Add("MP3");
-                    protocolBox.Items.Add("WAV");
-                }
-                if (isMMS) { protocolBox.SelectedItem = "MMS"; } else { protocolBox.SelectedItem = "HTTP"; }
-            }
-            makeAddress(sender, e);
-        }
-
-
-
-        private void cpyToClip_Click(object sender, EventArgs e)
-        {
-            if (addressBox.Text != "")
-            {
-                Clipboard.SetText(addressBox.Text);
-            }
-        }
 
         private void channelBox_DoubleClick(object sender, EventArgs e)
         {
@@ -774,20 +650,6 @@ namespace XMTuner
         private void timerCB_Tick(object sender, EventArgs e)
         {
             updateChannels();
-        }
-
-        private void enabledToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            enabledToolStripMenuItem.Checked = true;
-            disabledToolStripMenuItem.Checked = false;
-            splitContainer1.Panel2Collapsed = false;
-        }
-
-        private void disabledToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            enabledToolStripMenuItem.Checked = false;
-            disabledToolStripMenuItem.Checked = true;
-            splitContainer1.Panel2Collapsed = true;
         }
 
         private void addToFavoritesToolStripMenuItem_Click(object sender, EventArgs e)
@@ -862,6 +724,12 @@ namespace XMTuner
         {
             setChannelsListStyle("category");
             loadChannels();
+        }
+
+        private void uRLBuilderToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Form3 form3 = new Form3(Convert.ToInt32(channelBox.SelectedItems[0].Name));
+            form3.ShowDialog();
         }
         #endregion
 
@@ -989,5 +857,6 @@ namespace XMTuner
         }
 
         #endregion
+
     }
 }
