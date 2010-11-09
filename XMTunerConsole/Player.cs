@@ -36,7 +36,7 @@ namespace XMTuner
                     }
                 }
 
-                playerPanel.Refresh();
+                //playerPanel.Refresh();
             }
             else
             {

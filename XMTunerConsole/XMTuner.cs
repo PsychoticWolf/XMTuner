@@ -192,7 +192,7 @@ namespace XMTuner
             return loginResult;
         }
 
-        private void logout()
+        public void logout()
         {
             cookieCount = 0;
             cookies = null;
