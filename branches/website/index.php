@@ -46,7 +46,9 @@ capable receivers and televisions, as well as a variety of smartphones such as t
 	<li>and much more!</li>
 </ul>
 
-
+<h2>XMTuner 0.6.1</h2>
+<h3>November 8, 2010</h3>
+<p>XMTuner 0.6.1 is a bugfix release for XMTuner 0.6. This fixes the login error experienced by XM users after changes to the XMRO login page.</p>
 
 <h2>XMTuner 0.6</h2>
 <h3>June 13, 2010</h3>
