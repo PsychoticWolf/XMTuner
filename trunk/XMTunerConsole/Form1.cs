@@ -58,7 +58,7 @@ namespace XMTuner
 
         protected override void OnPaintBackground(PaintEventArgs e)
         {
-            base.OnPaint(e);
+            base.OnPaintBackground(e);
             AeroLoad();
         }
 
@@ -69,10 +69,6 @@ namespace XMTuner
             {
                 start();
             }
-        }
-
-        private void Form1_FormClosing(Object sender, FormClosingEventArgs e)
-        {
         }
 
         private void Form1_Resize(object sender, EventArgs e)
@@ -835,8 +831,6 @@ namespace XMTuner
                 {
                     this.TransparencyKey = Color.Gainsboro;
                     this.BackColor = Color.Gainsboro;
-                    splitContainer2.BackColor = SystemColors.Control;
-                    splitContainer2.Panel1.BackColor = Color.Gainsboro;
 
                     MARGINS margins = new MARGINS();
 
@@ -857,6 +851,7 @@ namespace XMTuner
         }
 
         #endregion
+
 
     }
 }
