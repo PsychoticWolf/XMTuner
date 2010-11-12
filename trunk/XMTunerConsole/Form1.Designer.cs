@@ -30,39 +30,58 @@
         {
             this.components = new System.ComponentModel.Container();
             System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
+            System.Windows.Forms.NotifyIcon notifyIcon1;
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("Recently Played", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("Nothing Played Yet...");
+            System.Windows.Forms.ContextMenuStrip trayIconContextMenu;
+            System.Windows.Forms.ToolStripMenuItem restoreToolStripMenuItem;
+            System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+            System.Windows.Forms.ToolStripMenuItem exitXMTunerToolStripMenuItem;
+            System.Windows.Forms.ContextMenuStrip channelContextMenu;
+            System.Windows.Forms.ToolStripMenuItem playToolStripMenuItem;
+            System.Windows.Forms.ToolStripMenuItem addToFavoritesToolStripMenuItem;
+            System.Windows.Forms.ToolStripMenuItem uRLBuilderToolStripMenuItem;
+            System.Windows.Forms.ToolStripMenuItem copyURLToolStripMenuItem;
+            System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+            System.Windows.Forms.ContextMenuStrip historyContextMenu;
+            System.Windows.Forms.ToolStripMenuItem copyToolStripMenuItem;
+            System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
+            System.Windows.Forms.ToolStripMenuItem clearToolStripMenuItem;
+            System.Windows.Forms.Timer timerUpdater;
+            System.Windows.Forms.TabPage tPlayer;
+            System.Windows.Forms.TabPage tChannels;
+            System.Windows.Forms.Panel pChannels;
+            System.Windows.Forms.Panel pStatusPanel;
+            System.Windows.Forms.Button bManageFavorites;
+            System.Windows.Forms.Label label1;
+            System.Windows.Forms.TabPage tHistory;
+            System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("Recently Played", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem("Nothing Played Yet...");
             System.Windows.Forms.Panel pLogMain;
+            System.Windows.Forms.Panel pLogBase;
+            System.Windows.Forms.Button bConfigure;
+            System.Windows.Forms.TabPage tAbout;
+            System.Windows.Forms.Button bUpdate;
+            System.Windows.Forms.TextBox aBuildDate;
+            System.Windows.Forms.Label label8;
+            System.Windows.Forms.Label label9;
+            System.Windows.Forms.Label label10;
+            System.Windows.Forms.Label label11;
+            System.Windows.Forms.Label label12;
+            System.Windows.Forms.Label label13;
+            System.Windows.Forms.GroupBox groupBox1;
+            System.Windows.Forms.LinkLabel linkLabel1;
             this.allChannelsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.favoriteChannelsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.byCategoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
-            this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
-            this.trayIconContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.loginToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewServerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.restoreToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.exitXMTunerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.channelContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.playToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.addToFavoritesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.uRLBuilderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.copyURLToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.historyContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.copyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-            this.clearToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.timerUpdater = new System.Windows.Forms.Timer(this.components);
             this.pTimer = new System.Windows.Forms.Timer(this.components);
             this.pHoverTimer = new System.Windows.Forms.Timer(this.components);
             this.timerCB = new System.Windows.Forms.Timer(this.components);
             this.pRetryTimer = new System.Windows.Forms.Timer(this.components);
             this.tabcontrol1 = new System.Windows.Forms.TabControl();
-            this.tPlayer = new System.Windows.Forms.TabPage();
             this.axWindowsMediaPlayer1 = new AxWMPLib.AxWindowsMediaPlayer();
             this.pStatusLabel = new System.Windows.Forms.Label();
             this.pLogoBox = new System.Windows.Forms.PictureBox();
@@ -72,52 +91,69 @@
             this.pLabel5 = new System.Windows.Forms.Label();
             this.pLabel1 = new System.Windows.Forms.Label();
             this.pLabel4 = new System.Windows.Forms.Label();
-            this.tChannels = new System.Windows.Forms.TabPage();
-            this.pChannels = new System.Windows.Forms.Panel();
             this.channelBox = new System.Windows.Forms.ListView();
-            this.pStatusPanel = new System.Windows.Forms.Panel();
-            this.bManageFavorites = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
-            this.tHistory = new System.Windows.Forms.TabPage();
             this.recentlyPlayedBox = new System.Windows.Forms.ListView();
             this.tLog = new System.Windows.Forms.TabPage();
             this.outputbox = new System.Windows.Forms.RichTextBox();
-            this.pLogBase = new System.Windows.Forms.Panel();
             this.linkServer = new System.Windows.Forms.LinkLabel();
             this.lblClock = new System.Windows.Forms.Label();
             this.bStart = new System.Windows.Forms.Button();
-            this.bConfigure = new System.Windows.Forms.Button();
             this.bStop = new System.Windows.Forms.Button();
-            this.tAbout = new System.Windows.Forms.TabPage();
-            this.bUpdate = new System.Windows.Forms.Button();
-            this.aBuildDate = new System.Windows.Forms.TextBox();
-            this.label8 = new System.Windows.Forms.Label();
-            this.label9 = new System.Windows.Forms.Label();
-            this.label10 = new System.Windows.Forms.Label();
-            this.label11 = new System.Windows.Forms.Label();
-            this.label12 = new System.Windows.Forms.Label();
             this.aVersion = new System.Windows.Forms.TextBox();
-            this.label13 = new System.Windows.Forms.Label();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
+            trayIconContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            restoreToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            exitXMTunerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            channelContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            playToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            addToFavoritesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            uRLBuilderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            copyURLToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            historyContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            copyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            clearToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            timerUpdater = new System.Windows.Forms.Timer(this.components);
+            tPlayer = new System.Windows.Forms.TabPage();
+            tChannels = new System.Windows.Forms.TabPage();
+            pChannels = new System.Windows.Forms.Panel();
+            pStatusPanel = new System.Windows.Forms.Panel();
+            bManageFavorites = new System.Windows.Forms.Button();
+            label1 = new System.Windows.Forms.Label();
+            tHistory = new System.Windows.Forms.TabPage();
             pLogMain = new System.Windows.Forms.Panel();
-            this.trayIconContextMenu.SuspendLayout();
-            this.channelContextMenu.SuspendLayout();
-            this.historyContextMenu.SuspendLayout();
+            pLogBase = new System.Windows.Forms.Panel();
+            bConfigure = new System.Windows.Forms.Button();
+            tAbout = new System.Windows.Forms.TabPage();
+            bUpdate = new System.Windows.Forms.Button();
+            aBuildDate = new System.Windows.Forms.TextBox();
+            label8 = new System.Windows.Forms.Label();
+            label9 = new System.Windows.Forms.Label();
+            label10 = new System.Windows.Forms.Label();
+            label11 = new System.Windows.Forms.Label();
+            label12 = new System.Windows.Forms.Label();
+            label13 = new System.Windows.Forms.Label();
+            groupBox1 = new System.Windows.Forms.GroupBox();
+            linkLabel1 = new System.Windows.Forms.LinkLabel();
+            trayIconContextMenu.SuspendLayout();
+            channelContextMenu.SuspendLayout();
+            historyContextMenu.SuspendLayout();
             this.tabcontrol1.SuspendLayout();
-            this.tPlayer.SuspendLayout();
+            tPlayer.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.axWindowsMediaPlayer1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pLogoBox)).BeginInit();
-            this.tChannels.SuspendLayout();
-            this.pChannels.SuspendLayout();
-            this.pStatusPanel.SuspendLayout();
-            this.tHistory.SuspendLayout();
+            tChannels.SuspendLayout();
+            pChannels.SuspendLayout();
+            pStatusPanel.SuspendLayout();
+            tHistory.SuspendLayout();
             this.tLog.SuspendLayout();
             pLogMain.SuspendLayout();
-            this.pLogBase.SuspendLayout();
-            this.tAbout.SuspendLayout();
-            this.groupBox1.SuspendLayout();
+            pLogBase.SuspendLayout();
+            tAbout.SuspendLayout();
+            groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // viewToolStripMenuItem
@@ -168,22 +204,22 @@
             // 
             // notifyIcon1
             // 
-            this.notifyIcon1.ContextMenuStrip = this.trayIconContextMenu;
-            this.notifyIcon1.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon1.Icon")));
-            this.notifyIcon1.Text = "XMTuner";
-            this.notifyIcon1.Visible = true;
-            this.notifyIcon1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon1_MouseDoubleClick);
+            notifyIcon1.ContextMenuStrip = trayIconContextMenu;
+            notifyIcon1.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon1.Icon")));
+            notifyIcon1.Text = "XMTuner";
+            notifyIcon1.Visible = true;
+            notifyIcon1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon1_MouseDoubleClick);
             // 
             // trayIconContextMenu
             // 
-            this.trayIconContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            trayIconContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.loginToolStripMenuItem,
             this.viewServerToolStripMenuItem,
-            this.restoreToolStripMenuItem,
-            this.toolStripSeparator1,
-            this.exitXMTunerToolStripMenuItem});
-            this.trayIconContextMenu.Name = "contextMenuStrip1";
-            this.trayIconContextMenu.Size = new System.Drawing.Size(145, 98);
+            restoreToolStripMenuItem,
+            toolStripSeparator1,
+            exitXMTunerToolStripMenuItem});
+            trayIconContextMenu.Name = "contextMenuStrip1";
+            trayIconContextMenu.Size = new System.Drawing.Size(145, 98);
             // 
             // loginToolStripMenuItem
             // 
@@ -203,105 +239,105 @@
             // 
             // restoreToolStripMenuItem
             // 
-            this.restoreToolStripMenuItem.Name = "restoreToolStripMenuItem";
-            this.restoreToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
-            this.restoreToolStripMenuItem.Text = "Restore";
-            this.restoreToolStripMenuItem.Click += new System.EventHandler(this.restoreToolStripMenuItem_Click);
+            restoreToolStripMenuItem.Name = "restoreToolStripMenuItem";
+            restoreToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            restoreToolStripMenuItem.Text = "Restore";
+            restoreToolStripMenuItem.Click += new System.EventHandler(this.restoreToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(141, 6);
+            toolStripSeparator1.Name = "toolStripSeparator1";
+            toolStripSeparator1.Size = new System.Drawing.Size(141, 6);
             // 
             // exitXMTunerToolStripMenuItem
             // 
-            this.exitXMTunerToolStripMenuItem.Name = "exitXMTunerToolStripMenuItem";
-            this.exitXMTunerToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
-            this.exitXMTunerToolStripMenuItem.Text = "Exit XMTuner";
-            this.exitXMTunerToolStripMenuItem.Click += new System.EventHandler(this.exitXMTunerToolStripMenuItem_Click);
+            exitXMTunerToolStripMenuItem.Name = "exitXMTunerToolStripMenuItem";
+            exitXMTunerToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            exitXMTunerToolStripMenuItem.Text = "Exit XMTuner";
+            exitXMTunerToolStripMenuItem.Click += new System.EventHandler(this.exitXMTunerToolStripMenuItem_Click);
             // 
             // channelContextMenu
             // 
-            this.channelContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.playToolStripMenuItem,
-            this.addToFavoritesToolStripMenuItem,
-            this.uRLBuilderToolStripMenuItem,
-            this.copyURLToolStripMenuItem,
-            this.toolStripSeparator2,
+            channelContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            playToolStripMenuItem,
+            addToFavoritesToolStripMenuItem,
+            uRLBuilderToolStripMenuItem,
+            copyURLToolStripMenuItem,
+            toolStripSeparator2,
             viewToolStripMenuItem});
-            this.channelContextMenu.Name = "contextMenuStrip2";
-            this.channelContextMenu.Size = new System.Drawing.Size(210, 120);
+            channelContextMenu.Name = "contextMenuStrip2";
+            channelContextMenu.Size = new System.Drawing.Size(210, 120);
             // 
             // playToolStripMenuItem
             // 
-            this.playToolStripMenuItem.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.playToolStripMenuItem.Name = "playToolStripMenuItem";
-            this.playToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
-            this.playToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
-            this.playToolStripMenuItem.Text = "Play";
-            this.playToolStripMenuItem.Click += new System.EventHandler(this.channelBox_DoubleClick);
+            playToolStripMenuItem.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            playToolStripMenuItem.Name = "playToolStripMenuItem";
+            playToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
+            playToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
+            playToolStripMenuItem.Text = "Play";
+            playToolStripMenuItem.Click += new System.EventHandler(this.channelBox_DoubleClick);
             // 
             // addToFavoritesToolStripMenuItem
             // 
-            this.addToFavoritesToolStripMenuItem.Name = "addToFavoritesToolStripMenuItem";
-            this.addToFavoritesToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F)));
-            this.addToFavoritesToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
-            this.addToFavoritesToolStripMenuItem.Text = "Add to Favorites...";
-            this.addToFavoritesToolStripMenuItem.Click += new System.EventHandler(this.addToFavoritesToolStripMenuItem_Click);
+            addToFavoritesToolStripMenuItem.Name = "addToFavoritesToolStripMenuItem";
+            addToFavoritesToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F)));
+            addToFavoritesToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
+            addToFavoritesToolStripMenuItem.Text = "Add to Favorites...";
+            addToFavoritesToolStripMenuItem.Click += new System.EventHandler(this.addToFavoritesToolStripMenuItem_Click);
             // 
             // uRLBuilderToolStripMenuItem
             // 
-            this.uRLBuilderToolStripMenuItem.Name = "uRLBuilderToolStripMenuItem";
-            this.uRLBuilderToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
-            this.uRLBuilderToolStripMenuItem.Text = "Get Channel URL...";
-            this.uRLBuilderToolStripMenuItem.Click += new System.EventHandler(this.uRLBuilderToolStripMenuItem_Click);
+            uRLBuilderToolStripMenuItem.Name = "uRLBuilderToolStripMenuItem";
+            uRLBuilderToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
+            uRLBuilderToolStripMenuItem.Text = "Get Channel URL...";
+            uRLBuilderToolStripMenuItem.Click += new System.EventHandler(this.uRLBuilderToolStripMenuItem_Click);
             // 
             // copyURLToolStripMenuItem
             // 
-            this.copyURLToolStripMenuItem.Name = "copyURLToolStripMenuItem";
-            this.copyURLToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
-            this.copyURLToolStripMenuItem.Text = "Copy URL";
+            copyURLToolStripMenuItem.Name = "copyURLToolStripMenuItem";
+            copyURLToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
+            copyURLToolStripMenuItem.Text = "Copy URL";
             // 
             // toolStripSeparator2
             // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(206, 6);
+            toolStripSeparator2.Name = "toolStripSeparator2";
+            toolStripSeparator2.Size = new System.Drawing.Size(206, 6);
             // 
             // historyContextMenu
             // 
-            this.historyContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.copyToolStripMenuItem,
-            this.toolStripSeparator3,
-            this.clearToolStripMenuItem});
-            this.historyContextMenu.Name = "historyContextMenu";
-            this.historyContextMenu.Size = new System.Drawing.Size(102, 54);
+            historyContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            copyToolStripMenuItem,
+            toolStripSeparator3,
+            clearToolStripMenuItem});
+            historyContextMenu.Name = "historyContextMenu";
+            historyContextMenu.Size = new System.Drawing.Size(102, 54);
             // 
             // copyToolStripMenuItem
             // 
-            this.copyToolStripMenuItem.Font = new System.Drawing.Font("Tahoma", 8.25F);
-            this.copyToolStripMenuItem.Name = "copyToolStripMenuItem";
-            this.copyToolStripMenuItem.Size = new System.Drawing.Size(101, 22);
-            this.copyToolStripMenuItem.Text = "Copy";
-            this.copyToolStripMenuItem.Click += new System.EventHandler(this.copyToolStripMenuItem_Click);
+            copyToolStripMenuItem.Font = new System.Drawing.Font("Tahoma", 8.25F);
+            copyToolStripMenuItem.Name = "copyToolStripMenuItem";
+            copyToolStripMenuItem.Size = new System.Drawing.Size(101, 22);
+            copyToolStripMenuItem.Text = "Copy";
+            copyToolStripMenuItem.Click += new System.EventHandler(this.copyToolStripMenuItem_Click);
             // 
             // toolStripSeparator3
             // 
-            this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(98, 6);
+            toolStripSeparator3.Name = "toolStripSeparator3";
+            toolStripSeparator3.Size = new System.Drawing.Size(98, 6);
             // 
             // clearToolStripMenuItem
             // 
-            this.clearToolStripMenuItem.Name = "clearToolStripMenuItem";
-            this.clearToolStripMenuItem.Size = new System.Drawing.Size(101, 22);
-            this.clearToolStripMenuItem.Text = "Clear";
-            this.clearToolStripMenuItem.Click += new System.EventHandler(this.clearToolStripMenuItem_Click);
+            clearToolStripMenuItem.Name = "clearToolStripMenuItem";
+            clearToolStripMenuItem.Size = new System.Drawing.Size(101, 22);
+            clearToolStripMenuItem.Text = "Clear";
+            clearToolStripMenuItem.Click += new System.EventHandler(this.clearToolStripMenuItem_Click);
             // 
             // timerUpdater
             // 
-            this.timerUpdater.Enabled = true;
-            this.timerUpdater.Interval = 86400000;
-            this.timerUpdater.Tag = "Updater check";
-            this.timerUpdater.Tick += new System.EventHandler(this.timerUpdater_Tick);
+            timerUpdater.Enabled = true;
+            timerUpdater.Interval = 86400000;
+            timerUpdater.Tag = "Updater check";
+            timerUpdater.Tick += new System.EventHandler(this.timerUpdater_Tick);
             // 
             // pTimer
             // 
@@ -329,11 +365,11 @@
             // tabcontrol1
             // 
             this.tabcontrol1.AccessibleRole = System.Windows.Forms.AccessibleRole.None;
-            this.tabcontrol1.Controls.Add(this.tPlayer);
-            this.tabcontrol1.Controls.Add(this.tChannels);
-            this.tabcontrol1.Controls.Add(this.tHistory);
+            this.tabcontrol1.Controls.Add(tPlayer);
+            this.tabcontrol1.Controls.Add(tChannels);
+            this.tabcontrol1.Controls.Add(tHistory);
             this.tabcontrol1.Controls.Add(this.tLog);
-            this.tabcontrol1.Controls.Add(this.tAbout);
+            this.tabcontrol1.Controls.Add(tAbout);
             this.tabcontrol1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabcontrol1.HotTrack = true;
             this.tabcontrol1.Location = new System.Drawing.Point(0, 0);
@@ -346,21 +382,21 @@
             // 
             // tPlayer
             // 
-            this.tPlayer.BackColor = System.Drawing.Color.MidnightBlue;
-            this.tPlayer.Controls.Add(this.axWindowsMediaPlayer1);
-            this.tPlayer.Controls.Add(this.pStatusLabel);
-            this.tPlayer.Controls.Add(this.pLogoBox);
-            this.tPlayer.Controls.Add(this.pLabel2);
-            this.tPlayer.Controls.Add(this.pLabel6);
-            this.tPlayer.Controls.Add(this.pLabel3);
-            this.tPlayer.Controls.Add(this.pLabel5);
-            this.tPlayer.Controls.Add(this.pLabel1);
-            this.tPlayer.Controls.Add(this.pLabel4);
-            this.tPlayer.Location = new System.Drawing.Point(4, 22);
-            this.tPlayer.Name = "tPlayer";
-            this.tPlayer.Size = new System.Drawing.Size(552, 327);
-            this.tPlayer.TabIndex = 5;
-            this.tPlayer.Text = "Player";
+            tPlayer.BackColor = System.Drawing.Color.MidnightBlue;
+            tPlayer.Controls.Add(this.axWindowsMediaPlayer1);
+            tPlayer.Controls.Add(this.pStatusLabel);
+            tPlayer.Controls.Add(this.pLogoBox);
+            tPlayer.Controls.Add(this.pLabel2);
+            tPlayer.Controls.Add(this.pLabel6);
+            tPlayer.Controls.Add(this.pLabel3);
+            tPlayer.Controls.Add(this.pLabel5);
+            tPlayer.Controls.Add(this.pLabel1);
+            tPlayer.Controls.Add(this.pLabel4);
+            tPlayer.Location = new System.Drawing.Point(4, 22);
+            tPlayer.Name = "tPlayer";
+            tPlayer.Size = new System.Drawing.Size(552, 327);
+            tPlayer.TabIndex = 5;
+            tPlayer.Text = "Player";
             // 
             // axWindowsMediaPlayer1
             // 
@@ -470,32 +506,32 @@
             // 
             // tChannels
             // 
-            this.tChannels.BackColor = System.Drawing.Color.Transparent;
-            this.tChannels.Controls.Add(this.pChannels);
-            this.tChannels.Controls.Add(this.pStatusPanel);
-            this.tChannels.Location = new System.Drawing.Point(4, 22);
-            this.tChannels.Margin = new System.Windows.Forms.Padding(0, 2, 0, 0);
-            this.tChannels.Name = "tChannels";
-            this.tChannels.Size = new System.Drawing.Size(552, 327);
-            this.tChannels.TabIndex = 1;
-            this.tChannels.Text = "Channels";
-            this.tChannels.UseVisualStyleBackColor = true;
+            tChannels.BackColor = System.Drawing.Color.Transparent;
+            tChannels.Controls.Add(pChannels);
+            tChannels.Controls.Add(pStatusPanel);
+            tChannels.Location = new System.Drawing.Point(4, 22);
+            tChannels.Margin = new System.Windows.Forms.Padding(0, 2, 0, 0);
+            tChannels.Name = "tChannels";
+            tChannels.Size = new System.Drawing.Size(552, 327);
+            tChannels.TabIndex = 1;
+            tChannels.Text = "Channels";
+            tChannels.UseVisualStyleBackColor = true;
             // 
             // pChannels
             // 
-            this.pChannels.BackColor = System.Drawing.Color.Transparent;
-            this.pChannels.Controls.Add(this.channelBox);
-            this.pChannels.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pChannels.Location = new System.Drawing.Point(0, 0);
-            this.pChannels.Name = "pChannels";
-            this.pChannels.Padding = new System.Windows.Forms.Padding(0, 1, 0, 0);
-            this.pChannels.Size = new System.Drawing.Size(552, 299);
-            this.pChannels.TabIndex = 13;
+            pChannels.BackColor = System.Drawing.Color.Transparent;
+            pChannels.Controls.Add(this.channelBox);
+            pChannels.Dock = System.Windows.Forms.DockStyle.Fill;
+            pChannels.Location = new System.Drawing.Point(0, 0);
+            pChannels.Name = "pChannels";
+            pChannels.Padding = new System.Windows.Forms.Padding(0, 1, 0, 0);
+            pChannels.Size = new System.Drawing.Size(552, 299);
+            pChannels.TabIndex = 13;
             // 
             // channelBox
             // 
             this.channelBox.Activation = System.Windows.Forms.ItemActivation.OneClick;
-            this.channelBox.ContextMenuStrip = this.channelContextMenu;
+            this.channelBox.ContextMenuStrip = channelContextMenu;
             this.channelBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.channelBox.FullRowSelect = true;
             this.channelBox.Location = new System.Drawing.Point(0, 1);
@@ -513,59 +549,59 @@
             // 
             // pStatusPanel
             // 
-            this.pStatusPanel.BackColor = System.Drawing.Color.Black;
-            this.pStatusPanel.Controls.Add(this.bManageFavorites);
-            this.pStatusPanel.Controls.Add(this.label1);
-            this.pStatusPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.pStatusPanel.Location = new System.Drawing.Point(0, 299);
-            this.pStatusPanel.Name = "pStatusPanel";
-            this.pStatusPanel.Size = new System.Drawing.Size(552, 28);
-            this.pStatusPanel.TabIndex = 12;
+            pStatusPanel.BackColor = System.Drawing.Color.Black;
+            pStatusPanel.Controls.Add(bManageFavorites);
+            pStatusPanel.Controls.Add(label1);
+            pStatusPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
+            pStatusPanel.Location = new System.Drawing.Point(0, 299);
+            pStatusPanel.Name = "pStatusPanel";
+            pStatusPanel.Size = new System.Drawing.Size(552, 28);
+            pStatusPanel.TabIndex = 12;
             // 
             // bManageFavorites
             // 
-            this.bManageFavorites.Location = new System.Drawing.Point(430, 2);
-            this.bManageFavorites.Name = "bManageFavorites";
-            this.bManageFavorites.Size = new System.Drawing.Size(111, 23);
-            this.bManageFavorites.TabIndex = 1;
-            this.bManageFavorites.Text = "Manage Favorites";
-            this.bManageFavorites.UseVisualStyleBackColor = true;
+            bManageFavorites.Location = new System.Drawing.Point(430, 2);
+            bManageFavorites.Name = "bManageFavorites";
+            bManageFavorites.Size = new System.Drawing.Size(111, 23);
+            bManageFavorites.TabIndex = 1;
+            bManageFavorites.Text = "Manage Favorites";
+            bManageFavorites.UseVisualStyleBackColor = true;
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
-            this.label1.ForeColor = System.Drawing.Color.White;
-            this.label1.Location = new System.Drawing.Point(6, 7);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(219, 13);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "This space will house the Player Status Bar...";
+            label1.AutoSize = true;
+            label1.ForeColor = System.Drawing.Color.White;
+            label1.Location = new System.Drawing.Point(6, 7);
+            label1.Name = "label1";
+            label1.Size = new System.Drawing.Size(219, 13);
+            label1.TabIndex = 0;
+            label1.Text = "This space will house the Player Status Bar...";
             // 
             // tHistory
             // 
-            this.tHistory.Controls.Add(this.recentlyPlayedBox);
-            this.tHistory.Location = new System.Drawing.Point(4, 22);
-            this.tHistory.Name = "tHistory";
-            this.tHistory.Padding = new System.Windows.Forms.Padding(0, 1, 0, 0);
-            this.tHistory.Size = new System.Drawing.Size(552, 327);
-            this.tHistory.TabIndex = 4;
-            this.tHistory.Text = "History";
-            this.tHistory.UseVisualStyleBackColor = true;
+            tHistory.Controls.Add(this.recentlyPlayedBox);
+            tHistory.Location = new System.Drawing.Point(4, 22);
+            tHistory.Name = "tHistory";
+            tHistory.Padding = new System.Windows.Forms.Padding(0, 1, 0, 0);
+            tHistory.Size = new System.Drawing.Size(552, 327);
+            tHistory.TabIndex = 4;
+            tHistory.Text = "History";
+            tHistory.UseVisualStyleBackColor = true;
             // 
             // recentlyPlayedBox
             // 
             this.recentlyPlayedBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.recentlyPlayedBox.ContextMenuStrip = this.historyContextMenu;
+            this.recentlyPlayedBox.ContextMenuStrip = historyContextMenu;
             this.recentlyPlayedBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.recentlyPlayedBox.FullRowSelect = true;
-            listViewGroup1.Header = "Recently Played";
-            listViewGroup1.Name = "listViewGroup1";
+            listViewGroup2.Header = "Recently Played";
+            listViewGroup2.Name = "listViewGroup1";
             this.recentlyPlayedBox.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
-            listViewGroup1});
+            listViewGroup2});
             this.recentlyPlayedBox.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
-            listViewItem1.Group = listViewGroup1;
+            listViewItem2.Group = listViewGroup2;
             this.recentlyPlayedBox.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem1});
+            listViewItem2});
             this.recentlyPlayedBox.Location = new System.Drawing.Point(0, 1);
             this.recentlyPlayedBox.Margin = new System.Windows.Forms.Padding(0);
             this.recentlyPlayedBox.Name = "recentlyPlayedBox";
@@ -579,7 +615,7 @@
             // 
             this.tLog.BackColor = System.Drawing.Color.Transparent;
             this.tLog.Controls.Add(pLogMain);
-            this.tLog.Controls.Add(this.pLogBase);
+            this.tLog.Controls.Add(pLogBase);
             this.tLog.Location = new System.Drawing.Point(4, 22);
             this.tLog.Margin = new System.Windows.Forms.Padding(0);
             this.tLog.Name = "tLog";
@@ -619,19 +655,19 @@
             // 
             // pLogBase
             // 
-            this.pLogBase.BackColor = System.Drawing.Color.PeachPuff;
-            this.pLogBase.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pLogBase.Controls.Add(this.linkServer);
-            this.pLogBase.Controls.Add(this.lblClock);
-            this.pLogBase.Controls.Add(this.bStart);
-            this.pLogBase.Controls.Add(this.bConfigure);
-            this.pLogBase.Controls.Add(this.bStop);
-            this.pLogBase.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.pLogBase.Location = new System.Drawing.Point(0, 296);
-            this.pLogBase.Margin = new System.Windows.Forms.Padding(0);
-            this.pLogBase.Name = "pLogBase";
-            this.pLogBase.Size = new System.Drawing.Size(552, 31);
-            this.pLogBase.TabIndex = 24;
+            pLogBase.BackColor = System.Drawing.Color.PeachPuff;
+            pLogBase.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            pLogBase.Controls.Add(this.linkServer);
+            pLogBase.Controls.Add(this.lblClock);
+            pLogBase.Controls.Add(this.bStart);
+            pLogBase.Controls.Add(bConfigure);
+            pLogBase.Controls.Add(this.bStop);
+            pLogBase.Dock = System.Windows.Forms.DockStyle.Bottom;
+            pLogBase.Location = new System.Drawing.Point(0, 296);
+            pLogBase.Margin = new System.Windows.Forms.Padding(0);
+            pLogBase.Name = "pLogBase";
+            pLogBase.Size = new System.Drawing.Size(552, 31);
+            pLogBase.TabIndex = 24;
             // 
             // linkServer
             // 
@@ -667,15 +703,15 @@
             // 
             // bConfigure
             // 
-            this.bConfigure.AccessibleRole = System.Windows.Forms.AccessibleRole.None;
-            this.bConfigure.Location = new System.Drawing.Point(134, 4);
-            this.bConfigure.Margin = new System.Windows.Forms.Padding(4);
-            this.bConfigure.Name = "bConfigure";
-            this.bConfigure.Size = new System.Drawing.Size(60, 23);
-            this.bConfigure.TabIndex = 20;
-            this.bConfigure.Text = "Configure";
-            this.bConfigure.UseVisualStyleBackColor = true;
-            this.bConfigure.Click += new System.EventHandler(this.bConfigure_Click);
+            bConfigure.AccessibleRole = System.Windows.Forms.AccessibleRole.None;
+            bConfigure.Location = new System.Drawing.Point(134, 4);
+            bConfigure.Margin = new System.Windows.Forms.Padding(4);
+            bConfigure.Name = "bConfigure";
+            bConfigure.Size = new System.Drawing.Size(60, 23);
+            bConfigure.TabIndex = 20;
+            bConfigure.Text = "Configure";
+            bConfigure.UseVisualStyleBackColor = true;
+            bConfigure.Click += new System.EventHandler(this.bConfigure_Click);
             // 
             // bStop
             // 
@@ -692,93 +728,93 @@
             // 
             // tAbout
             // 
-            this.tAbout.BackColor = System.Drawing.SystemColors.Control;
-            this.tAbout.Controls.Add(this.bUpdate);
-            this.tAbout.Controls.Add(this.aBuildDate);
-            this.tAbout.Controls.Add(this.label8);
-            this.tAbout.Controls.Add(this.label9);
-            this.tAbout.Controls.Add(this.label10);
-            this.tAbout.Controls.Add(this.label11);
-            this.tAbout.Controls.Add(this.label12);
-            this.tAbout.Controls.Add(this.aVersion);
-            this.tAbout.Controls.Add(this.label13);
-            this.tAbout.Controls.Add(this.groupBox1);
-            this.tAbout.Location = new System.Drawing.Point(4, 22);
-            this.tAbout.Margin = new System.Windows.Forms.Padding(2);
-            this.tAbout.Name = "tAbout";
-            this.tAbout.Padding = new System.Windows.Forms.Padding(2);
-            this.tAbout.Size = new System.Drawing.Size(552, 327);
-            this.tAbout.TabIndex = 2;
-            this.tAbout.Text = "About";
+            tAbout.BackColor = System.Drawing.SystemColors.Control;
+            tAbout.Controls.Add(bUpdate);
+            tAbout.Controls.Add(aBuildDate);
+            tAbout.Controls.Add(label8);
+            tAbout.Controls.Add(label9);
+            tAbout.Controls.Add(label10);
+            tAbout.Controls.Add(label11);
+            tAbout.Controls.Add(label12);
+            tAbout.Controls.Add(this.aVersion);
+            tAbout.Controls.Add(label13);
+            tAbout.Controls.Add(groupBox1);
+            tAbout.Location = new System.Drawing.Point(4, 22);
+            tAbout.Margin = new System.Windows.Forms.Padding(2);
+            tAbout.Name = "tAbout";
+            tAbout.Padding = new System.Windows.Forms.Padding(2);
+            tAbout.Size = new System.Drawing.Size(552, 327);
+            tAbout.TabIndex = 2;
+            tAbout.Text = "About";
             // 
             // bUpdate
             // 
-            this.bUpdate.Location = new System.Drawing.Point(415, 181);
-            this.bUpdate.Name = "bUpdate";
-            this.bUpdate.Size = new System.Drawing.Size(115, 23);
-            this.bUpdate.TabIndex = 17;
-            this.bUpdate.Text = "Check for Updates...";
-            this.bUpdate.UseVisualStyleBackColor = true;
-            this.bUpdate.Click += new System.EventHandler(this.bUpdate_Click);
+            bUpdate.Location = new System.Drawing.Point(415, 181);
+            bUpdate.Name = "bUpdate";
+            bUpdate.Size = new System.Drawing.Size(115, 23);
+            bUpdate.TabIndex = 17;
+            bUpdate.Text = "Check for Updates...";
+            bUpdate.UseVisualStyleBackColor = true;
+            bUpdate.Click += new System.EventHandler(this.bUpdate_Click);
             // 
             // aBuildDate
             // 
-            this.aBuildDate.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.aBuildDate.ForeColor = System.Drawing.Color.Black;
-            this.aBuildDate.Location = new System.Drawing.Point(365, 73);
-            this.aBuildDate.Name = "aBuildDate";
-            this.aBuildDate.ReadOnly = true;
-            this.aBuildDate.Size = new System.Drawing.Size(62, 19);
-            this.aBuildDate.TabIndex = 17;
-            this.aBuildDate.Text = "2010111";
-            this.aBuildDate.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            aBuildDate.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            aBuildDate.ForeColor = System.Drawing.Color.Black;
+            aBuildDate.Location = new System.Drawing.Point(365, 73);
+            aBuildDate.Name = "aBuildDate";
+            aBuildDate.ReadOnly = true;
+            aBuildDate.Size = new System.Drawing.Size(62, 19);
+            aBuildDate.TabIndex = 17;
+            aBuildDate.Text = "2010111";
+            aBuildDate.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // label8
             // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(300, 77);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(59, 13);
-            this.label8.TabIndex = 16;
-            this.label8.Text = "Build Date:";
+            label8.AutoSize = true;
+            label8.Location = new System.Drawing.Point(300, 77);
+            label8.Name = "label8";
+            label8.Size = new System.Drawing.Size(59, 13);
+            label8.TabIndex = 16;
+            label8.Text = "Build Date:";
             // 
             // label9
             // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(140, 111);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(88, 13);
-            this.label9.TabIndex = 15;
-            this.label9.Text = "Curtis M. Kularski";
+            label9.AutoSize = true;
+            label9.Location = new System.Drawing.Point(140, 111);
+            label9.Name = "label9";
+            label9.Size = new System.Drawing.Size(88, 13);
+            label9.TabIndex = 15;
+            label9.Text = "Curtis M. Kularski";
             // 
             // label10
             // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(140, 94);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(62, 13);
-            this.label10.TabIndex = 14;
-            this.label10.Text = "Chris Crews";
+            label10.AutoSize = true;
+            label10.Location = new System.Drawing.Point(140, 94);
+            label10.Name = "label10";
+            label10.Size = new System.Drawing.Size(62, 13);
+            label10.TabIndex = 14;
+            label10.Text = "Chris Crews";
             // 
             // label11
             // 
-            this.label11.AutoSize = true;
-            this.label11.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label11.Location = new System.Drawing.Point(122, 77);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(75, 13);
-            this.label11.TabIndex = 13;
-            this.label11.Text = "Developers:";
+            label11.AutoSize = true;
+            label11.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            label11.Location = new System.Drawing.Point(122, 77);
+            label11.Name = "label11";
+            label11.Size = new System.Drawing.Size(75, 13);
+            label11.TabIndex = 13;
+            label11.Text = "Developers:";
             // 
             // label12
             // 
-            this.label12.AutoSize = true;
-            this.label12.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label12.Location = new System.Drawing.Point(120, 35);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(132, 31);
-            this.label12.TabIndex = 12;
-            this.label12.Text = "XMTuner";
+            label12.AutoSize = true;
+            label12.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            label12.Location = new System.Drawing.Point(120, 35);
+            label12.Name = "label12";
+            label12.Size = new System.Drawing.Size(132, 31);
+            label12.TabIndex = 12;
+            label12.Text = "XMTuner";
             // 
             // aVersion
             // 
@@ -792,36 +828,36 @@
             // 
             // label13
             // 
-            this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(311, 47);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(48, 13);
-            this.label13.TabIndex = 10;
-            this.label13.Text = "Version: ";
+            label13.AutoSize = true;
+            label13.Location = new System.Drawing.Point(311, 47);
+            label13.Name = "label13";
+            label13.Size = new System.Drawing.Size(48, 13);
+            label13.TabIndex = 10;
+            label13.Text = "Version: ";
             // 
             // groupBox1
             // 
-            this.groupBox1.BackColor = System.Drawing.SystemColors.Control;
-            this.groupBox1.Controls.Add(this.linkLabel1);
-            this.groupBox1.Location = new System.Drawing.Point(109, 22);
-            this.groupBox1.Margin = new System.Windows.Forms.Padding(2);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Padding = new System.Windows.Forms.Padding(2);
-            this.groupBox1.Size = new System.Drawing.Size(330, 154);
-            this.groupBox1.TabIndex = 19;
-            this.groupBox1.TabStop = false;
+            groupBox1.BackColor = System.Drawing.SystemColors.Control;
+            groupBox1.Controls.Add(linkLabel1);
+            groupBox1.Location = new System.Drawing.Point(109, 22);
+            groupBox1.Margin = new System.Windows.Forms.Padding(2);
+            groupBox1.Name = "groupBox1";
+            groupBox1.Padding = new System.Windows.Forms.Padding(2);
+            groupBox1.Size = new System.Drawing.Size(330, 154);
+            groupBox1.TabIndex = 19;
+            groupBox1.TabStop = false;
             // 
             // linkLabel1
             // 
-            this.linkLabel1.AutoSize = true;
-            this.linkLabel1.Location = new System.Drawing.Point(87, 139);
-            this.linkLabel1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.linkLabel1.Name = "linkLabel1";
-            this.linkLabel1.Size = new System.Drawing.Size(125, 13);
-            this.linkLabel1.TabIndex = 18;
-            this.linkLabel1.TabStop = true;
-            this.linkLabel1.Text = "http://www.xmtuner.net/";
-            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
+            linkLabel1.AutoSize = true;
+            linkLabel1.Location = new System.Drawing.Point(87, 139);
+            linkLabel1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            linkLabel1.Name = "linkLabel1";
+            linkLabel1.Size = new System.Drawing.Size(125, 13);
+            linkLabel1.TabIndex = 18;
+            linkLabel1.TabStop = true;
+            linkLabel1.Text = "http://www.xmtuner.net/";
+            linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
             // 
             // Form1
             // 
@@ -840,64 +876,34 @@
             this.Load += new System.EventHandler(this.Form1_Load);
             this.Shown += new System.EventHandler(this.Form1_Shown);
             this.Resize += new System.EventHandler(this.Form1_Resize);
-            this.trayIconContextMenu.ResumeLayout(false);
-            this.channelContextMenu.ResumeLayout(false);
-            this.historyContextMenu.ResumeLayout(false);
+            trayIconContextMenu.ResumeLayout(false);
+            channelContextMenu.ResumeLayout(false);
+            historyContextMenu.ResumeLayout(false);
             this.tabcontrol1.ResumeLayout(false);
-            this.tPlayer.ResumeLayout(false);
-            this.tPlayer.PerformLayout();
+            tPlayer.ResumeLayout(false);
+            tPlayer.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.axWindowsMediaPlayer1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pLogoBox)).EndInit();
-            this.tChannels.ResumeLayout(false);
-            this.pChannels.ResumeLayout(false);
-            this.pStatusPanel.ResumeLayout(false);
-            this.pStatusPanel.PerformLayout();
-            this.tHistory.ResumeLayout(false);
+            tChannels.ResumeLayout(false);
+            pChannels.ResumeLayout(false);
+            pStatusPanel.ResumeLayout(false);
+            pStatusPanel.PerformLayout();
+            tHistory.ResumeLayout(false);
             this.tLog.ResumeLayout(false);
             pLogMain.ResumeLayout(false);
-            this.pLogBase.ResumeLayout(false);
-            this.pLogBase.PerformLayout();
-            this.tAbout.ResumeLayout(false);
-            this.tAbout.PerformLayout();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
+            pLogBase.ResumeLayout(false);
+            pLogBase.PerformLayout();
+            tAbout.ResumeLayout(false);
+            tAbout.PerformLayout();
+            groupBox1.ResumeLayout(false);
+            groupBox1.PerformLayout();
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.ToolStripMenuItem allChannelsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem favoriteChannelsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem byCategoryToolStripMenuItem;
-        private System.Windows.Forms.Timer timer1;
-        private System.Windows.Forms.Timer timer2;
-        private System.Windows.Forms.NotifyIcon notifyIcon1;
-        private System.Windows.Forms.ContextMenuStrip trayIconContextMenu;
-        private System.Windows.Forms.ToolStripMenuItem loginToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem viewServerToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem restoreToolStripMenuItem;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-        private System.Windows.Forms.ToolStripMenuItem exitXMTunerToolStripMenuItem;
-        private System.Windows.Forms.ContextMenuStrip channelContextMenu;
-        private System.Windows.Forms.ToolStripMenuItem playToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem addToFavoritesToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem uRLBuilderToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem copyURLToolStripMenuItem;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
-        private System.Windows.Forms.ContextMenuStrip historyContextMenu;
-        private System.Windows.Forms.ToolStripMenuItem copyToolStripMenuItem;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
-        private System.Windows.Forms.ToolStripMenuItem clearToolStripMenuItem;
-        private System.Windows.Forms.Timer timerUpdater;
-        private System.Windows.Forms.Timer pTimer;
-        private System.Windows.Forms.Timer pHoverTimer;
-        private System.Windows.Forms.Timer timerCB;
-        private System.Windows.Forms.Timer pRetryTimer;
-        private System.Windows.Forms.TabControl tabcontrol1;
-        private System.Windows.Forms.TabPage tPlayer;
-        private AxWMPLib.AxWindowsMediaPlayer axWindowsMediaPlayer1;
-        private System.Windows.Forms.Label pStatusLabel;
+        private System.Windows.Forms.ListView recentlyPlayedBox;
         private System.Windows.Forms.PictureBox pLogoBox;
         private System.Windows.Forms.Label pLabel2;
         private System.Windows.Forms.Label pLabel6;
@@ -905,34 +911,29 @@
         private System.Windows.Forms.Label pLabel5;
         private System.Windows.Forms.Label pLabel1;
         private System.Windows.Forms.Label pLabel4;
-        private System.Windows.Forms.TabPage tChannels;
-        private System.Windows.Forms.Panel pChannels;
-        private System.Windows.Forms.ListView channelBox;
-        private System.Windows.Forms.Panel pStatusPanel;
-        private System.Windows.Forms.Button bManageFavorites;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TabPage tHistory;
-        private System.Windows.Forms.ListView recentlyPlayedBox;
-        private System.Windows.Forms.TabPage tLog;
-        private System.Windows.Forms.RichTextBox outputbox;
-        private System.Windows.Forms.Panel pLogBase;
+        private System.Windows.Forms.Label pStatusLabel;
+        private System.Windows.Forms.TextBox aVersion;
         private System.Windows.Forms.LinkLabel linkServer;
         private System.Windows.Forms.Label lblClock;
         private System.Windows.Forms.Button bStart;
-        private System.Windows.Forms.Button bConfigure;
         private System.Windows.Forms.Button bStop;
-        private System.Windows.Forms.TabPage tAbout;
-        private System.Windows.Forms.Button bUpdate;
-        private System.Windows.Forms.TextBox aBuildDate;
-        private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.Label label11;
-        private System.Windows.Forms.Label label12;
-        private System.Windows.Forms.TextBox aVersion;
-        private System.Windows.Forms.Label label13;
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.LinkLabel linkLabel1;
+        private AxWMPLib.AxWindowsMediaPlayer axWindowsMediaPlayer1;
+        private System.Windows.Forms.ListView channelBox;
+        private System.Windows.Forms.Timer pTimer;
+        private System.Windows.Forms.Timer pHoverTimer;
+        private System.Windows.Forms.Timer pRetryTimer;
+        private System.Windows.Forms.Timer timer2;
+        private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.TabControl tabcontrol1;
+        private System.Windows.Forms.Timer timerCB;
+        private System.Windows.Forms.TabPage tLog;
+        private System.Windows.Forms.ToolStripMenuItem allChannelsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem favoriteChannelsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem loginToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem viewServerToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem byCategoryToolStripMenuItem;
+        public System.Windows.Forms.RichTextBox outputbox;
+
 
     }
 }
