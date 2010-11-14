@@ -54,8 +54,8 @@
             System.Windows.Forms.Button bManageFavorites;
             System.Windows.Forms.Label label1;
             System.Windows.Forms.TabPage tHistory;
-            System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("Recently Played", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem("Nothing Played Yet...");
+            System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("Recently Played", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("Nothing Played Yet...");
             System.Windows.Forms.Panel pLogMain;
             System.Windows.Forms.Panel pLogBase;
             System.Windows.Forms.Button bConfigure;
@@ -73,15 +73,8 @@
             this.allChannelsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.favoriteChannelsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.byCategoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.timer2 = new System.Windows.Forms.Timer(this.components);
             this.loginToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewServerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.pTimer = new System.Windows.Forms.Timer(this.components);
-            this.pHoverTimer = new System.Windows.Forms.Timer(this.components);
-            this.timerCB = new System.Windows.Forms.Timer(this.components);
-            this.pRetryTimer = new System.Windows.Forms.Timer(this.components);
-            this.tabcontrol1 = new System.Windows.Forms.TabControl();
             this.axWindowsMediaPlayer1 = new AxWMPLib.AxWindowsMediaPlayer();
             this.pStatusLabel = new System.Windows.Forms.Label();
             this.pLogoBox = new System.Windows.Forms.PictureBox();
@@ -93,13 +86,19 @@
             this.pLabel4 = new System.Windows.Forms.Label();
             this.channelBox = new System.Windows.Forms.ListView();
             this.recentlyPlayedBox = new System.Windows.Forms.ListView();
-            this.tLog = new System.Windows.Forms.TabPage();
             this.outputbox = new System.Windows.Forms.RichTextBox();
             this.linkServer = new System.Windows.Forms.LinkLabel();
             this.lblClock = new System.Windows.Forms.Label();
             this.bStart = new System.Windows.Forms.Button();
             this.bStop = new System.Windows.Forms.Button();
             this.aVersion = new System.Windows.Forms.TextBox();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.pTimer = new System.Windows.Forms.Timer(this.components);
+            this.pHoverTimer = new System.Windows.Forms.Timer(this.components);
+            this.timerCB = new System.Windows.Forms.Timer(this.components);
+            this.pRetryTimer = new System.Windows.Forms.Timer(this.components);
+            this.tabcontrol1 = new System.Windows.Forms.TabControl();
+            this.tLog = new System.Windows.Forms.TabPage();
             viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
             trayIconContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -141,7 +140,6 @@
             trayIconContextMenu.SuspendLayout();
             channelContextMenu.SuspendLayout();
             historyContextMenu.SuspendLayout();
-            this.tabcontrol1.SuspendLayout();
             tPlayer.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.axWindowsMediaPlayer1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pLogoBox)).BeginInit();
@@ -149,11 +147,12 @@
             pChannels.SuspendLayout();
             pStatusPanel.SuspendLayout();
             tHistory.SuspendLayout();
-            this.tLog.SuspendLayout();
             pLogMain.SuspendLayout();
             pLogBase.SuspendLayout();
             tAbout.SuspendLayout();
             groupBox1.SuspendLayout();
+            this.tabcontrol1.SuspendLayout();
+            this.tLog.SuspendLayout();
             this.SuspendLayout();
             // 
             // viewToolStripMenuItem
@@ -189,18 +188,6 @@
             this.byCategoryToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
             this.byCategoryToolStripMenuItem.Text = "By Category";
             this.byCategoryToolStripMenuItem.Click += new System.EventHandler(this.byCategoryToolStripMenuItem_Click);
-            // 
-            // timer1
-            // 
-            this.timer1.Interval = 1000;
-            this.timer1.Tag = "Server Uptime Counter";
-            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
-            // 
-            // timer2
-            // 
-            this.timer2.Interval = 30000;
-            this.timer2.Tag = "Update What\'s On timer";
-            this.timer2.Tick += new System.EventHandler(this.timer2_Tick);
             // 
             // notifyIcon1
             // 
@@ -338,47 +325,6 @@
             timerUpdater.Interval = 86400000;
             timerUpdater.Tag = "Updater check";
             timerUpdater.Tick += new System.EventHandler(this.timerUpdater_Tick);
-            // 
-            // pTimer
-            // 
-            this.pTimer.Interval = 1000;
-            this.pTimer.Tag = "Player timer for WMP counter";
-            this.pTimer.Tick += new System.EventHandler(this.pTimer_Tick);
-            // 
-            // pHoverTimer
-            // 
-            this.pHoverTimer.Interval = 5000;
-            this.pHoverTimer.Tag = "Hover timer for WMP control UI flip";
-            this.pHoverTimer.Tick += new System.EventHandler(this.pHoverTimer_Tick);
-            // 
-            // timerCB
-            // 
-            this.timerCB.Interval = 10000;
-            this.timerCB.Tag = "Update channelbox data";
-            this.timerCB.Tick += new System.EventHandler(this.timerCB_Tick);
-            // 
-            // pRetryTimer
-            // 
-            this.pRetryTimer.Interval = 10000;
-            this.pRetryTimer.Tick += new System.EventHandler(this.pRetryTimer_Tick);
-            // 
-            // tabcontrol1
-            // 
-            this.tabcontrol1.AccessibleRole = System.Windows.Forms.AccessibleRole.None;
-            this.tabcontrol1.Controls.Add(tPlayer);
-            this.tabcontrol1.Controls.Add(tChannels);
-            this.tabcontrol1.Controls.Add(tHistory);
-            this.tabcontrol1.Controls.Add(this.tLog);
-            this.tabcontrol1.Controls.Add(tAbout);
-            this.tabcontrol1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabcontrol1.HotTrack = true;
-            this.tabcontrol1.Location = new System.Drawing.Point(0, 0);
-            this.tabcontrol1.Name = "tabcontrol1";
-            this.tabcontrol1.Padding = new System.Drawing.Point(7, 3);
-            this.tabcontrol1.SelectedIndex = 0;
-            this.tabcontrol1.Size = new System.Drawing.Size(560, 353);
-            this.tabcontrol1.TabIndex = 16;
-            this.tabcontrol1.Selected += new System.Windows.Forms.TabControlEventHandler(this.tabcontrol1_Selected);
             // 
             // tPlayer
             // 
@@ -594,14 +540,14 @@
             this.recentlyPlayedBox.ContextMenuStrip = historyContextMenu;
             this.recentlyPlayedBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.recentlyPlayedBox.FullRowSelect = true;
-            listViewGroup2.Header = "Recently Played";
-            listViewGroup2.Name = "listViewGroup1";
+            listViewGroup1.Header = "Recently Played";
+            listViewGroup1.Name = "listViewGroup1";
             this.recentlyPlayedBox.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
-            listViewGroup2});
+            listViewGroup1});
             this.recentlyPlayedBox.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
-            listViewItem2.Group = listViewGroup2;
+            listViewItem1.Group = listViewGroup1;
             this.recentlyPlayedBox.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem2});
+            listViewItem1});
             this.recentlyPlayedBox.Location = new System.Drawing.Point(0, 1);
             this.recentlyPlayedBox.Margin = new System.Windows.Forms.Padding(0);
             this.recentlyPlayedBox.Name = "recentlyPlayedBox";
@@ -610,20 +556,6 @@
             this.recentlyPlayedBox.TileSize = new System.Drawing.Size(507, 30);
             this.recentlyPlayedBox.UseCompatibleStateImageBehavior = false;
             this.recentlyPlayedBox.View = System.Windows.Forms.View.Tile;
-            // 
-            // tLog
-            // 
-            this.tLog.BackColor = System.Drawing.Color.Transparent;
-            this.tLog.Controls.Add(pLogMain);
-            this.tLog.Controls.Add(pLogBase);
-            this.tLog.Location = new System.Drawing.Point(4, 22);
-            this.tLog.Margin = new System.Windows.Forms.Padding(0);
-            this.tLog.Name = "tLog";
-            this.tLog.Padding = new System.Windows.Forms.Padding(0, 1, 0, 0);
-            this.tLog.Size = new System.Drawing.Size(552, 327);
-            this.tLog.TabIndex = 0;
-            this.tLog.Text = "Log";
-            this.tLog.UseVisualStyleBackColor = true;
             // 
             // pLogMain
             // 
@@ -859,6 +791,67 @@
             linkLabel1.Text = "http://www.xmtuner.net/";
             linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
             // 
+            // timer1
+            // 
+            this.timer1.Interval = 1000;
+            this.timer1.Tag = "Server Uptime Counter";
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            // 
+            // pTimer
+            // 
+            this.pTimer.Interval = 1000;
+            this.pTimer.Tag = "Player timer for WMP counter";
+            this.pTimer.Tick += new System.EventHandler(this.pTimer_Tick);
+            // 
+            // pHoverTimer
+            // 
+            this.pHoverTimer.Interval = 5000;
+            this.pHoverTimer.Tag = "Hover timer for WMP control UI flip";
+            this.pHoverTimer.Tick += new System.EventHandler(this.pHoverTimer_Tick);
+            // 
+            // timerCB
+            // 
+            this.timerCB.Interval = 10000;
+            this.timerCB.Tag = "Update channelbox data";
+            this.timerCB.Tick += new System.EventHandler(this.timerCB_Tick);
+            // 
+            // pRetryTimer
+            // 
+            this.pRetryTimer.Interval = 10000;
+            this.pRetryTimer.Tick += new System.EventHandler(this.pRetryTimer_Tick);
+            // 
+            // tabcontrol1
+            // 
+            this.tabcontrol1.AccessibleRole = System.Windows.Forms.AccessibleRole.None;
+            this.tabcontrol1.Controls.Add(tPlayer);
+            this.tabcontrol1.Controls.Add(tChannels);
+            this.tabcontrol1.Controls.Add(tHistory);
+            this.tabcontrol1.Controls.Add(this.tLog);
+            this.tabcontrol1.Controls.Add(tAbout);
+            this.tabcontrol1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabcontrol1.HotTrack = true;
+            this.tabcontrol1.Location = new System.Drawing.Point(0, 0);
+            this.tabcontrol1.Name = "tabcontrol1";
+            this.tabcontrol1.Padding = new System.Drawing.Point(7, 3);
+            this.tabcontrol1.SelectedIndex = 0;
+            this.tabcontrol1.Size = new System.Drawing.Size(560, 353);
+            this.tabcontrol1.TabIndex = 16;
+            this.tabcontrol1.Selected += new System.Windows.Forms.TabControlEventHandler(this.tabcontrol1_Selected);
+            // 
+            // tLog
+            // 
+            this.tLog.BackColor = System.Drawing.Color.Transparent;
+            this.tLog.Controls.Add(pLogMain);
+            this.tLog.Controls.Add(pLogBase);
+            this.tLog.Location = new System.Drawing.Point(4, 22);
+            this.tLog.Margin = new System.Windows.Forms.Padding(0);
+            this.tLog.Name = "tLog";
+            this.tLog.Padding = new System.Windows.Forms.Padding(0, 1, 0, 0);
+            this.tLog.Size = new System.Drawing.Size(552, 327);
+            this.tLog.TabIndex = 0;
+            this.tLog.Text = "Log";
+            this.tLog.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -879,7 +872,6 @@
             trayIconContextMenu.ResumeLayout(false);
             channelContextMenu.ResumeLayout(false);
             historyContextMenu.ResumeLayout(false);
-            this.tabcontrol1.ResumeLayout(false);
             tPlayer.ResumeLayout(false);
             tPlayer.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.axWindowsMediaPlayer1)).EndInit();
@@ -889,7 +881,6 @@
             pStatusPanel.ResumeLayout(false);
             pStatusPanel.PerformLayout();
             tHistory.ResumeLayout(false);
-            this.tLog.ResumeLayout(false);
             pLogMain.ResumeLayout(false);
             pLogBase.ResumeLayout(false);
             pLogBase.PerformLayout();
@@ -897,6 +888,8 @@
             tAbout.PerformLayout();
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();
+            this.tabcontrol1.ResumeLayout(false);
+            this.tLog.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -922,7 +915,6 @@
         private System.Windows.Forms.Timer pTimer;
         private System.Windows.Forms.Timer pHoverTimer;
         private System.Windows.Forms.Timer pRetryTimer;
-        private System.Windows.Forms.Timer timer2;
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.TabControl tabcontrol1;
         private System.Windows.Forms.Timer timerCB;
