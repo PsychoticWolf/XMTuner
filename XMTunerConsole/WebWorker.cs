@@ -9,16 +9,15 @@ namespace XMTuner
 {
     class WebWorker
     {
-        public NameValueCollection config;
-        XMTuner myTuner;
+        public Config cfg;
+        XMTuner tuner;
         String network = "";
-        public WebWorker(XMTuner xmTuner)
-        {
-            myTuner = xmTuner;
-            network = xmTuner.network;
 
-            //Set up configuration values
-            config = new configMan().getConfig(true);
+        public WebWorker(XMTuner tuner)
+        {
+            this.tuner = tuner;
+            network = tuner.network;
+            cfg = tuner.cfg;
         }
 
         public NameValueCollection parseStreamURL(string methodURL)
@@ -86,9 +85,9 @@ namespace XMTuner
         private String getHostName(String serverHost)
         {
             String hostname;
-            if (config.Get("hostname") != null && config.Get("hostname").Contains(":"))
+            if (cfg.hostname != null && cfg.hostname.Contains(":"))
             {
-                hostname = config["hostname"];
+                hostname = cfg.hostname;
             }
             else
             {
@@ -103,7 +102,7 @@ namespace XMTuner
             String msg;
             String isErr = "false";
             int ChanNum = Convert.ToInt32(streamParams["num"]);
-            String bitrate = TheConstructor.getBitRate(streamParams, config);
+            String bitrate = TheConstructor.getBitRate(streamParams, cfg);
             String type = streamParams["type"];
 
             if (streamParams.Get("streamtype") != null)
@@ -112,7 +111,7 @@ namespace XMTuner
             }
             else
             {
-                msg = myTuner.play(ChanNum, bitrate);
+                msg = tuner.play(ChanNum, bitrate);
             }
 
             //Playlist Container for Single Channel...
@@ -145,10 +144,10 @@ namespace XMTuner
 
         public MemoryStream DoFeed(string methodURL, NameValueCollection URLparams, String useragent, String serverHost)
         {
-            String bitrate_desc = getBitrateDesc(TheConstructor.getBitRate(URLparams, config));
+            String bitrate_desc = getBitrateDesc(TheConstructor.getBitRate(URLparams, cfg));
             serverHost = getHostName(serverHost);
-            myTuner.output("Incoming Feed Request: " + network + " Channels (All - " + bitrate_desc + ")", "info");
-            List<XMChannel> list = myTuner.getChannels();
+            tuner.output("Incoming Feed Request: " + network + " Channels (All - " + bitrate_desc + ")", "info");
+            List<XMChannel> list = tuner.getChannels();
             MemoryStream OutputStream = CreateXMFeed(list, URLparams, serverHost, useragent);
 
             return OutputStream;
@@ -156,12 +155,12 @@ namespace XMTuner
 
         public String DoNowPlaying(String serverHost, NameValueCollection URLparams)
         {
-            Boolean UseMMS = Convert.ToBoolean(config["isMMS"]);
+            Boolean UseMMS = cfg.useMMS;
             serverHost = getHostName(serverHost);
-            String bitrate = TheConstructor.getBitRate(URLparams, config);
+            String bitrate = TheConstructor.getBitRate(URLparams, cfg);
 
-            int nowPlayingNum = myTuner.lastChannelPlayed;
-            List<XMChannel> list = myTuner.getChannels();
+            int nowPlayingNum = tuner.lastChannelPlayed;
+            List<XMChannel> list = tuner.getChannels();
 
 
             String NowPlayingPage = "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html401/loose.dtd\">" +
@@ -171,7 +170,7 @@ namespace XMTuner
                                     "</head>\n<body style=\"margin: 0px; font-family: Arial; font-size: 10pt;\">\n" +
                                     "<style type=\"text/css\">a , a:visited { color: blue; text-decoration: none; } a:hover { color: orange; }</style>\n";
             //NowPlaying
-            XMChannel npChannel = myTuner.Find(nowPlayingNum);
+            XMChannel npChannel = tuner.Find(nowPlayingNum);
             if (npChannel.album == null) { npChannel.album = ""; }
 
             NowPlayingPage += "<div style=\"float: right;\">\n<table id=\"nowplaying\" style=\"min-width: 442px; border: 1px solid #666; margin: 5px; padding: 0px 3px; -moz-border-radius: 10px; -webkit-border-radius: 10px;\">" +
@@ -219,7 +218,7 @@ namespace XMTuner
             {
                 String row_color;
                 if (i % 2 == 0) { row_color = "#FFFFC0"; } else { row_color = "#FFFFFF"; }
-                mediaurl = TheConstructor.buildLink("stream", serverHost, URLparams, null, channel.num, config);
+                mediaurl = TheConstructor.buildLink("stream", serverHost, URLparams, null, channel.num, cfg);
                 if (nowPlayingNum == channel.num)
                 {
                     NowPlayingPage += "<tr style=\"background-color: #FFFF00; border-bottom: 1px solid black;\">\n";
@@ -240,8 +239,8 @@ namespace XMTuner
                     NowPlayingPage += "<div style=\"overflow: hidden; height: 25px; float: left;\"><img src=\"" + int_logo_url + "\" border=\"0\" width=\"45\" height=\"40\" style=\"position: relative; top: -5px;\"></div>";
                 }
 
-                String[] currentProgram = myTuner.getCurrentProgram(channel.programData);
-                String[] nextProgram = myTuner.getNextProgram(channel.programData);
+                String[] currentProgram = tuner.getCurrentProgram(channel.programData);
+                String[] nextProgram = tuner.getNextProgram(channel.programData);
 
                 String program = ""; 
                 if (currentProgram != null) {
@@ -266,8 +265,8 @@ namespace XMTuner
                 i++;
             }
 
-            String lastLoggedIn = myTuner.lastLoggedIn.ToString("F");
-            String lastDataUpdate = myTuner.lastWhatsOnUpdate.ToString("F");
+            String lastLoggedIn = tuner.lastLoggedIn.ToString("F");
+            String lastDataUpdate = tuner.lastWhatsOnUpdate.ToString("F");
 
             NowPlayingPage += "</table>" +
                                 "<hr noshade>\n" +
@@ -278,8 +277,8 @@ namespace XMTuner
 
         private String CreateRecentlyPlayedPanel()
         {
-            if (myTuner.recentlyPlayed == null ||
-                myTuner.recentlyPlayed.AsReadOnly().Count == 0) { return ""; }
+            if (tuner.recentlyPlayed == null ||
+                tuner.recentlyPlayed.AsReadOnly().Count == 0) { return ""; }
 
 
             String animationJavascript = "function AnimationFrame(left, top, width, height, time) {\n" +
@@ -315,7 +314,7 @@ namespace XMTuner
                     "<div id=\"rpPanel\" style=\"position:absolute; width:440px; height:0px; top:-8px; left:5px; background:#FFF; border: 0px solid black; overflow:hidden; -moz-border-radius: 0px 0px 10px 10px; -webkit-border-bottom-left-radius: 10px; -webkit-border-bottom-right-radius: 10px;\">" +
                         "<table id=\"rpTable\" border=0 cellspacing=2 cellpadding=0 width=\"100%\">\n<tr><td colspan=2 style=\"font-size: 12pt; font-weight: bold; border-bottom: 1px solid black;\">Recently Played:</td></tr>\n";
                         int i = 0;
-                        foreach (String _item in myTuner.recentlyPlayed.AsReadOnly()) {
+                        foreach (String _item in tuner.recentlyPlayed.AsReadOnly()) {
                             i++;
                             String row_color;
                             if (i % 2 == 0) { row_color = "#EEEEEE"; } else { row_color = "#FFFFFF"; }
@@ -379,8 +378,8 @@ namespace XMTuner
 
         private MemoryStream CreateXMFeed(List<XMChannel> list, NameValueCollection URLparams, String serverHost, String useragent)
         {
-            String link = TheConstructor.buildLink("feed", serverHost, URLparams, useragent, 0, config);
-            String bitrate_desc = getBitrateDesc(TheConstructor.getBitRate(URLparams, config));
+            String link = TheConstructor.buildLink("feed", serverHost, URLparams, useragent, 0, cfg);
+            String bitrate_desc = getBitrateDesc(TheConstructor.getBitRate(URLparams, cfg));
             
             MemoryStream MemoryStream = new MemoryStream();
 
@@ -437,7 +436,7 @@ namespace XMTuner
             //Channels
             foreach (XMChannel chan in list)
             {
-                String media = TheConstructor.buildLink("stream", serverHost, URLparams, useragent, chan.num, config);
+                String media = TheConstructor.buildLink("stream", serverHost, URLparams, useragent, chan.num, cfg);
 
                 //<item>
                 writer.WriteStartElement("item");
@@ -497,7 +496,7 @@ namespace XMTuner
         public String DoBuildPlaylist(string methodURL, NameValueCollection URLparams, String serverHost)
         {
             String type = URLparams["type"].ToUpper();
-            List<XMChannel> ChannelList = myTuner.getChannels();
+            List<XMChannel> ChannelList = tuner.getChannels();
             String media = "";
             String playlist = "";
             int i = 0; 
@@ -512,7 +511,7 @@ namespace XMTuner
                 foreach (XMChannel channel in ChannelList)
                 {
                     i++;
-                    media = TheConstructor.buildLink("stream", serverHost, URLparams, null, channel.num, config);
+                    media = TheConstructor.buildLink("stream", serverHost, URLparams, null, channel.num, cfg);
                     playlist += "File" + i + "=" + media + "\r\n";
                     playlist += "Title" + i + "=" + channel.name + "\r\n";
                     playlist += "Length=-1\r\n";
@@ -529,7 +528,7 @@ namespace XMTuner
 
                 foreach (XMChannel channel in ChannelList)
                 {
-                    media = TheConstructor.buildLink("stream", serverHost, URLparams, null, channel.num, config);
+                    media = TheConstructor.buildLink("stream", serverHost, URLparams, null, channel.num, cfg);
 
                     playlist += "\t<entry>\r\n";
                     playlist += "\t\t<title>"+channel.name+"</title>\r\n";
@@ -543,7 +542,7 @@ namespace XMTuner
                 playlist += "#EXTM3U\r\n";
                 foreach (XMChannel channel in ChannelList)
                 {
-                    media = TheConstructor.buildLink("stream", serverHost, URLparams, null, channel.num, config);
+                    media = TheConstructor.buildLink("stream", serverHost, URLparams, null, channel.num, cfg);
 
                     playlist += "#EXTINF:-1,"+channel.name+"\r\n";
                     playlist += media + "\r\n";
@@ -555,7 +554,7 @@ namespace XMTuner
         private String buildPlaylistContainer(int num, String type, String media)
         {
             String playlist = null;
-            XMChannel channel = myTuner.Find(num);
+            XMChannel channel = tuner.Find(num);
 
             if (type == "ASX")
             {
@@ -579,16 +578,15 @@ namespace XMTuner
         }
 
         private String buildTranscoderURL(NameValueCollection streamParams, String serverHost)
-        {   
-            String tversityHost = config["Tversity"];
-            if (tversityHost == null) { return null; }
+        {
+            if (cfg.tversityServer == null) { return null; }
 
             String streamtype = streamParams["streamtype"].ToLower();
             String mimetype = null;
             streamParams.Remove("streamtype");
             serverHost = getHostName(serverHost);
 
-            myTuner.output("Stream using transcoder. Output type: " + streamtype, "info");
+            tuner.output("Stream using transcoder. Output type: " + streamtype, "info");
             if (streamtype.Equals("mp3"))
             {
                 mimetype = "audio/mpeg";
@@ -599,11 +597,11 @@ namespace XMTuner
             }
 
             int num = Convert.ToInt32(streamParams["num"]);
-            String redirectURL = TheConstructor.buildLink("stream", serverHost, streamParams, "TVersity", num, config);
-            myTuner.output("RedirectURL: " + redirectURL, "debug");
+            String redirectURL = TheConstructor.buildLink("stream", serverHost, streamParams, "TVersity", num, cfg);
+            tuner.output("RedirectURL: " + redirectURL, "debug");
 
-            String msg = "http://" + tversityHost + "/geturl/stream."+streamtype+"?type=audio/x-ms-wma&ttype="+mimetype+"&url=" + HttpUtility.UrlEncode(redirectURL) + "&ext=."+streamtype;
-            myTuner.output(msg, "debug");
+            String msg = "http://" + cfg.tversityServer + "/geturl/stream."+streamtype+"?type=audio/x-ms-wma&ttype="+mimetype+"&url=" + HttpUtility.UrlEncode(redirectURL) + "&ext=."+streamtype;
+            tuner.output(msg, "debug");
             return msg;
         }
 
@@ -621,7 +619,7 @@ namespace XMTuner
         public String DoChannelInfo(int num)
         {
             String page;
-            XMChannel npChannel = myTuner.Find(num);
+            XMChannel npChannel = tuner.Find(num);
 
             // Page Preamble
             page = "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html401/loose.dtd\">" +
@@ -649,7 +647,7 @@ namespace XMTuner
                 page += "<tr><td style=\"padding-left: 25px; color: #666;\">" + npChannel.album + "</td></tr>\n";
             }
 
-            String[] currentProgram = myTuner.getCurrentProgram(npChannel.programData);
+            String[] currentProgram = tuner.getCurrentProgram(npChannel.programData);
             if (currentProgram != null)
             {
                 page += "<tr><td style=\"padding-left: 25px; color: #666;\">" + HttpUtility.HtmlEncode(currentProgram[2]) + " (" + DateTime.Parse(currentProgram[4]).ToShortTimeString() + " - " + DateTime.Parse(currentProgram[5]).ToShortTimeString() + ")</td></tr>";

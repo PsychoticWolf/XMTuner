@@ -1,11 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 namespace XMTuner
@@ -15,41 +10,33 @@ namespace XMTuner
         Int32 channelNum = 0;
 
         String bitrate;
-        bool isMMS = false;
+        Boolean isMMS = false;
 
         String hostname;
         String port;
         String ip;
-        String tversityHost;
+        String tversityServer;
 
 
-        public Form3()
+        public Form3(Int32 channel, Config cfg)
         {
             InitializeComponent();
-            setupURLBuilder();
-        }
-
-        public Form3(Int32 channel)
-        {
-            InitializeComponent();
-            setupURLBuilder();
+            setupURLBuilder(cfg);
             if (channel != 0)
             {
                 this.channelNum = channel;
             }
         }
 
-        private void setupURLBuilder()
+        private void setupURLBuilder(Config cfg)
         {
-            configMan cfg = new configMan();
-            NameValueCollection config = cfg.getConfig();
-
-            ip = configMan.getLocalIP();
-            port = config["port"];
-            bitrate = cfg.getConfigItem("bitrate");
-            isMMS = cfg.getConfigItemAsBoolean("isMMS");
-            tversityHost = config["Tversity"];
-            hostname = config["hostname"];
+            //Configuration
+            ip = cfg.ip;
+            port = cfg.port;
+            bitrate = cfg.bitrate;
+            isMMS = cfg.useMMS;
+            tversityServer = cfg.tversityServer;
+            hostname = cfg.hostname;
 
             // URL Builder
             typeBox.SelectedItem = "Channel";
@@ -78,16 +65,18 @@ namespace XMTuner
             NameValueCollection collectionForAdd = new NameValueCollection();
             collectionForAdd.Add("type", protocol.ToLower());
             collectionForAdd.Add("bitrate", altBitrate.ToLower());
-            NameValueCollection config = new NameValueCollection();
-            config.Add("bitrate", bitrate);
-            config.Add("isMMS", isMMS.ToString());
+
+            Config cfg = new Config(true);
+            cfg.bitrate = bitrate;
+            cfg.useMMS = isMMS;
+
             if (bitRateBox.SelectedIndex == -1) { altBitrate = bitrate; }
 
             String host;
             if (hostname.Equals("")) { host = ip; } else { host = hostname; }
             host = host + ":" + port;
 
-            String address = TheConstructor.buildLink(type, host, collectionForAdd, null, channelNum, config);
+            String address = TheConstructor.buildLink(type, host, collectionForAdd, null, channelNum, cfg);
             return address;
         }
 
@@ -134,7 +123,7 @@ namespace XMTuner
                 protocolBox.Items.Add("ASX");
                 protocolBox.Items.Add("M3U");
 
-                if (!tversityHost.Equals(""))
+                if (!tversityServer.Equals(""))
                 {
                     protocolBox.Items.Add("MP3");
                     protocolBox.Items.Add("WAV");

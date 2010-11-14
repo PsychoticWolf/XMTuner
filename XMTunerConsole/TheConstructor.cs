@@ -7,14 +7,14 @@ namespace XMTuner
 {
     static class TheConstructor
     {
-        public static String buildLink(String linkType, String serverHost, NameValueCollection URLparams, String useragent, Int32 num, NameValueCollection config)
+        public static String buildLink(String linkType, String serverHost, NameValueCollection URLparams, String useragent, Int32 num, Config cfg)
         {
             String link;
             //Linktype: stream or feed
             if (linkType.Equals("stream"))
             {
-                String type = getStreamType(useragent, URLparams, config);
-                String bitrate = getBitRate(URLparams, config);
+                String type = getStreamType(useragent, URLparams, cfg);
+                String bitrate = getBitRate(URLparams, cfg);
                 String format = getFormat(URLparams);
                 if (type.Equals("mp3") || type.Equals("wav"))
                 {
@@ -43,24 +43,24 @@ namespace XMTuner
             else if (linkType.Equals("playlist"))
             {
                 String type = URLparams["type"].ToLower(); //XXX should be getPlaylistType()
-                String bitrate = getBitRate(URLparams, config);
+                String bitrate = getBitRate(URLparams, cfg);
                 link = "http://" + serverHost + "/playlists/"+"?type=" + type + "&bitrate=" + bitrate;
             }
             else
             //Feeds
             {
                 String category = ""; //XXX not implemented yet.
-                String type = getStreamType(null, URLparams, config);
-                String bitrate = getBitRate(URLparams, config);
+                String type = getStreamType(null, URLparams, cfg);
+                String bitrate = getBitRate(URLparams, cfg);
                 link = "http://" + serverHost + "/feeds/" + category + "?type=" + type + "&bitrate=" + bitrate;
             }
             return link;
         }
 
-        public static String getBitRate(NameValueCollection URLparams, NameValueCollection config)
+        public static String getBitRate(NameValueCollection URLparams, Config cfg)
         {
             //Default Bitrate from Config
-            String bitrate = config["bitrate"];
+            String bitrate = cfg.bitrate;
 
             //Process Override Bitrate (validate)
             if (URLparams.Get("bitrate") != null)
@@ -75,15 +75,14 @@ namespace XMTuner
             return bitrate;
         }
 
-        private static String getStreamType(String useragent, NameValueCollection URLparams, NameValueCollection config)
+        private static String getStreamType(String useragent, NameValueCollection URLparams, Config cfg)
         {
             //Possible return values: rtsp, http, mms, mp3
             if (useragent == null) { useragent = ""; } //support non-web calls
             String type;
 
             //Do we default to mms in the absense of any overrides?
-            Boolean UseMMS = Convert.ToBoolean(config["isMMS"]);
-            if (UseMMS)
+            if (cfg.useMMS)
             {
                 type = "mms";
             }

@@ -18,6 +18,7 @@ namespace XMTuner
 
         //path to Application Data folder
         String path;
+
         public configMan()
         {
 #if DEBUG

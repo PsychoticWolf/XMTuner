@@ -95,7 +95,7 @@ namespace XMTuner
             pStatusLabel.Visible = true;
             if (loggedIn == false)
             {
-                if (isConfigurationLoaded == false)
+                if (cfg.loaded == false)
                 {
                     pStatusLabel.Text = "XMTuner needs to be configured before you can begin...";
                 }
@@ -220,7 +220,7 @@ namespace XMTuner
 
         private void doNotification()
         {
-            if (playerNum == 0 || !showNotification) { return; } //Bail early if we have no work to do.
+            if (playerNum == 0 || !cfg.showNotification) { return; } //Bail early if we have no work to do.
             XMChannel npChannel = self.Find(playerNum);
             String title = npChannel.ToString();
             String nptext = npChannel.artist + " - " + npChannel.song;
