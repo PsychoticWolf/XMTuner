@@ -105,6 +105,55 @@ namespace XMTuner
         }
         #endregion
 
+        #region Aero
+        [StructLayout(LayoutKind.Sequential)]
+        public struct MARGINS
+        {
+            public int cxLeftWidth;
+            public int cxRightWidth;
+            public int cyTopHeight;
+            public int cyBottomHeight;
+        }
+
+        [DllImport("dwmapi.dll")]
+        public static extern int DwmExtendFrameIntoClientArea(
+               IntPtr hWnd,
+               ref MARGINS pMarInset
+               );
+        [DllImport("dwmapi.dll")]
+        public static extern int DwmIsCompositionEnabled(ref int en);
+
+        private void AeroLoad()
+        {
+            if (System.Environment.OSVersion.Version.Major >= 6)  //make sure you are not on a legacy OS 
+            {
+                int en = 0;
+                DwmIsCompositionEnabled(ref en);  //check if the desktop composition is enabled
+                if (en > 0)
+                {
+                    this.TransparencyKey = Color.Gainsboro;
+                    this.BackColor = Color.Gainsboro;
+
+                    MARGINS margins = new MARGINS();
+
+                    margins.cxLeftWidth = 0;
+                    margins.cxRightWidth = 0;
+                    margins.cyTopHeight = -1;
+                    margins.cyBottomHeight = 0;
+
+                    IntPtr hWnd = this.Handle;
+                    int result = DwmExtendFrameIntoClientArea(hWnd, ref margins);
+                }
+                else
+                {
+                    this.TransparencyKey = Color.Empty;
+                    this.BackColor = SystemColors.Control;
+                }
+            }
+        }
+
+        #endregion
+
         #region Start/Stop
         //Start / Login
         private void bStart_Click(object sender, EventArgs e)
@@ -135,7 +184,6 @@ namespace XMTuner
                     switch(e.data) 
                     {
                         case "isLoggedIn":
-                            timer2.Enabled = true;
                             if (c.isLoggedIn)
                             {
                                 bStart.Enabled = false;
@@ -147,7 +195,6 @@ namespace XMTuner
 
                             break;
                         case "isLoggedOut":
-                            timer2.Enabled = false;
                             bStart.Enabled = true;
                             bStop.Enabled = false;
 
@@ -692,11 +739,7 @@ namespace XMTuner
             recentlyPlayedBox.Columns.Add("Channel");
             recentlyPlayedBox.Columns.Add("Song");
 
-            //Image defaultImage = Image.FromStream(Assembly.GetExecutingAssembly().GetManifestResourceStream("XMTuner.xmtuner64.png"));
-            //ImageList imagelist = new ImageList();
             recentlyPlayedBox.LargeImageList = channelBox.LargeImageList;
-            //imagelist.ImageSize = new Size(30, 30); //new Size(45, 40);
-            //imagelist.Images.Add(defaultImage);
 
             if (self.recentlyPlayed.Count == 0)
             {
@@ -742,56 +785,6 @@ namespace XMTuner
             updateRecentlyPlayedBox();
         }
         #endregion
-
-        #region Aero
-        [StructLayout(LayoutKind.Sequential)]
-        public struct MARGINS
-        {
-            public int cxLeftWidth;
-            public int cxRightWidth;
-            public int cyTopHeight;
-            public int cyBottomHeight;
-        }
-
-        [DllImport("dwmapi.dll")]
-        public static extern int DwmExtendFrameIntoClientArea(
-               IntPtr hWnd,
-               ref MARGINS pMarInset
-               );
-        [DllImport("dwmapi.dll")]
-        public static extern int DwmIsCompositionEnabled(ref int en);
-
-        private void AeroLoad()
-        {
-            if (System.Environment.OSVersion.Version.Major >= 6)  //make sure you are not on a legacy OS 
-            {
-                int en = 0;
-                DwmIsCompositionEnabled(ref en);  //check if the desktop composition is enabled
-                if (en > 0)
-                {
-                    this.TransparencyKey = Color.Gainsboro;
-                    this.BackColor = Color.Gainsboro;
-
-                    MARGINS margins = new MARGINS();
-
-                    margins.cxLeftWidth = 0;
-                    margins.cxRightWidth = 0;
-                    margins.cyTopHeight = -1;
-                    margins.cyBottomHeight = 0;
-
-                    IntPtr hWnd = this.Handle;
-                    int result = DwmExtendFrameIntoClientArea(hWnd, ref margins);
-                }
-                else
-                {
-                    this.TransparencyKey = Color.Empty;
-                    this.BackColor = SystemColors.Control;
-                }
-            }
-        }
-
-        #endregion
-
 
     }
 }

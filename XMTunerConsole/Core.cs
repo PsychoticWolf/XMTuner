@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Timers;
 
 namespace XMTuner
 {
@@ -51,6 +52,9 @@ namespace XMTuner
             }
         }
 
+        //Timer (for polling...)
+        Timer pollTimer = new System.Timers.Timer(30000);
+
 
         public Core(Log log)
         {
@@ -75,6 +79,11 @@ namespace XMTuner
                 return;
             }
             tick(this, new XMTunerEventArgs("xmtuner", "isLoggedIn"));
+
+            //Start the polling timer.
+            pollTimer.Elapsed += new ElapsedEventHandler(OnPollTimerEvent);
+            pollTimer.AutoReset = true;
+            pollTimer.Enabled = true;
 
             //Starting the server is optional...
             if (cfg.enableServer == true)
@@ -110,9 +119,15 @@ namespace XMTuner
             e = new XMTunerEventArgs("xmtuner", "isLoggedOut");
             tick(this, e);
             tuner.logout();
+            pollTimer.Stop();
             tuner = null;
 
             GC.Collect();
+        }
+
+        public void OnPollTimerEvent(object source, ElapsedEventArgs e)
+        {
+            tuner.doWhatsOn();
         }
     }
 }
