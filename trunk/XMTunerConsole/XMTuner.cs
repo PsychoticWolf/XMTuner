@@ -19,9 +19,10 @@ namespace XMTuner
         protected String user;
         protected String password;
         public String network = "XM";
-        public int numItems = Convert.ToInt32(new configMan().getConfigItem("numRecentHistory"));
+        public int numItems;
 
         //Objects
+        public Config cfg;
         Log logSvc;
         public CacheManager cache;
         protected String cookies;
@@ -60,11 +61,14 @@ namespace XMTuner
             }
         }
 
-        public XMTuner(String username, String passw, Log logging) : this(username, passw, logging, null) {}
-        public XMTuner(String username, String passw, Log logging, String netw)
+        public XMTuner(Config cfg, Log logging) : this(cfg, logging, null) {}
+        public XMTuner(Config cfg, Log logging, String netw)
         {
-            user = username;
-            password = passw;
+            this.cfg = cfg;
+            this.user = cfg.username;
+            this.password = cfg.password;
+            this.numItems = cfg.numRecentHistory;
+
             logSvc = logging;
 
             if (netw != null) { network = netw; }

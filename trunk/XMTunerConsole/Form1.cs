@@ -14,18 +14,10 @@ namespace XMTuner
         Core c;
         XMTuner self;
         Log logging;
-        WebListner xmServer;
-        Boolean isConfigurationLoaded = false;
-        bool loggedIn = false;
-        bool serverRunning = false;
-        String network;
-        String username = "";
-        String password = "";
-        String port = "";
-        bool autologin = false;
-        bool showNotification;
-        bool onTop;
-        int numRecentHistory;
+        Config cfg = new Config(true);
+
+        Boolean loggedIn = false;
+        Boolean serverRunning = false;
 
         int i = 0;
 
@@ -47,9 +39,11 @@ namespace XMTuner
             logging = new Log(ref outputbox);
             aVersion.Text = configMan.version;
             outputbox.AppendText("XMTuner "+configMan.version+"\n");
+            c = new Core(logging);
 
             //Load config...
-            refreshConfig();
+            loadConfig();
+
             lblClock.Text = "0:00:00";
 #if !DEBUG
             Updater update = new Updater(outputbox);
@@ -65,7 +59,7 @@ namespace XMTuner
         private void Form1_Shown(object sender, EventArgs e)
         {
             //If we have a configuration, and they want autologin, do it now.
-            if (isConfigurationLoaded && autologin)
+            if (cfg.loaded && cfg.autologin)
             {
                 start();
             }
@@ -128,10 +122,10 @@ namespace XMTuner
                 bStart.Text = "Start";
             }
         }
+
         private void start()
         {
             output("Please wait... logging in", "info");
-            c = new Core(logging);
             c.tick += new Core.TickHandler(coreEvent_Do);
             c.Start();
             output("XMTuner Ready...", "info");
@@ -243,7 +237,7 @@ namespace XMTuner
 
         private void linkServer_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            System.Diagnostics.Process.Start("http://" + configMan.getLocalIP() + ":" + port);
+            System.Diagnostics.Process.Start("http://" + configMan.getLocalIP() + ":" + cfg.port);
         }
 
         private void restart()
@@ -264,62 +258,24 @@ namespace XMTuner
 
             Form2 form2 = new Form2(cache, loggedIn, ip);
             form2.ShowDialog();
-            refreshConfig(currentconfig);
+            cfg.reload();
         }
 
-        private List<String> compareConfig(NameValueCollection prevconfig, NameValueCollection config)
+        private Boolean loadConfig()
         {
-            List<String> changedValues = new List<String>();
-            foreach (String value in config.AllKeys)
-            {
-                if (config[value] != prevconfig[value])
-                {
-                    changedValues.Add(value.ToLower());
-                }
-            }
-            if (changedValues.Count > 0)
-            {
-                String updatedvalues = "";
-                for (int i = 0; i < changedValues.Count; i++)
-                    updatedvalues += changedValues[i] + " ";
-                    output("Updated Values: " + updatedvalues, "debug");
-
-                return changedValues;
-            }
-            return null;
-        }
-
-        private bool refreshConfig() { return refreshConfig(null); }
-        private bool refreshConfig(NameValueCollection prevconfig)
-        {
-            configMan configuration = new configMan();
-            if (configuration.loaded == false)
+            if (c == null || c.cfg == null || c.cfg.loaded == false)
             {
                 bStart.Enabled = false;
                 output("No Configuration\nClick Configure.", "error");
-                isConfigurationLoaded = false;
                 return false;
             }
-
-            //Get configuration from configMan
-            NameValueCollection config = configuration.getConfig(true);
-
-            //Set config values using new config
-            setConfig(configuration, config);
-
-            //Get list of updated values if we're updating config
-            if (loggedIn == true && prevconfig != null)
-            {
-                List<String> updatedvalues = compareConfig(prevconfig, config);
-                if (updatedvalues != null)
-                {
-                    //Update downstream users dynamically or restart as needed
-                    updateRunningConfig(config, updatedvalues);
-                }
-            }
+            cfg = c.cfg;
+            cfg.update += new Config.ConfigUpdateHandler(cfg_update);
 
             //Set alwaysOnTop...
-            this.TopMost = onTop; //Make XMTuner always on top
+            this.TopMost = cfg.onTop; //Make XMTuner always on top
+
+            setChannelsListStyle(cfg.channelListStyle);
 
             //Messages & Item Twiddling
             if (!serverRunning)
@@ -328,20 +284,25 @@ namespace XMTuner
             }
             loginToolStripMenuItem.Enabled = true;
 
-            if (isConfigurationLoaded == false)
+            if (cfg.loaded == true)
             {
                 output("Configuration Loaded", "info");
             }
-            isConfigurationLoaded = true;
             syncStatusLabel();
             return true;
         }
 
-        private void updateRunningConfig(NameValueCollection config, List<String> updatedvalues)
+        void cfg_update(Config cfg, ConfigUpdateEventArgs e)
         {
-            //alwaysOnTop, showURLBuilder, showNotice (refreshed directly as they're Form1 elements)
+            List<String> updatedvalues = e.data;
+            output("Updated Values: " + e.details, "debug");
 
-            if (xmServer == null || self == null || loggedIn == false) { return; }
+            //alwaysOnTop, showNotice (refreshed directly as they're Form1 elements)
+            this.TopMost = cfg.onTop; //Make XMTuner always on top
+            setChannelsListStyle(cfg.channelListStyle);
+            
+
+            if (c == null || c.server == null || self == null || loggedIn == false) { return; }
             //username, password, port [, network] = require restart
             if (updatedvalues.Contains("username") || updatedvalues.Contains("password") ||
                 updatedvalues.Contains("port") || updatedvalues.Contains("network"))
@@ -349,30 +310,17 @@ namespace XMTuner
                 output("Your configuration update requires XMTuner to restart the server to take effect. Restarting now...", "info");
                 restart();
             }
+
             //numRecentHistory
-            self.numItems = numRecentHistory;
+            self.numItems = cfg.numRecentHistory;
 
             //bitrate, isMMS, hostname, TVersity = should be dynamically applied
             if (updatedvalues.Contains("bitrate") || updatedvalues.Contains("ismms") ||
                 updatedvalues.Contains("hostname") || updatedvalues.Contains("tversity"))
             {
                 output("Updating configuration of web server...", "debug");
-                xmServer.worker.config = config;
+                c.server.worker.cfg = cfg;
             }
-        }
-
-        private void setConfig(configMan cfg, NameValueCollection config)
-        {
-            ip = configMan.getLocalIP();
-            username = config["username"];
-            password = config["password"];
-            port = config["port"];
-            autologin = cfg.getConfigItemAsBoolean("autologin");
-            network = config["network"];
-            showNotification = cfg.getConfigItemAsBoolean("showNotice");
-            onTop = cfg.getConfigItemAsBoolean("alwaysOnTop");
-            numRecentHistory = Convert.ToInt32(config["numRecentHistory"]);
-            setChannelsListStyle(config["channelListStyle"]);
         }
         #endregion
 
@@ -396,7 +344,7 @@ namespace XMTuner
 
         private void viewServerToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("http://" + configMan.getLocalIP() + ":" + port);
+            System.Diagnostics.Process.Start("http://" + configMan.getLocalIP() + ":" + cfg.port);
         }
         #endregion
 
@@ -526,7 +474,7 @@ namespace XMTuner
 
             //Add Groups
             channelBox.Groups.Add("cbGroupFavorite", "Favorite Channels");
-            channelBox.Groups.Add("cbGroupNormal", network.ToUpper() + " Channels");
+            channelBox.Groups.Add("cbGroupNormal", cfg.network.ToUpper() + " Channels");
 
             Int32 imagenum = 0;
             //Iterate through the channels (using a copy of the List)
@@ -680,51 +628,50 @@ namespace XMTuner
             }
         }
 
-        private void setChannelsListStyle(String style)
+        private void setChannelsListStyle(channelListStyles style)
         {
             favoriteChannelsToolStripMenuItem.Checked = false;
             allChannelsToolStripMenuItem.Checked = false;
             byCategoryToolStripMenuItem.Checked = false;
 
-            if (style.ToLower().Equals("all"))
+            switch (style)
             {
-                allChannelsToolStripMenuItem.Checked = true;
-                channelBox.Tag = "";
-            }
-            else if (style.ToLower().Equals("category"))
-            {
-                byCategoryToolStripMenuItem.Checked = true;
-                channelBox.Tag = "category";
-            }
-            else if (style.ToLower().Equals("favorites"))
-            {
-                favoriteChannelsToolStripMenuItem.Checked = true;
-                channelBox.Tag = "favorites";
-                
+                case channelListStyles.All:
+                    allChannelsToolStripMenuItem.Checked = true;
+                    channelBox.Tag = "";
+                    break;
+                case channelListStyles.Category:
+                    byCategoryToolStripMenuItem.Checked = true;
+                    channelBox.Tag = "category";
+                    break;
+                case channelListStyles.Favorites:
+                    favoriteChannelsToolStripMenuItem.Checked = true;
+                    channelBox.Tag = "favorites";
+                    break;
             }
         }
 
         private void allChannelsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            setChannelsListStyle("all");
+            setChannelsListStyle(channelListStyles.All);
             loadChannels();
         }
 
         private void favoriteChannelsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            setChannelsListStyle("favorites");
+            setChannelsListStyle(channelListStyles.Favorites);
             loadChannels();
         }
 
         private void byCategoryToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            setChannelsListStyle("category");
+            setChannelsListStyle(channelListStyles.Category);
             loadChannels();
         }
 
         private void uRLBuilderToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Form3 form3 = new Form3(Convert.ToInt32(channelBox.SelectedItems[0].Name));
+            Form3 form3 = new Form3(Convert.ToInt32(channelBox.SelectedItems[0].Name), cfg);
             form3.ShowDialog();
         }
         #endregion

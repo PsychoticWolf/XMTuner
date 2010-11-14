@@ -19,13 +19,8 @@ namespace XMTuner
     {
         public XMTuner tuner;
         public WebListner server;
-        private configMan config;
+        public Config cfg;
         private Log logging;
-
-        private String username;
-        private String password;
-        private String network;
-        private String port;
 
         //Event
         public event TickHandler tick;
@@ -35,29 +30,19 @@ namespace XMTuner
 
         public Core(Log log)
         {
-            loadConfig();
+            cfg = new Config();
             this.logging = log;
-        }
-
-        private void loadConfig()
-        {
-            config = new configMan();
-            username = config.getConfigItem("username");
-            password = config.getConfigItem("password");
-            network = config.getConfigItem("network");
-            port = config.getConfigItem("port");
-
         }
 
         public void Start()
         {
-            if (network.ToUpper().Equals("SIRIUS"))
+            if (cfg.network.ToUpper().Equals("SIRIUS"))
             {
-                tuner = new SiriusTuner(username, password, logging);
+                tuner = new SiriusTuner(cfg, logging);
             }
             else
             {
-                tuner = new XMTuner(username, password, logging);
+                tuner = new XMTuner(cfg, logging);
             }
             if (tuner.isLoggedIn == false)
             {
@@ -70,7 +55,7 @@ namespace XMTuner
             //XXX Starting the server is optional...
             if (true)
             {
-                server = new WebListner(tuner, port);
+                server = new WebListner(tuner, cfg.port);
 
                 server.start();
                 if (server.isRunning == true)

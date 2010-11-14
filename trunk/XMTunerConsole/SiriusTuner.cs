@@ -22,8 +22,8 @@ namespace XMTuner
         }
 
 
-        public SiriusTuner(String username, String passw, Log logging)
-            : base(username, passw, logging, "SIRIUS")
+        public SiriusTuner(Config cfg, Log logging)
+            : base(cfg, logging, "SIRIUS")
         {
         }
 
