@@ -27,6 +27,30 @@ namespace XMTuner
         public XMTunerEventArgs e = null;
         public delegate void TickHandler(Core c, XMTunerEventArgs e);
 
+        //Flags
+        public Boolean isLoggedIn
+        {
+            get
+            {
+                if (tuner == null)
+                {
+                    return false;
+                }
+                return tuner.isLoggedIn;
+            }
+        }
+        public Boolean isServerRunning
+        {
+            get
+            {
+                if (server == null)
+                {
+                    return false;
+                }
+                return server.isRunning;
+            }
+        }
+
 
         public Core(Log log)
         {
@@ -52,8 +76,8 @@ namespace XMTuner
             }
             tick(this, new XMTunerEventArgs("xmtuner", "isLoggedIn"));
 
-            //XXX Starting the server is optional...
-            if (true)
+            //Starting the server is optional...
+            if (cfg.enableServer == true)
             {
                 server = new WebListner(tuner, cfg.port);
 
@@ -75,10 +99,13 @@ namespace XMTuner
 
         public void Stop()
         {
-            server.stop();
-            e = new XMTunerEventArgs("server", "isStopped");
-            tick(this, e);
-            server = null;
+            if (server != null)
+            {
+                server.stop();
+                e = new XMTunerEventArgs("server", "isStopped");
+                tick(this, e);
+                server = null;
+            }
 
             e = new XMTunerEventArgs("xmtuner", "isLoggedOut");
             tick(this, e);

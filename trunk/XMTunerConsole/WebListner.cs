@@ -38,22 +38,22 @@ namespace XMTuner
 
         public void start()
         {
-            myTuner.output("Starting server...", "info");
+            myTuner.output("Starting server...", LogLevel.Info);
             theServer.Prefixes.Clear();
             theServer.Prefixes.Add(prefix);
             try
             {
                 theServer.Start();
                 isRunning = true;
-                myTuner.output("Server started", "info");
-                myTuner.output("Listening on port " + port, "info");
+                myTuner.output("Server started", LogLevel.Info);
+                myTuner.output("Listening on port " + port, LogLevel.Info);
             }
             catch (HttpListenerException e)
             {
                 isRunning = false;
-                myTuner.output("Server failed to start (Port already in use?)", "error");
-                myTuner.output("Check your settings or close the other application using the port", "error");
-                myTuner.output("Error " + e.ErrorCode + ": " + e.Message, "debug");
+                myTuner.output("Server failed to start (Port already in use?)", LogLevel.Error);
+                myTuner.output("Check your settings or close the other application using the port", LogLevel.Error);
+                myTuner.output("Error " + e.ErrorCode + ": " + e.Message, LogLevel.Debug);
                 return;
             }
             System.Threading.ThreadPool.QueueUserWorkItem(listen);
@@ -63,7 +63,7 @@ namespace XMTuner
         {
             theServer.Close();
             isRunning = false;
-            myTuner.output("Server stopped", "info");
+            myTuner.output("Server stopped", LogLevel.Info);
         }
 
         private void listen(object state)
@@ -181,7 +181,7 @@ namespace XMTuner
             catch (HttpListenerException e)
             {
                 response.Abort();
-                myTuner.output("Error - Request Aborted Abnormally (" + e.Message + ")", "debug");
+                myTuner.output("Error - Request Aborted Abnormally (" + e.Message + ")", LogLevel.Debug);
             }
 
 
@@ -199,7 +199,7 @@ namespace XMTuner
             }
 
             String requestURL = request.Url.PathAndQuery;
-            myTuner.output("Incoming Request: (Source: " + request.RemoteEndPoint + ") " + request.HttpMethod + " - " + requestURL, "debug");
+            myTuner.output("Incoming Request: (Source: " + request.RemoteEndPoint + ") " + request.HttpMethod + " - " + requestURL, LogLevel.Debug);
 
             char[] seperator = new char[] {'/'};
             String[] parsedURL = requestURL.Split(seperator, 2, StringSplitOptions.RemoveEmptyEntries);
@@ -230,7 +230,7 @@ namespace XMTuner
             {
                 String responseString;
                 NameValueCollection URLParams = request.QueryString;
-                myTuner.output("Incoming 'What's On' Request", "info");
+                myTuner.output("Incoming 'What's On' Request", LogLevel.Info);
                 responseString = worker.DoNowPlaying(serverHost, URLParams);
                 SendRequest(context, null, responseString, "text/html", false, HttpStatusCode.OK);
 
@@ -253,13 +253,13 @@ namespace XMTuner
                 }
                 catch (FormatException e)
                 {
-                    myTuner.output("Failed to read XM channel number requested. ("+e.Message+")", "debug");
+                    myTuner.output("Failed to read XM channel number requested. ("+e.Message+")", LogLevel.Debug);
                 }
 
                 String chanName = myTuner.checkChannel(num);
                 if (!chanName.Equals(""))
                 {
-                    myTuner.output("Incoming Stream Request for XM" + streamParams[0] + " - " + chanName + "", "info");
+                    myTuner.output("Incoming Stream Request for XM" + streamParams[0] + " - " + chanName + "", LogLevel.Info);
                     //Do Action for Stream
                     NameValueCollection streamCollection = worker.DoStream(streamParams, serverHost);
                     response = streamCollection["msg"];
@@ -272,7 +272,7 @@ namespace XMTuner
                     {
                         if (streamCollection["playlist"] != null && streamCollection["playlist"].Contains("audio/") == true)
                         {
-                            myTuner.output("Using playlist wrapper for "+streamCollection["playlist"], "debug");
+                            myTuner.output("Using playlist wrapper for "+streamCollection["playlist"], LogLevel.Debug);
                             contentType = streamCollection["playlist"];
                         }
                         else
@@ -283,7 +283,7 @@ namespace XMTuner
                 }
                 else
                 {
-                    myTuner.output("Incoming Stream Request for Unknown XM Channel", "error");
+                    myTuner.output("Incoming Stream Request for Unknown XM Channel", LogLevel.Error);
                     response = "Invalid Channel Stream Request";
                     contentType = "text/plain";
                 }
@@ -370,7 +370,7 @@ namespace XMTuner
             {
                 NameValueCollection logoParams = worker.parseStreamURL(methodURL);
                 int num = Convert.ToInt32(logoParams[0]);
-                myTuner.output("Incoming 'What's On' Request", "info");
+                myTuner.output("Incoming 'What's On' Request", LogLevel.Info);
                 String responseString = worker.DoChannelInfo(num);
                 SendRequest(context, null, responseString, "text/html", false, HttpStatusCode.OK);
 
@@ -380,7 +380,7 @@ namespace XMTuner
                 string responseString = "<HTML><BODY>Unknown Request</BODY></HTML>";
                 SendRequest(context, null, responseString, "", false, HttpStatusCode.BadRequest);
             }
-            myTuner.output("Incoming Request Completed", "debug");
+            myTuner.output("Incoming Request Completed", LogLevel.Debug);
         }
 
     }

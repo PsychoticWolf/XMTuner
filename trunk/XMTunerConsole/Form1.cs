@@ -16,13 +16,8 @@ namespace XMTuner
         Log logging;
         Config cfg = new Config(true);
 
-        Boolean loggedIn = false;
-        Boolean serverRunning = false;
-
         int i = 0;
-
         String runTime = "";
-        String ip = "";
 
         #region Form1 Core
         public Form1()
@@ -85,10 +80,10 @@ namespace XMTuner
             if (e.Mode == Microsoft.Win32.PowerModes.Suspend)
             {
                 //If the server isn't running, we don't need to do any of this...
-                if (serverRunning == false) { return; }
+                if (c.isServerRunning == false) { return; }
 
                 //We're going to sleep.. Stop.
-                output("System is going to sleep, stopping server.", "info");
+                output("System is going to sleep, stopping server.", LogLevel.Info);
                 stop();
             }
             else if (e.Mode == Microsoft.Win32.PowerModes.Resume)
@@ -96,14 +91,14 @@ namespace XMTuner
                 //XXX This will probably unconditionally start the server regardless of it if was up before...
 
                 //We're waking up, resume server.
-                output("System has resumed, starting server.", "info");
+                output("System has resumed, starting server.", LogLevel.Info);
                 start();
 
                 //If we were playing, resume.
                 playerNum = sleepPlayerNum;
                 if (playerNum > 0)
                 {
-                    output("Resuming playback...", "info");
+                    output("Resuming playback...", LogLevel.Info);
                     play(playerNum);
                 }
             }
@@ -125,10 +120,10 @@ namespace XMTuner
 
         private void start()
         {
-            output("Please wait... logging in", "info");
+            output("Please wait... logging in", LogLevel.Info);
             c.tick += new Core.TickHandler(coreEvent_Do);
             c.Start();
-            output("XMTuner Ready...", "info");
+            output("XMTuner Ready...", LogLevel.Info);
         }
 
         private void coreEvent_Do(Core c, XMTunerEventArgs e)
@@ -141,8 +136,7 @@ namespace XMTuner
                     {
                         case "isLoggedIn":
                             timer2.Enabled = true;
-                            loggedIn = true;
-                            if (loggedIn)
+                            if (c.isLoggedIn)
                             {
                                 bStart.Enabled = false;
                                 bStop.Enabled = true;
@@ -153,7 +147,6 @@ namespace XMTuner
 
                             break;
                         case "isLoggedOut":
-                            loggedIn = false;
                             timer2.Enabled = false;
                             bStart.Enabled = true;
                             bStop.Enabled = false;
@@ -169,7 +162,6 @@ namespace XMTuner
                     switch (e.data)
                     {
                         case "isRunning":
-                            serverRunning = true;
                             viewServerToolStripMenuItem.Enabled = true;
                             loginToolStripMenuItem.Enabled = false;
                             timer1.Enabled = true;
@@ -178,12 +170,11 @@ namespace XMTuner
                             linkServer.Enabled = true;
 
 
-                            output("XMTuner Ready...", "info");
+                            output("XMTuner Ready...", LogLevel.Info);
                             break;
                         case "isStopped":
-                            serverRunning = false;
                             linkServer.Text = "Server is Stopped";
-                            output("Server Uptime was " + runTime, "info");
+                            output("Server Uptime was " + runTime, LogLevel.Info);
                             linkServer.Enabled = false;
                             timer1.Enabled = false;
                             lblClock.Text = "0:00:00";
@@ -198,7 +189,7 @@ namespace XMTuner
             double sec = 0;
             double minute = 0;
             double hour = 0;
-            if (serverRunning)
+            if (c.isServerRunning)
             {
                 i++;
                 sec = i;
@@ -256,7 +247,7 @@ namespace XMTuner
             //Store current configuration for comparison test
             NameValueCollection currentconfig = new configMan().getConfig();
 
-            Form2 form2 = new Form2(cache, loggedIn, ip);
+            Form2 form2 = new Form2(cache, c.isLoggedIn, cfg.ip);
             form2.ShowDialog();
             cfg.reload();
         }
@@ -266,19 +257,19 @@ namespace XMTuner
             if (c == null || c.cfg == null || c.cfg.loaded == false)
             {
                 bStart.Enabled = false;
-                output("No Configuration\nClick Configure.", "error");
+                output("No Configuration\nClick Configure.", LogLevel.Error);
                 return false;
             }
             cfg = c.cfg;
             cfg.update += new Config.ConfigUpdateHandler(cfg_update);
 
             //Set alwaysOnTop...
-            this.TopMost = cfg.onTop; //Make XMTuner always on top
+            this.TopMost = cfg.onTop;
 
             setChannelsListStyle(cfg.channelListStyle);
 
             //Messages & Item Twiddling
-            if (!serverRunning)
+            if (!c.isServerRunning)
             {
                 bStart.Enabled = true;
             }
@@ -286,7 +277,7 @@ namespace XMTuner
 
             if (cfg.loaded == true)
             {
-                output("Configuration Loaded", "info");
+                output("Configuration Loaded", LogLevel.Info);
             }
             syncStatusLabel();
             return true;
@@ -295,19 +286,19 @@ namespace XMTuner
         void cfg_update(Config cfg, ConfigUpdateEventArgs e)
         {
             List<String> updatedvalues = e.data;
-            output("Updated Values: " + e.details, "debug");
+            output("Updated Values: " + e.details, LogLevel.Debug);
 
             //alwaysOnTop, showNotice (refreshed directly as they're Form1 elements)
             this.TopMost = cfg.onTop; //Make XMTuner always on top
             setChannelsListStyle(cfg.channelListStyle);
             
 
-            if (c == null || c.server == null || self == null || loggedIn == false) { return; }
+            if (c == null || c.server == null || self == null || c.isLoggedIn == false) { return; }
             //username, password, port [, network] = require restart
             if (updatedvalues.Contains("username") || updatedvalues.Contains("password") ||
                 updatedvalues.Contains("port") || updatedvalues.Contains("network"))
             {
-                output("Your configuration update requires XMTuner to restart the server to take effect. Restarting now...", "info");
+                output("Your configuration update requires XMTuner to restart the server to take effect. Restarting now...", LogLevel.Info);
                 restart();
             }
 
@@ -318,7 +309,7 @@ namespace XMTuner
             if (updatedvalues.Contains("bitrate") || updatedvalues.Contains("ismms") ||
                 updatedvalues.Contains("hostname") || updatedvalues.Contains("tversity"))
             {
-                output("Updating configuration of web server...", "debug");
+                output("Updating configuration of web server...", LogLevel.Debug);
                 c.server.worker.cfg = cfg;
             }
         }
@@ -356,7 +347,7 @@ namespace XMTuner
         #endregion
 
         #region Log Tab / Outputbox
-        private void output(String output, String level)
+        private void output(String output, LogLevel level)
         {
             logging.output(output, level);
         }
@@ -364,24 +355,26 @@ namespace XMTuner
         // This delegate enables asynchronous calls for setting
         // the text property on a TextBox control.
         public delegate void SetTextCallback(ref RichTextBox outputbox, string text, Color color);
-        public static void output(String output, String level, ref RichTextBox outputbox)
+        public static void output(String output, LogLevel level, ref RichTextBox outputbox)
         {
             Color color = Color.Black;
-            if (level.ToLower().Equals("error"))
+            switch (level)
             {
-                color = Color.Red;
-            }
-            if (level.ToLower().Equals("debug"))
-            {
-                color = Color.CornflowerBlue;
-            }
-            if (level.ToLower().Equals("notice"))
-            {
-                color = Color.OrangeRed;
-            }
-            if (level.ToLower().Contains("player"))
-            {
-                color = Color.Green;
+                case LogLevel.Error:
+                    color = Color.Red;
+                    break;
+                case LogLevel.Notice:
+                    color = Color.OrangeRed;
+                    break;
+                case LogLevel.Player:
+                    color = Color.Green;
+                    break;
+                case LogLevel.Debug:
+                    color = Color.CornflowerBlue;
+                    break;
+                case LogLevel.Info:
+                    color = Color.Black;
+                    break;
             }
 
             //We can't talk to outputbox from the server thread...
@@ -459,7 +452,7 @@ namespace XMTuner
             if (channelBox.Tag == null) { channelBox.Tag = ""; }
 
             //Channel ListView
-            output("Channels Tab: Loading...", "debug");
+            output("Channels Tab: Loading...", LogLevel.Debug);
             channelBox.BeginUpdate();
             channelBox.Clear();
 
@@ -498,7 +491,7 @@ namespace XMTuner
                         imagelist.ImageSize = new Size(30, 30);
                     }
                     imagelist.Images.Add(defaultImage);
-                    output("Channels Tab: Using default logo for " + chan.ToString(), "debug");
+                    output("Channels Tab: Using default logo for " + chan.ToString(), LogLevel.Debug);
                 }
                 //End Logo
 
@@ -536,7 +529,7 @@ namespace XMTuner
             }
 
             channelBox.EndUpdate();
-            output("Channels Tab: Complete", "debug");
+            output("Channels Tab: Complete", LogLevel.Debug);
             timerCB.Enabled = true;
             timerCB.Tag = 0;
         }
@@ -545,7 +538,7 @@ namespace XMTuner
         {
             if (self.preloadImageRunning == false && self.preloadImagesUpdated == true)
             {
-                output("Channels Tab: New Images in Cache Detected, Updating...", "debug");
+                output("Channels Tab: New Images in Cache Detected, Updating...", LogLevel.Debug);
                 loadChannels();
                 self.preloadImagesUpdated = false;
             }

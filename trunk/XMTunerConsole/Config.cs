@@ -23,7 +23,7 @@ namespace XMTuner
         public Int32 numRecentHistory;
         public channelListStyles channelListStyle;
 
-        //public Boolean enableServer;
+        public Boolean enableServer;
         public String port;
         public Boolean useMMS;
         public String bitrate;
