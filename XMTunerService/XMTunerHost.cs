@@ -37,7 +37,7 @@ namespace XMTuner
             if (isConfigurationLoaded == false)
             {
                 EventLog.WriteEntry("Missing Configuration", System.Diagnostics.EventLogEntryType.Error);
-                logging.output("No Configuration", "error");
+                logging.output("No Configuration", LogLevel.Error);
                 return;
             }
             start(); //GO!
@@ -46,7 +46,7 @@ namespace XMTuner
         private void start()
         {
             EventLog.WriteEntry("XMTuner Service initializing", System.Diagnostics.EventLogEntryType.Information);
-            logging.output("Please wait... logging in", "info");
+            logging.output("Please wait... logging in", LogLevel.Info);
 
             if (network.ToUpper().Equals("SIRIUS"))
             {
@@ -70,7 +70,7 @@ namespace XMTuner
             if (xmServer.isRunning == false)
             {
                 EventLog.WriteEntry("Server failed to start. (Err 2)", System.Diagnostics.EventLogEntryType.Error);
-                logging.output("Server failed to start.", "error");
+                logging.output("Server failed to start.", LogLevel.Error);
                 err = 2;
                 return;
             }
@@ -81,7 +81,7 @@ namespace XMTuner
             theTimer.Enabled = true;
 
             EventLog.WriteEntry("XMTuner Service started", System.Diagnostics.EventLogEntryType.Information);
-            logging.output("XMTuner Service started", "info");
+            logging.output("XMTuner Service started", LogLevel.Info);
             started = true;
         }
 
@@ -94,7 +94,7 @@ namespace XMTuner
             theTimer.Stop();
             started = false;
             runTime = (DateTime.Now - serverStarted).ToString().Split('.')[0];
-            logging.output("Server Uptime was " + runTime, "info"); 
+            logging.output("Server Uptime was " + runTime, LogLevel.Info); 
             self = null;
             xmServer = null;
             GC.Collect();

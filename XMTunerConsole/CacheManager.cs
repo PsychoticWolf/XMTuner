@@ -193,7 +193,7 @@ namespace XMTuner
             catch (IOException e)
             {
                 if (log == null) { return false; }
-                log.output("Error encountered saving "+ident+" to cache. (" + e.Message + ")", "error");
+                log.output("Error encountered saving "+ident+" to cache. (" + e.Message + ")", LogLevel.Error);
                 return false;
             }
 

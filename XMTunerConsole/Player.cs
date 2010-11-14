@@ -93,7 +93,7 @@ namespace XMTuner
         private void syncStatusLabel()
         {
             pStatusLabel.Visible = true;
-            if (loggedIn == false)
+            if (c.isLoggedIn == false)
             {
                 if (cfg.loaded == false)
                 {
@@ -157,11 +157,11 @@ namespace XMTuner
                 {
                     if (playerNum != 0)
                     {
-                        output("Player (" + self.Find(playerNum).ShortName + "): " + status, "player");
+                        output("Player (" + self.Find(playerNum).ShortName + "): " + status, LogLevel.Player);
                     }
                     else
                     {
-                        output("Player: " + status, "player");
+                        output("Player: " + status, LogLevel.Player);
                     }
                 }
             }
@@ -169,7 +169,7 @@ namespace XMTuner
 
         private void axWindowsMediaPlayer1_PlayStateChange(object sender, AxWMPLib._WMPOCXEvents_PlayStateChangeEvent e)
         {
-            output("Player ("+self.Find(playerNum).ShortName+"): " + axWindowsMediaPlayer1.playState, "player-debug");
+            output("Player ("+self.Find(playerNum).ShortName+"): " + axWindowsMediaPlayer1.playState, LogLevel.PlayerDebug);
 
             // If Windows Media Player is in the playing state, enable the data update timer. 
             if (axWindowsMediaPlayer1.playState == WMPLib.WMPPlayState.wmppsPlaying)
@@ -288,7 +288,7 @@ namespace XMTuner
             string errDesc = axWindowsMediaPlayer1.Error.get_Item(0).errorDescription;
 
             // Display the error description.
-            output(errCode + " " +errDesc, "error");
+            output(errCode + " " +errDesc, LogLevel.Error);
 
             //Handle things like stopping and trying to retune...
             int cnum = playerNum;
@@ -298,7 +298,7 @@ namespace XMTuner
             pLabel3.Text = "Attempting to retune (in 10 seconds)...";
             pLabel4.Text = errDesc;
             pStatusLabel.Text = "";
-            output("Error! Attempting to retune channel "+self.Find(cnum).ToString()+" (in 10 seconds)...", "error");
+            output("Error! Attempting to retune channel "+self.Find(cnum).ToString()+" (in 10 seconds)...", LogLevel.Error);
             pRetryTimer.Tag = cnum;
             pRetryTimer.Start();
         }
@@ -306,7 +306,7 @@ namespace XMTuner
         private void pRetryTimer_Tick(object sender, EventArgs e)
         {
             int cnum = (int)pRetryTimer.Tag;
-            output("Attempting to retune to channel " + self.Find(cnum).ToString() + "...", "info");
+            output("Attempting to retune to channel " + self.Find(cnum).ToString() + "...", LogLevel.Info);
             play(cnum);
         }
 

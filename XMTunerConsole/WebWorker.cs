@@ -146,7 +146,7 @@ namespace XMTuner
         {
             String bitrate_desc = getBitrateDesc(TheConstructor.getBitRate(URLparams, cfg));
             serverHost = getHostName(serverHost);
-            tuner.output("Incoming Feed Request: " + network + " Channels (All - " + bitrate_desc + ")", "info");
+            tuner.output("Incoming Feed Request: " + network + " Channels (All - " + bitrate_desc + ")", LogLevel.Info);
             List<XMChannel> list = tuner.getChannels();
             MemoryStream OutputStream = CreateXMFeed(list, URLparams, serverHost, useragent);
 
@@ -586,7 +586,7 @@ namespace XMTuner
             streamParams.Remove("streamtype");
             serverHost = getHostName(serverHost);
 
-            tuner.output("Stream using transcoder. Output type: " + streamtype, "info");
+            tuner.output("Stream using transcoder. Output type: " + streamtype, LogLevel.Info);
             if (streamtype.Equals("mp3"))
             {
                 mimetype = "audio/mpeg";
@@ -598,10 +598,10 @@ namespace XMTuner
 
             int num = Convert.ToInt32(streamParams["num"]);
             String redirectURL = TheConstructor.buildLink("stream", serverHost, streamParams, "TVersity", num, cfg);
-            tuner.output("RedirectURL: " + redirectURL, "debug");
+            tuner.output("RedirectURL: " + redirectURL, LogLevel.Debug);
 
             String msg = "http://" + cfg.tversityServer + "/geturl/stream."+streamtype+"?type=audio/x-ms-wma&ttype="+mimetype+"&url=" + HttpUtility.UrlEncode(redirectURL) + "&ext=."+streamtype;
-            tuner.output(msg, "debug");
+            tuner.output(msg, LogLevel.Debug);
             return msg;
         }
 

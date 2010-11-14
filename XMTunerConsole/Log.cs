@@ -4,6 +4,8 @@ using System.Windows.Forms;
 
 namespace XMTuner
 {
+    public enum LogLevel {Info, Error, Notice, Player, Debug, PlayerDebug};
+
     public class Log
     {
         RichTextBox outputbox;
@@ -31,9 +33,9 @@ namespace XMTuner
             useLocalDatapath = new configMan().useLocalDatapath;
         }
 
-        public void output(String output, String level)
+        public void output(String output, LogLevel level)
         {
-            if ((level.Contains("debug") || level.Equals("notice")) && !isDebug)
+            if ((level.Equals(LogLevel.Debug) || level.Equals(LogLevel.PlayerDebug) || level.Equals(LogLevel.Notice)) && !isDebug)
             {
                 return;
             }

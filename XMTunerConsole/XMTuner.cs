@@ -96,13 +96,13 @@ namespace XMTuner
             {
                 if (maxattempts != -1 && attempts >= maxattempts)
                 {
-                    output("Login attempts exhausted, giving up...", "error");
+                    output("Login attempts exhausted, giving up...", LogLevel.Error);
                     attempts = 1;
                     tryingLogin = false;
                     return;
                 }
                 attempts++;
-                output("Waiting to retry login... (Attempt " + attempts + " of "+maxattempts+")", "info");
+                output("Waiting to retry login... (Attempt " + attempts + " of "+maxattempts+")", LogLevel.Info);
                 System.Threading.Thread.Sleep(timeout);
                 handleLogin(login());
                 return;
@@ -115,7 +115,7 @@ namespace XMTuner
         protected virtual Boolean login()
         {
             Boolean loginResult = true;
-            output("Logging into XM Radio Online", "info");
+            output("Logging into XM Radio Online", LogLevel.Info);
 
             String XMURL = "http://www.xmradio.com/player/login/xmlogin.action";
             if (!isLive)
@@ -125,29 +125,29 @@ namespace XMTuner
 
             String data = "playerToLaunch=xm&encryptPassword=false&userName="+user+"&password="+password;
             URL loginURL = new URL(XMURL);
-            output("Connecting to: " + XMURL + " ("+loginURL.getIP()+")", "debug");
+            output("Connecting to: " + XMURL + " ("+loginURL.getIP()+")", LogLevel.Debug);
             loginURL.fetch(data);
 
             int responseCode = loginURL.getStatus();
-            output("Server Response: " + loginURL.getStatusDescription(), "debug");
+            output("Server Response: " + loginURL.getStatusDescription(), LogLevel.Debug);
 
             if (loginURL.isSuccess)
             {
                 cookies = setCookies(loginURL.getCookies());
 
-                output("Number of Cookies: " + cookieCount.ToString(), "debug");
+                output("Number of Cookies: " + cookieCount.ToString(), LogLevel.Debug);
 
                 if (cookieCount > 0)
                 {
                     
                     if (cookieCount <= 1)
                     {
-                        output("Login failed: Bad Username or Password", "error");
+                        output("Login failed: Bad Username or Password", LogLevel.Error);
                         loginResult = false;
                     }
                     else
                     {
-                        output("Logged in as " + user, "info");
+                        output("Logged in as " + user, LogLevel.Info);
                         /* For the purposes of quickLogin, we want to just do the actual login step
                            and let the normal data rebuilding occur incrementally on its own.*/
                         if (firstLogin == true)
@@ -175,7 +175,7 @@ namespace XMTuner
                         {
                             //If we don't have chanData, consider ourselves not-logged-in
                             isLoggedIn = false;
-                            output("Login failed: Unable to retrieve channel data.", "error");
+                            output("Login failed: Unable to retrieve channel data.", LogLevel.Error);
                             loginResult = false;
                         }
 
@@ -185,7 +185,7 @@ namespace XMTuner
             }
             else 
             {
-                output("Login Failed: " + loginURL.getStatusDescription(), "error");
+                output("Login Failed: " + loginURL.getStatusDescription(), LogLevel.Error);
                 loginResult = false;
             }
             loginURL.close();
@@ -223,11 +223,11 @@ namespace XMTuner
             isLoggedIn = false;
             if (login())
             {
-                output("Relogin Completed.", "info");
+                output("Relogin Completed.", LogLevel.Info);
             }
             else
             {
-                output("Relogin unsuccessful, will keep trying...", "info");
+                output("Relogin unsuccessful, will keep trying...", LogLevel.Info);
             }
         }
 
@@ -252,7 +252,7 @@ namespace XMTuner
         protected bool loadChannelData()
         {
             Boolean lineupLoaded;
-            output("Loading channel lineup...", "info");
+            output("Loading channel lineup...", LogLevel.Info);
             cache.addCacheFile("channellineup.cache", "channel lineup", -1);
             if (isChannelDataCurrent())
             {
@@ -271,10 +271,10 @@ namespace XMTuner
                 {
                     //Force expiration of bad data. (Don't delete it in case something useful is in the file for debugging)
                     cache.invalidateFile("channellineup.cache");
-                    output("Failed to load channel lineup.", "error");
+                    output("Failed to load channel lineup.", LogLevel.Error);
                     return false;
                 }
-                output("Channel lineup loaded successfully (from cache).", "info");
+                output("Channel lineup loaded successfully (from cache).", LogLevel.Info);
                 return true;
             }
             else
@@ -286,7 +286,7 @@ namespace XMTuner
 
         protected Boolean dnldChannelData()
         {
-            output("Downloading channel lineup...", "info");
+            output("Downloading channel lineup...", LogLevel.Info);
             Boolean goodData = false;
             int j;
             //We try 5 times...
@@ -301,7 +301,7 @@ namespace XMTuner
                 URL channelURL = new URL(url);
                 channelURL.setRequestHeader("Cookie", cookies);
                 channelURL.fetch();
-                output("Server Response: " + channelURL.getStatusDescription(), "debug");
+                output("Server Response: " + channelURL.getStatusDescription(), LogLevel.Debug);
 
                 String data = channelURL.response();
                 if (channelURL.isSuccess && data.IndexOf(":[],") == -1)
@@ -313,7 +313,7 @@ namespace XMTuner
                     if (!goodData && isLoggedIn)
                     {
                         isLoggedIn = false;
-                        output("Downloaded channel data had no stations. Scheduling relogin (Wait a few seconds...)", "info");
+                        output("Downloaded channel data had no stations. Scheduling relogin (Wait a few seconds...)", LogLevel.Info);
                         return false;
                     }
 
@@ -321,26 +321,26 @@ namespace XMTuner
                     {
                         cache.saveFile("channellineup.cache", data);
                         isLoggedIn = true;
-                        output("Channel lineup loaded successfully.", "info");
+                        output("Channel lineup loaded successfully.", LogLevel.Info);
                         return true;
                     }
                     else
                     {
                         isLoggedIn = false;
-                        output("Downloaded channel data had no stations. Verify your subscription is active.", "error");
+                        output("Downloaded channel data had no stations. Verify your subscription is active.", LogLevel.Error);
                         return false;
                     }
                 }
                 else
                 {
                     isLoggedIn = false;
-                    output("Error downloading channel data.. Will try again in 5 seconds (Attempt " + j + " of 5)", "error");
-                    output("Error: " + channelURL.getStatusDescription() + "", "error");
+                    output("Error downloading channel data.. Will try again in 5 seconds (Attempt " + j + " of 5)", LogLevel.Error);
+                    output("Error: " + channelURL.getStatusDescription() + "", LogLevel.Error);
                     System.Threading.Thread.Sleep(5000);
                 }
             }
 
-            output("Failed to load channel lineup", "error");
+            output("Failed to load channel lineup", LogLevel.Error);
             return false;
         }
 
@@ -401,7 +401,7 @@ namespace XMTuner
                     {
                         num = Convert.ToInt32(channelData[2]);
                         tempChannel = new XMChannel(neighborhood, num, channelData[1], channelData[3], this.network);
-                        output(neighborhood + " " + num + " " + channelData[1] + " " + channelData[3], "debug");
+                        output(neighborhood + " " + num + " " + channelData[1] + " " + channelData[3], LogLevel.Debug);
                         channels.Add(tempChannel);
                     }
 
@@ -424,13 +424,13 @@ namespace XMTuner
              * do work when the channel data is (re)loaded.
              * For XM - no work is needed so this method is empty.
              */
-            output("Load Channel Data Hook Called!", "notice");
+            output("Load Channel Data Hook Called!", LogLevel.Notice);
         }
 
         private void doPulse()
         {
             if (!isLive) { return; }
-            output("[Pulse] Checking session status...", "debug");
+            output("[Pulse] Checking session status...", LogLevel.Debug);
 
             string url = baseurl + "/player/channel/ajax.action?reqURL=player/2ft/channelData.jsp?remote=true&all_channels=true";
 
@@ -444,11 +444,11 @@ namespace XMTuner
                 //Returns Bool; False if invalid (null) channel data, true on success
                 if (data.Contains("\"allchannels\",null"))
                 {
-                    output("[Pulse] Session dead Scheduling relogin...", "notice");
+                    output("[Pulse] Session dead Scheduling relogin...", LogLevel.Notice);
                     isLoggedIn = false;
                     return;
                 }
-                output("[Pulse] Session alive.", "debug");
+                output("[Pulse] Session alive.", LogLevel.Debug);
                 return;
             }
             return;
@@ -472,7 +472,7 @@ namespace XMTuner
             /* Check for notification of login failure, and relogin as needed */
             if (isLoggedIn == false)
             {
-                output(network.ToUpper()+" Session Timed-out. Reconnecting...", "info");
+                output(network.ToUpper()+" Session Timed-out. Reconnecting...", LogLevel.Info);
                 reloginQuick();
                 return;
             }
@@ -525,18 +525,18 @@ namespace XMTuner
 
         private void loadWhatsOn()
         {
-            output("Update What's On Data...", "debug");
+            output("Update What's On Data...", LogLevel.Debug);
             String whatsOnURL = "http://www.xmradio.com/padData/pad_data_servlet.jsp?all_channels=true&remote=true&rpc=XMROUS";
             if (!isLive)
             {
                 whatsOnURL = "http://test.xmtuner.net/all_data.js";
             }
             URL whatsOn = new URL(whatsOnURL);
-            output("Fetching: "+whatsOnURL, "debug");
+            output("Fetching: "+whatsOnURL, LogLevel.Debug);
             whatsOn.setRequestHeader("Cookie", cookies);
             whatsOn.fetch();
 
-            output("Server Response: " + whatsOn.getStatusDescription(), "debug");
+            output("Server Response: " + whatsOn.getStatusDescription(), LogLevel.Debug);
             if (whatsOn.isSuccess)
             {
                 setWhatsonData(whatsOn.response());
@@ -544,7 +544,7 @@ namespace XMTuner
                 lastWhatsOnUpdate = DateTime.Now;
             }
             whatsOn.close();
-            output("What's On Update Complete", "debug");
+            output("What's On Update Complete", LogLevel.Debug);
 
         }
 
@@ -641,7 +641,7 @@ namespace XMTuner
             XMChannel cD = Find(channelnum);
             if (cD.num == 0)
             {
-                output("Invalid Channel Number " + channelnum, "error");
+                output("Invalid Channel Number " + channelnum, LogLevel.Error);
                 return null;
             }
             String channelKey = channelnum.ToString();
@@ -649,8 +649,8 @@ namespace XMTuner
             {
                 channelKey = cD.channelKey;
             }
-            output("Playing " + cD.ToString(), "info");
-            output("Cookies:" + cookies, "debug");
+            output("Playing " + cD.ToString(), LogLevel.Info);
+            output("Cookies:" + cookies, LogLevel.Debug);
             String address = baseurl + "/player/listen/play.action?channelKey=" + channelKey + "&newBitRate=" + speed;
             if (!isLive)
             {
@@ -659,7 +659,7 @@ namespace XMTuner
             String URL = playChannel(address);
             if (URL == null || URL.Contains("http") == false)
             {
-                output("Error fetching stream for " + cD.ToString(), "error");
+                output("Error fetching stream for " + cD.ToString(), LogLevel.Error);
                 return null;
             }
             lastChannelPlayed = channelnum;
@@ -670,12 +670,12 @@ namespace XMTuner
         protected virtual string playChannel(String address)
         {
             URL url = new URL(address);
-            output("Fetch: " + address + " ("+url.getIP()+")", "debug");
+            output("Fetch: " + address + " ("+url.getIP()+")", LogLevel.Debug);
             url.setRequestHeader("Cookie", cookies);
             url.fetch();
-            output("Server Response: " + url.getStatusDescription(), "debug");
+            output("Server Response: " + url.getStatusDescription(), LogLevel.Debug);
             if (url.isSuccess == false) {
-                output("Play Error: " + url.getStatusDescription(), "error");
+                output("Play Error: " + url.getStatusDescription(), LogLevel.Error);
                 return null;
             }
 
@@ -689,19 +689,19 @@ namespace XMTuner
             if (!m.Equals(""))
             {
                 contentURL = m.ToString();
-                output(contentURL, "debug");
+                output(contentURL, LogLevel.Debug);
             }
             else 
             {
                 if (data.ToLower().Contains("access denied"))
                 {
-                    output("XM Radio Online Error - Not Logged In", "error");
+                    output("XM Radio Online Error - Not Logged In", LogLevel.Error);
                     isLoggedIn = false;
                 }
                 else
                 {
-                    output("XM Radio Online Error - Unknown Error", "error");
-                    output("See playchannel.err for raw data", "debug");
+                    output("XM Radio Online Error - Unknown Error", LogLevel.Error);
+                    output("See playchannel.err for raw data", LogLevel.Debug);
                 }
                 cache.saveFile("playchannel.err", data);
                 contentURL = null;
@@ -710,7 +710,7 @@ namespace XMTuner
         }
 
         //Helper method so we don't have to pass log around everywhere....
-        public void output(String output, String level)
+        public void output(String output, LogLevel level)
         {
             logSvc.output(output, level);
         }
@@ -725,7 +725,7 @@ namespace XMTuner
 
         protected void loadChannelMetadata()
         {
-            output("Loading extended channel data...", "info");
+            output("Loading extended channel data...", LogLevel.Info);
             cache.addCacheFile("channelmetadata.cache", "channel metadata", -5);
             if (cache.isCached("channelmetadata.cache"))
             {
@@ -740,13 +740,13 @@ namespace XMTuner
         {
             if (fastLoad == true)
             {
-                output("Loading extended channel data... (from cache)", "info");
+                output("Loading extended channel data... (from cache)", LogLevel.Info);
             }
             //We only load cached data once (so if fastLoad succeeded.. 
             // Normal mode can return early
             if (loadedChannelMetadataCache == true)
             {
-                output("Extended channel data is loaded and current, no update needed.", "info");
+                output("Extended channel data is loaded and current, no update needed.", LogLevel.Info);
                 if (fastLoad == false)
                 {
                     loadedChannelMetadata = true; 
@@ -760,18 +760,18 @@ namespace XMTuner
             {
                 if (cache.isInvalidatedFile(file))
                 {
-                    output("No cache data to load, skipping...", "info");
+                    output("No cache data to load, skipping...", LogLevel.Info);
                 }
                 else
                 {
                     //Force expiration of bad data. (Don't delete it in case something useful is in the file for debugging)
                     cache.invalidateFile(file);
-                    output("Failed to load extended channel data (from cache).", "error");
+                    output("Failed to load extended channel data (from cache).", LogLevel.Error);
                 }
             }
             else
             {
-                output("Extended channel data loaded successfully (from cache)", "info");
+                output("Extended channel data loaded successfully (from cache)", LogLevel.Info);
                 if (fastLoad == false)
                 {
                     loadedChannelMetadata = true;
@@ -782,25 +782,25 @@ namespace XMTuner
 
         private void dnldChannelMetadata()
         {
-            output("Downloading extended channel data...", "info");
+            output("Downloading extended channel data...", LogLevel.Info);
             String channelMetaURL = "http://www.xmradio.com/onxm/index.xmc";
             if (!isLive)
             {
                 channelMetaURL = "http://test.xmtuner.net/epg/index.xmc";
             }
             URL channelMetaData = new URL(channelMetaURL);
-            output("Fetching: " + channelMetaURL, "debug");
+            output("Fetching: " + channelMetaURL, LogLevel.Debug);
             channelMetaData.setRequestHeader("Cookie", cookies);
             channelMetaData.fetch();
 
-            output("Server Response: " + channelMetaData.getStatusDescription(), "debug");
+            output("Server Response: " + channelMetaData.getStatusDescription(), LogLevel.Debug);
             if (channelMetaData.isSuccess)
             {
                 String rawChannelMetaData = channelMetaData.response();
                 loadedChannelMetadata = setChannelMetadata(rawChannelMetaData);
                 if (loadedChannelMetadata == true)
                 {
-                    output("Extended channel data loaded successfully", "info");
+                    output("Extended channel data loaded successfully", LogLevel.Info);
                     cache.saveFile("channelmetadata.cache", rawChannelMetaData);
 
                     //Trigger the image preloader...
@@ -812,7 +812,7 @@ namespace XMTuner
             }
             else
             {
-                output("Error encountered loading extended channel data", "error");
+                output("Error encountered loading extended channel data", LogLevel.Error);
             }
             channelMetaData.close();
         }
@@ -911,7 +911,7 @@ namespace XMTuner
 
         private void loadProgramGuideData()
         {
-            output("Loading program guide...", "info");
+            output("Loading program guide...", LogLevel.Info);
 
             String channums = HttpUtility.UrlEncode(getChannelsNums());
 
@@ -927,26 +927,26 @@ namespace XMTuner
                 programGuideURL = "http://test.xmtuner.net/epg/program_schedules.xmc";
             }
             URL programGuideData = new URL(programGuideURL);
-            output("Fetching: " + programGuideURL, "debug");
+            output("Fetching: " + programGuideURL, LogLevel.Debug);
             programGuideData.setRequestHeader("Cookie", cookies);
             programGuideData.fetch();
 
-            output("Server Response: " + programGuideData.getStatusDescription(), "debug");
+            output("Server Response: " + programGuideData.getStatusDescription(), LogLevel.Debug);
             if (programGuideData.isSuccess)
             {
                 isProgramDataCurrent = setProgramGuideData(programGuideData.response());
             }
             else
             {
-                output("Error: " + programGuideData.getStatusDescription(), "error");
+                output("Error: " + programGuideData.getStatusDescription(), LogLevel.Error);
             }
             if (isProgramDataCurrent)
             {
-                output("Program guide loaded successfully.", "info");
+                output("Program guide loaded successfully.", LogLevel.Info);
             }
             else
             {
-                output("Failed to load program guide data (will retry).", "error");
+                output("Failed to load program guide data (will retry).", LogLevel.Error);
             }
             programGuideData.close();
         }
@@ -1075,7 +1075,7 @@ namespace XMTuner
             preloadImageRunning = true;
             preloadedImages = true;
             Boolean result = false;
-            output("Image Cache: Populate...", "debug");
+            output("Image Cache: Populate...", LogLevel.Debug);
             int n = 0;
             try
             {
@@ -1096,13 +1096,13 @@ namespace XMTuner
                             if (imageURL.isSuccess)
                             {
                                 result = true;
-                                output("Image Cache: Added Image for " + chan.ToString(), "debug");
+                                output("Image Cache: Added Image for " + chan.ToString(), LogLevel.Debug);
                                 chan.logo_small_image = imageURL.responseAsImage();
                                 preloadImagesUpdated = true;
                             }
                             else
                             {
-                                output("Image Cache: Error adding image for " + chan.ToString(), "notice");
+                                output("Image Cache: Error adding image for " + chan.ToString(), LogLevel.Notice);
                                 preloadedImages = false;
                                 if (preloadedImages1R == true)
                                 {
@@ -1117,7 +1117,7 @@ namespace XMTuner
                         }
                         else
                         {
-                            output("Image Cache: No logo found for " + chan.ToString(), "notice");
+                            output("Image Cache: No logo found for " + chan.ToString(), LogLevel.Notice);
                         }
                     }
                     i++;
@@ -1125,10 +1125,10 @@ namespace XMTuner
             }
             catch (InvalidOperationException)
             {
-                output("Image Cache: Fatal Error during operation. (" + n + ")", "error");
+                output("Image Cache: Fatal Error during operation. (" + n + ")", LogLevel.Error);
                 preloadedImages = false;
             }
-            output("Image Cache: Done.", "debug");
+            output("Image Cache: Done.", LogLevel.Debug);
             preloadImageRunning = false;
             preloadedImages1R = true;
             if (result == false)
