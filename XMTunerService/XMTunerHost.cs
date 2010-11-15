@@ -9,32 +9,25 @@ namespace XMTuner
 {
     public class XMTunerHost
     {
-        
+        Core c;
         XMTuner self;
         Log logging;
+        Config cfg = new Config(true);
+
+
         EventLog EventLog;
-        WebListner xmServer;
-        String username;
-        String password;
-        String network;
-        String port;
-        Boolean isConfigurationLoaded = false;
-        Timer theTimer = new System.Timers.Timer(30000);
         public int err = 0;
         public Boolean started = false;
-        DateTime serverStarted;
-        String runTime;
 
-        public XMTunerHost(EventLog log)
+         public XMTunerHost(EventLog log)
         {
             this.EventLog = log;
             logging = new Log();
 
-            //Load config...
- 	  	  	refreshConfig();
+            c = new Core(logging);
 
             //Complaint to Event Log for Missing Configuration
-            if (isConfigurationLoaded == false)
+            if (c.cfg.loaded == false)
             {
                 EventLog.WriteEntry("Missing Configuration", System.Diagnostics.EventLogEntryType.Error);
                 logging.output("No Configuration", LogLevel.Error);
@@ -47,88 +40,56 @@ namespace XMTuner
         {
             EventLog.WriteEntry("XMTuner Service initializing", System.Diagnostics.EventLogEntryType.Information);
             logging.output("Please wait... logging in", LogLevel.Info);
-
-            if (network.ToUpper().Equals("SIRIUS"))
-            {
-                self = new SiriusTuner(username, password, logging);
-            }
-            else
-            {
-                self = new XMTuner(username, password, logging);
-            }
-
-            if (self.isLoggedIn == false)
-            {
-                //Not logged in successfully.. Bail!
-                EventLog.WriteEntry("Failed to login. Check the serivce log for details (Err 1)", EventLogEntryType.Error);
-                err = 1;
-                return;
-            }
-
-            xmServer = new WebListner(self, port);
-            xmServer.start();
-            if (xmServer.isRunning == false)
-            {
-                EventLog.WriteEntry("Server failed to start. (Err 2)", System.Diagnostics.EventLogEntryType.Error);
-                logging.output("Server failed to start.", LogLevel.Error);
-                err = 2;
-                return;
-            }
-            serverStarted = DateTime.Now;
-
-            theTimer.Elapsed += new ElapsedEventHandler(OnTimedEvent);
-            theTimer.AutoReset = true;
-            theTimer.Enabled = true;
-
+            c.tick += new Core.TickHandler(coreEvent_Do);
+            c.Start();
             EventLog.WriteEntry("XMTuner Service started", System.Diagnostics.EventLogEntryType.Information);
             logging.output("XMTuner Service started", LogLevel.Info);
-            started = true;
         }
 
         public void stop()
         {
-            if (xmServer != null)
+            c.Stop();
+        }
+
+        private void coreEvent_Do(Core c, XMTunerEventArgs e)
+        {
+            self = c.tuner;
+            switch (e.source)
             {
-                xmServer.stop();
+                case "xmtuner":
+                    switch (e.data)
+                    {
+                        /*case "isLoggedIn":
+                            break;
+                        case "isLoggedOut":
+                            break;
+                         */
+                        case "isError":
+                            EventLog.WriteEntry("Failed to login. Check the serivce log for details (Err 1)", EventLogEntryType.Error);
+                            err = 1;
+                            //return; //XXX!
+                            break;
+                    }
+                    break;
+                case "server":
+                    switch (e.data)
+                    {
+                        case "isRunning":
+                            started = true;
+                            break;
+                        case "isStopped":
+                            started = false;
+                            GC.Collect();
+                            break;
+                        case "isError":
+                            EventLog.WriteEntry("Server failed to start. (Err 2)", System.Diagnostics.EventLogEntryType.Error);
+                            logging.output("Server failed to start.", LogLevel.Error);
+                            err = 2;
+                            //return; //XXX!
+                            break;
+                    }
+                    break;
             }
-            theTimer.Stop();
-            started = false;
-            runTime = (DateTime.Now - serverStarted).ToString().Split('.')[0];
-            logging.output("Server Uptime was " + runTime, LogLevel.Info); 
-            self = null;
-            xmServer = null;
-            GC.Collect();
-        }
-
-        private bool refreshConfig()
-        {
-            configMan configuration = new configMan();
-            if (configuration.loaded == false)
-            {
-                isConfigurationLoaded = false;
-                return false;
-            }
-
-            //Get configuration from configMan
-            NameValueCollection config = configuration.getConfig(true);
-
-            //Set config values using new config
-            setConfig(configuration, config);
-            isConfigurationLoaded = true;
-            return true;
-        }
-
-        private void setConfig(configMan cfg, NameValueCollection config)
-        {
-            username = config["username"];
-            password = config["password"];
-            port = config["port"];
-            network = config["network"];
-        }
-        
-        public void OnTimedEvent(object source, ElapsedEventArgs e)
-        {
-            self.doWhatsOn();
         }
     }
 }

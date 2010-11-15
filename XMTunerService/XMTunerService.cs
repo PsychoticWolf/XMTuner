@@ -10,7 +10,7 @@ namespace XMTuner
     {
         //private System.ComponentModel.IContainer components;
         
-        XMTunerHost tuner;
+        XMTunerHost host;
         Thread workerThread;
         //Boolean serviceStarted;
         /// <summary>
@@ -95,10 +95,10 @@ namespace XMTuner
         public void runXMTuner()
         {
             EventLog.WriteEntry("Opening XMTuner", System.Diagnostics.EventLogEntryType.Information);
-            tuner = new XMTunerHost(this.EventLog);
-            if (tuner.started != true)
+            host = new XMTunerHost(this.EventLog);
+            if (host.started != true)
             {
-                this.ExitCode = tuner.err;
+                this.ExitCode = host.err;
                 this.Stop();
             }
         }
@@ -114,9 +114,9 @@ namespace XMTuner
         protected override void OnStop()
         {
             base.OnStop();
-            if (tuner != null)
+            if (host != null)
             {
-                tuner.stop();
+                host.stop();
             }
             removePID();
         }
