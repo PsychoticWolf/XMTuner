@@ -179,10 +179,10 @@ namespace XMTuner
             self = c.tuner;
             switch (e.source)
             {
-                case "xmtuner":
+                case XMTunerEventSource.Tuner:
                     switch(e.data) 
                     {
-                        case "isLoggedIn":
+                        case XMTunerEventData.isLoggedIn:
                             if (c.isLoggedIn)
                             {
                                 bStart.Enabled = false;
@@ -193,7 +193,7 @@ namespace XMTuner
                             loadChannels();
 
                             break;
-                        case "isLoggedOut":
+                        case XMTunerEventData.isLoggedOut:
                             bStart.Enabled = true;
                             bStop.Enabled = false;
 
@@ -204,10 +204,10 @@ namespace XMTuner
                             break;
                     }
                     break;
-                case "server":
+                case XMTunerEventSource.Server:
                     switch (e.data)
                     {
-                        case "isRunning":
+                        case XMTunerEventData.isRunning:
                             viewServerToolStripMenuItem.Enabled = true;
                             loginToolStripMenuItem.Enabled = false;
                             timer1.Enabled = true;
@@ -216,7 +216,7 @@ namespace XMTuner
                             linkServer.Enabled = true;
                             output("XMTuner Ready...", LogLevel.Info);
                             break;
-                        case "isStopped":
+                        case XMTunerEventData.isStopped:
                             linkServer.Text = "Server is Stopped";
                             linkServer.Enabled = false;
                             timer1.Enabled = false;

@@ -4,15 +4,22 @@ using System.Timers;
 
 namespace XMTuner
 {
+    public enum XMTunerEventSource {Configuration, Tuner, Server};
+    public enum XMTunerEventData {isNotLoaded, isLoaded, isStarting, 
+            isError, isLoggedIn, isLoggedOut, isRunning, isReady, isStopped};
+
     class XMTunerEventArgs : EventArgs
     {
-        public String source;
-        public String data;
+        public XMTunerEventSource source;
+        public XMTunerEventData data;
+        public String details;
 
-        public XMTunerEventArgs(String source, String data)
+        public XMTunerEventArgs(XMTunerEventSource source, XMTunerEventData data) : this(source, data, null) { }
+        public XMTunerEventArgs(XMTunerEventSource source, XMTunerEventData data, String details)
         {
             this.source = source;
             this.data = data;
+            this.details = details;
         }
     }
 
@@ -20,8 +27,8 @@ namespace XMTuner
     {
         public XMTuner tuner;
         public WebListner server;
-        public Config cfg;
-        private Log logging;
+        public Config cfg = new Config(true);
+        public Log logging;
 
         //Event
         public event TickHandler tick;
@@ -60,10 +67,20 @@ namespace XMTuner
         {
             cfg = new Config();
             this.logging = log;
+            if (cfg.loaded == false)
+            {
+                tick(this, new XMTunerEventArgs(XMTunerEventSource.Configuration, XMTunerEventData.isNotLoaded));
+                return;
+            }
+            tick(this, new XMTunerEventArgs(XMTunerEventSource.Configuration, XMTunerEventData.isLoaded));
         }
 
         public void Start()
         {
+            if (cfg.loaded == false) { return; }
+
+            tick(this, new XMTunerEventArgs(XMTunerEventSource.Tuner, XMTunerEventData.isStarting));
+
             if (cfg.network.ToUpper().Equals("SIRIUS"))
             {
                 tuner = new SiriusTuner(cfg, logging);
@@ -75,10 +92,10 @@ namespace XMTuner
             if (tuner.isLoggedIn == false)
             {
                 //Not logged in successfully.. Bail!
-                tick(this, new XMTunerEventArgs("xmtuner", "isError"));
+                tick(this, new XMTunerEventArgs(XMTunerEventSource.Tuner, XMTunerEventData.isError));
                 return;
             }
-            tick(this, new XMTunerEventArgs("xmtuner", "isLoggedIn"));
+            tick(this, new XMTunerEventArgs(XMTunerEventSource.Tuner, XMTunerEventData.isLoggedIn));
 
             //Start the polling timer.
             pollTimer.Elapsed += new ElapsedEventHandler(OnPollTimerEvent);
@@ -93,17 +110,19 @@ namespace XMTuner
                 server.start();
                 if (server.isRunning == true)
                 {
-                    e = new XMTunerEventArgs("server", "isRunning");
+                    e = new XMTunerEventArgs(XMTunerEventSource.Server, XMTunerEventData.isRunning);
                     tick(this, e);
                 }
                 else
                 {
                     //Server failed to start.
-                    e = new XMTunerEventArgs("server", "isError");
+                    e = new XMTunerEventArgs(XMTunerEventSource.Server, XMTunerEventData.isError);
                     tick(this, e);
                     return;
                 }
             }
+
+            tick(this, new XMTunerEventArgs(XMTunerEventSource.Tuner, XMTunerEventData.isReady));
         }
 
         public void Stop()
@@ -111,12 +130,12 @@ namespace XMTuner
             if (server != null)
             {
                 server.stop();
-                e = new XMTunerEventArgs("server", "isStopped");
+                e = new XMTunerEventArgs(XMTunerEventSource.Server, XMTunerEventData.isStopped);
                 tick(this, e);
                 server = null;
             }
 
-            e = new XMTunerEventArgs("xmtuner", "isLoggedOut");
+            e = new XMTunerEventArgs(XMTunerEventSource.Tuner, XMTunerEventData.isLoggedOut);
             tick(this, e);
             tuner.logout();
             pollTimer.Stop();
