@@ -74,6 +74,7 @@ namespace XMTuner
             txtHostname.Text = config["hostname"];
             boxNetwork.SelectedItem = config["network"];
             channelListStyle.SelectedItem = config["channelListStyle"];
+            chkEnableServer.Checked = Convert.ToBoolean(config["enableServer"]);
 
         }
 
@@ -94,6 +95,7 @@ namespace XMTuner
             config.Add("alwaysOnTop", chkOnTop.Checked.ToString());
             config.Add("numRecentHistory", numRecent.Value.ToString());
             config.Add("channelListStyle", channelListStyle.SelectedItem.ToString());
+            config.Add("enableServer", chkEnableServer.Checked.ToString());
             configuration.writeConfig(config);
         }
 

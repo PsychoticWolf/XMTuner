@@ -510,7 +510,7 @@
             bManageFavorites.Name = "bManageFavorites";
             bManageFavorites.Size = new System.Drawing.Size(111, 23);
             bManageFavorites.TabIndex = 1;
-            bManageFavorites.Text = "Manage Favorites";
+            bManageFavorites.Text = "Manage Favorites...";
             bManageFavorites.UseVisualStyleBackColor = true;
             // 
             // label1
@@ -605,7 +605,7 @@
             // 
             this.linkServer.AutoSize = true;
             this.linkServer.Enabled = false;
-            this.linkServer.Location = new System.Drawing.Point(393, 10);
+            this.linkServer.Location = new System.Drawing.Point(388, 10);
             this.linkServer.Name = "linkServer";
             this.linkServer.Size = new System.Drawing.Size(100, 13);
             this.linkServer.TabIndex = 23;
@@ -616,7 +616,7 @@
             // lblClock
             // 
             this.lblClock.AutoSize = true;
-            this.lblClock.Location = new System.Drawing.Point(493, 10);
+            this.lblClock.Location = new System.Drawing.Point(488, 10);
             this.lblClock.Name = "lblClock";
             this.lblClock.Size = new System.Drawing.Size(49, 13);
             this.lblClock.TabIndex = 21;

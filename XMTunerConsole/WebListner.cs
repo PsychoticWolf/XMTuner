@@ -18,6 +18,7 @@ namespace XMTuner
         String serverHost;
         public WebWorker worker;
         public bool isRunning = false;
+        public DateTime serverStartTime;
 
         public WebListner(XMTuner tuner, String newport)
         {
@@ -45,6 +46,7 @@ namespace XMTuner
             {
                 theServer.Start();
                 isRunning = true;
+                serverStartTime = DateTime.Now;
                 myTuner.output("Server started", LogLevel.Info);
                 myTuner.output("Listening on port " + port, LogLevel.Info);
             }
@@ -63,7 +65,8 @@ namespace XMTuner
         {
             theServer.Close();
             isRunning = false;
-            myTuner.output("Server stopped", LogLevel.Info);
+            String runTime = (DateTime.Now - serverStartTime).ToString().Split('.')[0];
+            myTuner.output("Server stopped. Uptime was " + runTime, LogLevel.Info);
         }
 
         private void listen(object state)

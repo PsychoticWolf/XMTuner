@@ -121,13 +121,13 @@
     <value>False</value>
   </metadata>
   <metadata name="notifyIcon1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>211, 17</value>
+    <value>23, 53</value>
   </metadata>
   <metadata name="notifyIcon1.GenerateMember" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>False</value>
   </metadata>
   <metadata name="trayIconContextMenu.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>318, 17</value>
+    <value>128, 53</value>
   </metadata>
   <metadata name="trayIconContextMenu.GenerateMember" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>False</value>
@@ -1134,7 +1134,7 @@
 </value>
   </data>
   <metadata name="channelContextMenu.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 56</value>
+    <value>282, 53</value>
   </metadata>
   <metadata name="channelContextMenu.GenerateMember" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>False</value>
@@ -1155,7 +1155,7 @@
     <value>False</value>
   </metadata>
   <metadata name="historyContextMenu.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>286, 56</value>
+    <value>434, 53</value>
   </metadata>
   <metadata name="historyContextMenu.GenerateMember" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>False</value>
@@ -1170,7 +1170,7 @@
     <value>False</value>
   </metadata>
   <metadata name="timerUpdater.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>473, 17</value>
+    <value>100, 17</value>
   </metadata>
   <metadata name="timerUpdater.GenerateMember" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>False</value>
@@ -1295,16 +1295,16 @@
     <value>17, 17</value>
   </metadata>
   <metadata name="pTimer.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>560, 17</value>
+    <value>205, 18</value>
   </metadata>
   <metadata name="pHoverTimer.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>650, 17</value>
+    <value>504, 16</value>
   </metadata>
   <metadata name="timerCB.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>772, 17</value>
+    <value>306, 19</value>
   </metadata>
   <metadata name="pRetryTimer.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>173, 56</value>
+    <value>397, 19</value>
   </metadata>
   <metadata name="tabcontrol1.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
