@@ -93,6 +93,7 @@ namespace XMTuner
                     break;
             }
 
+            enableServer = cm.getConfigItemAsBoolean("enableServer");
             port = config["port"];
             useMMS = cm.getConfigItemAsBoolean("useMMS");
             bitrate = config["bitrate"];

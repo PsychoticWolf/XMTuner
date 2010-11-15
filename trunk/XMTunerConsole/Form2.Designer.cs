@@ -41,10 +41,21 @@
             this.chkMMS = new System.Windows.Forms.CheckBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tGeneral = new System.Windows.Forms.TabPage();
+            this.label11 = new System.Windows.Forms.Label();
+            this.channelListStyle = new System.Windows.Forms.ComboBox();
+            this.numRecent = new System.Windows.Forms.NumericUpDown();
+            this.label10 = new System.Windows.Forms.Label();
+            this.chkOnTop = new System.Windows.Forms.CheckBox();
+            this.chkShowNote = new System.Windows.Forms.CheckBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.boxNetwork = new System.Windows.Forms.ComboBox();
             this.tServer = new System.Windows.Forms.TabPage();
+            this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.label12 = new System.Windows.Forms.Label();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.chkEnableServer = new System.Windows.Forms.CheckBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.chkBitrate = new System.Windows.Forms.CheckBox();
             this.label9 = new System.Windows.Forms.Label();
             this.tTVersity = new System.Windows.Forms.TabPage();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -59,51 +70,40 @@
             this.txtTversity = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
-            this.tAdvanced = new System.Windows.Forms.TabPage();
-            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.label5 = new System.Windows.Forms.Label();
-            this.bUpdateLineup = new System.Windows.Forms.Button();
             this.tRemote = new System.Windows.Forms.TabPage();
-            this.chkAutoServer = new System.Windows.Forms.CheckBox();
-            this.chkBitrate = new System.Windows.Forms.CheckBox();
-            this.channelListStyle = new System.Windows.Forms.ComboBox();
-            this.numRecent = new System.Windows.Forms.NumericUpDown();
-            this.label10 = new System.Windows.Forms.Label();
-            this.chkOnTop = new System.Windows.Forms.CheckBox();
-            this.chkShowNote = new System.Windows.Forms.CheckBox();
-            this.label11 = new System.Windows.Forms.Label();
+            this.checkBox2 = new System.Windows.Forms.CheckBox();
+            this.tAdvanced = new System.Windows.Forms.TabPage();
+            this.groupBox9 = new System.Windows.Forms.GroupBox();
+            this.label14 = new System.Windows.Forms.Label();
+            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.groupBox8 = new System.Windows.Forms.GroupBox();
+            this.maskedTextBox1 = new System.Windows.Forms.MaskedTextBox();
+            this.label13 = new System.Windows.Forms.Label();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.label8 = new System.Windows.Forms.Label();
             this.txtHostname = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
-            this.checkBox2 = new System.Windows.Forms.CheckBox();
-            this.groupBox6 = new System.Windows.Forms.GroupBox();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.label12 = new System.Windows.Forms.Label();
-            this.groupBox8 = new System.Windows.Forms.GroupBox();
-            this.label13 = new System.Windows.Forms.Label();
-            this.maskedTextBox1 = new System.Windows.Forms.MaskedTextBox();
-            this.groupBox9 = new System.Windows.Forms.GroupBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.label14 = new System.Windows.Forms.Label();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.bUpdateLineup = new System.Windows.Forms.Button();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.tabControl1.SuspendLayout();
             this.tGeneral.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numRecent)).BeginInit();
             this.groupBox2.SuspendLayout();
             this.tServer.SuspendLayout();
+            this.groupBox6.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.tTVersity.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.tversityBox2.SuspendLayout();
-            this.tAdvanced.SuspendLayout();
-            this.groupBox3.SuspendLayout();
             this.tRemote.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numRecent)).BeginInit();
-            this.groupBox5.SuspendLayout();
-            this.groupBox6.SuspendLayout();
-            this.groupBox8.SuspendLayout();
+            this.tAdvanced.SuspendLayout();
             this.groupBox9.SuspendLayout();
+            this.groupBox8.SuspendLayout();
+            this.groupBox5.SuspendLayout();
+            this.groupBox3.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
@@ -237,6 +237,74 @@
             this.tGeneral.Text = "General";
             this.tGeneral.UseVisualStyleBackColor = true;
             // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(10, 195);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(94, 13);
+            this.label11.TabIndex = 18;
+            this.label11.Text = "Channel List View:";
+            // 
+            // channelListStyle
+            // 
+            this.channelListStyle.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.channelListStyle.FormattingEnabled = true;
+            this.channelListStyle.Items.AddRange(new object[] {
+            "All Channels",
+            "Favorite Channels",
+            "By Category"});
+            this.channelListStyle.Location = new System.Drawing.Point(110, 192);
+            this.channelListStyle.Name = "channelListStyle";
+            this.channelListStyle.Size = new System.Drawing.Size(121, 21);
+            this.channelListStyle.TabIndex = 17;
+            // 
+            // numRecent
+            // 
+            this.numRecent.Location = new System.Drawing.Point(44, 163);
+            this.numRecent.Name = "numRecent";
+            this.numRecent.Size = new System.Drawing.Size(45, 20);
+            this.numRecent.TabIndex = 16;
+            this.numRecent.Value = new decimal(new int[] {
+            25,
+            0,
+            0,
+            0});
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(10, 166);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(238, 13);
+            this.label10.TabIndex = 15;
+            this.label10.Text = "Keep                   entries in recently played history";
+            // 
+            // chkOnTop
+            // 
+            this.chkOnTop.AutoSize = true;
+            this.chkOnTop.Location = new System.Drawing.Point(13, 143);
+            this.chkOnTop.Name = "chkOnTop";
+            this.chkOnTop.Size = new System.Drawing.Size(229, 17);
+            this.chkOnTop.TabIndex = 14;
+            this.chkOnTop.Text = "Keep XMTuner on top of other applications";
+            this.toolTip1.SetToolTip(this.chkOnTop, "Make XMTuner stay on top of other applications.");
+            this.chkOnTop.UseVisualStyleBackColor = true;
+            // 
+            // chkShowNote
+            // 
+            this.chkShowNote.AutoSize = true;
+            this.chkShowNote.Checked = true;
+            this.chkShowNote.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkShowNote.Location = new System.Drawing.Point(13, 119);
+            this.chkShowNote.Name = "chkShowNote";
+            this.chkShowNote.Size = new System.Drawing.Size(192, 17);
+            this.chkShowNote.TabIndex = 13;
+            this.chkShowNote.Text = "Show Notification on Song Change";
+            this.toolTip1.SetToolTip(this.chkShowNote, "XMTuner, by default, shows a notification box when a song changes, if you\'d prefe" +
+                    "r not to have these notifications appear, uncheck this box.");
+            this.chkShowNote.UseVisualStyleBackColor = true;
+            // 
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.boxNetwork);
@@ -268,7 +336,7 @@
             // 
             this.tServer.BackColor = System.Drawing.Color.Transparent;
             this.tServer.Controls.Add(this.groupBox6);
-            this.tServer.Controls.Add(this.chkAutoServer);
+            this.tServer.Controls.Add(this.chkEnableServer);
             this.tServer.Controls.Add(this.groupBox4);
             this.tServer.Location = new System.Drawing.Point(4, 22);
             this.tServer.Margin = new System.Windows.Forms.Padding(2);
@@ -278,6 +346,47 @@
             this.tServer.TabIndex = 1;
             this.tServer.Text = "Server";
             this.tServer.UseVisualStyleBackColor = true;
+            // 
+            // groupBox6
+            // 
+            this.groupBox6.Controls.Add(this.label12);
+            this.groupBox6.Controls.Add(this.textBox1);
+            this.groupBox6.Enabled = false;
+            this.groupBox6.Location = new System.Drawing.Point(10, 130);
+            this.groupBox6.Name = "groupBox6";
+            this.groupBox6.Size = new System.Drawing.Size(328, 79);
+            this.groupBox6.TabIndex = 16;
+            this.groupBox6.TabStop = false;
+            this.groupBox6.Text = "Access Control";
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Enabled = false;
+            this.label12.Location = new System.Drawing.Point(8, 16);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(177, 13);
+            this.label12.TabIndex = 1;
+            this.label12.Text = "Password protect the web interface:";
+            // 
+            // textBox1
+            // 
+            this.textBox1.Enabled = false;
+            this.textBox1.Location = new System.Drawing.Point(11, 32);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(142, 20);
+            this.textBox1.TabIndex = 0;
+            this.textBox1.UseSystemPasswordChar = true;
+            // 
+            // chkEnableServer
+            // 
+            this.chkEnableServer.AutoSize = true;
+            this.chkEnableServer.Location = new System.Drawing.Point(18, 14);
+            this.chkEnableServer.Name = "chkEnableServer";
+            this.chkEnableServer.Size = new System.Drawing.Size(114, 17);
+            this.chkEnableServer.TabIndex = 15;
+            this.chkEnableServer.Text = "Enable Webserver";
+            this.chkEnableServer.UseVisualStyleBackColor = true;
             // 
             // groupBox4
             // 
@@ -293,6 +402,18 @@
             this.groupBox4.Size = new System.Drawing.Size(328, 89);
             this.groupBox4.TabIndex = 14;
             this.groupBox4.TabStop = false;
+            // 
+            // chkBitrate
+            // 
+            this.chkBitrate.AutoSize = true;
+            this.chkBitrate.Location = new System.Drawing.Point(34, 65);
+            this.chkBitrate.Name = "chkBitrate";
+            this.chkBitrate.Size = new System.Drawing.Size(186, 17);
+            this.chkBitrate.TabIndex = 16;
+            this.chkBitrate.Text = "Default to High Bandwidth Stream";
+            this.toolTip1.SetToolTip(this.chkBitrate, "Prefer Sirius/XM\'s 128k \"Premium\" stream (if available), over the standard 32k st" +
+                    "ream for channels. (Recommended)");
+            this.chkBitrate.UseVisualStyleBackColor = true;
             // 
             // label9
             // 
@@ -455,6 +576,28 @@
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = "Details";
             // 
+            // tRemote
+            // 
+            this.tRemote.Controls.Add(this.checkBox2);
+            this.tRemote.Location = new System.Drawing.Point(4, 22);
+            this.tRemote.Name = "tRemote";
+            this.tRemote.Padding = new System.Windows.Forms.Padding(3);
+            this.tRemote.Size = new System.Drawing.Size(427, 301);
+            this.tRemote.TabIndex = 4;
+            this.tRemote.Text = "Remote";
+            this.tRemote.UseVisualStyleBackColor = true;
+            // 
+            // checkBox2
+            // 
+            this.checkBox2.AutoSize = true;
+            this.checkBox2.Enabled = false;
+            this.checkBox2.Location = new System.Drawing.Point(9, 18);
+            this.checkBox2.Name = "checkBox2";
+            this.checkBox2.Size = new System.Drawing.Size(220, 17);
+            this.checkBox2.TabIndex = 0;
+            this.checkBox2.Text = "Enable Remote Control (Requires Server)";
+            this.checkBox2.UseVisualStyleBackColor = true;
+            // 
             // tAdvanced
             // 
             this.tAdvanced.BackColor = System.Drawing.Color.Transparent;
@@ -470,156 +613,65 @@
             this.tAdvanced.Text = "Advanced";
             this.tAdvanced.UseVisualStyleBackColor = true;
             // 
-            // toolTip1
+            // groupBox9
             // 
-            this.toolTip1.AutoPopDelay = 10000;
-            this.toolTip1.InitialDelay = 500;
-            this.toolTip1.IsBalloon = true;
-            this.toolTip1.ReshowDelay = 100;
-            this.toolTip1.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
-            this.toolTip1.ToolTipTitle = "XMTuner Help";
+            this.groupBox9.Controls.Add(this.label14);
+            this.groupBox9.Controls.Add(this.textBox2);
+            this.groupBox9.Enabled = false;
+            this.groupBox9.Location = new System.Drawing.Point(9, 247);
+            this.groupBox9.Name = "groupBox9";
+            this.groupBox9.Size = new System.Drawing.Size(330, 48);
+            this.groupBox9.TabIndex = 17;
+            this.groupBox9.TabStop = false;
+            this.groupBox9.Text = "Advanced Networking";
             // 
-            // backgroundWorker1
+            // label14
             // 
-            this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
-            this.backgroundWorker1.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker1_RunWorkerCompleted);
+            this.label14.AutoSize = true;
+            this.label14.Enabled = false;
+            this.label14.Location = new System.Drawing.Point(8, 25);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(67, 13);
+            this.label14.TabIndex = 1;
+            this.label14.Text = "Proxy Server";
             // 
-            // groupBox3
+            // textBox2
             // 
-            this.groupBox3.Controls.Add(this.label5);
-            this.groupBox3.Controls.Add(this.bUpdateLineup);
-            this.groupBox3.Location = new System.Drawing.Point(7, 5);
-            this.groupBox3.Margin = new System.Windows.Forms.Padding(2);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Padding = new System.Windows.Forms.Padding(2);
-            this.groupBox3.Size = new System.Drawing.Size(332, 81);
-            this.groupBox3.TabIndex = 14;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Lineup";
+            this.textBox2.Enabled = false;
+            this.textBox2.Location = new System.Drawing.Point(81, 22);
+            this.textBox2.Name = "textBox2";
+            this.textBox2.Size = new System.Drawing.Size(190, 20);
+            this.textBox2.TabIndex = 0;
             // 
-            // label5
+            // groupBox8
             // 
-            this.label5.Location = new System.Drawing.Point(10, 18);
-            this.label5.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(317, 33);
-            this.label5.TabIndex = 1;
-            this.label5.Text = "The channel lineup is updated periodically automatically, if channels are missing" +
-                " you can force an update of the lineup.";
+            this.groupBox8.Controls.Add(this.maskedTextBox1);
+            this.groupBox8.Controls.Add(this.label13);
+            this.groupBox8.Enabled = false;
+            this.groupBox8.Location = new System.Drawing.Point(7, 193);
+            this.groupBox8.Name = "groupBox8";
+            this.groupBox8.Size = new System.Drawing.Size(332, 47);
+            this.groupBox8.TabIndex = 16;
+            this.groupBox8.TabStop = false;
+            this.groupBox8.Text = "Error Reporting";
             // 
-            // bUpdateLineup
+            // maskedTextBox1
             // 
-            this.bUpdateLineup.Enabled = false;
-            this.bUpdateLineup.Location = new System.Drawing.Point(13, 50);
-            this.bUpdateLineup.Margin = new System.Windows.Forms.Padding(2);
-            this.bUpdateLineup.Name = "bUpdateLineup";
-            this.bUpdateLineup.Size = new System.Drawing.Size(129, 23);
-            this.bUpdateLineup.TabIndex = 0;
-            this.bUpdateLineup.TabStop = false;
-            this.bUpdateLineup.Text = "Update Channel Lineup";
-            this.bUpdateLineup.UseVisualStyleBackColor = true;
+            this.maskedTextBox1.Enabled = false;
+            this.maskedTextBox1.Location = new System.Drawing.Point(83, 17);
+            this.maskedTextBox1.Name = "maskedTextBox1";
+            this.maskedTextBox1.Size = new System.Drawing.Size(190, 20);
+            this.maskedTextBox1.TabIndex = 1;
             // 
-            // tRemote
+            // label13
             // 
-            this.tRemote.Controls.Add(this.checkBox2);
-            this.tRemote.Location = new System.Drawing.Point(4, 22);
-            this.tRemote.Name = "tRemote";
-            this.tRemote.Padding = new System.Windows.Forms.Padding(3);
-            this.tRemote.Size = new System.Drawing.Size(427, 301);
-            this.tRemote.TabIndex = 4;
-            this.tRemote.Text = "Remote";
-            this.tRemote.UseVisualStyleBackColor = true;
-            // 
-            // chkAutoServer
-            // 
-            this.chkAutoServer.AutoSize = true;
-            this.chkAutoServer.Enabled = false;
-            this.chkAutoServer.Location = new System.Drawing.Point(18, 14);
-            this.chkAutoServer.Name = "chkAutoServer";
-            this.chkAutoServer.Size = new System.Drawing.Size(114, 17);
-            this.chkAutoServer.TabIndex = 15;
-            this.chkAutoServer.Text = "Enable Webserver";
-            this.chkAutoServer.UseVisualStyleBackColor = true;
-            // 
-            // chkBitrate
-            // 
-            this.chkBitrate.AutoSize = true;
-            this.chkBitrate.Location = new System.Drawing.Point(34, 65);
-            this.chkBitrate.Name = "chkBitrate";
-            this.chkBitrate.Size = new System.Drawing.Size(186, 17);
-            this.chkBitrate.TabIndex = 16;
-            this.chkBitrate.Text = "Default to High Bandwidth Stream";
-            this.toolTip1.SetToolTip(this.chkBitrate, "Prefer Sirius/XM\'s 128k \"Premium\" stream (if available), over the standard 32k st" +
-                    "ream for channels. (Recommended)");
-            this.chkBitrate.UseVisualStyleBackColor = true;
-            // 
-            // channelListStyle
-            // 
-            this.channelListStyle.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.channelListStyle.FormattingEnabled = true;
-            this.channelListStyle.Items.AddRange(new object[] {
-            "All Channels",
-            "Favorite Channels",
-            "By Category"});
-            this.channelListStyle.Location = new System.Drawing.Point(110, 192);
-            this.channelListStyle.Name = "channelListStyle";
-            this.channelListStyle.Size = new System.Drawing.Size(121, 21);
-            this.channelListStyle.TabIndex = 17;
-            // 
-            // numRecent
-            // 
-            this.numRecent.Location = new System.Drawing.Point(44, 163);
-            this.numRecent.Name = "numRecent";
-            this.numRecent.Size = new System.Drawing.Size(45, 20);
-            this.numRecent.TabIndex = 16;
-            this.numRecent.Value = new decimal(new int[] {
-            25,
-            0,
-            0,
-            0});
-            // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(10, 166);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(238, 13);
-            this.label10.TabIndex = 15;
-            this.label10.Text = "Keep                   entries in recently played history";
-            // 
-            // chkOnTop
-            // 
-            this.chkOnTop.AutoSize = true;
-            this.chkOnTop.Location = new System.Drawing.Point(13, 143);
-            this.chkOnTop.Name = "chkOnTop";
-            this.chkOnTop.Size = new System.Drawing.Size(229, 17);
-            this.chkOnTop.TabIndex = 14;
-            this.chkOnTop.Text = "Keep XMTuner on top of other applications";
-            this.toolTip1.SetToolTip(this.chkOnTop, "Make XMTuner stay on top of other applications.");
-            this.chkOnTop.UseVisualStyleBackColor = true;
-            // 
-            // chkShowNote
-            // 
-            this.chkShowNote.AutoSize = true;
-            this.chkShowNote.Checked = true;
-            this.chkShowNote.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkShowNote.Location = new System.Drawing.Point(13, 119);
-            this.chkShowNote.Name = "chkShowNote";
-            this.chkShowNote.Size = new System.Drawing.Size(192, 17);
-            this.chkShowNote.TabIndex = 13;
-            this.chkShowNote.Text = "Show Notification on Song Change";
-            this.toolTip1.SetToolTip(this.chkShowNote, "XMTuner, by default, shows a notification box when a song changes, if you\'d prefe" +
-                    "r not to have these notifications appear, uncheck this box.");
-            this.chkShowNote.UseVisualStyleBackColor = true;
-            // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(10, 195);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(94, 13);
-            this.label11.TabIndex = 18;
-            this.label11.Text = "Channel List View:";
+            this.label13.AutoSize = true;
+            this.label13.Enabled = false;
+            this.label13.Location = new System.Drawing.Point(7, 20);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(73, 13);
+            this.label13.TabIndex = 0;
+            this.label13.Text = "NSCA Server:";
             // 
             // groupBox5
             // 
@@ -664,107 +716,54 @@
             this.label4.Text = "If you would like a hostname to appear in generated feed and stream URLs instead " +
                 "of your IP address, enter it below:";
             // 
-            // checkBox2
+            // groupBox3
             // 
-            this.checkBox2.AutoSize = true;
-            this.checkBox2.Enabled = false;
-            this.checkBox2.Location = new System.Drawing.Point(9, 18);
-            this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(220, 17);
-            this.checkBox2.TabIndex = 0;
-            this.checkBox2.Text = "Enable Remote Control (Requires Server)";
-            this.checkBox2.UseVisualStyleBackColor = true;
+            this.groupBox3.Controls.Add(this.label5);
+            this.groupBox3.Controls.Add(this.bUpdateLineup);
+            this.groupBox3.Location = new System.Drawing.Point(7, 5);
+            this.groupBox3.Margin = new System.Windows.Forms.Padding(2);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Padding = new System.Windows.Forms.Padding(2);
+            this.groupBox3.Size = new System.Drawing.Size(332, 81);
+            this.groupBox3.TabIndex = 14;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Lineup";
             // 
-            // groupBox6
+            // label5
             // 
-            this.groupBox6.Controls.Add(this.label12);
-            this.groupBox6.Controls.Add(this.textBox1);
-            this.groupBox6.Enabled = false;
-            this.groupBox6.Location = new System.Drawing.Point(10, 130);
-            this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(328, 79);
-            this.groupBox6.TabIndex = 16;
-            this.groupBox6.TabStop = false;
-            this.groupBox6.Text = "Access Control";
+            this.label5.Location = new System.Drawing.Point(10, 18);
+            this.label5.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(317, 33);
+            this.label5.TabIndex = 1;
+            this.label5.Text = "The channel lineup is updated periodically automatically, if channels are missing" +
+                " you can force an update of the lineup.";
             // 
-            // textBox1
+            // bUpdateLineup
             // 
-            this.textBox1.Enabled = false;
-            this.textBox1.Location = new System.Drawing.Point(11, 32);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(142, 20);
-            this.textBox1.TabIndex = 0;
-            this.textBox1.UseSystemPasswordChar = true;
+            this.bUpdateLineup.Enabled = false;
+            this.bUpdateLineup.Location = new System.Drawing.Point(13, 50);
+            this.bUpdateLineup.Margin = new System.Windows.Forms.Padding(2);
+            this.bUpdateLineup.Name = "bUpdateLineup";
+            this.bUpdateLineup.Size = new System.Drawing.Size(129, 23);
+            this.bUpdateLineup.TabIndex = 0;
+            this.bUpdateLineup.TabStop = false;
+            this.bUpdateLineup.Text = "Update Channel Lineup";
+            this.bUpdateLineup.UseVisualStyleBackColor = true;
             // 
-            // label12
+            // toolTip1
             // 
-            this.label12.AutoSize = true;
-            this.label12.Enabled = false;
-            this.label12.Location = new System.Drawing.Point(8, 16);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(177, 13);
-            this.label12.TabIndex = 1;
-            this.label12.Text = "Password protect the web interface:";
+            this.toolTip1.AutoPopDelay = 10000;
+            this.toolTip1.InitialDelay = 500;
+            this.toolTip1.IsBalloon = true;
+            this.toolTip1.ReshowDelay = 100;
+            this.toolTip1.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
+            this.toolTip1.ToolTipTitle = "XMTuner Help";
             // 
-            // groupBox8
+            // backgroundWorker1
             // 
-            this.groupBox8.Controls.Add(this.maskedTextBox1);
-            this.groupBox8.Controls.Add(this.label13);
-            this.groupBox8.Enabled = false;
-            this.groupBox8.Location = new System.Drawing.Point(7, 193);
-            this.groupBox8.Name = "groupBox8";
-            this.groupBox8.Size = new System.Drawing.Size(332, 47);
-            this.groupBox8.TabIndex = 16;
-            this.groupBox8.TabStop = false;
-            this.groupBox8.Text = "Error Reporting";
-            // 
-            // label13
-            // 
-            this.label13.AutoSize = true;
-            this.label13.Enabled = false;
-            this.label13.Location = new System.Drawing.Point(7, 20);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(73, 13);
-            this.label13.TabIndex = 0;
-            this.label13.Text = "NSCA Server:";
-            // 
-            // maskedTextBox1
-            // 
-            this.maskedTextBox1.Enabled = false;
-            this.maskedTextBox1.Location = new System.Drawing.Point(83, 17);
-            this.maskedTextBox1.Name = "maskedTextBox1";
-            this.maskedTextBox1.Size = new System.Drawing.Size(190, 20);
-            this.maskedTextBox1.TabIndex = 1;
-            // 
-            // groupBox9
-            // 
-            this.groupBox9.Controls.Add(this.label14);
-            this.groupBox9.Controls.Add(this.textBox2);
-            this.groupBox9.Enabled = false;
-            this.groupBox9.Location = new System.Drawing.Point(9, 247);
-            this.groupBox9.Name = "groupBox9";
-            this.groupBox9.Size = new System.Drawing.Size(330, 48);
-            this.groupBox9.TabIndex = 17;
-            this.groupBox9.TabStop = false;
-            this.groupBox9.Text = "Advanced Networking";
-            // 
-            // textBox2
-            // 
-            this.textBox2.Enabled = false;
-            this.textBox2.Location = new System.Drawing.Point(81, 22);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(190, 20);
-            this.textBox2.TabIndex = 0;
-            // 
-            // label14
-            // 
-            this.label14.AutoSize = true;
-            this.label14.Enabled = false;
-            this.label14.Location = new System.Drawing.Point(8, 25);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(67, 13);
-            this.label14.TabIndex = 1;
-            this.label14.Text = "Proxy Server";
+            this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
+            this.backgroundWorker1.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker1_RunWorkerCompleted);
             // 
             // Form2
             // 
@@ -780,10 +779,13 @@
             this.tabControl1.ResumeLayout(false);
             this.tGeneral.ResumeLayout(false);
             this.tGeneral.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numRecent)).EndInit();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.tServer.ResumeLayout(false);
             this.tServer.PerformLayout();
+            this.groupBox6.ResumeLayout(false);
+            this.groupBox6.PerformLayout();
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
             this.tTVersity.ResumeLayout(false);
@@ -791,19 +793,16 @@
             this.groupBox1.PerformLayout();
             this.tversityBox2.ResumeLayout(false);
             this.tversityBox2.PerformLayout();
-            this.tAdvanced.ResumeLayout(false);
-            this.groupBox3.ResumeLayout(false);
             this.tRemote.ResumeLayout(false);
             this.tRemote.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numRecent)).EndInit();
-            this.groupBox5.ResumeLayout(false);
-            this.groupBox5.PerformLayout();
-            this.groupBox6.ResumeLayout(false);
-            this.groupBox6.PerformLayout();
-            this.groupBox8.ResumeLayout(false);
-            this.groupBox8.PerformLayout();
+            this.tAdvanced.ResumeLayout(false);
             this.groupBox9.ResumeLayout(false);
             this.groupBox9.PerformLayout();
+            this.groupBox8.ResumeLayout(false);
+            this.groupBox8.PerformLayout();
+            this.groupBox5.ResumeLayout(false);
+            this.groupBox5.PerformLayout();
+            this.groupBox3.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -846,7 +845,7 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Button bUpdateLineup;
         private System.Windows.Forms.TabPage tRemote;
-        private System.Windows.Forms.CheckBox chkAutoServer;
+        private System.Windows.Forms.CheckBox chkEnableServer;
         private System.Windows.Forms.CheckBox chkBitrate;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.ComboBox channelListStyle;

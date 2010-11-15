@@ -16,14 +16,10 @@ namespace XMTuner
         Log logging;
         Config cfg = new Config(true);
 
-        int i = 0;
-        String runTime = "";
-
         #region Form1 Core
         public Form1()
         {
             InitializeComponent();
-            initPlayer();
 
             Microsoft.Win32.SystemEvents.PowerModeChanged += new
             Microsoft.Win32.PowerModeChangedEventHandler(powerModeChanged);    
@@ -39,7 +35,10 @@ namespace XMTuner
             //Load config...
             loadConfig();
 
-            lblClock.Text = "0:00:00";
+            //Do tasks for player initialization...
+            initPlayer();
+
+            lblClock.Text = "00:00:00";
 #if !DEBUG
             Updater update = new Updater(outputbox);
 #endif
@@ -215,16 +214,13 @@ namespace XMTuner
 
                             linkServer.Text = "Server is Running...";
                             linkServer.Enabled = true;
-
-
                             output("XMTuner Ready...", LogLevel.Info);
                             break;
                         case "isStopped":
                             linkServer.Text = "Server is Stopped";
-                            output("Server Uptime was " + runTime, LogLevel.Info);
                             linkServer.Enabled = false;
                             timer1.Enabled = false;
-                            lblClock.Text = "0:00:00";
+                            lblClock.Text = "00:00:00";
                             break;
                     }
                     break;
@@ -233,33 +229,11 @@ namespace XMTuner
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            double sec = 0;
-            double minute = 0;
-            double hour = 0;
-            if (c.isServerRunning)
+            if (c.isServerRunning == true)
             {
-                i++;
-                sec = i;
-
-                if (sec >= 60) { minute = sec / 60; minute = Math.Floor(minute); sec = sec - (minute * 60); }
-                if (minute >= 60) { hour = minute / 60; hour = Math.Floor(hour); minute = minute - (hour * 60); }
-
-
-                runTime = hour.ToString() + ":";
-                if (minute < 10) { runTime += "0"+minute.ToString() + ":"; }
-                else {runTime+=minute.ToString()+":";}
-
-                if (sec < 10) { runTime += "0" + sec.ToString(); }
-                else { runTime += sec.ToString(); }
-
+                String runTime = (DateTime.Now - c.server.serverStartTime).ToString().Split('.')[0];
                 lblClock.Text = runTime;
             }
-        }
-
-
-        private void timer2_Tick(object sender, EventArgs e)
-        {
-            self.doWhatsOn();
         }
 
         //Stop

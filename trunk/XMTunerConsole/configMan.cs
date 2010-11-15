@@ -57,9 +57,9 @@ namespace XMTuner
                 defaultConfig.Add("network", "XM");
                 defaultConfig.Add("showNotice", true.ToString());
                 defaultConfig.Add("alwaysOnTop", false.ToString());
-                defaultConfig.Add("showURLBuilder", true.ToString());
                 defaultConfig.Add("numRecentHistory", "25");
                 defaultConfig.Add("channelListStyle", "Favorite Channels");
+                defaultConfig.Add("enableServer", true.ToString());
                 return defaultConfig;
             }
         }
