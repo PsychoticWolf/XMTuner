@@ -136,7 +136,6 @@
     <Compile Include="ServiceInstaller.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="XMTunerHost.cs" />
     <Compile Include="XMTunerService.cs">
       <SubType>Component</SubType>
     </Compile>
