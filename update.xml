@@ -1,10 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>  
 <xmtuner>  
-  <version>0.6.1.0</version>  
-  <url>http://www.xmtuner.net/releases/0.6.1</url>
-  <download>http://www.xmtuner.net/download/InstallXMTuner0-6-1.msi</download>
-  <details>Bugfix release for 0.6:
-  * Fix XM Login issue caused by XM changing their login page
-* and more...</li>
+  <version>0.6.2.0</version>  
+  <url>http://www.xmtuner.net/releases/0.6.2</url>
+  <download>http://www.xmtuner.net/download/InstallXMTuner0-6-2.msi</download>
+  <details>Patch for SiriusXM Player Changes:
+  * Workaround new SiriusXM Player changes that broke XMTuner 0.6.1 and lower.
   </details>
 </xmtuner>
