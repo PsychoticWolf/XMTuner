@@ -14,6 +14,10 @@
 	include_once"inc_header.php";
 ?>
 
+<div style="font-size: 14pt; font-weight: bold; color: #ffffff; text-align: justify; background-color: #ee0000; padding: 15px; margin: 0px; text-shadow: 2px 2px 2px #000000;">
+						On February 4th, 2011, SiriusXM launched a new website combining xmradio.com and sirius.com. Along with thie new website is a completely new listen online player.
+						This major change to the player has broken XMTuner. I'm aware that things are broken and am working to try to fix it. Watch this space for <a href="http://blog.xmtuner.net/">updates</a>.
+</div>
 
 <div id="show-parent">
 	<div id="show"><div id="show-index" style="float: left;"></div></div>
