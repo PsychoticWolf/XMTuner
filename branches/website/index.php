@@ -14,9 +14,9 @@
 	include_once"inc_header.php";
 ?>
 
-<div style="font-size: 14pt; font-weight: bold; color: #ffffff; text-align: justify; background-color: #ee0000; padding: 15px; margin: 0px; text-shadow: 2px 2px 2px #000000;">
+<div style="font-size: 14pt; font-weight: bold; color: #ffffff; text-align: justify; background-color: #ffcc00; padding: 15px; margin: 0px; text-shadow: 2px 2px 2px #000000;">
 						On February 4th, 2011, SiriusXM launched a new website combining xmradio.com and sirius.com. Along with thie new website is a completely new listen online player.
-						This major change to the player has broken XMTuner. I'm aware that things are broken and am working to try to fix it. Watch this space for <a href="http://blog.xmtuner.net/">updates</a>.
+						This major change to the player has broken XMTuner 0.6.1. XMTuner 0.6.2 has been released which patches this issue. For more details see the <a href="http://blog.xmtuner.net/">XMTuner Blog</a>.
 </div>
 
 <div id="show-parent">
@@ -49,6 +49,16 @@ capable receivers and televisions, as well as a variety of smartphones such as t
 	<li>Built-in Updater keeps you current.</li>
 	<li>and much more!</li>
 </ul>
+
+<h2>XMTuner 0.6.2</h2>
+<h3>February 4, 2011</h3>
+		<p>XMTuner 0.6.2 is a bugfix release for XMTuner 0.6.1. This release patches around the new player SiriusXM introduced today.</p>
+		
+		<h3>Known Issues with 0.6.2:</h3>
+		<ul>
+		<li>Channel Icons, Descriptions and Homepage links don't work properly</li>
+		<li>Cached data may cause issues, if you run into problems, clear your cache files by clicking the refresh channel data button in settings.</li>
+		</ul>
 
 <h2>XMTuner 0.6.1</h2>
 <h3>November 8, 2010</h3>
