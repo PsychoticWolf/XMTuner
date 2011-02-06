@@ -18,7 +18,6 @@ namespace XMTuner
 
         //path to Application Data folder
         String path;
-
         public configMan()
         {
 #if DEBUG
@@ -33,13 +32,12 @@ namespace XMTuner
                 if (config.Count == 0)
                 {
                     readConfig();
-                    addDefaultValues();
                 }
                 return isConfig;
             }
         }
 
-        private NameValueCollection defaultConfig
+        public NameValueCollection defaultConfig
         {
             get
             {
@@ -57,9 +55,9 @@ namespace XMTuner
                 defaultConfig.Add("network", "XM");
                 defaultConfig.Add("showNotice", true.ToString());
                 defaultConfig.Add("alwaysOnTop", false.ToString());
+                defaultConfig.Add("showURLBuilder", true.ToString());
                 defaultConfig.Add("numRecentHistory", "25");
                 defaultConfig.Add("channelListStyle", "Favorite Channels");
-                defaultConfig.Add("enableServer", true.ToString());
                 return defaultConfig;
             }
         }
@@ -107,27 +105,13 @@ namespace XMTuner
             if (config.Count == 0)
             {
                 readConfig();
-                addDefaultValues();
             }
+            addDefaultValues();
             return config;
         }
-        private NameValueCollection getConfigReadOnly()
-        {
-            getConfig();
-            NameValueCollection roConfig = new NameValueCollection();
-            foreach (String key in config.AllKeys)
-            {
-                if (roConfig.Get(key) == null)
-                {
-                    roConfig[key] = config.Get(key);
-                }
-            }
-            return roConfig;
-        }
-
         public NameValueCollection getConfig(Boolean interpreted)
         {
-            NameValueCollection sConfig = getConfigReadOnly();
+            NameValueCollection sConfig = getConfig();
             if (Convert.ToBoolean(sConfig["bitrate"])) { sConfig["bitrate"] = "high"; } else { sConfig["bitrate"] = "low"; }
             if (sConfig["hostname"] != "") { sConfig["hostname"] = sConfig["hostname"] + ":" + sConfig["port"]; }
 
@@ -180,7 +164,7 @@ namespace XMTuner
             return getConfigItem(config, item);
         }
 
-        private String getConfigItem(NameValueCollection config, String item)
+        public String getConfigItem(NameValueCollection config, String item)
         {
                 if (config.Get(item) == null)
                 {
@@ -192,12 +176,7 @@ namespace XMTuner
                 }
         }
 
-        public Boolean getConfigItemAsBoolean(String item)
-        {
-            return getConfigItemAsBoolean(config, item);
-        }
-
-        private Boolean getConfigItemAsBoolean(NameValueCollection config, String item)
+        public Boolean getConfigItemAsBoolean(NameValueCollection config, String item)
         {
             if (config.Get(item) == null)
             {

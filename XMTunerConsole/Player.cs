@@ -36,7 +36,7 @@ namespace XMTuner
                     }
                 }
 
-                //playerPanel.Refresh();
+                playerPanel.Refresh();
             }
             else
             {
@@ -93,9 +93,9 @@ namespace XMTuner
         private void syncStatusLabel()
         {
             pStatusLabel.Visible = true;
-            if (c.isLoggedIn == false)
+            if (loggedIn == false)
             {
-                if (cfg.loaded == false)
+                if (isConfigurationLoaded == false)
                 {
                     pStatusLabel.Text = "XMTuner needs to be configured before you can begin...";
                 }
@@ -157,11 +157,11 @@ namespace XMTuner
                 {
                     if (playerNum != 0)
                     {
-                        output("Player (" + self.Find(playerNum).ShortName + "): " + status, LogLevel.Player);
+                        output("Player (" + self.Find(playerNum).ShortName + "): " + status, "player");
                     }
                     else
                     {
-                        output("Player: " + status, LogLevel.Player);
+                        output("Player: " + status, "player");
                     }
                 }
             }
@@ -169,7 +169,7 @@ namespace XMTuner
 
         private void axWindowsMediaPlayer1_PlayStateChange(object sender, AxWMPLib._WMPOCXEvents_PlayStateChangeEvent e)
         {
-            output("Player ("+self.Find(playerNum).ShortName+"): " + axWindowsMediaPlayer1.playState, LogLevel.PlayerDebug);
+            output("Player ("+self.Find(playerNum).ShortName+"): " + axWindowsMediaPlayer1.playState, "player-debug");
 
             // If Windows Media Player is in the playing state, enable the data update timer. 
             if (axWindowsMediaPlayer1.playState == WMPLib.WMPPlayState.wmppsPlaying)
@@ -220,7 +220,7 @@ namespace XMTuner
 
         private void doNotification()
         {
-            if (playerNum == 0 || !cfg.showNotification) { return; } //Bail early if we have no work to do.
+            if (playerNum == 0 || !showNotification) { return; } //Bail early if we have no work to do.
             XMChannel npChannel = self.Find(playerNum);
             String title = npChannel.ToString();
             String nptext = npChannel.artist + " - " + npChannel.song;
@@ -288,7 +288,7 @@ namespace XMTuner
             string errDesc = axWindowsMediaPlayer1.Error.get_Item(0).errorDescription;
 
             // Display the error description.
-            output(errCode + " " +errDesc, LogLevel.Error);
+            output(errCode + " " +errDesc, "error");
 
             //Handle things like stopping and trying to retune...
             int cnum = playerNum;
@@ -298,7 +298,7 @@ namespace XMTuner
             pLabel3.Text = "Attempting to retune (in 10 seconds)...";
             pLabel4.Text = errDesc;
             pStatusLabel.Text = "";
-            output("Error! Attempting to retune channel "+self.Find(cnum).ToString()+" (in 10 seconds)...", LogLevel.Error);
+            output("Error! Attempting to retune channel "+self.Find(cnum).ToString()+" (in 10 seconds)...", "error");
             pRetryTimer.Tag = cnum;
             pRetryTimer.Start();
         }
@@ -306,7 +306,7 @@ namespace XMTuner
         private void pRetryTimer_Tick(object sender, EventArgs e)
         {
             int cnum = (int)pRetryTimer.Tag;
-            output("Attempting to retune to channel " + self.Find(cnum).ToString() + "...", LogLevel.Info);
+            output("Attempting to retune to channel " + self.Find(cnum).ToString() + "...", "info");
             play(cnum);
         }
 

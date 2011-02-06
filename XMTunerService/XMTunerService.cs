@@ -8,9 +8,11 @@ namespace XMTuner
 {
     public class XMTunerService : ServiceBase
     {
-        Core c;
+        //private System.ComponentModel.IContainer components;
+        
+        XMTunerHost tuner;
         Thread workerThread;
-
+        //Boolean serviceStarted;
         /// <summary>
 
         /// Public Constructor for WindowsService.
@@ -27,16 +29,16 @@ namespace XMTuner
             this.EventLog.Log = "Application";
            
             // These Flags set whether or not to handle that specific
+
             //  type of event. Set to true if you need it, false otherwise.
 
-            this.CanHandlePowerEvent = false;
-            this.CanHandleSessionChangeEvent = false;
+            this.CanHandlePowerEvent = true;
+            this.CanHandleSessionChangeEvent = true;
             this.CanPauseAndContinue = false;
-            this.CanShutdown = false;
+            this.CanShutdown = true;
             this.CanStop = true;
         }
 
-#region Service Events
         /// <summary>
 
         /// The Main Thread: This is where your Service is Run.
@@ -46,6 +48,21 @@ namespace XMTuner
         static void Main()
         {
             ServiceBase.Run(new XMTunerService());
+        }
+
+        /// <summary>
+
+        /// Dispose of objects that need it here.
+
+        /// </summary>
+
+        /// <param name="disposing">Whether
+
+        ///    or not disposing is going on.</param>
+
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
         }
 
         /// <summary>
@@ -75,6 +92,17 @@ namespace XMTuner
             
         }
 
+        public void runXMTuner()
+        {
+            EventLog.WriteEntry("Opening XMTuner", System.Diagnostics.EventLogEntryType.Information);
+            tuner = new XMTunerHost(this.EventLog);
+            if (tuner.started != true)
+            {
+                this.ExitCode = tuner.err;
+                this.Stop();
+            }
+        }
+
         /// <summary>
 
         /// OnStop(): Put your stop code here
@@ -86,14 +114,40 @@ namespace XMTuner
         protected override void OnStop()
         {
             base.OnStop();
-            if (c != null)
+            if (tuner != null)
             {
-                c.Stop();
+                tuner.stop();
             }
             removePID();
         }
-        /*
-         /// <summary>
+
+        /// <summary>
+
+        /// OnPause: Put your pause code here
+
+        /// - Pause working threads, etc.
+
+        /// </summary>
+
+        protected override void OnPause()
+        {
+            base.OnPause();
+        }
+
+        /// <summary>
+
+        /// OnContinue(): Put your continue code here
+
+        /// - Un-pause working threads, etc.
+
+        /// </summary>
+
+        protected override void OnContinue()
+        {
+            base.OnContinue();
+        }
+
+        /// <summary>
 
         /// OnShutdown(): Called when the System is shutting down
 
@@ -176,21 +230,6 @@ namespace XMTuner
         {
             base.OnSessionChange(changeDescription);
         }
-        
-                /// <summary>
-
-        /// Dispose of objects that need it here.
-
-        /// </summary>
-
-        /// <param name="disposing">Whether or not disposing is going on.</param>
-
-        protected override void Dispose(bool disposing)
-        {
-            base.Dispose(disposing);
-        }
-         
-        */
 
         private void InitializeComponent()
         {
@@ -199,15 +238,6 @@ namespace XMTuner
             // 
             this.ServiceName = "XMTuner";
 
-        }
-#endregion
-
-        public void runXMTuner()
-        {
-            EventLog.WriteEntry("Opening XMTuner", System.Diagnostics.EventLogEntryType.Information);
-            c = new Core(new Log());
-            c.tick += new Core.TickHandler(coreEvent_Do);
-            c.Start();
         }
 
         private void writePID()
@@ -236,51 +266,6 @@ namespace XMTuner
             if (File.Exists(path))
             {
                 File.Delete(path);
-            }
-        }
-
-        private void coreEvent_Do(Core c, XMTunerEventArgs e)
-        {
-            switch (e.source)
-            {
-                case XMTunerEventSource.Configuration:
-                    switch (e.data)
-                    {
-                        case XMTunerEventData.isNotLoaded:
-                            EventLog.WriteEntry("Missing Configuration", System.Diagnostics.EventLogEntryType.Error);
-                            c.logging.output("No Configuration", LogLevel.Error);
-                            break;
-                    }
-                    break;
-                case XMTunerEventSource.Tuner:
-                    switch (e.data)
-                    {
-                        case XMTunerEventData.isStarting:
-                            EventLog.WriteEntry("XMTuner Service initializing", System.Diagnostics.EventLogEntryType.Information);
-                            c.logging.output("Please wait... logging in", LogLevel.Info);
-                            break;
-                        case XMTunerEventData.isReady:
-                            EventLog.WriteEntry("XMTuner Service started", System.Diagnostics.EventLogEntryType.Information);
-                            c.logging.output("XMTuner Service started", LogLevel.Info);
-                            break;
-                        case XMTunerEventData.isError:
-                            EventLog.WriteEntry("Failed to login. Check the serivce log for details (Err 1)", EventLogEntryType.Error);
-                            this.ExitCode = 1;
-                            this.Stop();
-                            break;
-                    }
-                    break;
-                case XMTunerEventSource.Server:
-                    switch (e.data)
-                    {
-                        case XMTunerEventData.isError:
-                            EventLog.WriteEntry("Server failed to start. (Err 2)", System.Diagnostics.EventLogEntryType.Error);
-                            c.logging.output("Server failed to start.", LogLevel.Error);
-                            this.ExitCode = 2;
-                            this.Stop();
-                            break;
-                    }
-                    break;
             }
         }
 
