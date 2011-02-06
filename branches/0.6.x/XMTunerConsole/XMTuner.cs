@@ -79,7 +79,7 @@ namespace XMTuner
         }
         private void handleLogin(Boolean result)
         {
-            int maxattempts = 5;
+            int maxattempts = 1;
             int timeout = 10000;
             if (Form1.isService)
             {
@@ -109,26 +109,55 @@ namespace XMTuner
 
         protected virtual Boolean login()
         {
+            CookieCollection startupCookies = new CookieCollection();
+            //sirius_user_name=****@****.net;
+            startupCookies.Add(new Cookie("sirius_user_name", user, "", "www.xmradio.com"));
+            //sirius_password=******;
+            startupCookies.Add(new Cookie("sirius_password", password, "", "www.xmradio.com"));
+            //playerType=xm;
+            startupCookies.Add(new Cookie("playerType", "xm", "", "www.xmradio.com"));
+            //pad_user=yes;
+            startupCookies.Add(new Cookie("pad_user", "yes", "", "www.xmradio.com"));
+            //playspeed=high;
+            startupCookies.Add(new Cookie("playspeed", "high", "", "www.xmradio.com"));
+            //ep=XMROUS;
+            startupCookies.Add(new Cookie("ep", "XMROUS", "", "www.xmradio.com"));
+            //uiType=generic;
+            startupCookies.Add(new Cookie("uiType", "generic", "", "www.xmradio.com"));
+            //sirius_campaign_code=default;
+            startupCookies.Add(new Cookie("sirius_campaign_code", "default", "", "www.xmradio.com"));
+            //sirius_consumer_type=XMROUS;
+            startupCookies.Add(new Cookie("sirius_consumer_type", "XMROUS", "", "www.xmradio.com"));
+            //sirius_mp_bitrate_entitlement_cookie=high;
+            startupCookies.Add(new Cookie("sirius_mp_bitrate_entitlement_cookie", "high", "", "www.xmradio.com"));
+            //sirius_mp_bitrate_button_status_cookie=high
+            startupCookies.Add(new Cookie("sirius_mp_bitrate_button_status_cookie", "high", "", "www.xmradio.com"));
+            setCookies(startupCookies);
+
             Boolean loginResult = true;
             output("Logging into XM Radio Online", "info");
 
-            String XMURL = "http://www.xmradio.com/player/login/xmlogin.action";
+            String XMURL = "http://www.xmradio.com/player/channel/fwrd.action?pageName=category&categoryKey=&genreKey=";
             if (!isLive)
             {
                 XMURL = "http://test.xmtuner.net/test.php";
             }
 
-            String data = "playerToLaunch=xm&encryptPassword=false&userName="+user+"&password="+password;
+            //String data = "playerToLaunch=xm&encryptPassword=false&userName="+user+"&password="+password;
             URL loginURL = new URL(XMURL);
             output("Connecting to: " + XMURL + " ("+loginURL.getIP()+")", "debug");
-            loginURL.fetch(data);
+            loginURL.setRequestHeader("Cookie", cookies);
+            loginURL.setCookieContainer(startupCookies);
+            loginURL.fetch(); //loginURL.fetch(data);
 
             int responseCode = loginURL.getStatus();
             output("Server Response: " + loginURL.getStatusDescription(), "debug");
 
             if (loginURL.isSuccess)
             {
-                cookies = setCookies(loginURL.getCookies());
+                CookieCollection loginCookies = loginURL.getCookies();
+                loginCookies.Add(startupCookies);
+                cookies = setCookies(loginCookies);
 
                 output("Number of Cookies: " + cookieCount.ToString(), "debug");
 
@@ -720,6 +749,7 @@ namespace XMTuner
             else
             {
                 dnldChannelMetadata();
+                loadedChannelMetadata = true;
             }
         }
         protected void loadChannelMetadata(Boolean fastLoad)
@@ -783,7 +813,11 @@ namespace XMTuner
             if (channelMetaData.isSuccess)
             {
                 String rawChannelMetaData = channelMetaData.response();
-                loadedChannelMetadata = setChannelMetadata(rawChannelMetaData);
+                try
+                {
+                    loadedChannelMetadata = setChannelMetadata(rawChannelMetaData);
+                }
+                catch (Exception) { }
                 if (loadedChannelMetadata == true)
                 {
                     output("Extended channel data loaded successfully", "info");

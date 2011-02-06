@@ -32,31 +32,50 @@ namespace XMTuner
             Boolean loginResult = true;
             output("Logging into Sirius Internet Radio", "info");
 
-            String captchaResponse;
-            String captchaID;
-            CookieCollection playerCookies;
+            //String captchaResponse;
+            //String captchaID;
+            CookieCollection playerCookies = new CookieCollection();
+            //sirius_user_name=***@****.net;
+            playerCookies.Add(new Cookie("sirius_user_name", user, "", "www.sirius.com"));
+            //sirius_password=********;
+            playerCookies.Add(new Cookie("sirius_password", HttpUtility.UrlEncode(getMD5Hash(password)), "", "www.sirius.com"));
+            //playerType=sirius;
+            playerCookies.Add(new Cookie("playerType", "sirius", "", "www.sirius.com"));
+            //sirius_consumer_type=sirius_online_subscriber;
+            playerCookies.Add(new Cookie("sirius_consumer_type", "sirius_online_subscriber", "", "www.sirius.com"));
+            //sirius_mp_bitrate_entitlement_cookie=high;
+            playerCookies.Add(new Cookie("sirius_mp_bitrate_entitlement_cookie", "high", "", "www.sirius.com"));
+            //sirius_mp_bitrate_button_status_cookie=high
+            playerCookies.Add(new Cookie("sirius_mp_bitrate_button_status_cookie", "high", "", "www.sirius.com"));
+            //sirius_mp_playertype=expand;
+            playerCookies.Add(new Cookie("sirius_mp_playertype", "expand", "", "www.sirius.com"));
+            //sirius_login_type=subscriber;
+            playerCookies.Add(new Cookie("sirius_login_type", "subscriber", "", "www.sirius.com"));
+            //sirius_login_attempts=0
+            playerCookies.Add(new Cookie("sirius_login_attempts", "0", "", "www.sirius.com"));
+            setCookies(playerCookies);
 
-            Boolean result = getSiriusCaptcha(out captchaResponse, out captchaID, out playerCookies);
+            /*Boolean result = getSiriusCaptcha(out captchaResponse, out captchaID, out playerCookies);
             if (result == false)
             {
                 output("Error fetching Sirius Captcha for Login", "error");
                 return false;
-            }
+            }*/
 
             // Do Actual Login
-            String SiriusLoginURL = "http://www.sirius.com/player/login/siriuslogin.action";
+            String SiriusLoginURL = "http://www.sirius.com/player/channel/fwrd.action?pageName=&categoryKey=&genreKey=";
             if (!isLive)
             {
                 SiriusLoginURL = "http://test.xmtuner.net/test.php";
             }
 
 
-            String data = "userName=" + HttpUtility.UrlEncode(user) + "&password=" + HttpUtility.UrlEncode(getMD5Hash(password)) + "&__checkbox_remember=true&remember=true&captchaEnabled=true&captchaID=" + HttpUtility.UrlEncode(captchaID) + "&timeNow=null&captcha_response=" + captchaResponse;
+            //String data = "userName=" + HttpUtility.UrlEncode(user) + "&password=" + HttpUtility.UrlEncode(getMD5Hash(password)) + "&__checkbox_remember=true&remember=true&captchaEnabled=true&captchaID=" + HttpUtility.UrlEncode(captchaID) + "&timeNow=null&captcha_response=" + captchaResponse;
             URL loginURL = new URL(SiriusLoginURL);
             output("Connecting to: " + SiriusLoginURL + " (" + loginURL.getIP() + ")", "debug");
             loginURL.setRequestHeader("Cookie", cookies);
             loginURL.setCookieContainer(playerCookies);
-            loginURL.fetch(data);
+            loginURL.fetch(); //loginURL.fetch(data);
 
             output("Server Response: " + loginURL.getStatusDescription(), "debug");
 
