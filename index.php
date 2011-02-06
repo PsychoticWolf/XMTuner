@@ -15,8 +15,8 @@
 ?>
 
 <div style="font-size: 14pt; font-weight: bold; color: #ffffff; text-align: justify; background-color: #ffcc00; padding: 15px; margin: 0px; text-shadow: 2px 2px 2px #000000;">
-						On February 4th, 2011, SiriusXM launched a new website combining xmradio.com and sirius.com. Along with thie new website is a completely new listen online player.
-						This major change to the player has broken XMTuner 0.6.1. XMTuner 0.6.2 has been released which patches this issue. For more details see the <a href="http://blog.xmtuner.net/">XMTuner Blog</a>.
+						<p style="margin: 0px">On February 4th, 2011, SiriusXM launched a new website, along with thie new website is a completely new listen online player, as a result XMTuner 0.6.1 and lower are broken.</p>
+						<p style="margin: 3px">February 5th, 2011: XMTuner 0.6.3 has been released which fixes XMTuner for both XM and Sirius users. For more details see the <a href="http://blog.xmtuner.net/">XMTuner Blog</a>.</p>
 </div>
 
 <div id="show-parent">
@@ -49,6 +49,11 @@ capable receivers and televisions, as well as a variety of smartphones such as t
 	<li>Built-in Updater keeps you current.</li>
 	<li>and much more!</li>
 </ul>
+
+<h2>Release 0.6.3</h2>
+	<h3></h3>February 5, 2011</h3>
+	<p>XMTuner 0.6.3 is a bugfix release for XMTuner 0.6.2/0.6.1. This release fixes Sirius users who were still broken in 0.6.2. It also fixes the missing channel information and issues with channel tuning for
+		Sirius 800 (online-only) channels.</p>
 
 <h2>XMTuner 0.6.2</h2>
 <h3>February 4, 2011</h3>
