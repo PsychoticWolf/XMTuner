@@ -118,7 +118,7 @@ namespace XMTuner
                 XMURL = "http://test.xmtuner.net/test.php";
             }
 
-            String data = "playerToLaunch=xm&encryptPassword=true&userName="+user+"&password="+password;
+            String data = "playerToLaunch=xm&encryptPassword=false&userName="+user+"&password="+password;
             URL loginURL = new URL(XMURL);
             output("Connecting to: " + XMURL + " ("+loginURL.getIP()+")", "debug");
             loginURL.fetch(data);
