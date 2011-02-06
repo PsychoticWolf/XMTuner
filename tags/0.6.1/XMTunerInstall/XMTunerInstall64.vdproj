@@ -21,12 +21,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_3AD476F9997020FF278B64A476B47A46"
-        "OwnerKey" = "8:_732B0E6386A04A43B50C7F48502BD92D"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_3C0D86D41BB94417ACEDC9E4E13024F8"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -51,19 +45,25 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_A498A9C518A59F890F3F4A4B00EF6072"
+        "OwnerKey" = "8:_732B0E6386A04A43B50C7F48502BD92D"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_C61C9FAF903C4ACC8A1CEDD2D54B7CD5"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_D5580715AC15327A064BE72E6D63F1C4"
-        "OwnerKey" = "8:_3AD476F9997020FF278B64A476B47A46"
+        "MsmKey" = "8:_FA56C9D3A733CFAE37C67D070AFF6C3F"
+        "OwnerKey" = "8:_A498A9C518A59F890F3F4A4B00EF6072"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_D5580715AC15327A064BE72E6D63F1C4"
+        "MsmKey" = "8:_FA56C9D3A733CFAE37C67D070AFF6C3F"
         "OwnerKey" = "8:_732B0E6386A04A43B50C7F48502BD92D"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -76,13 +76,13 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_3AD476F9997020FF278B64A476B47A46"
+        "OwnerKey" = "8:_A498A9C518A59F890F3F4A4B00EF6072"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_D5580715AC15327A064BE72E6D63F1C4"
+        "OwnerKey" = "8:_FA56C9D3A733CFAE37C67D070AFF6C3F"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -222,14 +222,34 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_3AD476F9997020FF278B64A476B47A46"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8A99BD833771400683FA965AEB4372A0"
+            {
+            "SourcePath" = "8:xmtuner.ico"
+            "TargetName" = "8:xmtuner.ico"
+            "Tag" = "8:"
+            "Folder" = "8:_47B84E94336740F5B9549DA184B45EC3"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_A498A9C518A59F890F3F4A4B00EF6072"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
             "AssemblyAsmDisplayName" = "8:AxInterop.WMPLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_3AD476F9997020FF278B64A476B47A46"
+                    "_A498A9C518A59F890F3F4A4B00EF6072"
                     {
                     "Name" = "8:AxInterop.WMPLib.dll"
                     "Attributes" = "3:512"
@@ -253,26 +273,6 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8A99BD833771400683FA965AEB4372A0"
-            {
-            "SourcePath" = "8:xmtuner.ico"
-            "TargetName" = "8:xmtuner.ico"
-            "Tag" = "8:"
-            "Folder" = "8:_47B84E94336740F5B9549DA184B45EC3"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C61C9FAF903C4ACC8A1CEDD2D54B7CD5"
             {
             "SourcePath" = "8:..\\readme.txt"
@@ -293,14 +293,14 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_D5580715AC15327A064BE72E6D63F1C4"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_FA56C9D3A733CFAE37C67D070AFF6C3F"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
             "AssemblyAsmDisplayName" = "8:Interop.WMPLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_D5580715AC15327A064BE72E6D63F1C4"
+                    "_FA56C9D3A733CFAE37C67D070AFF6C3F"
                     {
                     "Name" = "8:Interop.WMPLib.dll"
                     "Attributes" = "3:512"
@@ -391,14 +391,14 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:XM Tuner"
-        "ProductCode" = "8:{B0F6CDC7-F3D9-4D9F-8C87-C0CDEC37C990}"
-        "PackageCode" = "8:{435682D5-634F-4AE3-8250-5069C71741C1}"
+        "ProductCode" = "8:{7111AE7C-2EE7-4DDC-85D2-CF4A52206CFC}"
+        "PackageCode" = "8:{F736FC3D-6DA1-4A4D-A0DE-D70B6A9EA0E8}"
         "UpgradeCode" = "8:{96B7DD5C-10F8-4C80-A7F6-A36C2DFE7C7F}"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:FALSE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:0.6"
+        "ProductVersion" = "8:0.6.1"
         "Manufacturer" = "8:PCFIRE"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:http://www.xmtuner.net/"
