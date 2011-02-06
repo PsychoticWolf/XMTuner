@@ -4,8 +4,6 @@ using System.Windows.Forms;
 
 namespace XMTuner
 {
-    public enum LogLevel {Info, Error, Notice, Player, Debug, PlayerDebug};
-
     public class Log
     {
         RichTextBox outputbox;
@@ -33,9 +31,9 @@ namespace XMTuner
             useLocalDatapath = new configMan().useLocalDatapath;
         }
 
-        public void output(String output, LogLevel level)
+        public void output(String output, String level)
         {
-            if ((level.Equals(LogLevel.Debug) || level.Equals(LogLevel.PlayerDebug) || level.Equals(LogLevel.Notice)) && !isDebug)
+            if ((level.Contains("debug") || level.Equals("notice")) && !isDebug)
             {
                 return;
             }
@@ -80,38 +78,31 @@ namespace XMTuner
             String header = "XMTuner Log\r\n";
             header = header + "Build: "+version+" \r\n";
             header += datetime.ToString() + "\r\n\r\n";
-            textOut.Write(header + getLog);
+            if (outputbox != null)
+            {
+                if (outputbox.InvokeRequired)
+                {
+                    GetTextCallback d = new Log.GetTextCallback(GetText);
+                    String text = outputbox.Invoke(d, new object[] { outputbox }) as String;
+                    textOut.Write(header + text);
+                }
+                else
+                {
+                    textOut.Write(header + outputbox.Text);
+                }
+            }
+            else
+            {
+                textOut.Write(header + theLog);
+            }
+            
+
             textOut.Close();
         }
         public delegate String GetTextCallback(ref RichTextBox outputbox);
         private static String GetText(ref RichTextBox outputbox)
         {
             return outputbox.Text;
-        }
-
-        public String getLog
-        {
-            get
-            {
-                if (outputbox != null)
-                {
-                    if (outputbox.InvokeRequired)
-                    {
-                        GetTextCallback d = new Log.GetTextCallback(GetText);
-                        String text = outputbox.Invoke(d, new object[] { outputbox }) as String;
-                        return text;
-                    }
-                    else
-                    {
-                        return outputbox.Text;
-                    }
-                }
-                else
-                {
-                    return theLog;
-                }
-            
-            }
         }
     }
 }

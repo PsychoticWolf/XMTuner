@@ -95,14 +95,8 @@
     <Compile Include="..\XMTunerConsole\CacheManager.cs">
       <Link>CacheManager.cs</Link>
     </Compile>
-    <Compile Include="..\XMTunerConsole\Config.cs">
-      <Link>Config.cs</Link>
-    </Compile>
     <Compile Include="..\XMTunerConsole\configMan.cs">
       <Link>configMan.cs</Link>
-    </Compile>
-    <Compile Include="..\XMTunerConsole\Core.cs">
-      <Link>Core.cs</Link>
     </Compile>
     <Compile Include="..\XMTunerConsole\Favorites.cs">
       <Link>Favorites.cs</Link>
@@ -136,6 +130,7 @@
     <Compile Include="ServiceInstaller.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="XMTunerHost.cs" />
     <Compile Include="XMTunerService.cs">
       <SubType>Component</SubType>
     </Compile>

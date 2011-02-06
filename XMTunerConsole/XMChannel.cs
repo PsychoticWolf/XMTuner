@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Web;
-using System.Linq;
 
 
 namespace XMTuner
@@ -23,7 +22,6 @@ namespace XMTuner
         public String logo_small;
         public System.Drawing.Image logo_small_image = null;
         public List<String[]> programData = new List<string[]>();
-        public List<String> history = new List<String>();
 
         public String channelKey;
         public int xmxref;
@@ -56,45 +54,29 @@ namespace XMTuner
             artist = HttpUtility.HtmlDecode(stringyInfo[1]);
             song = HttpUtility.HtmlDecode(stringyInfo[2]);
             album = HttpUtility.HtmlDecode(stringyInfo[3]);
-
-            addSongToHistory();
         }
 
-        private void addSongToHistory()
+        public virtual void addChannelMetadata(String[] details)
         {
-            int numItems = 25;
-            String currentTime = DateTime.Now.ToString("T");
-            String entry = network + " " + num + " - " + artist + " - " + song;
+            //details { num, xmnum, logo, key, url }
+            //           0     1      2    3    4
 
-            if (history.Count > 0)
+            if (details[4] != null)
             {
-                String[] lastEntry = history.FirstOrDefault().Split(':');
-                if (lastEntry[3].Trim() == entry)
-                {
-                    return;
-                }
+                url = details[4];
             }
-
-            history.Insert(0, currentTime + ": " + entry);
-            if (history.Count > numItems)
+            if (details[2] != null)
             {
-                history.RemoveRange(numItems, history.Count - numItems);
+                logo = details[2];
+                logo_small = details[2];
             }
-        }
-
-        public virtual void addChannelMetadata(String[] stringyInfo)
-        {
-            if (stringyInfo[1] != null)
+            if (details[3] != null)
             {
-                url = stringyInfo[1];
+                channelKey = details[3];
             }
-            if (stringyInfo[2] != null)
+            if (details[1] != null)
             {
-                logo_small = stringyInfo[2];
-            }
-            if (stringyInfo[3] != null)
-            {
-                logo = stringyInfo[3];
+                xmxref = Convert.ToInt32(details[1]);
             }
         }
 
@@ -108,30 +90,28 @@ namespace XMTuner
             programData.Clear();
         }
 
-        #region Sirius Specific Methods
-        public void addChannelMetadataS(String[] stringyInfo)
-        {
-            if (stringyInfo[0] != null)
-            {
-                xmxref = Convert.ToInt32(stringyInfo[0]);
-            }
-            if (stringyInfo[2] != null)
-            {
-                logo_small = stringyInfo[2];
-            }
-            if (stringyInfo[3] != null)
-            {
-                logo = stringyInfo[3];
-            }
+       /* #region Sirius Specific Methods
 
-        }
 
         public void addChannelData(String[] details)
         {
             url = details[0];
             channelKey = details[1];
         }
-        #endregion
+
+        public void addChannelMetadataS(String[] details)
+        {
+            if (details == null) { return; }
+            if (details[0] != null)
+            {
+                xmxref = Convert.ToInt32(details[2]);
+            }
+            if (details[1] != null)
+            {
+                channelKey = details[1];
+            }
+        }
+        #endregion*/
 
 
         #region IComparable<XMChannel> Members

@@ -36,6 +36,11 @@ namespace XMTuner
                                                   "All: Plain full channel list\n"+
                                                   "Favorites: plain list with favorites above (Default)\n" +
                                                   "By Category: Organize channels by Sirius|XM's neighborhoods.");
+
+            toolTip1.SetToolTip(chkShowURL, "Show the URL Builder pane in the Channels tab (at startup). Primarily useful when first \n"+
+                                            "setting up XMTuner, the default is for it to be shown, but once you have XMTuner working \n"+
+                                            "as you like, you can turn it off to get it out of your way.\n"+
+                                            "(The URL Builder can be easily accessed for short times from the channels tab context-menu)");
         }
 
         private void bSave_Click(object sender, EventArgs e)
@@ -69,12 +74,12 @@ namespace XMTuner
             chkMMS.Checked = Convert.ToBoolean(config["isMMS"]);
             chkShowNote.Checked = Convert.ToBoolean(config["showNotice"]);
             chkOnTop.Checked = Convert.ToBoolean(config["alwaysOnTop"]);
+            chkShowURL.Checked = Convert.ToBoolean(config["showURLBuilder"]);
             numRecent.Value = Convert.ToInt32(config["numRecentHistory"]);
             txtTversity.Text = config["Tversity"];
             txtHostname.Text = config["hostname"];
             boxNetwork.SelectedItem = config["network"];
             channelListStyle.SelectedItem = config["channelListStyle"];
-            chkEnableServer.Checked = Convert.ToBoolean(config["enableServer"]);
 
         }
 
@@ -93,9 +98,9 @@ namespace XMTuner
             config.Add("network", boxNetwork.SelectedItem.ToString());
             config.Add("showNotice", chkShowNote.Checked.ToString());
             config.Add("alwaysOnTop", chkOnTop.Checked.ToString());
+            config.Add("showURLBuilder", chkShowURL.Checked.ToString());
             config.Add("numRecentHistory", numRecent.Value.ToString());
             config.Add("channelListStyle", channelListStyle.SelectedItem.ToString());
-            config.Add("enableServer", chkEnableServer.Checked.ToString());
             configuration.writeConfig(config);
         }
 
@@ -186,7 +191,7 @@ namespace XMTuner
 
         private void tabControl1_Selected(object sender, TabControlEventArgs e)
         {
-            if (e.TabPage.Equals(tTVersity))
+            if (e.TabPage.Equals(tabPage3))
             {
                 enableTVersityValidateBtn();
                 if(!loadedTversityPanel) {

@@ -22,43 +22,62 @@ namespace XMTuner
         }
 
 
-        public SiriusTuner(Config cfg, Log logging)
-            : base(cfg, logging, "SIRIUS")
+        public SiriusTuner(String username, String passw, Log logging)
+            : base(username, passw, logging, "SIRIUS")
         {
         }
 
         protected override Boolean login()
         {
             Boolean loginResult = true;
-            output("Logging into Sirius Internet Radio", LogLevel.Info);
+            output("Logging into Sirius Internet Radio", "info");
 
-            String captchaResponse;
-            String captchaID;
-            CookieCollection playerCookies;
+            //String captchaResponse;
+            //String captchaID;
+            CookieCollection playerCookies = new CookieCollection();
+            //sirius_user_name=***@****.net;
+            playerCookies.Add(new Cookie("sirius_user_name", user, "", "www.sirius.com"));
+            //sirius_password=********;
+            playerCookies.Add(new Cookie("sirius_password", HttpUtility.UrlEncode(getMD5Hash(password)), "", "www.sirius.com"));
+            //playerType=sirius;
+            playerCookies.Add(new Cookie("playerType", "sirius", "", "www.sirius.com"));
+            //sirius_consumer_type=sirius_online_subscriber;
+            playerCookies.Add(new Cookie("sirius_consumer_type", "sirius_online_subscriber", "", "www.sirius.com"));
+            //sirius_mp_bitrate_entitlement_cookie=high;
+            playerCookies.Add(new Cookie("sirius_mp_bitrate_entitlement_cookie", "high", "", "www.sirius.com"));
+            //sirius_mp_bitrate_button_status_cookie=high
+            playerCookies.Add(new Cookie("sirius_mp_bitrate_button_status_cookie", "high", "", "www.sirius.com"));
+            //sirius_mp_playertype=expand;
+            playerCookies.Add(new Cookie("sirius_mp_playertype", "expand", "", "www.sirius.com"));
+            //sirius_login_type=subscriber;
+            playerCookies.Add(new Cookie("sirius_login_type", "subscriber", "", "www.sirius.com"));
+            //sirius_login_attempts=0
+            playerCookies.Add(new Cookie("sirius_login_attempts", "0", "", "www.sirius.com"));
+            setCookies(playerCookies);
 
-            Boolean result = getSiriusCaptcha(out captchaResponse, out captchaID, out playerCookies);
+            /*Boolean result = getSiriusCaptcha(out captchaResponse, out captchaID, out playerCookies);
             if (result == false)
             {
-                output("Error fetching Sirius Captcha for Login", LogLevel.Error);
+                output("Error fetching Sirius Captcha for Login", "error");
                 return false;
-            }
+            }*/
 
             // Do Actual Login
-            String SiriusLoginURL = "http://www.sirius.com/player/login/siriuslogin.action";
+            String SiriusLoginURL = "http://www.sirius.com/player/channel/fwrd.action?pageName=&categoryKey=&genreKey=";
             if (!isLive)
             {
                 SiriusLoginURL = "http://test.xmtuner.net/test.php";
             }
 
 
-            String data = "userName=" + HttpUtility.UrlEncode(user) + "&password=" + HttpUtility.UrlEncode(getMD5Hash(password)) + "&__checkbox_remember=true&remember=true&captchaEnabled=true&captchaID=" + HttpUtility.UrlEncode(captchaID) + "&timeNow=null&captcha_response=" + captchaResponse;
+            //String data = "userName=" + HttpUtility.UrlEncode(user) + "&password=" + HttpUtility.UrlEncode(getMD5Hash(password)) + "&__checkbox_remember=true&remember=true&captchaEnabled=true&captchaID=" + HttpUtility.UrlEncode(captchaID) + "&timeNow=null&captcha_response=" + captchaResponse;
             URL loginURL = new URL(SiriusLoginURL);
-            output("Connecting to: " + SiriusLoginURL + " (" + loginURL.getIP() + ")", LogLevel.Debug);
+            output("Connecting to: " + SiriusLoginURL + " (" + loginURL.getIP() + ")", "debug");
             loginURL.setRequestHeader("Cookie", cookies);
             loginURL.setCookieContainer(playerCookies);
-            loginURL.fetch(data);
+            loginURL.fetch(); //loginURL.fetch(data);
 
-            output("Server Response: " + loginURL.getStatusDescription(), LogLevel.Debug);
+            output("Server Response: " + loginURL.getStatusDescription(), "debug");
 
             if (loginURL.isSuccess)
             {
@@ -66,19 +85,19 @@ namespace XMTuner
                 loginCookies.Add(playerCookies);
                 cookies = setCookies(loginCookies);
 
-                output("Number of Cookies: " + cookieCount.ToString(), LogLevel.Debug);
+                output("Number of Cookies: " + cookieCount.ToString(), "debug");
 
                 if (cookieCount > 0)
                 {
 
-                    if (cookieCount <= 12)
+                    if (cookieCount < 12)
                     {
-                        output("Login failed: Bad Username or Password", LogLevel.Error);
+                        output("Login failed: Bad Username or Password", "error");
                         loginResult = false;
                     }
                     else
                     {
-                        output("Logged in as " + user, LogLevel.Info);
+                        output("Logged in as " + user, "info");
                         /* For the purposes of quickLogin, we want to just do the actual login step
                            and let the normal data rebuilding occur incrementally on its own.*/
                         if (firstLogin == true)
@@ -112,7 +131,7 @@ namespace XMTuner
                         {
                             //If we don't have [complete] chanData, consider ourselves not-logged-in
                             isLoggedIn = false;
-                            output("Login failed: Unable to retrieve channel data.", LogLevel.Error);
+                            output("Login failed: Unable to retrieve channel data.", "error");
                             loginResult = false;
                         }
 
@@ -122,11 +141,16 @@ namespace XMTuner
             }
             else
             {
-                output("Login Failed: " + loginURL.getStatusDescription(), LogLevel.Error);
+                output("Login Failed: " + loginURL.getStatusDescription(), "error");
                 loginResult = false;
             }
             loginURL.close();
             return loginResult;
+        }
+
+        private bool loadSiriusChannelGuide()
+        {
+            return true; //This method is now handled by channelMetaData.
         }
 
         private Boolean getSiriusCaptcha(out String captchaResponse, out String captchaID, out CookieCollection playerCookies)
@@ -134,13 +158,13 @@ namespace XMTuner
             //Prefetch
             String SiriusPlayerURL = "http://www.sirius.com/player/home/siriushome.action";
             URL playerURL = new URL(SiriusPlayerURL);
-            output("Connecting to: " + SiriusPlayerURL, LogLevel.Debug);
+            output("Connecting to: " + SiriusPlayerURL, "debug");
             playerURL.setCookieContainer();
             playerURL.fetch();
-            output("Server Response: " + playerURL.getStatusDescription(), LogLevel.Debug);
+            output("Server Response: " + playerURL.getStatusDescription(), "debug");
             if (playerURL.isSuccess == false)
             {
-                output("Error: " + playerURL.getStatusDescription(), LogLevel.Error);
+                output("Error: " + playerURL.getStatusDescription(), "error");
                 captchaResponse = null;
                 captchaID = null;
                 playerCookies = null;
@@ -155,7 +179,7 @@ namespace XMTuner
             playerCookies.Add(new Cookie("sirius_login_type", "subscriber", "", "www.sirius.com"));
             cookies = setCookies(playerCookies);
 
-            output("Number of Cookies: " + cookieCount.ToString(), LogLevel.Debug);
+            output("Number of Cookies: " + cookieCount.ToString(), "debug");
 
             String data = playerURL.response();
 
@@ -186,7 +210,7 @@ namespace XMTuner
             }
             catch (ArgumentOutOfRangeException)
             {
-                output("Failed to get Sirius captcha.", LogLevel.Error);
+                output("Failed to get Sirius captcha.", "error");
                 captchaID = null;
                 captchaResponse = null;
                 return false;
@@ -224,14 +248,26 @@ namespace XMTuner
             if (result == false)
             {
                 output("Fatal error encountered loading Sirius Channel Data Extensions, errors " +
-                       "will occur. Restarting XMTuner is recommended.", LogLevel.Error);
+                       "will occur. Restarting XMTuner is recommended.", "error");
             }
         }
 
-        private Boolean loadSiriusChannelGuide()
+        /*private Boolean loadSiriusChannelGuide()
+        {
+            List<String[]> cd = loadSiriusExtendedChannelDataObj();
+            foreach (String[] channel in cd)
+            {
+                XMChannel c = Find(Convert.ToInt32(channel[0]));
+                c.addChannelMetadataS(channel);
+            }
+
+            return true;
+        }*/
+
+        /* private Boolean loadSiriusChannelGuide()
         {
             Boolean fromCache = false;
-            output("Loading Sirius Extended Channel Data...", LogLevel.Info);
+            output("Loading Sirius Extended Channel Data...", "info");
             String data;
             String file = "channellineupsirius.cache";
             cache.addCacheFile(file, "sirius channel metadata", -1);
@@ -261,7 +297,7 @@ namespace XMTuner
             }
             catch (XmlException)
             {
-                output("Failed to load Sirius Extended Channel Data...", LogLevel.Error);
+                output("Failed to load Sirius Extended Channel Data...", "error");
                 return false;
             }
             XmlNodeList list = xmldoc.GetElementsByTagName("channel");
@@ -282,15 +318,15 @@ namespace XMTuner
 
             if (fromCache == false)
             {
-                output("Sirius Extended Channel Data loaded successfully...", LogLevel.Info);
+                output("Sirius Extended Channel Data loaded successfully...", "info");
                 cache.saveFile("channellineupsirius.cache", data);
             }
             else
             {
-                output("Sirius Extended Channel Data loaded successfully... (from cache)", LogLevel.Info);
+                output("Sirius Extended Channel Data loaded successfully... (from cache)", "info");
             }
             return true;
-        }
+        } */
 
         public string getCaptchaResponse(int captchaNum)
         {
@@ -428,13 +464,13 @@ namespace XMTuner
         protected override string playChannel(String address)
         {
             URL url = new URL(address);
-            output("Fetch: " + address + " (" + url.getIP() + ")", LogLevel.Debug);
+            output("Fetch: " + address + " (" + url.getIP() + ")", "debug");
             url.setRequestHeader("Cookie", cookies);
             url.fetch();
-            output("Server Response: " + url.getStatusDescription(), LogLevel.Debug);
+            output("Server Response: " + url.getStatusDescription(), "debug");
             if (url.isSuccess == false)
             {
-                output("Play Error: " + url.getStatusDescription(), LogLevel.Error);
+                output("Play Error: " + url.getStatusDescription(), "error");
                 return null;
             }
 
@@ -462,20 +498,20 @@ namespace XMTuner
             {
                 if (data.ToLower().Contains("access denied"))
                 {
-                    output("SIRIUS Internet Radio Error - Not Logged In", LogLevel.Error);
+                    output("SIRIUS Internet Radio Error - Not Logged In", "error");
                     isLoggedIn = false;
                 }
                 else
                 {
-                    output("SIRIUS Internet Radio Error - Unknown Error", LogLevel.Error);
-                    output("See playchannel.err for raw data", LogLevel.Debug);
+                    output("SIRIUS Internet Radio Error - Unknown Error", "error");
+                    output("See playchannel.err for raw data", "debug");
                 }
                 cache.saveFile("playchannel.err", data);
                 contentURL = null;
             }
             else
             {
-                output(contentURL, LogLevel.Debug);
+                output(contentURL, "debug");
             }
 
             return (contentURL);
@@ -495,35 +531,6 @@ namespace XMTuner
             return url;
         }
 
-        protected override Boolean setChannelMetadata(String rawData)
-        {
-            if (rawData == null)
-            {
-                return false;
-            }
-
-            foreach (String _value in setChannelMetadataHelper(rawData))
-            {
-                String[] value = _value.Replace("\\", "").Split(new string[] { "\"," }, StringSplitOptions.None);
-
-                String[] newdata = new String[4];
-                String name = value[0].Replace("\"", "");
-                newdata[0] = value[2].Replace("\"", ""); //XM's Num
-                newdata[2] = baseurl + value[6].Replace("\"", ""); // Logo (45x40)
-                newdata[3] = baseurl + value[10].Replace("\"", ""); // Logo (138x50)
-
-                /* Because Sirius/XM have to be unique, this channel doesn't have the same name and won't
-                 *  be correctly cross-referenced without being special-cased, for now. */
-                if (name.ToUpper().Equals("NPR NOW"))
-                {
-                    name = "NPR";
-                }
-
-                Find(name.ToUpper()).addChannelMetadataS(newdata);
-            }
-            return true;
-        }
-
         protected override String getChannelsNums()
         {
             String channels = "";
@@ -533,5 +540,139 @@ namespace XMTuner
             }
             return channels;
         }
+
+        /*private List<String[]> loadSiriusExtendedChannelDataObj()
+        {
+            List<String[]> list = new List<string[]>();
+            list.Add(new String[] { "1", "siriushits1", "2" });
+            list.Add(new String[] { "2", "starlite", "25" });
+            list.Add(new String[] { "3", "siriuslove", "23" });
+            list.Add(new String[] { "4", "8205", "4" });
+            list.Add(new String[] { "5", "siriusgold", "5" });
+            list.Add(new String[] { "6", "60svibrations", "6" });
+            list.Add(new String[] { "7", "totally70s", "7" });
+            list.Add(new String[] { "8", "big80s", "8" });
+            list.Add(new String[] { "9", "8206", "9" });
+            list.Add(new String[] { "10", "estreetradio", "58" });
+            list.Add(new String[] { "11", "bbcradio1", "29" });
+            list.Add(new String[] { "12", "thepulse", "26" });
+            list.Add(new String[] { "13", "elvisradio", "18" });
+            list.Add(new String[] { "14", "classicvinyl", "46" });
+            list.Add(new String[] { "15", "classicrewind", "49" });
+            list.Add(new String[] { "16", "thevault", "40" });
+            list.Add(new String[] { "17", "8731", "56" });
+            list.Add(new String[] { "18", "thespectrum", "45" });
+            list.Add(new String[] { "19", "buzzsaw", "53" });
+            list.Add(new String[] { "20", "octane", "48" });
+            list.Add(new String[] { "21", "altnation", "47" });
+            list.Add(new String[] { "22", "firstwave", "44" });
+            list.Add(new String[] { "23", "hairnation", "41" });
+            list.Add(new String[] { "24", "90salternative", "54" });
+            list.Add(new String[] { "25", "undergroundgarage", "59" });
+            list.Add(new String[] { "26", "leftofcenter", "43" });
+            list.Add(new String[] { "27", "hardattack", "42" });
+            list.Add(new String[] { "28", "faction", "52" });
+            list.Add(new String[] { "29", "8207", "50" });
+            list.Add(new String[] { "30", "coffeehouse", "51" });
+            list.Add(new String[] { "31", "radiomargaritaville", "55" });
+            list.Add(new String[] { "32", "gratefuldead", "57" });
+            list.Add(new String[] { "33", "thebridge", "27" });
+            list.Add(new String[] { "35", "chill", "84" });
+            list.Add(new String[] { "36", "thebeat", "81" });
+            list.Add(new String[] { "38", "area33", "38" });
+            list.Add(new String[] { "39", "8124 (backspin)", "65" });
+            list.Add(new String[] { "40", "hiphopnation", "67" });
+            list.Add(new String[] { "45", "shade45", "66" });
+            list.Add(new String[] { "50", "hotjamz", "68" });
+            list.Add(new String[] { "51", "heartandsoul", "62" });
+            list.Add(new String[] { "53", "soultown", "60" });
+            list.Add(new String[] { "60", "newcountry", "16" });
+            list.Add(new String[] { "61", "primecountry", "17" });
+            list.Add(new String[] { "62", "theroadhouse", "10" });
+            list.Add(new String[] { "63", "outlawcountry", "12" });
+            list.Add(new String[] { "64", "8209", "13" });
+            list.Add(new String[] { "65", "bluegrass", "14" });
+            list.Add(new String[] { "66", "spirit", "32" });
+            list.Add(new String[] { "67", "8210", "34" });
+            list.Add(new String[] { "68", "praise", "33" });
+            list.Add(new String[] { "71", "jazzcafe", "71" });
+            list.Add(new String[] { "72", "purejazz", "70" });
+            list.Add(new String[] { "73", "spa73", "72" });
+            list.Add(new String[] { "74", "siriusblues", "74" });
+            list.Add(new String[] { "75", "siriuslysinatra", "73" });
+            list.Add(new String[] { "76", "8215", "28" });
+            list.Add(new String[] { "77", "broadwaysbest", "75" });
+            list.Add(new String[] { "78", "metropolitanopera", "79" });
+            list.Add(new String[] { "79", "siriuspops", "77" });
+            list.Add(new String[] { "80", "symphonyhall", "78" });
+            list.Add(new String[] { "81", "8036 (the strobe)", "83" });
+            list.Add(new String[] { "83", "rumbon", "85" });
+            list.Add(new String[] { "84", "reggaerhythms", "86" });
+            list.Add(new String[] { "90", "8367", "120" });
+            list.Add(new String[] { "91", "espndeportes", "154" });
+            list.Add(new String[] { "99", "playboyradio", "99" });
+            list.Add(new String[] { "100", "howardstern100", "100" });
+            list.Add(new String[] { "101", "howardstern101", "101" });
+            list.Add(new String[] { "102", "siriusstars", "155" });
+            list.Add(new String[] { "103", "bluecollarcomedy", "148" });
+            list.Add(new String[] { "104", "rawdog", "150" });
+            list.Add(new String[] { "105", "laughbreak", "151" });
+            list.Add(new String[] { "106", "thefoxxhole", "149" });
+            list.Add(new String[] { "108", "maximradio", "139" });
+            list.Add(new String[] { "109", "siriusoutq", "98" });
+            list.Add(new String[] { "110", "indietalk", "130" });
+            list.Add(new String[] { "111", "cosmopolitanradio", "162" });
+            list.Add(new String[] { "112", "marthastewartlivingradio", "157" });
+            list.Add(new String[] { "114", "doctorradio", "119" });
+            list.Add(new String[] { "115", "radiodisney", "115" });
+            list.Add(new String[] { "116", "8216", "116" });
+            list.Add(new String[] { "117", "8212", "163" });
+            list.Add(new String[] { "120", "espnradio", "140" });
+            list.Add(new String[] { "122", "siriussportsaction", "143" });
+            list.Add(new String[] { "123", "8213", "144" });
+            list.Add(new String[] { "124", "siriusnflradio", "124" });
+            list.Add(new String[] { "129", "cnbc", "127" });
+            list.Add(new String[] { "130", "bloombergradio", "129" });
+            list.Add(new String[] { "132", "cnn", "122" });
+            list.Add(new String[] { "133", "cnnheadlinenews", "123" });
+            list.Add(new String[] { "140", "wrn", "135" });
+            list.Add(new String[] { "141", "bbcworld", "131" });
+            list.Add(new String[] { "144", "siriuspatriot", "166" });
+            list.Add(new String[] { "145", "foxnewstalk", "168" });
+            list.Add(new String[] { "146", "siriusleft", "137" });
+            list.Add(new String[] { "147", "roaddogtrucking", "171" });
+            list.Add(new String[] { "159", "thecatholicchannel", "117" });
+            list.Add(new String[] { "160", "ewtnglobal", "118" });
+            list.Add(new String[] { "161", "8307", "170" });
+            list.Add(new String[] { "195", "8182", "156" });
+            list.Add(new String[] { "196", "8183", "133" });
+            list.Add(new String[] { "197", "thevirus", "202" });
+            list.Add(new String[] { "208", "8185", "204" });
+            list.Add(new String[] { "209", "8186", "146" });
+            list.Add(new String[] { "210", "8187", "175" });
+            list.Add(new String[] { "211", "8368", "147" });
+            list.Add(new String[] { "801", "npr", "134" });
+            list.Add(new String[] { "802", "8225", "91" });
+            list.Add(new String[] { "805", "8226", "20" });
+            list.Add(new String[] { "806", "8208", "30" });
+            list.Add(new String[] { "807", "8228", "64" });
+            list.Add(new String[] { "808", "8227", "15" });
+            list.Add(new String[] { "809", "8211", "76" });
+            list.Add(new String[] { "810", "8229", "39" });
+            list.Add(new String[] { "811", "8230", "226" });
+            list.Add(new String[] { "812", "8231", "90" });
+            list.Add(new String[] { "813", "8232", "92" });
+            list.Add(new String[] { "814", "8233", "93" });
+            list.Add(new String[] { "815", "8366", "94" });
+            list.Add(new String[] { "816", "8235", "138" });
+            list.Add(new String[] { "817", "8236", "167" });
+            list.Add(new String[] { "818", "8237", "132" });
+            list.Add(new String[] { "819", "8239", "136" });
+            list.Add(new String[] { "820", "8238", "169" });
+            list.Add(new String[] { "824", "8369", "248" });
+
+            return list;
+
+        }*/
     }
 }
