@@ -57,14 +57,14 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_8A99BD833771400683FA965AEB4372A0"
-        "OwnerKey" = "8:_UNDEFINED"
+        "MsmKey" = "8:_8864654ACC99611D2946AE08FD664DCA"
+        "OwnerKey" = "8:_3326FA9845F85F23F2BD60C4FF32BD38"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_C61C9FAF903C4ACC8A1CEDD2D54B7CD5"
-        "OwnerKey" = "8:_UNDEFINED"
+        "MsmKey" = "8:_8864654ACC99611D2946AE08FD664DCA"
+        "OwnerKey" = "8:_732B0E6386A04A43B50C7F48502BD92D"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -861,7 +861,7 @@
                             "ContextData" = "8:"
                             "Attributes" = "3:0"
                             "Setting" = "3:2"
-                            "Value" = "8:[ProductName] Copyright 2009-2010; [ProductName] is not affiliated in with SiriusXM satellite radio."
+                            "Value" = "8:[ProductName] Copyright 2009-2011; [ProductName] is not affiliated in with SiriusXM satellite radio."
                             "DefaultValue" = "8:#1202"
                             "UsePlugInResources" = "11:TRUE"
                             }

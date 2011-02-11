@@ -84,7 +84,7 @@ namespace XMTuner
         }
         private void handleLogin(Boolean result)
         {
-            int maxattempts = 5;
+            int maxattempts = 1;
             int timeout = 10000;
             if (Form1.isService)
             {
@@ -114,26 +114,55 @@ namespace XMTuner
 
         protected virtual Boolean login()
         {
+            CookieCollection startupCookies = new CookieCollection();
+            //sirius_user_name=****@****.net;
+            startupCookies.Add(new Cookie("sirius_user_name", user, "", "www.xmradio.com"));
+            //sirius_password=******;
+            startupCookies.Add(new Cookie("sirius_password", password, "", "www.xmradio.com"));
+            //playerType=xm;
+            startupCookies.Add(new Cookie("playerType", "xm", "", "www.xmradio.com"));
+            //pad_user=yes;
+            startupCookies.Add(new Cookie("pad_user", "yes", "", "www.xmradio.com"));
+            //playspeed=high;
+            startupCookies.Add(new Cookie("playspeed", "high", "", "www.xmradio.com"));
+            //ep=XMROUS;
+            startupCookies.Add(new Cookie("ep", "XMROUS", "", "www.xmradio.com"));
+            //uiType=generic;
+            startupCookies.Add(new Cookie("uiType", "generic", "", "www.xmradio.com"));
+            //sirius_campaign_code=default;
+            startupCookies.Add(new Cookie("sirius_campaign_code", "default", "", "www.xmradio.com"));
+            //sirius_consumer_type=XMROUS;
+            startupCookies.Add(new Cookie("sirius_consumer_type", "XMROUS", "", "www.xmradio.com"));
+            //sirius_mp_bitrate_entitlement_cookie=high;
+            startupCookies.Add(new Cookie("sirius_mp_bitrate_entitlement_cookie", "high", "", "www.xmradio.com"));
+            //sirius_mp_bitrate_button_status_cookie=high
+            startupCookies.Add(new Cookie("sirius_mp_bitrate_button_status_cookie", "high", "", "www.xmradio.com"));
+            setCookies(startupCookies);
+
             Boolean loginResult = true;
             output("Logging into XM Radio Online", LogLevel.Info);
 
-            String XMURL = "http://www.xmradio.com/player/login/xmlogin.action";
+            String XMURL = "http://www.xmradio.com/player/channel/fwrd.action?pageName=category&categoryKey=&genreKey=";
             if (!isLive)
             {
                 XMURL = "http://test.xmtuner.net/test.php";
             }
 
-            String data = "playerToLaunch=xm&encryptPassword=false&userName="+user+"&password="+password;
+            //String data = "playerToLaunch=xm&encryptPassword=false&userName="+user+"&password="+password;
             URL loginURL = new URL(XMURL);
             output("Connecting to: " + XMURL + " ("+loginURL.getIP()+")", LogLevel.Debug);
-            loginURL.fetch(data);
+            loginURL.setRequestHeader("Cookie", cookies);
+            loginURL.setCookieContainer(startupCookies);
+            loginURL.fetch(); //loginURL.fetch(data);
 
             int responseCode = loginURL.getStatus();
             output("Server Response: " + loginURL.getStatusDescription(), LogLevel.Debug);
 
             if (loginURL.isSuccess)
             {
-                cookies = setCookies(loginURL.getCookies());
+                CookieCollection loginCookies = loginURL.getCookies();
+                loginCookies.Add(startupCookies);
+                cookies = setCookies(loginCookies);
 
                 output("Number of Cookies: " + cookieCount.ToString(), LogLevel.Debug);
 
@@ -734,6 +763,7 @@ namespace XMTuner
             else
             {
                 dnldChannelMetadata();
+                loadedChannelMetadata = true;
             }
         }
         protected void loadChannelMetadata(Boolean fastLoad)
@@ -783,7 +813,7 @@ namespace XMTuner
         private void dnldChannelMetadata()
         {
             output("Downloading extended channel data...", LogLevel.Info);
-            String channelMetaURL = "http://www.xmradio.com/onxm/index.xmc";
+            String channelMetaURL = "http://www.siriusxm.com/programschedules";
             if (!isLive)
             {
                 channelMetaURL = "http://test.xmtuner.net/epg/index.xmc";
@@ -798,6 +828,7 @@ namespace XMTuner
             {
                 String rawChannelMetaData = channelMetaData.response();
                 loadedChannelMetadata = setChannelMetadata(rawChannelMetaData);
+
                 if (loadedChannelMetadata == true)
                 {
                     output("Extended channel data loaded successfully", LogLevel.Info);
@@ -823,33 +854,63 @@ namespace XMTuner
             {
                 return false;
             }
-
-            foreach (String __value in setChannelMetadataHelper(rawData))
+            try
             {
-                String[] _value = __value.Replace("\\", "").Split(new string[] { "\"," }, StringSplitOptions.None);
-                String[] value = new String[_value.Length];
-                int i = 0;
-                foreach (String _item in _value) {
-                    value[i] = _item.Replace("\"", "");
-                    i++;
-                }
+                String baseurl = "http://www.siriusxm.com";
 
-                String[] newdata = new String[4];
-                newdata[0] = value[2]; //Num
-                if (value[5] != null && !value[5].Equals(""))
+                foreach (String _value in setChannelMetadataHelper(rawData))
                 {
-                    newdata[1] = baseurl + value[5]; //URL for channel
-                }
-                if (value[6] != null && !value[6].Equals(""))
-                {
-                    newdata[2] = baseurl + value[6]; // Logo (45x40)
-                }
-                if (value[10] != null && !value[10].Equals(""))
-                {
-                    newdata[3] = baseurl + value[10]; // Logo (138x50)
-                }
+                    String[] value = _value.Replace("\"", "").Split(new string[] { "::XMTUNER-SEPERATOR::" }, StringSplitOptions.None);
 
-                Find(Convert.ToInt32(newdata[0])).addChannelMetadata(newdata);
+                    //                   0            1             2               3            4          5           6              7                  8             9           10          11            12           13
+                    // rig.addChannel(genrekey, channelnumber, BestOfSirius, xmchannelnumber, BestOfXM, contentid, displayname, shortdescription, mediumdescription, vanityurl, channellogo, progtypekey, genretitle, genresortorder);
+                    // BestofSirius and BestofXM args will be either "" or "*"
+
+                    String[] newdata = new String[5];
+                    newdata[0] = value[1]; //Num
+                    int num;
+                    try
+                    {
+                        if (network.ToUpper().Equals("SIRIUS"))
+                        {
+                            num = Convert.ToInt32(value[1]);
+                        }
+                        else
+                        {
+                            num = Convert.ToInt32(value[3]);
+                        }
+                    }
+                    catch (FormatException) { continue; }
+
+                    //XM Channel Number
+                    if (value[3] != null && !value[3].Equals(""))
+                    {
+                        newdata[1] = value[3];
+                    }
+
+                    //Logo (138x50)
+                    if (value[10] != null && !value[10].Equals(""))
+                    {
+                        newdata[2] = baseurl + value[10];
+                    }
+                    //channelKey
+                    if (value[5] != null && !value[5].Equals(""))
+                    {
+                        newdata[3] = value[5];
+                    }
+
+                    //URL for channel
+                    if (value[9] != null && !value[9].Equals(""))
+                    {
+                        newdata[4] = baseurl + value[9];
+                    }
+
+                    Find(Convert.ToInt32(num)).addChannelMetadata(newdata);
+                }
+            }
+            catch (IndexOutOfRangeException)
+            {
+                return false;
             }
             return true;
         }
@@ -857,14 +918,14 @@ namespace XMTuner
         {
             try
             {
-                rawData = rawData.Replace("//rig.addChannel", "");
+                rawData = rawData.Replace("// rig.addChannel", "");
                 int start = rawData.IndexOf("rig.addChannel") + 15;
-                int length = rawData.IndexOf("loadPage();") - start;
+                int length = rawData.IndexOf("//ENTRY") - start;
                 rawData = rawData.Trim().Substring(start, length);
-                rawData = rawData.Replace("\t", "");
+                rawData = rawData.Replace("    ", "");
                 rawData = rawData.Replace(");", "");
                 rawData = rawData.Replace("\r\n", "");
-                rawData = rawData.Replace("\\\"", "");
+                rawData = rawData.Replace("\",", "::XMTUNER-SEPERATOR::");
             }
             catch (Exception)
             {

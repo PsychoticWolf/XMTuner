@@ -82,19 +82,27 @@ namespace XMTuner
             }
         }
 
-        public virtual void addChannelMetadata(String[] stringyInfo)
+        public virtual void addChannelMetadata(String[] details)
         {
-            if (stringyInfo[1] != null)
+            //details { num, xmnum, logo, key, url }
+            //           0     1      2    3    4
+
+            if (details[4] != null)
             {
-                url = stringyInfo[1];
+                url = details[4];
             }
-            if (stringyInfo[2] != null)
+            if (details[2] != null)
             {
-                logo_small = stringyInfo[2];
+                logo = details[2];
+                logo_small = details[2];
             }
-            if (stringyInfo[3] != null)
+            if (details[3] != null)
             {
-                logo = stringyInfo[3];
+                channelKey = details[3];
+            }
+            if (details[1] != null)
+            {
+                xmxref = Convert.ToInt32(details[1]);
             }
         }
 
@@ -108,30 +116,28 @@ namespace XMTuner
             programData.Clear();
         }
 
-        #region Sirius Specific Methods
-        public void addChannelMetadataS(String[] stringyInfo)
-        {
-            if (stringyInfo[0] != null)
-            {
-                xmxref = Convert.ToInt32(stringyInfo[0]);
-            }
-            if (stringyInfo[2] != null)
-            {
-                logo_small = stringyInfo[2];
-            }
-            if (stringyInfo[3] != null)
-            {
-                logo = stringyInfo[3];
-            }
+       /* #region Sirius Specific Methods
 
-        }
 
         public void addChannelData(String[] details)
         {
             url = details[0];
             channelKey = details[1];
         }
-        #endregion
+
+        public void addChannelMetadataS(String[] details)
+        {
+            if (details == null) { return; }
+            if (details[0] != null)
+            {
+                xmxref = Convert.ToInt32(details[2]);
+            }
+            if (details[1] != null)
+            {
+                channelKey = details[1];
+            }
+        }
+        #endregion*/
 
 
         #region IComparable<XMChannel> Members
