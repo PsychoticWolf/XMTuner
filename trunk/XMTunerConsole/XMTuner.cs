@@ -84,7 +84,7 @@ namespace XMTuner
         }
         private void handleLogin(Boolean result)
         {
-            int maxattempts = 1;
+            int maxattempts = 5;
             int timeout = 10000;
             if (Form1.isService)
             {

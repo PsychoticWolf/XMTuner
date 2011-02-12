@@ -477,6 +477,8 @@ namespace XMTuner
             channelBox.BeginUpdate();
             channelBox.Clear();
 
+            loadFavoritesBegin(); //Favorites Tab loading is linked to us...
+
             //Columns for Item and Subitems
             channelBox.Columns.AddRange(new ColumnHeader[] { new ColumnHeader(), new ColumnHeader() });
 
@@ -543,6 +545,7 @@ namespace XMTuner
                     if (!channelBox.Tag.Equals("") && self.favorites.isFavorite(chan.num))
                     {
                         item.Group = channelBox.Groups["cbGroupFavorite"];
+                        addFavorite(chan);
                     }
 
                 channelBox.Items.Add(item);
@@ -551,6 +554,7 @@ namespace XMTuner
 
             channelBox.EndUpdate();
             output("Channels Tab: Complete", LogLevel.Debug);
+            loadFavoritesEnd(); //Favorites Tab loading is linked to us...
             timerCB.Enabled = true;
             timerCB.Tag = 0;
         }
@@ -612,33 +616,15 @@ namespace XMTuner
 
         private void addToFavoritesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ListViewItem item = channelBox.SelectedItems[0];
-            if (item.Name.Equals("")) { return; }
-            int num = Convert.ToInt32(item.Name);
-            XMChannel ch = self.Find(num);
-            if (self.favorites.isFavorite(num) == false)
+            if (self.favorites.isFavorite(Convert.ToInt32(channelBox.SelectedItems[0].Name)) == false)
             {
-                //Add to Favorites...
-                DialogResult result = MessageBox.Show("Add \"" + ch.ToString() + "\" to Favorites?", "Add to Favorites", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                if (result == DialogResult.Yes)
-                {
-                    if (self.favorites.addFavoriteChannel(num))
-                    {
-                        item.Group = channelBox.Groups["cbGroupFavorite"];
-                    }
-                }
+                //Add to Favorites
+                bAddFavorite_Click(sender, e);
             }
             else
             {
-                //Already in favorites, offer to remove...
-                DialogResult result = MessageBox.Show("Remove \"" + ch.ToString() + "\" from Favorites?", "Remove from Favorites", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                if (result == DialogResult.Yes)
-                {
-                    if (self.favorites.removeFavoriteChannel(num))
-                    {
-                        item.Group = channelBox.Groups["cbGroupNormal"];
-                    }
-                }
+                //Remove from Favorites
+                bRemoveFavorite_Click(sender, e);
             }
         }
 
@@ -759,6 +745,174 @@ namespace XMTuner
             updateRecentlyPlayedBox();
         }
         #endregion
+
+#region Favorites Tab
+        private void loadFavoritesBegin()
+        {
+            output("Favorites Tab: Loading...", LogLevel.Debug);
+            favoritesListView.BeginUpdate();
+            favoritesListView.Clear();
+
+            //Columns for Item and Subitems
+            ColumnHeader column1, column2, column3, column4;
+            column1 = new ColumnHeader();
+            column1.Text = "Num";
+            column1.TextAlign = HorizontalAlignment.Center;
+            column1.Width = 35;
+
+            column2 = new ColumnHeader();
+            column2.Text = "Name";
+            column2.TextAlign = HorizontalAlignment.Left;
+            column2.Width = 148;
+
+            column4 = new ColumnHeader();
+            column4.Text = "Preset #";
+            column4.TextAlign = HorizontalAlignment.Center;
+            column4.Width = 53;
+
+            column3 = new ColumnHeader();
+            column3.Text = "Description";
+            column3.TextAlign = HorizontalAlignment.Left;
+            column3.Width = favoritesListView.Size.Width - (column1.Width + column2.Width + column4.Width +4);
+
+
+            favoritesListView.Columns.AddRange(new ColumnHeader[] { column1, column2, column3, column4 });
+
+        }
+        private void loadFavoritesEnd()
+        {
+            //Enable Form Controls for Managing Favorites...
+            addFavChNum.Enabled = true;
+            bAddFavorite.Enabled = true;
+            //addPresetNum.Enabled = true;
+            //bAddPreset.Enabled = true;
+
+            favoritesListView.EndUpdate();
+            output("Favorites Tab: Complete", LogLevel.Debug);
+        }
+        private void addFavorite(XMChannel chan)
+        {
+            //Verify we're being called on a channel that's set as a favorite.
+            if (self.favorites.isFavorite(chan.num) == false) { return; }
+
+            //We're a favorite channel.. add to the favorites panel listbox.
+            ListViewItem favorite = new ListViewItem(new String[] {chan.num.ToString(), chan.name, chan.desc});
+                favorite.Name = chan.num.ToString();
+                favorite.Group = favoritesListView.Groups["favorite"];
+            favoritesListView.Items.Add(favorite);
+            output("Favorites Tab: Added "+ chan.ToString(), LogLevel.Debug);
+        }
+
+#endregion
+
+        private void bAddFavorite_Click(object sender, EventArgs e)
+        {
+            int num;
+            //We try to support both the context menu and button method here..
+            if (sender.GetType().Name.Equals("Button"))
+            {
+                num = (int)addFavChNum.Value;
+            }
+            else
+            {
+                //The context menu doesn't use the number box. Look it up from the selected item.
+                ListViewItem item = channelBox.SelectedItems[0];
+                if (item.Name.Equals("")) { return; }
+                num = Convert.ToInt32(item.Name);
+            }
+
+            XMChannel ch = self.Find(num);
+            if (ch.isValid == true)
+            {
+                if (self.favorites.addFavoriteChannel(num) == true)
+                {
+
+                    MessageBox.Show(ch.ToString() + " added to favorites.", "Add to Favorites", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    addFavoriteChannelUIHelper(ch.num);
+                }
+                else
+                {
+                    MessageBox.Show(ch.ToString() + " is already a favorite channel.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Channel " + num.ToString() + " is not a valid channel.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void bRemoveFavorite_Click(object sender, EventArgs e)
+        {
+            ListViewItem item = favoritesListView.SelectedItems[0];
+            if (item.Name.Equals("")) { return; }
+            int num = Convert.ToInt32(item.Name);
+            XMChannel ch = self.Find(num);
+
+            //Already in favorites, offer to remove...
+            DialogResult result = MessageBox.Show("Remove \"" + ch.ToString() + "\" from Favorites?", "Remove from Favorites", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (result == DialogResult.Yes)
+            {
+                if (self.favorites.removeFavoriteChannel(num))
+                {
+                    removeFavoriteChannelUIHelper(ch.num);
+                }
+            }
+        }
+
+        private void bAddPreset_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void bRemovePreset_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void favoritesListView_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
+        {
+            if (e.IsSelected == true)
+            {
+                bRemoveFavorite.Enabled = true;
+                if (true == false)
+                {
+                    bRemovePreset.Enabled = true; //XXX Only if there is a preset...
+                }
+
+            }
+            else
+            {
+                bRemoveFavorite.Enabled = false;
+                bRemovePreset.Enabled = false;
+            }
+        }
+
+        private void addFavoriteChannelUIHelper(int num)
+        {
+            //Add Favorite to Favorites ListView
+            addFavorite(self.Find(num));
+
+            //Add Item to Favorites group in the channelBox listview
+            ListViewItem item = channelBox.Items.Find(num.ToString(), false)[0];
+                item.Group = channelBox.Groups["cbGroupFavorite"];
+        }
+
+        private void removeFavoriteChannelUIHelper(int num)
+        {
+            //Remove item from Favorites ListView
+            ListViewItem item = favoritesListView.Items.Find(num.ToString(), false)[0];
+                item.Remove();
+
+            //Move channel out of favorites group in the Channels ListView
+            item = channelBox.Items.Find(num.ToString(), false)[0];
+                item.Group = channelBox.Groups["cbGroupNormal"];
+        }
+
+
+
+
+
+
 
     }
 }

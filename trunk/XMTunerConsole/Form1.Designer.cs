@@ -30,7 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
-            System.Windows.Forms.NotifyIcon notifyIcon1;
+            System.Windows.Forms.NotifyIcon trayIcon;
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             System.Windows.Forms.ContextMenuStrip trayIconContextMenu;
             System.Windows.Forms.ToolStripMenuItem restoreToolStripMenuItem;
@@ -48,14 +48,23 @@
             System.Windows.Forms.ToolStripMenuItem clearToolStripMenuItem;
             System.Windows.Forms.Timer timerUpdater;
             System.Windows.Forms.TabPage tPlayer;
+            System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("Recently Played", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("Nothing Played Yet...");
             System.Windows.Forms.TabPage tChannels;
             System.Windows.Forms.Panel pChannels;
             System.Windows.Forms.Panel pStatusPanel;
             System.Windows.Forms.Button bManageFavorites;
-            System.Windows.Forms.Label label1;
-            System.Windows.Forms.TabPage tHistory;
-            System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("Recently Played", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("Nothing Played Yet...");
+            System.Windows.Forms.Label pStatusBarLabel;
+            System.Windows.Forms.TabPage tFavorites;
+            System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem("No Favorites");
+            System.Windows.Forms.ColumnHeader columnHeader5;
+            System.Windows.Forms.Panel pFavoritesBase;
+            System.Windows.Forms.GroupBox groupBox5;
+            System.Windows.Forms.GroupBox groupBox4;
+            System.Windows.Forms.Label lAddPreNum;
+            System.Windows.Forms.GroupBox groupBox3;
+            System.Windows.Forms.GroupBox groupBox2;
+            System.Windows.Forms.Label lAddFavChanNum;
             System.Windows.Forms.Panel pLogMain;
             System.Windows.Forms.Panel pLogBase;
             System.Windows.Forms.Button bConfigure;
@@ -75,17 +84,31 @@
             this.byCategoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loginToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewServerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.playerSplitContainer = new System.Windows.Forms.SplitContainer();
             this.axWindowsMediaPlayer1 = new AxWMPLib.AxWindowsMediaPlayer();
+            this.playerPanel1 = new System.Windows.Forms.Panel();
             this.pStatusLabel = new System.Windows.Forms.Label();
-            this.pLogoBox = new System.Windows.Forms.PictureBox();
+            this.pLabel4 = new System.Windows.Forms.Label();
+            this.pLabel5 = new System.Windows.Forms.Label();
+            this.pLabel3 = new System.Windows.Forms.Label();
             this.pLabel2 = new System.Windows.Forms.Label();
             this.pLabel6 = new System.Windows.Forms.Label();
-            this.pLabel3 = new System.Windows.Forms.Label();
-            this.pLabel5 = new System.Windows.Forms.Label();
+            this.txtChannelNum = new System.Windows.Forms.TextBox();
+            this.panelPresets = new System.Windows.Forms.Panel();
+            this.presetsPanelContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.manageFavoritesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.jumpToPreviousChannelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.pLogoBox = new System.Windows.Forms.PictureBox();
             this.pLabel1 = new System.Windows.Forms.Label();
-            this.pLabel4 = new System.Windows.Forms.Label();
-            this.channelBox = new System.Windows.Forms.ListView();
             this.recentlyPlayedBox = new System.Windows.Forms.ListView();
+            this.channelBox = new System.Windows.Forms.ListView();
+            this.favoritesListView = new System.Windows.Forms.ListView();
+            this.bRemovePreset = new System.Windows.Forms.Button();
+            this.addPresetNum = new System.Windows.Forms.NumericUpDown();
+            this.bAddPreset = new System.Windows.Forms.Button();
+            this.bRemoveFavorite = new System.Windows.Forms.Button();
+            this.addFavChNum = new System.Windows.Forms.NumericUpDown();
+            this.bAddFavorite = new System.Windows.Forms.Button();
             this.outputbox = new System.Windows.Forms.RichTextBox();
             this.linkServer = new System.Windows.Forms.LinkLabel();
             this.lblClock = new System.Windows.Forms.Label();
@@ -100,7 +123,7 @@
             this.tabcontrol1 = new System.Windows.Forms.TabControl();
             this.tLog = new System.Windows.Forms.TabPage();
             viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
+            trayIcon = new System.Windows.Forms.NotifyIcon(this.components);
             trayIconContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             restoreToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
@@ -121,8 +144,16 @@
             pChannels = new System.Windows.Forms.Panel();
             pStatusPanel = new System.Windows.Forms.Panel();
             bManageFavorites = new System.Windows.Forms.Button();
-            label1 = new System.Windows.Forms.Label();
-            tHistory = new System.Windows.Forms.TabPage();
+            pStatusBarLabel = new System.Windows.Forms.Label();
+            tFavorites = new System.Windows.Forms.TabPage();
+            columnHeader5 = new System.Windows.Forms.ColumnHeader();
+            pFavoritesBase = new System.Windows.Forms.Panel();
+            groupBox5 = new System.Windows.Forms.GroupBox();
+            groupBox4 = new System.Windows.Forms.GroupBox();
+            lAddPreNum = new System.Windows.Forms.Label();
+            groupBox3 = new System.Windows.Forms.GroupBox();
+            groupBox2 = new System.Windows.Forms.GroupBox();
+            lAddFavChanNum = new System.Windows.Forms.Label();
             pLogMain = new System.Windows.Forms.Panel();
             pLogBase = new System.Windows.Forms.Panel();
             bConfigure = new System.Windows.Forms.Button();
@@ -141,12 +172,24 @@
             channelContextMenu.SuspendLayout();
             historyContextMenu.SuspendLayout();
             tPlayer.SuspendLayout();
+            this.playerSplitContainer.Panel1.SuspendLayout();
+            this.playerSplitContainer.Panel2.SuspendLayout();
+            this.playerSplitContainer.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.axWindowsMediaPlayer1)).BeginInit();
+            this.playerPanel1.SuspendLayout();
+            this.presetsPanelContextMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pLogoBox)).BeginInit();
             tChannels.SuspendLayout();
             pChannels.SuspendLayout();
             pStatusPanel.SuspendLayout();
-            tHistory.SuspendLayout();
+            tFavorites.SuspendLayout();
+            pFavoritesBase.SuspendLayout();
+            groupBox5.SuspendLayout();
+            groupBox4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.addPresetNum)).BeginInit();
+            groupBox3.SuspendLayout();
+            groupBox2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.addFavChNum)).BeginInit();
             pLogMain.SuspendLayout();
             pLogBase.SuspendLayout();
             tAbout.SuspendLayout();
@@ -189,13 +232,13 @@
             this.byCategoryToolStripMenuItem.Text = "By Category";
             this.byCategoryToolStripMenuItem.Click += new System.EventHandler(this.byCategoryToolStripMenuItem_Click);
             // 
-            // notifyIcon1
+            // trayIcon
             // 
-            notifyIcon1.ContextMenuStrip = trayIconContextMenu;
-            notifyIcon1.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon1.Icon")));
-            notifyIcon1.Text = "XMTuner";
-            notifyIcon1.Visible = true;
-            notifyIcon1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon1_MouseDoubleClick);
+            trayIcon.ContextMenuStrip = trayIconContextMenu;
+            trayIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("trayIcon.Icon")));
+            trayIcon.Text = "XMTuner";
+            trayIcon.Visible = true;
+            trayIcon.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon1_MouseDoubleClick);
             // 
             // trayIconContextMenu
             // 
@@ -328,66 +371,124 @@
             // 
             // tPlayer
             // 
-            tPlayer.BackColor = System.Drawing.Color.MidnightBlue;
-            tPlayer.Controls.Add(this.axWindowsMediaPlayer1);
-            tPlayer.Controls.Add(this.pStatusLabel);
-            tPlayer.Controls.Add(this.pLogoBox);
-            tPlayer.Controls.Add(this.pLabel2);
-            tPlayer.Controls.Add(this.pLabel6);
-            tPlayer.Controls.Add(this.pLabel3);
-            tPlayer.Controls.Add(this.pLabel5);
-            tPlayer.Controls.Add(this.pLabel1);
-            tPlayer.Controls.Add(this.pLabel4);
+            tPlayer.BackColor = System.Drawing.Color.Transparent;
+            tPlayer.Controls.Add(this.playerSplitContainer);
             tPlayer.Location = new System.Drawing.Point(4, 22);
             tPlayer.Name = "tPlayer";
             tPlayer.Size = new System.Drawing.Size(552, 327);
             tPlayer.TabIndex = 5;
             tPlayer.Text = "Player";
             // 
+            // playerSplitContainer
+            // 
+            this.playerSplitContainer.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.playerSplitContainer.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
+            this.playerSplitContainer.IsSplitterFixed = true;
+            this.playerSplitContainer.Location = new System.Drawing.Point(0, 0);
+            this.playerSplitContainer.Margin = new System.Windows.Forms.Padding(0);
+            this.playerSplitContainer.Name = "playerSplitContainer";
+            this.playerSplitContainer.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            // 
+            // playerSplitContainer.Panel1
+            // 
+            this.playerSplitContainer.Panel1.BackColor = System.Drawing.Color.Black;
+            this.playerSplitContainer.Panel1.Controls.Add(this.axWindowsMediaPlayer1);
+            this.playerSplitContainer.Panel1.Controls.Add(this.playerPanel1);
+            this.playerSplitContainer.Panel1.Controls.Add(this.txtChannelNum);
+            this.playerSplitContainer.Panel1.Controls.Add(this.panelPresets);
+            this.playerSplitContainer.Panel1.Controls.Add(this.pLogoBox);
+            this.playerSplitContainer.Panel1.Controls.Add(this.pLabel1);
+            // 
+            // playerSplitContainer.Panel2
+            // 
+            this.playerSplitContainer.Panel2.Controls.Add(this.recentlyPlayedBox);
+            this.playerSplitContainer.Size = new System.Drawing.Size(552, 327);
+            this.playerSplitContainer.SplitterDistance = 194;
+            this.playerSplitContainer.SplitterWidth = 1;
+            this.playerSplitContainer.TabIndex = 17;
+            // 
             // axWindowsMediaPlayer1
             // 
             this.axWindowsMediaPlayer1.Enabled = true;
-            this.axWindowsMediaPlayer1.Location = new System.Drawing.Point(143, 28);
+            this.axWindowsMediaPlayer1.Location = new System.Drawing.Point(134, 20);
             this.axWindowsMediaPlayer1.Margin = new System.Windows.Forms.Padding(0);
             this.axWindowsMediaPlayer1.Name = "axWindowsMediaPlayer1";
             this.axWindowsMediaPlayer1.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("axWindowsMediaPlayer1.OcxState")));
-            this.axWindowsMediaPlayer1.Size = new System.Drawing.Size(245, 165);
+            this.axWindowsMediaPlayer1.Size = new System.Drawing.Size(284, 68);
             this.axWindowsMediaPlayer1.TabIndex = 4;
             this.axWindowsMediaPlayer1.PlayStateChange += new AxWMPLib._WMPOCXEvents_PlayStateChangeEventHandler(this.axWindowsMediaPlayer1_PlayStateChange);
             this.axWindowsMediaPlayer1.StatusChange += new System.EventHandler(this.axWindowsMediaPlayer1_StatusChange);
             this.axWindowsMediaPlayer1.ErrorEvent += new System.EventHandler(this.axWindowsMediaPlayer1_ErrorEvent);
             this.axWindowsMediaPlayer1.MouseMoveEvent += new AxWMPLib._WMPOCXEvents_MouseMoveEventHandler(this.axWindowsMediaPlayer1_MouseMoveEvent);
             // 
+            // playerPanel1
+            // 
+            this.playerPanel1.Controls.Add(this.pStatusLabel);
+            this.playerPanel1.Controls.Add(this.pLabel4);
+            this.playerPanel1.Controls.Add(this.pLabel5);
+            this.playerPanel1.Controls.Add(this.pLabel3);
+            this.playerPanel1.Controls.Add(this.pLabel2);
+            this.playerPanel1.Controls.Add(this.pLabel6);
+            this.playerPanel1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.playerPanel1.Location = new System.Drawing.Point(0, 96);
+            this.playerPanel1.Name = "playerPanel1";
+            this.playerPanel1.Size = new System.Drawing.Size(552, 73);
+            this.playerPanel1.TabIndex = 13;
+            // 
             // pStatusLabel
             // 
             this.pStatusLabel.AutoSize = true;
             this.pStatusLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.pStatusLabel.ForeColor = System.Drawing.Color.White;
-            this.pStatusLabel.Location = new System.Drawing.Point(34, 266);
+            this.pStatusLabel.Location = new System.Drawing.Point(30, 28);
             this.pStatusLabel.Name = "pStatusLabel";
             this.pStatusLabel.Size = new System.Drawing.Size(51, 16);
             this.pStatusLabel.TabIndex = 12;
             this.pStatusLabel.Text = "Status";
             this.pStatusLabel.UseMnemonic = false;
             // 
-            // pLogoBox
+            // pLabel4
             // 
-            this.pLogoBox.BackColor = System.Drawing.Color.Transparent;
-            this.pLogoBox.InitialImage = null;
-            this.pLogoBox.Location = new System.Drawing.Point(2, 6);
-            this.pLogoBox.Name = "pLogoBox";
-            this.pLogoBox.Size = new System.Drawing.Size(128, 50);
-            this.pLogoBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
-            this.pLogoBox.TabIndex = 3;
-            this.pLogoBox.TabStop = false;
+            this.pLabel4.AutoEllipsis = true;
+            this.pLabel4.ForeColor = System.Drawing.Color.White;
+            this.pLabel4.Location = new System.Drawing.Point(99, 38);
+            this.pLabel4.Name = "pLabel4";
+            this.pLabel4.Size = new System.Drawing.Size(415, 13);
+            this.pLabel4.TabIndex = 9;
+            this.pLabel4.Text = "Album:";
+            this.pLabel4.UseMnemonic = false;
+            // 
+            // pLabel5
+            // 
+            this.pLabel5.AutoSize = true;
+            this.pLabel5.ForeColor = System.Drawing.Color.White;
+            this.pLabel5.Location = new System.Drawing.Point(3, 57);
+            this.pLabel5.Name = "pLabel5";
+            this.pLabel5.Size = new System.Drawing.Size(38, 13);
+            this.pLabel5.TabIndex = 10;
+            this.pLabel5.Text = "Ready";
+            this.pLabel5.UseMnemonic = false;
+            // 
+            // pLabel3
+            // 
+            this.pLabel3.AutoEllipsis = true;
+            this.pLabel3.ForeColor = System.Drawing.Color.White;
+            this.pLabel3.Location = new System.Drawing.Point(99, 21);
+            this.pLabel3.Name = "pLabel3";
+            this.pLabel3.Size = new System.Drawing.Size(415, 13);
+            this.pLabel3.TabIndex = 8;
+            this.pLabel3.Text = "Artist:";
+            this.pLabel3.UseMnemonic = false;
+            this.pLabel3.TextChanged += new System.EventHandler(this.pLabel2_TextChanged);
             // 
             // pLabel2
             // 
             this.pLabel2.AutoEllipsis = true;
+            this.pLabel2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.pLabel2.ForeColor = System.Drawing.Color.White;
-            this.pLabel2.Location = new System.Drawing.Point(130, 239);
+            this.pLabel2.Location = new System.Drawing.Point(99, 1);
             this.pLabel2.Name = "pLabel2";
-            this.pLabel2.Size = new System.Drawing.Size(258, 13);
+            this.pLabel2.Size = new System.Drawing.Size(415, 16);
             this.pLabel2.TabIndex = 7;
             this.pLabel2.Text = "Title:";
             this.pLabel2.UseMnemonic = false;
@@ -396,7 +497,7 @@
             // pLabel6
             // 
             this.pLabel6.ForeColor = System.Drawing.Color.White;
-            this.pLabel6.Location = new System.Drawing.Point(497, 287);
+            this.pLabel6.Location = new System.Drawing.Point(497, 60);
             this.pLabel6.Name = "pLabel6";
             this.pLabel6.Size = new System.Drawing.Size(54, 15);
             this.pLabel6.TabIndex = 11;
@@ -404,51 +505,95 @@
             this.pLabel6.TextAlign = System.Drawing.ContentAlignment.TopRight;
             this.pLabel6.UseMnemonic = false;
             // 
-            // pLabel3
+            // txtChannelNum
             // 
-            this.pLabel3.AutoEllipsis = true;
-            this.pLabel3.ForeColor = System.Drawing.Color.White;
-            this.pLabel3.Location = new System.Drawing.Point(130, 254);
-            this.pLabel3.Name = "pLabel3";
-            this.pLabel3.Size = new System.Drawing.Size(258, 13);
-            this.pLabel3.TabIndex = 8;
-            this.pLabel3.Text = "Artist:";
-            this.pLabel3.UseMnemonic = false;
-            this.pLabel3.TextChanged += new System.EventHandler(this.pLabel2_TextChanged);
+            this.txtChannelNum.BackColor = System.Drawing.Color.Black;
+            this.txtChannelNum.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.txtChannelNum.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtChannelNum.ForeColor = System.Drawing.Color.White;
+            this.txtChannelNum.Location = new System.Drawing.Point(524, 2);
+            this.txtChannelNum.Name = "txtChannelNum";
+            this.txtChannelNum.Size = new System.Drawing.Size(26, 15);
+            this.txtChannelNum.TabIndex = 14;
+            this.txtChannelNum.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtChannelNum_KeyPress);
+            this.txtChannelNum.Enter += new System.EventHandler(this.txtChannelNum_Enter);
             // 
-            // pLabel5
+            // panelPresets
             // 
-            this.pLabel5.AutoSize = true;
-            this.pLabel5.ForeColor = System.Drawing.Color.White;
-            this.pLabel5.Location = new System.Drawing.Point(-4, 282);
-            this.pLabel5.Name = "pLabel5";
-            this.pLabel5.Size = new System.Drawing.Size(38, 13);
-            this.pLabel5.TabIndex = 10;
-            this.pLabel5.Text = "Ready";
-            this.pLabel5.UseMnemonic = false;
+            this.panelPresets.BackColor = System.Drawing.Color.Transparent;
+            this.panelPresets.ContextMenuStrip = this.presetsPanelContextMenu;
+            this.panelPresets.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panelPresets.Location = new System.Drawing.Point(0, 169);
+            this.panelPresets.Margin = new System.Windows.Forms.Padding(0);
+            this.panelPresets.Name = "panelPresets";
+            this.panelPresets.Size = new System.Drawing.Size(552, 25);
+            this.panelPresets.TabIndex = 15;
+            // 
+            // presetsPanelContextMenu
+            // 
+            this.presetsPanelContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.manageFavoritesToolStripMenuItem,
+            this.jumpToPreviousChannelToolStripMenuItem});
+            this.presetsPanelContextMenu.Name = "presetsPanelContextMenu";
+            this.presetsPanelContextMenu.Size = new System.Drawing.Size(213, 48);
+            // 
+            // manageFavoritesToolStripMenuItem
+            // 
+            this.manageFavoritesToolStripMenuItem.Name = "manageFavoritesToolStripMenuItem";
+            this.manageFavoritesToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+            this.manageFavoritesToolStripMenuItem.Text = "Manage Favorites...";
+            // 
+            // jumpToPreviousChannelToolStripMenuItem
+            // 
+            this.jumpToPreviousChannelToolStripMenuItem.Name = "jumpToPreviousChannelToolStripMenuItem";
+            this.jumpToPreviousChannelToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+            this.jumpToPreviousChannelToolStripMenuItem.Text = "Jump to Previous Channel";
+            // 
+            // pLogoBox
+            // 
+            this.pLogoBox.BackColor = System.Drawing.Color.Transparent;
+            this.pLogoBox.InitialImage = null;
+            this.pLogoBox.Location = new System.Drawing.Point(3, 20);
+            this.pLogoBox.Name = "pLogoBox";
+            this.pLogoBox.Size = new System.Drawing.Size(128, 50);
+            this.pLogoBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+            this.pLogoBox.TabIndex = 3;
+            this.pLogoBox.TabStop = false;
             // 
             // pLabel1
             // 
             this.pLabel1.AutoEllipsis = true;
-            this.pLabel1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.pLabel1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.pLabel1.ForeColor = System.Drawing.Color.White;
-            this.pLabel1.Location = new System.Drawing.Point(132, 0);
+            this.pLabel1.Location = new System.Drawing.Point(3, 0);
             this.pLabel1.Name = "pLabel1";
-            this.pLabel1.Size = new System.Drawing.Size(258, 17);
+            this.pLabel1.Size = new System.Drawing.Size(421, 17);
             this.pLabel1.TabIndex = 6;
             this.pLabel1.Text = "Channel:";
             this.pLabel1.UseMnemonic = false;
             // 
-            // pLabel4
+            // recentlyPlayedBox
             // 
-            this.pLabel4.AutoEllipsis = true;
-            this.pLabel4.ForeColor = System.Drawing.Color.White;
-            this.pLabel4.Location = new System.Drawing.Point(130, 270);
-            this.pLabel4.Name = "pLabel4";
-            this.pLabel4.Size = new System.Drawing.Size(415, 13);
-            this.pLabel4.TabIndex = 9;
-            this.pLabel4.Text = "Album:";
-            this.pLabel4.UseMnemonic = false;
+            this.recentlyPlayedBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.recentlyPlayedBox.ContextMenuStrip = historyContextMenu;
+            this.recentlyPlayedBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.recentlyPlayedBox.FullRowSelect = true;
+            listViewGroup1.Header = "Recently Played";
+            listViewGroup1.Name = "listViewGroup1";
+            this.recentlyPlayedBox.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
+            listViewGroup1});
+            this.recentlyPlayedBox.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
+            listViewItem1.Group = listViewGroup1;
+            this.recentlyPlayedBox.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
+            listViewItem1});
+            this.recentlyPlayedBox.Location = new System.Drawing.Point(0, 0);
+            this.recentlyPlayedBox.Margin = new System.Windows.Forms.Padding(0);
+            this.recentlyPlayedBox.Name = "recentlyPlayedBox";
+            this.recentlyPlayedBox.Size = new System.Drawing.Size(552, 132);
+            this.recentlyPlayedBox.TabIndex = 16;
+            this.recentlyPlayedBox.TileSize = new System.Drawing.Size(507, 30);
+            this.recentlyPlayedBox.UseCompatibleStateImageBehavior = false;
+            this.recentlyPlayedBox.View = System.Windows.Forms.View.Tile;
             // 
             // tChannels
             // 
@@ -497,7 +642,7 @@
             // 
             pStatusPanel.BackColor = System.Drawing.Color.Black;
             pStatusPanel.Controls.Add(bManageFavorites);
-            pStatusPanel.Controls.Add(label1);
+            pStatusPanel.Controls.Add(pStatusBarLabel);
             pStatusPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
             pStatusPanel.Location = new System.Drawing.Point(0, 299);
             pStatusPanel.Name = "pStatusPanel";
@@ -513,49 +658,222 @@
             bManageFavorites.Text = "Manage Favorites...";
             bManageFavorites.UseVisualStyleBackColor = true;
             // 
-            // label1
+            // pStatusBarLabel
             // 
-            label1.AutoSize = true;
-            label1.ForeColor = System.Drawing.Color.White;
-            label1.Location = new System.Drawing.Point(6, 7);
-            label1.Name = "label1";
-            label1.Size = new System.Drawing.Size(219, 13);
-            label1.TabIndex = 0;
-            label1.Text = "This space will house the Player Status Bar...";
+            pStatusBarLabel.AutoSize = true;
+            pStatusBarLabel.ForeColor = System.Drawing.Color.White;
+            pStatusBarLabel.Location = new System.Drawing.Point(6, 7);
+            pStatusBarLabel.Name = "pStatusBarLabel";
+            pStatusBarLabel.Size = new System.Drawing.Size(219, 13);
+            pStatusBarLabel.TabIndex = 0;
+            pStatusBarLabel.Text = "This space will house the Player Status Bar...";
             // 
-            // tHistory
+            // tFavorites
             // 
-            tHistory.Controls.Add(this.recentlyPlayedBox);
-            tHistory.Location = new System.Drawing.Point(4, 22);
-            tHistory.Name = "tHistory";
-            tHistory.Padding = new System.Windows.Forms.Padding(0, 1, 0, 0);
-            tHistory.Size = new System.Drawing.Size(552, 327);
-            tHistory.TabIndex = 4;
-            tHistory.Text = "History";
-            tHistory.UseVisualStyleBackColor = true;
+            tFavorites.Controls.Add(this.favoritesListView);
+            tFavorites.Controls.Add(pFavoritesBase);
+            tFavorites.Location = new System.Drawing.Point(4, 22);
+            tFavorites.Name = "tFavorites";
+            tFavorites.Padding = new System.Windows.Forms.Padding(0, 1, 0, 0);
+            tFavorites.Size = new System.Drawing.Size(552, 327);
+            tFavorites.TabIndex = 4;
+            tFavorites.Text = "Favorites";
+            tFavorites.UseVisualStyleBackColor = true;
             // 
-            // recentlyPlayedBox
+            // favoritesListView
             // 
-            this.recentlyPlayedBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.recentlyPlayedBox.ContextMenuStrip = historyContextMenu;
-            this.recentlyPlayedBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.recentlyPlayedBox.FullRowSelect = true;
-            listViewGroup1.Header = "Recently Played";
-            listViewGroup1.Name = "listViewGroup1";
-            this.recentlyPlayedBox.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
-            listViewGroup1});
-            this.recentlyPlayedBox.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
-            listViewItem1.Group = listViewGroup1;
-            this.recentlyPlayedBox.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem1});
-            this.recentlyPlayedBox.Location = new System.Drawing.Point(0, 1);
-            this.recentlyPlayedBox.Margin = new System.Windows.Forms.Padding(0);
-            this.recentlyPlayedBox.Name = "recentlyPlayedBox";
-            this.recentlyPlayedBox.Size = new System.Drawing.Size(552, 326);
-            this.recentlyPlayedBox.TabIndex = 7;
-            this.recentlyPlayedBox.TileSize = new System.Drawing.Size(507, 30);
-            this.recentlyPlayedBox.UseCompatibleStateImageBehavior = false;
-            this.recentlyPlayedBox.View = System.Windows.Forms.View.Tile;
+            this.favoritesListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            columnHeader5});
+            this.favoritesListView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.favoritesListView.ForeColor = System.Drawing.Color.Black;
+            this.favoritesListView.FullRowSelect = true;
+            listViewItem2.StateImageIndex = 0;
+            this.favoritesListView.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
+            listViewItem2});
+            this.favoritesListView.Location = new System.Drawing.Point(0, 1);
+            this.favoritesListView.Margin = new System.Windows.Forms.Padding(0);
+            this.favoritesListView.Name = "favoritesListView";
+            this.favoritesListView.Size = new System.Drawing.Size(552, 248);
+            this.favoritesListView.TabIndex = 0;
+            this.favoritesListView.UseCompatibleStateImageBehavior = false;
+            this.favoritesListView.View = System.Windows.Forms.View.Details;
+            this.favoritesListView.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.favoritesListView_ItemSelectionChanged);
+            // 
+            // columnHeader5
+            // 
+            columnHeader5.Text = "Favorite Channels";
+            columnHeader5.Width = 450;
+            // 
+            // pFavoritesBase
+            // 
+            pFavoritesBase.BackColor = System.Drawing.SystemColors.Control;
+            pFavoritesBase.Controls.Add(groupBox5);
+            pFavoritesBase.Controls.Add(groupBox4);
+            pFavoritesBase.Controls.Add(groupBox3);
+            pFavoritesBase.Controls.Add(groupBox2);
+            pFavoritesBase.Dock = System.Windows.Forms.DockStyle.Bottom;
+            pFavoritesBase.Location = new System.Drawing.Point(0, 249);
+            pFavoritesBase.Margin = new System.Windows.Forms.Padding(0);
+            pFavoritesBase.Name = "pFavoritesBase";
+            pFavoritesBase.Size = new System.Drawing.Size(552, 78);
+            pFavoritesBase.TabIndex = 2;
+            // 
+            // groupBox5
+            // 
+            groupBox5.Controls.Add(this.bRemovePreset);
+            groupBox5.Location = new System.Drawing.Point(423, 5);
+            groupBox5.Margin = new System.Windows.Forms.Padding(0);
+            groupBox5.Name = "groupBox5";
+            groupBox5.Size = new System.Drawing.Size(125, 70);
+            groupBox5.TabIndex = 3;
+            groupBox5.TabStop = false;
+            groupBox5.Text = "Remove from Presets";
+            // 
+            // bRemovePreset
+            // 
+            this.bRemovePreset.Enabled = false;
+            this.bRemovePreset.Location = new System.Drawing.Point(12, 24);
+            this.bRemovePreset.Name = "bRemovePreset";
+            this.bRemovePreset.Size = new System.Drawing.Size(100, 23);
+            this.bRemovePreset.TabIndex = 1;
+            this.bRemovePreset.Text = "Remove Preset";
+            this.bRemovePreset.UseVisualStyleBackColor = true;
+            this.bRemovePreset.Click += new System.EventHandler(this.bRemovePreset_Click);
+            // 
+            // groupBox4
+            // 
+            groupBox4.Controls.Add(lAddPreNum);
+            groupBox4.Controls.Add(this.addPresetNum);
+            groupBox4.Controls.Add(this.bAddPreset);
+            groupBox4.Location = new System.Drawing.Point(281, 5);
+            groupBox4.Margin = new System.Windows.Forms.Padding(0);
+            groupBox4.Name = "groupBox4";
+            groupBox4.Size = new System.Drawing.Size(140, 70);
+            groupBox4.TabIndex = 2;
+            groupBox4.TabStop = false;
+            groupBox4.Text = "Add to Presets";
+            // 
+            // lAddPreNum
+            // 
+            lAddPreNum.AutoSize = true;
+            lAddPreNum.Enabled = false;
+            lAddPreNum.Location = new System.Drawing.Point(10, 18);
+            lAddPreNum.Name = "lAddPreNum";
+            lAddPreNum.Size = new System.Drawing.Size(80, 13);
+            lAddPreNum.TabIndex = 2;
+            lAddPreNum.Text = "Preset Number:";
+            // 
+            // addPresetNum
+            // 
+            this.addPresetNum.Enabled = false;
+            this.addPresetNum.Location = new System.Drawing.Point(90, 14);
+            this.addPresetNum.Maximum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.addPresetNum.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.addPresetNum.Name = "addPresetNum";
+            this.addPresetNum.Size = new System.Drawing.Size(40, 20);
+            this.addPresetNum.TabIndex = 1;
+            this.addPresetNum.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // bAddPreset
+            // 
+            this.bAddPreset.Enabled = false;
+            this.bAddPreset.Location = new System.Drawing.Point(22, 36);
+            this.bAddPreset.Name = "bAddPreset";
+            this.bAddPreset.Size = new System.Drawing.Size(100, 23);
+            this.bAddPreset.TabIndex = 0;
+            this.bAddPreset.Text = "Add Preset";
+            this.bAddPreset.UseVisualStyleBackColor = true;
+            this.bAddPreset.Click += new System.EventHandler(this.bAddPreset_Click);
+            // 
+            // groupBox3
+            // 
+            groupBox3.Controls.Add(this.bRemoveFavorite);
+            groupBox3.Location = new System.Drawing.Point(149, 5);
+            groupBox3.Margin = new System.Windows.Forms.Padding(0);
+            groupBox3.Name = "groupBox3";
+            groupBox3.Size = new System.Drawing.Size(130, 70);
+            groupBox3.TabIndex = 1;
+            groupBox3.TabStop = false;
+            groupBox3.Text = "Remove from Favorites";
+            // 
+            // bRemoveFavorite
+            // 
+            this.bRemoveFavorite.Enabled = false;
+            this.bRemoveFavorite.Location = new System.Drawing.Point(15, 24);
+            this.bRemoveFavorite.Name = "bRemoveFavorite";
+            this.bRemoveFavorite.Size = new System.Drawing.Size(100, 23);
+            this.bRemoveFavorite.TabIndex = 0;
+            this.bRemoveFavorite.Text = "Remove Favorite";
+            this.bRemoveFavorite.UseVisualStyleBackColor = true;
+            this.bRemoveFavorite.Click += new System.EventHandler(this.bRemoveFavorite_Click);
+            // 
+            // groupBox2
+            // 
+            groupBox2.Controls.Add(lAddFavChanNum);
+            groupBox2.Controls.Add(this.addFavChNum);
+            groupBox2.Controls.Add(this.bAddFavorite);
+            groupBox2.Location = new System.Drawing.Point(2, 5);
+            groupBox2.Margin = new System.Windows.Forms.Padding(0);
+            groupBox2.Name = "groupBox2";
+            groupBox2.Size = new System.Drawing.Size(145, 70);
+            groupBox2.TabIndex = 0;
+            groupBox2.TabStop = false;
+            groupBox2.Text = "Add to Favorites";
+            // 
+            // lAddFavChanNum
+            // 
+            lAddFavChanNum.AutoSize = true;
+            lAddFavChanNum.Location = new System.Drawing.Point(7, 18);
+            lAddFavChanNum.Name = "lAddFavChanNum";
+            lAddFavChanNum.Size = new System.Drawing.Size(89, 13);
+            lAddFavChanNum.TabIndex = 2;
+            lAddFavChanNum.Text = "Channel Number:";
+            // 
+            // addFavChNum
+            // 
+            this.addFavChNum.Enabled = false;
+            this.addFavChNum.Location = new System.Drawing.Point(96, 14);
+            this.addFavChNum.Maximum = new decimal(new int[] {
+            300,
+            0,
+            0,
+            0});
+            this.addFavChNum.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.addFavChNum.Name = "addFavChNum";
+            this.addFavChNum.Size = new System.Drawing.Size(42, 20);
+            this.addFavChNum.TabIndex = 1;
+            this.addFavChNum.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // bAddFavorite
+            // 
+            this.bAddFavorite.Enabled = false;
+            this.bAddFavorite.Location = new System.Drawing.Point(27, 36);
+            this.bAddFavorite.Name = "bAddFavorite";
+            this.bAddFavorite.Size = new System.Drawing.Size(90, 23);
+            this.bAddFavorite.TabIndex = 0;
+            this.bAddFavorite.Text = "Add Favorite";
+            this.bAddFavorite.UseVisualStyleBackColor = true;
+            this.bAddFavorite.Click += new System.EventHandler(this.bAddFavorite_Click);
             // 
             // pLogMain
             // 
@@ -698,7 +1016,7 @@
             aBuildDate.ReadOnly = true;
             aBuildDate.Size = new System.Drawing.Size(62, 19);
             aBuildDate.TabIndex = 17;
-            aBuildDate.Text = "2010111";
+            aBuildDate.Text = "20110211";
             aBuildDate.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // label8
@@ -825,7 +1143,7 @@
             this.tabcontrol1.AccessibleRole = System.Windows.Forms.AccessibleRole.None;
             this.tabcontrol1.Controls.Add(tPlayer);
             this.tabcontrol1.Controls.Add(tChannels);
-            this.tabcontrol1.Controls.Add(tHistory);
+            this.tabcontrol1.Controls.Add(tFavorites);
             this.tabcontrol1.Controls.Add(this.tLog);
             this.tabcontrol1.Controls.Add(tAbout);
             this.tabcontrol1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -873,14 +1191,29 @@
             channelContextMenu.ResumeLayout(false);
             historyContextMenu.ResumeLayout(false);
             tPlayer.ResumeLayout(false);
-            tPlayer.PerformLayout();
+            this.playerSplitContainer.Panel1.ResumeLayout(false);
+            this.playerSplitContainer.Panel1.PerformLayout();
+            this.playerSplitContainer.Panel2.ResumeLayout(false);
+            this.playerSplitContainer.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.axWindowsMediaPlayer1)).EndInit();
+            this.playerPanel1.ResumeLayout(false);
+            this.playerPanel1.PerformLayout();
+            this.presetsPanelContextMenu.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pLogoBox)).EndInit();
             tChannels.ResumeLayout(false);
             pChannels.ResumeLayout(false);
             pStatusPanel.ResumeLayout(false);
             pStatusPanel.PerformLayout();
-            tHistory.ResumeLayout(false);
+            tFavorites.ResumeLayout(false);
+            pFavoritesBase.ResumeLayout(false);
+            groupBox5.ResumeLayout(false);
+            groupBox4.ResumeLayout(false);
+            groupBox4.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.addPresetNum)).EndInit();
+            groupBox3.ResumeLayout(false);
+            groupBox2.ResumeLayout(false);
+            groupBox2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.addFavChNum)).EndInit();
             pLogMain.ResumeLayout(false);
             pLogBase.ResumeLayout(false);
             pLogBase.PerformLayout();
@@ -896,7 +1229,6 @@
 
         #endregion
 
-        private System.Windows.Forms.ListView recentlyPlayedBox;
         private System.Windows.Forms.PictureBox pLogoBox;
         private System.Windows.Forms.Label pLabel2;
         private System.Windows.Forms.Label pLabel6;
@@ -925,6 +1257,21 @@
         private System.Windows.Forms.ToolStripMenuItem viewServerToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem byCategoryToolStripMenuItem;
         public System.Windows.Forms.RichTextBox outputbox;
+        private System.Windows.Forms.Panel playerPanel1;
+        private System.Windows.Forms.TextBox txtChannelNum;
+        private System.Windows.Forms.Panel panelPresets;
+        private System.Windows.Forms.ListView recentlyPlayedBox;
+        private System.Windows.Forms.SplitContainer playerSplitContainer;
+        private System.Windows.Forms.ContextMenuStrip presetsPanelContextMenu;
+        private System.Windows.Forms.ToolStripMenuItem manageFavoritesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem jumpToPreviousChannelToolStripMenuItem;
+        private System.Windows.Forms.ListView favoritesListView;
+        private System.Windows.Forms.Button bRemoveFavorite;
+        private System.Windows.Forms.Button bRemovePreset;
+        private System.Windows.Forms.Button bAddPreset;
+        private System.Windows.Forms.Button bAddFavorite;
+        private System.Windows.Forms.NumericUpDown addFavChNum;
+        private System.Windows.Forms.NumericUpDown addPresetNum;
 
 
     }
