@@ -156,6 +156,18 @@ namespace XMTuner
             return other.num.Equals(this.num);
         }
 
+        public Boolean isValid
+        {
+            get
+            {
+                if (num != 0)
+                {
+                    return true;
+                }
+                return false;
+            }
+        }
+
         #endregion
     }
 }

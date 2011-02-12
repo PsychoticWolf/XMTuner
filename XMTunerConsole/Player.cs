@@ -11,6 +11,9 @@ namespace XMTuner
         int p;
         int sleepPlayerNum = 0;
 
+        int wmpVisWidth;
+        int wmpVisHeight;
+
         #region Player
         private void updateNowPlayingData(Boolean useDefault, Boolean isLoading, Int32 num)
         {
@@ -236,6 +239,10 @@ namespace XMTuner
 
         private void initPlayer()
         {
+            wmpVisWidth = axWindowsMediaPlayer1.Size.Width;
+            wmpVisHeight = axWindowsMediaPlayer1.Size.Height;
+
+            createPresetButtons();
             showLogo();
             axWindowsMediaPlayer1.uiMode = "none";
 
@@ -265,7 +272,7 @@ namespace XMTuner
         private void showWMPPlayerUI()
         {
             axWindowsMediaPlayer1.uiMode = "mini";
-            axWindowsMediaPlayer1.Size = new Size(165, 35);
+            axWindowsMediaPlayer1.Size = new Size(wmpVisWidth, 35); //new Size(165, 35);
             pHoverTimer.Start();
         }
 
@@ -273,7 +280,7 @@ namespace XMTuner
         {
             pHoverTimer.Stop();
             axWindowsMediaPlayer1.uiMode = "none";
-            axWindowsMediaPlayer1.Size = new Size(165, 50);
+            axWindowsMediaPlayer1.Size = new Size(wmpVisWidth, wmpVisHeight);
         }
 
         private void shutdownPlayer()
@@ -309,6 +316,61 @@ namespace XMTuner
             output("Attempting to retune to channel " + self.Find(cnum).ToString() + "...", LogLevel.Info);
             play(cnum);
         }
+
+        private void txtChannelNum_Enter(object sender, EventArgs e)
+        {
+            play(Convert.ToInt32(txtChannelNum.Text));
+        }
+
+        private void txtChannelNum_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Back || e.KeyChar == (char)Keys.Delete) { return; }
+
+            if (e.KeyChar == (char)Keys.Return)
+            {
+                if (txtChannelNum.Text.Equals("")) { return; }
+                txtChannelNum.Text = txtChannelNum.Text.Replace(".", "");
+                int num = Convert.ToInt32(txtChannelNum.Text);
+                play(num);
+                tabcontrol1.Focus();
+                return;
+            }
+            if (Char.IsDigit(e.KeyChar) == false)
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void createPresetButtons()
+        {
+            const int w = 50;
+            const int spacing = 2;
+            int h = panelPresets.Size.Height; //const int h = 25;
+            int maxwidth = panelPresets.Size.Width;
+            int x = 0;
+            const int y = 0;
+            x = (maxwidth - (10 * (w + spacing))) / 2;
+
+            for (int i = 1; i <= 10; i++)
+            {
+                Button pb = new Button();
+                pb.Location = new Point(x, y);
+                pb.Size = new Size(w, h);
+                x += w + spacing;
+                pb.Text = i.ToString();
+                pb.Name = "presetButton"+i.ToString();
+                pb.Click += new System.EventHandler(presetButton_Click);
+                panelPresets.Controls.Add(pb);
+            }
+        }
+        private void presetButton_Click(object sender, EventArgs e)
+        {
+            Button buttonClicked = (Button)sender;
+            MessageBox.Show(buttonClicked.Name);
+
+            //This would be the part where we set up the lookup table for the preset number and so forth.
+        }
+
 
         #endregion
     }

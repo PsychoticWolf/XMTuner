@@ -67,12 +67,14 @@ namespace XMTuner
         {
             cfg = new Config();
             this.logging = log;
-            if (cfg.loaded == false)
+            /*if (cfg.loaded == false)
             {
                 tick(this, new XMTunerEventArgs(XMTunerEventSource.Configuration, XMTunerEventData.isNotLoaded));
-                return;
             }
-            tick(this, new XMTunerEventArgs(XMTunerEventSource.Configuration, XMTunerEventData.isLoaded));
+            else
+            {
+                tick(this, new XMTunerEventArgs(XMTunerEventSource.Configuration, XMTunerEventData.isLoaded));
+            }*/
         }
 
         public void Start()
