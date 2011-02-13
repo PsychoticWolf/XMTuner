@@ -41,6 +41,7 @@ namespace XMTuner
                 {
                     parts = newline.Split(',');
                     int num = Convert.ToInt32(parts[0]);
+                    if (parts[1].Equals("") == true) { parts[1] = "0"; } //Support 0.6 format favorites files with no presets
                     int preset = Convert.ToInt32(parts[1]);
                     if (preset > 0)
                     {
