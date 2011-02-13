@@ -10,8 +10,7 @@ namespace XMTuner
     {
         String datapath = configMan.datapath;
         String favoritesFile = "favorites.txt";
-        List<int> favorites = new List<int>();
-        //List<int> presets = new List<int>(); //OrderedDictionary?
+        List<FavoriteChannel> favorites = new List<FavoriteChannel>();
         String path;
 
         public Favorites()
@@ -31,7 +30,6 @@ namespace XMTuner
                 return;
             }
             StreamReader textIn = new StreamReader(fs);
-            int i = 0;
             String newline = "";
             String[] parts = new String[2];
             String header = textIn.ReadLine();
@@ -42,9 +40,17 @@ namespace XMTuner
                 if (newline.Contains(","))
                 {
                     parts = newline.Split(',');
-                    favorites.Add(Convert.ToInt32(parts[0]));
+                    int num = Convert.ToInt32(parts[0]);
+                    int preset = Convert.ToInt32(parts[1]);
+                    if (preset > 0)
+                    {
+                        favorites.Add(new FavoriteChannel(num, preset));
+                    }
+                    else
+                    {
+                        favorites.Add(new FavoriteChannel(num));
+                    }
                 }
-                i++;
             }
             textIn.Close();
         }
@@ -53,12 +59,10 @@ namespace XMTuner
         {
             FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write);
             StreamWriter textOut = new StreamWriter(fs);
-            String value;
             textOut.WriteLine("XMTuner Favorite Channels");
-            foreach (int channel in favorites.AsReadOnly())
+            foreach (FavoriteChannel channel in favorites.AsReadOnly())
             {
-                value = "";//newConfig.Get(configKey);
-                textOut.WriteLine(channel + "," + value);
+                textOut.WriteLine(channel.ToString());
             }
 
             textOut.Close();
@@ -72,7 +76,7 @@ namespace XMTuner
                 return false;
             }
 
-            favorites.Add(channel);
+            favorites.Add(new FavoriteChannel(channel));
             save();
             return true;
         }
@@ -80,7 +84,7 @@ namespace XMTuner
         public Boolean removeFavoriteChannel(int channel)
         {
             if (exists(channel) == false) { return false; }
-            Boolean r = favorites.Remove(channel);
+            Boolean r = favorites.Remove(Find(channel));
             save();
             return r;
         }
@@ -93,9 +97,9 @@ namespace XMTuner
         private Boolean exists(int channel)
         {
             if (favorites.Exists(
-                delegate(int chan)
+                delegate(FavoriteChannel chan)
                 {
-                    return chan == channel;
+                    return chan.num == channel;
                 }
             ))
             {
@@ -103,5 +107,118 @@ namespace XMTuner
             }
             return false;
         }
+
+        protected FavoriteChannel Find(int channum)
+        {
+            FavoriteChannel result = favorites.Find(
+            delegate(FavoriteChannel chan)
+            {
+                return chan.num == channum;
+            }
+            );
+            if (result != null)
+            {
+                return result;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public Boolean addPreset(int num, int preset)
+        {
+            FavoriteChannel channel = Find(num);
+            if (channel == null) { return false; }
+            channel.addPreset(preset);
+            if (save() == false)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public Boolean hasPreset(int num)
+        {
+            FavoriteChannel channel = Find(num);
+            if (channel == null || channel.preset == 0) { return false; }
+            return true;
+        }
+
+        public Int32 getPreset(int num)
+        {
+            FavoriteChannel channel = Find(num);
+            if (channel == null) { return 0; }
+            return channel.preset;
+        }
+        public String getPreset(String num)
+        {
+            String preset = "";
+            int pn = getPreset(Convert.ToInt32(num));
+            if (pn > 0)
+            {
+                preset = pn.ToString();
+            }
+            return preset;
+        }
+
+        public Boolean removePreset(int num)
+        {
+            FavoriteChannel channel = Find(num);
+            if (channel == null) { return false; }
+            channel.removePreset();
+            if (save() == false)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public Int32 findPreset(int presetnum)
+        {
+            FavoriteChannel result = favorites.Find(
+                delegate(FavoriteChannel chan)
+                {
+                    return chan.preset == presetnum;
+                }
+            );
+            if (result != null)
+            {
+                return result.num;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+    }
+
+    class FavoriteChannel
+    {
+        public Int32 num;
+        public Int32 preset;
+
+        public FavoriteChannel(Int32 num, Int32 preset) : this(num) { this.preset = preset; }
+        public FavoriteChannel(Int32 num)
+        {
+            this.num = num;
+        }
+
+        public void addPreset(Int32 preset)
+        {
+            this.preset = preset;
+        }
+
+        public void removePreset()
+        {
+            this.preset = 0;
+        }
+
+        public override String ToString()
+        {
+            String theString =  num + "," + preset;
+            return theString;
+        }
+
     }
 }

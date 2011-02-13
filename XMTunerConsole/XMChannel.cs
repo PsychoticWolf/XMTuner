@@ -51,6 +51,18 @@ namespace XMTuner
             }
         }
 
+        public Boolean isValid
+        {
+            get
+            {
+                if (num != 0)
+                {
+                    return true;
+                }
+                return false;
+            }
+        }
+
         public void addPlayingInfo(String[] stringyInfo)
         {
             artist = HttpUtility.HtmlDecode(stringyInfo[1]);
@@ -116,30 +128,6 @@ namespace XMTuner
             programData.Clear();
         }
 
-       /* #region Sirius Specific Methods
-
-
-        public void addChannelData(String[] details)
-        {
-            url = details[0];
-            channelKey = details[1];
-        }
-
-        public void addChannelMetadataS(String[] details)
-        {
-            if (details == null) { return; }
-            if (details[0] != null)
-            {
-                xmxref = Convert.ToInt32(details[2]);
-            }
-            if (details[1] != null)
-            {
-                channelKey = details[1];
-            }
-        }
-        #endregion*/
-
-
         #region IComparable<XMChannel> Members
 
         public int CompareTo(XMChannel other)
@@ -154,18 +142,6 @@ namespace XMTuner
         public bool Equals(XMChannel other)
         {
             return other.num.Equals(this.num);
-        }
-
-        public Boolean isValid
-        {
-            get
-            {
-                if (num != 0)
-                {
-                    return true;
-                }
-                return false;
-            }
         }
 
         #endregion

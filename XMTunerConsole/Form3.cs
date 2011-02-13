@@ -123,7 +123,7 @@ namespace XMTuner
                 protocolBox.Items.Add("ASX");
                 protocolBox.Items.Add("M3U");
 
-                if (!tversityServer.Equals(""))
+                if (tversityServer != null && !tversityServer.Equals(""))
                 {
                     protocolBox.Items.Add("MP3");
                     protocolBox.Items.Add("WAV");

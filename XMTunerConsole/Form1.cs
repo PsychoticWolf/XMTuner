@@ -784,8 +784,6 @@ namespace XMTuner
             //Enable Form Controls for Managing Favorites...
             addFavChNum.Enabled = true;
             bAddFavorite.Enabled = true;
-            //addPresetNum.Enabled = true;
-            //bAddPreset.Enabled = true;
 
             favoritesListView.EndUpdate();
             output("Favorites Tab: Complete", LogLevel.Debug);
@@ -795,8 +793,11 @@ namespace XMTuner
             //Verify we're being called on a channel that's set as a favorite.
             if (self.favorites.isFavorite(chan.num) == false) { return; }
 
+            //Get preset number
+            String preset = self.favorites.getPreset(chan.num.ToString());
+
             //We're a favorite channel.. add to the favorites panel listbox.
-            ListViewItem favorite = new ListViewItem(new String[] {chan.num.ToString(), chan.name, chan.desc});
+            ListViewItem favorite = new ListViewItem(new String[] {chan.num.ToString(), chan.name, chan.desc, preset});
                 favorite.Name = chan.num.ToString();
                 favorite.Group = favoritesListView.Groups["favorite"];
             favoritesListView.Items.Add(favorite);
@@ -843,7 +844,15 @@ namespace XMTuner
 
         private void bRemoveFavorite_Click(object sender, EventArgs e)
         {
-            ListViewItem item = favoritesListView.SelectedItems[0];
+            ListViewItem item;
+            if (sender.GetType().Name == "Button")
+            {
+                item = favoritesListView.SelectedItems[0];
+            }
+            else
+            {
+                item = channelBox.SelectedItems[0];
+            }
             if (item.Name.Equals("")) { return; }
             int num = Convert.ToInt32(item.Name);
             XMChannel ch = self.Find(num);
@@ -856,17 +865,58 @@ namespace XMTuner
                 {
                     removeFavoriteChannelUIHelper(ch.num);
                 }
+                else
+                {
+                    MessageBox.Show("Error removing " + ch.ToString() + " from favorites.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
 
         private void bAddPreset_Click(object sender, EventArgs e)
         {
+            if (favoritesListView.SelectedItems.Count == 0) { return; }
+            ListViewItem item = favoritesListView.SelectedItems[0];
+            if (item.Name.Equals("")) { return; }
+            int num = Convert.ToInt32(item.Name);
+            int preset = (int)addPresetNum.Value;
 
+            XMChannel ch = self.Find(num);
+            DialogResult result = MessageBox.Show("Add " + ch.ToString() + " to Preset " + preset + "?", "Add Preset", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (result == DialogResult.Yes)
+            {
+                int tn = self.favorites.findPreset(preset); //Channel number that has this preset already, if any.
+                if (tn == 0)
+                {
+                    self.favorites.addPreset(num, preset);
+                    updatePresetUIHelper(num);
+                }
+                else
+                {
+                    ch = self.Find(tn);
+                    result = MessageBox.Show("Preset "+preset+" is already assigned to " +ch.ToString()+". Overwrite?", "Overwrite Preset", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    if (result == DialogResult.Yes)
+                    {
+                        self.favorites.removePreset(tn);
+                        updatePresetUIHelper(tn);
+                        self.favorites.addPreset(num, preset);
+                        updatePresetUIHelper(num);
+                    }
+                }
+            }
         }
 
         private void bRemovePreset_Click(object sender, EventArgs e)
         {
-
+            ListViewItem item = favoritesListView.SelectedItems[0];
+            if (item.Name.Equals("")) { return; }
+            int num = Convert.ToInt32(item.Name);
+            int preset = self.favorites.getPreset(num);
+            DialogResult result = MessageBox.Show("Remove Channel " + num + " from Preset " + preset + "?", "Add Preset", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (result == DialogResult.Yes)
+            {
+                self.favorites.removePreset(num);
+                updatePresetUIHelper(num);
+            }
         }
 
         private void favoritesListView_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
@@ -874,15 +924,20 @@ namespace XMTuner
             if (e.IsSelected == true)
             {
                 bRemoveFavorite.Enabled = true;
-                if (true == false)
-                {
-                    bRemovePreset.Enabled = true; //XXX Only if there is a preset...
-                }
+                addPresetNum.Enabled = true;
+                bAddPreset.Enabled = true;
 
+                if (self.favorites.hasPreset(Convert.ToInt32(e.Item.Name)) == true)
+                {
+                    bRemovePreset.Enabled = true;
+                }
             }
             else
             {
                 bRemoveFavorite.Enabled = false;
+                bRemovePreset.Enabled = false;
+                addPresetNum.Enabled = false;
+                bAddPreset.Enabled = false;
                 bRemovePreset.Enabled = false;
             }
         }
@@ -906,6 +961,12 @@ namespace XMTuner
             //Move channel out of favorites group in the Channels ListView
             item = channelBox.Items.Find(num.ToString(), false)[0];
                 item.Group = channelBox.Groups["cbGroupNormal"];
+        }
+
+        private void updatePresetUIHelper(int num)
+        {
+            ListViewItem item = favoritesListView.Items.Find(num.ToString(), false)[0];
+            item.SubItems[3].Text = self.favorites.getPreset(num.ToString());
         }
 
 
