@@ -362,15 +362,54 @@ namespace XMTuner
                 pb.Click += new System.EventHandler(presetButton_Click);
                 panelPresets.Controls.Add(pb);
             }
+
+            //Now populate them with something useful...
+            //updatePresetButtons();
         }
         private void presetButton_Click(object sender, EventArgs e)
         {
             Button buttonClicked = (Button)sender;
-            MessageBox.Show(buttonClicked.Name);
-
-            //This would be the part where we set up the lookup table for the preset number and so forth.
+            int pn = Convert.ToInt32(buttonClicked.Name.Replace("presetButton", ""));
+            int chnum = self.favorites.findPreset(pn);
+            if (chnum > 0)
+            {
+                play(chnum);
+            }
         }
 
+        private void updatePresetButtons()
+        {
+            //if (self.favorites == null) { return; }
+
+            ImageList imageList = new ImageList();
+            imageList.ImageSize = new Size(45, 40);
+            String imageKey;
+            foreach (Button presetButton in panelPresets.Controls)
+            {
+                presetButton.Enabled = false;
+                int pn = Convert.ToInt32(presetButton.Name.Replace("presetButton", ""));
+                imageKey = pn.ToString();
+                presetButton.Image = null;
+                presetButton.ImageList = null;
+                presetButton.ImageKey = null;
+                presetButton.Text = pn.ToString();
+                int cn = self.favorites.findPreset(pn);
+                if (cn != 0)
+                {
+                    XMChannel chan = self.Find(cn);
+                    if (chan.logo_small_image != null)
+                    {
+                        imageList.Images.Add(imageKey, chan.logo_small_image);
+                    }
+                    presetButton.Enabled = true;
+                    presetButton.Text = null;
+                    presetButton.ImageList = imageList;
+                    presetButton.ImageKey = imageKey;
+                }
+            }
+
+
+        }
 
         #endregion
     }

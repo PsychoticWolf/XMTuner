@@ -804,8 +804,6 @@ namespace XMTuner
             output("Favorites Tab: Added "+ chan.ToString(), LogLevel.Debug);
         }
 
-#endregion
-
         private void bAddFavorite_Click(object sender, EventArgs e)
         {
             int num;
@@ -967,9 +965,11 @@ namespace XMTuner
         {
             ListViewItem item = favoritesListView.Items.Find(num.ToString(), false)[0];
             item.SubItems[3].Text = self.favorites.getPreset(num.ToString());
+
+            updatePresetButtons();
         }
 
-
+#endregion
 
 
 
