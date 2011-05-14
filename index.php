@@ -13,11 +13,12 @@
 	include_once"inc_superbar.php";
 	include_once"inc_header.php";
 ?>
-
-<div style="font-size: 14pt; font-weight: bold; color: #ffffff; text-align: justify; background-color: #ffcc00; padding: 15px; margin: 0px; text-shadow: 2px 2px 2px #000000;">
+<?php
+/*<div style="font-size: 14pt; font-weight: bold; color: #ffffff; text-align: justify; background-color: #ffcc00; padding: 15px; margin: 0px; text-shadow: 2px 2px 2px #000000;">
 						<p style="margin: 0px">On February 4th, 2011, SiriusXM launched a new website, along with thie new website is a completely new listen online player, as a result XMTuner 0.6.1 and lower are broken.</p>
 						<p style="margin: 3px">February 5th, 2011: XMTuner 0.6.3 has been released which fixes XMTuner for both XM and Sirius users. For more details see the <a href="http://blog.xmtuner.net/">XMTuner Blog</a>.</p>
-</div>
+</div>*/
+?>
 
 <div id="show-parent">
 	<div id="show"><div id="show-index" style="float: left;"></div></div>
