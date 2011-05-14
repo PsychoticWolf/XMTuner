@@ -29,6 +29,9 @@
 	<?php
 		include_once"download/inc_download.php";
 	?>
+	<?php
+		include_once"inc_news.php";
+	?>
 <h2 class="red">About</h2>
 
 <p>XMTuner allows you to access the Sirius|XM Satelite Radio streams (both XM Radio Online and Sirius Internet Radio) on your UPnP media player. XMTuner serves as a proxy or interpreter between the SiriusXM web radio
