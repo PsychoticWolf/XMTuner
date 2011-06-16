@@ -35,6 +35,15 @@ namespace XMTuner
             category = cat;
         }
 
+        public XMChannel(String cat, int nu, String na, String d, String net, String l, String l_sm, String key)
+            : this(cat, nu, na, d, net)
+        {
+            logo = l;
+            logo_small = l_sm;
+            channelKey = key;
+        }
+
+
         public override String ToString()
         {
             String theString = network + " " + num + " - " + name;

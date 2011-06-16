@@ -7,6 +7,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Web;
+using System.Xml;
 
 namespace XMTuner
 {
@@ -35,7 +36,7 @@ namespace XMTuner
         protected Boolean firstLogin = false;
         public Boolean loadedChannelMetadata = false;
         Boolean loadedChannelMetadataCache = false;
-        Boolean useProgramGuide = true;
+        Boolean useProgramGuide = false;
         Boolean isProgramDataCurrent = false;
 
         public Boolean preloadImageRunning = false;
@@ -185,6 +186,8 @@ namespace XMTuner
                             //We're logged in and have valid channel information, set login flag to true
                             isLoggedIn = true;
                             lastLoggedIn = DateTime.Now;
+
+                            loadNewChannelLineup();
 
                             //Attempt to preload channel metadata
                             loadChannelMetadata(true);
@@ -477,6 +480,88 @@ namespace XMTuner
             }
             return;
         }
+
+        public Boolean loadNewChannelLineup()
+        {
+            String location = "http://www.siriusxm.com/userservices/cl/en-us/xml/lineup/200/client/UMP";
+            output("Loading new channel lineup...", "info");
+            URL channelLineupURL = new URL(location);
+            channelLineupURL.fetch();
+            output("Server Response: " + channelLineupURL.getStatusDescription(), "debug");
+
+            String data = channelLineupURL.response();
+
+            XmlDocument xmldoc = new XmlDocument();
+            try
+            {
+                xmldoc.LoadXml(data);
+            }
+            catch (XmlException)
+            {
+                output("Failed to load New Channel Lineup...", "error");
+                return false;
+            }
+            XmlNodeList list = xmldoc.GetElementsByTagName("channels");
+            channels.Clear(); //Dump current list in favor of new lineup.
+            foreach (XmlNode channel in list)
+            {
+                Boolean isInternetRadioChannel = false;
+                String chanKey = channel["channelKey"].InnerText; //ChannelKey
+                String description = channel["description"].InnerText; //Description
+                String name = channel["name"].InnerText; //Name
+                Int32 siriusChanNum = Convert.ToInt32(channel["siriusChannelNo"].InnerText); //siriusChannelNo
+                Int32 xmChanNum = Convert.ToInt32(channel["xmChannelNo"].InnerText); //xmChannelNo
+                String chanURL = channel["url"].InnerText; //URL
+
+                //Logos
+                String logo = null;
+                String logo_small = null;
+                foreach (XmlNode _logo in channel.SelectNodes("logos"))
+                {
+                    if (_logo["resourceType"].Equals("channelbrowse"))
+                    {
+                        logo = _logo["url"].InnerText; //Full Size - Non-Transparent
+                    }
+                    else if (_logo["resourceType"].Equals("spectrum"))
+                    {
+                        logo_small = _logo["url"].InnerText; //Small Size
+                    }
+                }
+
+                //serviceTypes
+                foreach (XmlNode _serviceType in channel.SelectNodes("serviceTypes"))
+                {
+                    if (_serviceType.InnerText.Equals("IP"))
+                    {
+                        isInternetRadioChannel = true;
+                    }
+                }
+
+                if (isInternetRadioChannel == true)
+                {
+                    Int32 chanNum = xmChanNum;
+                    if (this.network.Equals("SIRIUS")) //Not exactly network agnostic, but it'll do
+                    {
+                        chanNum = siriusChanNum;
+                    }
+
+                    channels.Add(new XMChannel(null, chanNum, name, description, this.network, logo, logo_small, chanKey));
+                }
+            }
+
+            /*if (fromCache == false)
+            {
+                output("Sirius Extended Channel Data loaded successfully...", "info");
+                cache.saveFile("channellineupsirius.cache", data);
+            }
+            else
+            {
+                output("Sirius Extended Channel Data loaded successfully... (from cache)", "info");
+            }*/
+            return true;
+
+        }
+
 
         public List<XMChannel> getChannels()
         {
