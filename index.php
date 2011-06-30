@@ -13,12 +13,11 @@
 	include_once"inc_superbar.php";
 	include_once"inc_header.php";
 ?>
-<?php
-/*<div style="font-size: 14pt; font-weight: bold; color: #ffffff; text-align: justify; background-color: #ffcc00; padding: 15px; margin: 0px; text-shadow: 2px 2px 2px #000000;">
-						<p style="margin: 0px">On February 4th, 2011, SiriusXM launched a new website, along with thie new website is a completely new listen online player, as a result XMTuner 0.6.1 and lower are broken.</p>
-						<p style="margin: 3px">February 5th, 2011: XMTuner 0.6.3 has been released which fixes XMTuner for both XM and Sirius users. For more details see the <a href="http://blog.xmtuner.net/">XMTuner Blog</a>.</p>
-</div>*/
-?>
+
+<div style="font-size: 14pt; font-weight: bold; color: #ffffff; text-align: justify; background-color: #ffcc00; padding: 15px; margin: 0px; text-shadow: 2px 2px 2px #000000;">
+						<p style="margin: 0px">June 17th, 2011: The legacy streams XMTuner uses are currently down - for all channels. Hopefully this is temporary, but its possible that SiriusXM has ended these streams (which are not the ones their new player uses). For more details see the <a href="http://blog.xmtuner.net/?p=31">XMTuner Blog</a>.</p>
+</div>
+
 
 <div id="show-parent">
 	<div id="show"><div id="show-index" style="float: left;"></div></div>
@@ -109,6 +108,16 @@ starts up faster, is easier to use, and plays longer than before.</p>
 			<li>and more...</li>
 		</ul>
 
+		<h2>Donations</h2>
+		<div style="margin-left: 20px; width: 700px;">
+		<p>XMTuner is free software. Created by students in their spare time - not a software development company. If you want to help support the continued development of XMTuner - you can donate to the project.</p>
+			<form action="https://www.paypal.com/cgi-bin/webscr" method="post" style="padding-left: 10px;">
+				<input type="hidden" name="cmd" value="_s-xclick">
+				<input type="hidden" name="hosted_button_id" value="FYBREFY97BCVL">
+				<input type="image" src="https://www.paypalobjects.com/WEBSCR-640-20110429-1/en_US/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+				<img alt="" border="0" src="https://www.paypalobjects.com/WEBSCR-640-20110429-1/en_US/i/scr/pixel.gif" width="1" height="1">
+			</form>
+		</div>
 
 		<h2>Support</h2>
 		<p>Having a problem? The following resources are available to you to help get it solved. </p>
@@ -128,6 +137,7 @@ starts up faster, is easier to use, and plays longer than before.</p>
 		<h3><a href="https://bugzilla.pcfire.net/" target="_blank">XMTuner Bugzilla</a></h3>
 		<p>Found a problem? Let us know. If you're familar with software bug trackers, file a bug in our bugzilla. If not, we still want to know, so see the
 		above link and send us an e-mail.</p>
+		
 		</div>
 </div>
 <?php
