@@ -14,8 +14,8 @@
 	include_once"inc_header.php";
 ?>
 
-<div style="font-size: 14pt; font-weight: bold; color: #ffffff; text-align: justify; background-color: #ffcc00; padding: 15px; margin: 0px; text-shadow: 2px 2px 2px #000000;">
-						<p style="margin: 0px">June 17th, 2011: The legacy streams XMTuner uses are currently down - for all channels. Hopefully this is temporary, but its possible that SiriusXM has ended these streams (which are not the ones their new player uses). For more details see the <a href="http://blog.xmtuner.net/?p=31">XMTuner Blog</a>.</p>
+<div style="font-size: 14pt; font-weight: bold; color: #ffffff; text-align: justify; background-color: #00cc00; padding: 15px; margin: 0px; text-shadow: 2px 2px 2px #000000;">
+						<p style="margin: 0px">June 29th, 2011: SiriusXM seems to have fixed their legacy streams - XMTuner is working again, as good as before anyway...</p>
 </div>
 
 
