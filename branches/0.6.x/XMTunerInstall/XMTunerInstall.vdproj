@@ -21,7 +21,7 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_3326FA9845F85F23F2BD60C4FF32BD38"
+        "MsmKey" = "8:_25AA4C36F02FC74ED88539B7B6024C14"
         "OwnerKey" = "8:_732B0E6386A04A43B50C7F48502BD92D"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -45,18 +45,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_8864654ACC99611D2946AE08FD664DCA"
-        "OwnerKey" = "8:_3326FA9845F85F23F2BD60C4FF32BD38"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_8864654ACC99611D2946AE08FD664DCA"
-        "OwnerKey" = "8:_732B0E6386A04A43B50C7F48502BD92D"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_8A99BD833771400683FA965AEB4372A0"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -69,6 +57,18 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_D2D956561682A125D318BFE600E24650"
+        "OwnerKey" = "8:_25AA4C36F02FC74ED88539B7B6024C14"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_D2D956561682A125D318BFE600E24650"
+        "OwnerKey" = "8:_732B0E6386A04A43B50C7F48502BD92D"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_732B0E6386A04A43B50C7F48502BD92D"
         "MsmSig" = "8:_UNDEFINED"
@@ -76,13 +76,13 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_3326FA9845F85F23F2BD60C4FF32BD38"
+        "OwnerKey" = "8:_25AA4C36F02FC74ED88539B7B6024C14"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_8864654ACC99611D2946AE08FD664DCA"
+        "OwnerKey" = "8:_D2D956561682A125D318BFE600E24650"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -222,51 +222,20 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_3326FA9845F85F23F2BD60C4FF32BD38"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_25AA4C36F02FC74ED88539B7B6024C14"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
             "AssemblyAsmDisplayName" = "8:AxInterop.WMPLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_3326FA9845F85F23F2BD60C4FF32BD38"
+                    "_25AA4C36F02FC74ED88539B7B6024C14"
                     {
                     "Name" = "8:AxInterop.WMPLib.dll"
                     "Attributes" = "3:512"
                     }
                 }
             "SourcePath" = "8:AxInterop.WMPLib.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_47B84E94336740F5B9549DA184B45EC3"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_8864654ACC99611D2946AE08FD664DCA"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Interop.WMPLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                    "_8864654ACC99611D2946AE08FD664DCA"
-                    {
-                    "Name" = "8:Interop.WMPLib.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:Interop.WMPLib.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_47B84E94336740F5B9549DA184B45EC3"
@@ -322,6 +291,37 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_D2D956561682A125D318BFE600E24650"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:Interop.WMPLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_D2D956561682A125D318BFE600E24650"
+                    {
+                    "Name" = "8:Interop.WMPLib.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:Interop.WMPLib.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_47B84E94336740F5B9549DA184B45EC3"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
         }
@@ -391,14 +391,14 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:XM Tuner"
-        "ProductCode" = "8:{36CBA838-2E4B-4201-AFA6-C4E65DBF646C}"
-        "PackageCode" = "8:{64F26530-390E-48BD-97B3-ECC70897B6FC}"
+        "ProductCode" = "8:{CB3E24CC-0350-4227-8A49-B2D5B9651D12}"
+        "PackageCode" = "8:{11E6F67E-76B1-4DA4-80EE-CA0F11B00284}"
         "UpgradeCode" = "8:{96B7DD5C-10F8-4C80-A7F6-A36C2DFE7C7F}"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:FALSE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:0.6.3"
+        "ProductVersion" = "8:0.6.4"
         "Manufacturer" = "8:PCFIRE"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:http://www.xmtuner.net/"
@@ -741,19 +741,6 @@
                             "Value" = "8:_19BE080CDB0940068EBBA2D72252DE75"
                             "UsePlugInResources" = "11:TRUE"
                             }
-                            "BannerText"
-                            {
-                            "Name" = "8:BannerText"
-                            "DisplayName" = "8:#1014"
-                            "Description" = "8:#1114"
-                            "Type" = "3:3"
-                            "ContextData" = "8:"
-                            "Attributes" = "3:0"
-                            "Setting" = "3:2"
-                            "Value" = "8:"
-                            "DefaultValue" = "8:#1214"
-                            "UsePlugInResources" = "11:TRUE"
-                            }
                             "InstallAllUsersVisible"
                             {
                             "Name" = "8:InstallAllUsersVisible"
@@ -790,19 +777,6 @@
                             "Value" = "8:_19BE080CDB0940068EBBA2D72252DE75"
                             "UsePlugInResources" = "11:TRUE"
                             }
-                            "BannerText"
-                            {
-                            "Name" = "8:BannerText"
-                            "DisplayName" = "8:#1014"
-                            "Description" = "8:#1114"
-                            "Type" = "3:3"
-                            "ContextData" = "8:"
-                            "Attributes" = "3:0"
-                            "Setting" = "3:2"
-                            "Value" = "8:"
-                            "DefaultValue" = "8:#1214"
-                            "UsePlugInResources" = "11:TRUE"
-                            }
                         }
                     }
                     "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_C533540041224844858F43AEB95C930D"
@@ -824,32 +798,6 @@
                             "Attributes" = "3:4"
                             "Setting" = "3:2"
                             "Value" = "8:_19BE080CDB0940068EBBA2D72252DE75"
-                            "UsePlugInResources" = "11:TRUE"
-                            }
-                            "BannerText"
-                            {
-                            "Name" = "8:BannerText"
-                            "DisplayName" = "8:#1014"
-                            "Description" = "8:#1114"
-                            "Type" = "3:3"
-                            "ContextData" = "8:"
-                            "Attributes" = "3:0"
-                            "Setting" = "3:2"
-                            "Value" = "8:"
-                            "DefaultValue" = "8:#1214"
-                            "UsePlugInResources" = "11:TRUE"
-                            }
-                            "BodyText"
-                            {
-                            "Name" = "8:BodyText"
-                            "DisplayName" = "8:#1015"
-                            "Description" = "8:#1115"
-                            "Type" = "3:3"
-                            "ContextData" = "8:"
-                            "Attributes" = "3:0"
-                            "Setting" = "3:2"
-                            "Value" = "8:In just moments you'll be ready to enjoy your Sirius or XM satelite radio stations on your PC, set-top media player, game console and smart phone. Click \"Next\" to get started..."
-                            "DefaultValue" = "8:#1215"
                             "UsePlugInResources" = "11:TRUE"
                             }
                             "CopyrightWarning"
@@ -941,32 +889,6 @@
                             "Value" = "8:_19BE080CDB0940068EBBA2D72252DE75"
                             "UsePlugInResources" = "11:TRUE"
                             }
-                            "InstalledBannerText"
-                            {
-                            "Name" = "8:InstalledBannerText"
-                            "DisplayName" = "8:InstalledBannerText"
-                            "Description" = "8:#1114"
-                            "Type" = "3:3"
-                            "ContextData" = "8:"
-                            "Attributes" = "3:0"
-                            "Setting" = "3:2"
-                            "Value" = "8:"
-                            "DefaultValue" = "8:#1214"
-                            "UsePlugInResources" = "11:TRUE"
-                            }
-                            "RemoveBannerText"
-                            {
-                            "Name" = "8:RemoveBannerText"
-                            "DisplayName" = "8:RemoveBannerText"
-                            "Description" = "8:#1114"
-                            "Type" = "3:3"
-                            "ContextData" = "8:"
-                            "Attributes" = "3:0"
-                            "Setting" = "3:2"
-                            "Value" = "8:"
-                            "DefaultValue" = "8:#1214"
-                            "UsePlugInResources" = "11:TRUE"
-                            }
                             "ShowProgress"
                             {
                             "Name" = "8:ShowProgress"
@@ -1010,19 +932,6 @@
                             "Attributes" = "3:4"
                             "Setting" = "3:2"
                             "Value" = "8:_19BE080CDB0940068EBBA2D72252DE75"
-                            "UsePlugInResources" = "11:TRUE"
-                            }
-                            "BannerText"
-                            {
-                            "Name" = "8:BannerText"
-                            "DisplayName" = "8:#1014"
-                            "Description" = "8:#1114"
-                            "Type" = "3:3"
-                            "ContextData" = "8:"
-                            "Attributes" = "3:0"
-                            "Setting" = "3:2"
-                            "Value" = "8:"
-                            "DefaultValue" = "8:#1214"
                             "UsePlugInResources" = "11:TRUE"
                             }
                             "UpdateText"
@@ -1078,7 +987,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_5DBAF8F0697F4B149EE38E9DFA613118"
             {
-            "SourcePath" = "8:..\\XMTunerService\\obj\\Debug\\XMTunerService.exe"
+            "SourcePath" = "8:..\\XMTunerService\\obj\\x86\\Debug\\XMTunerService.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_47B84E94336740F5B9549DA184B45EC3"
@@ -1106,7 +1015,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_732B0E6386A04A43B50C7F48502BD92D"
             {
-            "SourcePath" = "8:..\\XMTunerConsole\\obj\\Debug\\XMTuner.exe"
+            "SourcePath" = "8:..\\XMTunerConsole\\obj\\x86\\Debug\\XMTuner.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_47B84E94336740F5B9549DA184B45EC3"
