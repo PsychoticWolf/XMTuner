@@ -34,6 +34,7 @@ namespace XMTuner
         public Boolean isLoggedIn;
         public Boolean tryingLogin = false;
         protected Boolean firstLogin = false;
+        Boolean useChannelMetadata = false;
         public Boolean loadedChannelMetadata = false;
         Boolean loadedChannelMetadataCache = false;
         Boolean useProgramGuide = false;
@@ -187,8 +188,6 @@ namespace XMTuner
                             isLoggedIn = true;
                             lastLoggedIn = DateTime.Now;
 
-                            loadNewChannelLineup();
-
                             //Attempt to preload channel metadata
                             loadChannelMetadata(true);
 
@@ -319,19 +318,15 @@ namespace XMTuner
             //We try 5 times...
             for (j = 1; j <= 5; j++)
             {
-                string url = baseurl + "/player/channel/ajax.action?reqURL=player/2ft/channelData.jsp?remote=true&all_channels=true";
-                if (!isLive)
-                {
-                    url = baseurl + "/channeldata.jsp";
-                }
+                String url = "http://www.siriusxm.com/userservices/cl/en-us/xml/lineup/200/client/UMP";
 
                 URL channelURL = new URL(url);
-                channelURL.setRequestHeader("Cookie", cookies);
+                //channelURL.setRequestHeader("Cookie", cookies);
                 channelURL.fetch();
                 output("Server Response: " + channelURL.getStatusDescription(), "debug");
 
                 String data = channelURL.response();
-                if (channelURL.isSuccess && data.IndexOf(":[],") == -1)
+                if (channelURL.isSuccess)
                 {
                     //Returns Bool; False if invalid (null) channel data, true on success
                     goodData = setChannelData(data);
@@ -373,85 +368,87 @@ namespace XMTuner
 
         protected Boolean setChannelData(String rawchanneldata)
         {
-            if (rawchanneldata.Contains("\"allchannels\",null")) {
-                //isLoggedIn = false;
-                return false;
-            }
             Boolean channelsReset = false;
             if (channels.Count > 0)
             {
                 channels.Clear();
                 channelsReset = true;
             }
-            XMChannel tempChannel;
 
-            //digest info into usable bits
-            rawchanneldata = rawchanneldata.Replace("xms.sendRPCDone(\"allchannels\",[{\"channels\":[{", "");
-            rawchanneldata = rawchanneldata.Replace("}])", "}]");
-            rawchanneldata = rawchanneldata.Replace("{\"channels\":[{", "\n");
-
-            //Break Raw Data into Grouped Neighborhoods...
-            String [] rChanNeighborhoods = rawchanneldata.Split('\n');
-
-            String tChanNeigh;
-            String neighborhood;
-            String[] tmp;
-            String[] rChannelsList;
-            String tChannel;
-            String[] channelData;
-            int num;
-            int k = 0;
-            foreach (String rChanNeigh in rChanNeighborhoods)
+            XmlDocument xmldoc = new XmlDocument();
+            try
             {
-                tChanNeigh = rChanNeigh.Replace("},", "");
-                //Split Neighborhood Name from Raw Channels
-                tmp = tChanNeigh.Split(new string[] { ",\"nhood\":" }, StringSplitOptions.None);
-                neighborhood = tmp[1].Replace("\"", "");
-                neighborhood = neighborhood.Replace("}]","");
-                rChannelsList = tmp[0].Split('{');
+                xmldoc.LoadXml(rawchanneldata);
+            }
+            catch (XmlException)
+            {
+                output("Failed to load New Channel Lineup...", "error");
+                return false;
+            }
+            XmlNodeList list = xmldoc.GetElementsByTagName("channels");
 
-                foreach (String rChannel in rChannelsList)
+            //No Channels?!?
+            if (list.Count == 0) 
+            {
+                return false;
+            }
+
+            foreach (XmlNode channel in list)
+            {
+                Boolean isInternetRadioChannel = false;
+                String chanKey = channel["channelKey"].InnerText; //ChannelKey
+                String description = channel["description"].InnerText; //Description
+                String name = channel["name"].InnerText; //Name
+                Int32 siriusChanNum = Convert.ToInt32(channel["siriusChannelNo"].InnerText); //siriusChannelNo
+                Int32 xmChanNum = Convert.ToInt32(channel["xmChannelNo"].InnerText); //xmChannelNo
+                String chanURL = channel["url"].InnerText; //URL
+
+                //Logos
+                String logo = null;
+                String logo_small = null;
+                foreach (XmlNode _logo in channel.SelectNodes("logos"))
                 {
-                    k++;
-                    tChannel = rChannel.Replace("\"enabled\":\"", "");
-                    tChannel = tChannel.Replace("\",\"name\"", "");
-                    tChannel = tChannel.Replace("\",\"num\"", "");
-                    tChannel = tChannel.Replace(",\"desc\"", "");
-                    tChannel = tChannel.Replace("\",\"xl\":\"true\"", "");
-                    tChannel = tChannel.Replace("\",\"xl\":\"false\"", "");
-                    tChannel = tChannel.Replace("\"", "");
-                    tChannel = tChannel.Replace("}]", "");
-                    tChannel = tChannel.Replace("\\", "");
-
-                    channelData = tChannel.Split(':');
-                    if (channelData[0] != "false")
+                    if (_logo["resourceType"].InnerText.Equals("channelbrowse"))
                     {
-                        num = Convert.ToInt32(channelData[2]);
-                        tempChannel = new XMChannel(neighborhood, num, channelData[1], channelData[3], this.network);
-                        output(neighborhood + " " + num + " " + channelData[1] + " " + channelData[3], "debug");
-                        channels.Add(tempChannel);
+                        logo = _logo["url"].InnerText; //Full Size - Non-Transparent
+                    }
+                    else if (_logo["resourceType"].InnerText.Equals("spectrum"))
+                    {
+                        logo_small = _logo["url"].InnerText; //Small Size
+                    }
+                }
+                logo_small = logo;
+
+                //serviceTypes
+                foreach (XmlNode _serviceType in channel.SelectNodes("serviceTypes"))
+                {
+                    if (_serviceType.InnerText.Equals("IP"))
+                    {
+                        isInternetRadioChannel = true;
+                    }
+                }
+
+                if (isInternetRadioChannel == true)
+                {
+                    Int32 chanNum = xmChanNum;
+                    if (this.network.Equals("SIRIUS")) //Not exactly network agnostic, but it'll do
+                    {
+                        chanNum = siriusChanNum;
                     }
 
+                    channels.Add(new XMChannel(null, chanNum, name, description, this.network, chanKey, logo, logo_small, chanURL));
                 }
             }
+
+
             if (channelsReset == true)
             {
                 loadedChannelMetadata = false;
                 loadedChannelMetadataCache = false;
                 isProgramDataCurrent = false;
-                loadChannelData_hook();
             }
 
             return true;
-        }
-
-        protected virtual void loadChannelData_hook()
-        {
-            /* The purpose of this method is to allow derived classes to 
-             * do work when the channel data is (re)loaded.
-             * For XM - no work is needed so this method is empty.
-             */
-            output("Load Channel Data Hook Called!", "notice");
         }
 
         private void doPulse()
@@ -480,88 +477,6 @@ namespace XMTuner
             }
             return;
         }
-
-        public Boolean loadNewChannelLineup()
-        {
-            String location = "http://www.siriusxm.com/userservices/cl/en-us/xml/lineup/200/client/UMP";
-            output("Loading new channel lineup...", "info");
-            URL channelLineupURL = new URL(location);
-            channelLineupURL.fetch();
-            output("Server Response: " + channelLineupURL.getStatusDescription(), "debug");
-
-            String data = channelLineupURL.response();
-
-            XmlDocument xmldoc = new XmlDocument();
-            try
-            {
-                xmldoc.LoadXml(data);
-            }
-            catch (XmlException)
-            {
-                output("Failed to load New Channel Lineup...", "error");
-                return false;
-            }
-            XmlNodeList list = xmldoc.GetElementsByTagName("channels");
-            channels.Clear(); //Dump current list in favor of new lineup.
-            foreach (XmlNode channel in list)
-            {
-                Boolean isInternetRadioChannel = false;
-                String chanKey = channel["channelKey"].InnerText; //ChannelKey
-                String description = channel["description"].InnerText; //Description
-                String name = channel["name"].InnerText; //Name
-                Int32 siriusChanNum = Convert.ToInt32(channel["siriusChannelNo"].InnerText); //siriusChannelNo
-                Int32 xmChanNum = Convert.ToInt32(channel["xmChannelNo"].InnerText); //xmChannelNo
-                String chanURL = channel["url"].InnerText; //URL
-
-                //Logos
-                String logo = null;
-                String logo_small = null;
-                foreach (XmlNode _logo in channel.SelectNodes("logos"))
-                {
-                    if (_logo["resourceType"].Equals("channelbrowse"))
-                    {
-                        logo = _logo["url"].InnerText; //Full Size - Non-Transparent
-                    }
-                    else if (_logo["resourceType"].Equals("spectrum"))
-                    {
-                        logo_small = _logo["url"].InnerText; //Small Size
-                    }
-                }
-
-                //serviceTypes
-                foreach (XmlNode _serviceType in channel.SelectNodes("serviceTypes"))
-                {
-                    if (_serviceType.InnerText.Equals("IP"))
-                    {
-                        isInternetRadioChannel = true;
-                    }
-                }
-
-                if (isInternetRadioChannel == true)
-                {
-                    Int32 chanNum = xmChanNum;
-                    if (this.network.Equals("SIRIUS")) //Not exactly network agnostic, but it'll do
-                    {
-                        chanNum = siriusChanNum;
-                    }
-
-                    channels.Add(new XMChannel(null, chanNum, name, description, this.network, logo, logo_small, chanKey));
-                }
-            }
-
-            /*if (fromCache == false)
-            {
-                output("Sirius Extended Channel Data loaded successfully...", "info");
-                cache.saveFile("channellineupsirius.cache", data);
-            }
-            else
-            {
-                output("Sirius Extended Channel Data loaded successfully... (from cache)", "info");
-            }*/
-            return true;
-
-        }
-
 
         public List<XMChannel> getChannels()
         {
@@ -808,8 +723,8 @@ namespace XMTuner
                 }
                 else
                 {
-                    output("XM Radio Online Error - Unknown Error", "error");
-                    output("See playchannel.err for raw data", "debug");
+                    output("XM Radio Online Error - Stream Field returned is Blank", "error");
+                    output("See playchannel.err for raw data", "notice");
                 }
                 cache.saveFile("playchannel.err", data);
                 contentURL = null;
@@ -825,6 +740,10 @@ namespace XMTuner
 
         protected void loadChannelMetadata()
         {
+            if (useChannelMetadata == false) {
+                output("Channel Metadata Disabled. Skipping...", "notice");
+                return;
+            }
             output("Loading extended channel data...", "info");
             cache.addCacheFile("channelmetadata.cache", "channel metadata", -5);
             if (cache.isCached("channelmetadata.cache"))
@@ -839,6 +758,12 @@ namespace XMTuner
         }
         protected void loadChannelMetadata(Boolean fastLoad)
         {
+            if (useChannelMetadata == false)
+            {
+                output("Channel Metadata Disabled. Skipping...", "notice");
+                return;
+            }
+
             if (fastLoad == true)
             {
                 output("Loading extended channel data... (from cache)", "info");
@@ -921,6 +846,7 @@ namespace XMTuner
 
         protected virtual Boolean setChannelMetadata(String rawData)
         {
+            return true; //Short-circuit this method.
             if (rawData == null)
             {
                 return false;

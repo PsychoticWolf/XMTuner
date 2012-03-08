@@ -35,12 +35,13 @@ namespace XMTuner
             category = cat;
         }
 
-        public XMChannel(String cat, int nu, String na, String d, String net, String l, String l_sm, String key)
+        public XMChannel(String cat, int nu, String na, String d, String net, String key, String logo, String logo_sm, String url)
             : this(cat, nu, na, d, net)
         {
-            logo = l;
-            logo_small = l_sm;
+            this.logo = logo;
+            this.logo_small = logo_sm;
             channelKey = key;
+            this.url = url;
         }
 
 
@@ -67,6 +68,7 @@ namespace XMTuner
 
         public virtual void addChannelMetadata(String[] details)
         {
+
             //details { num, xmnum, logo, key, url }
             //           0     1      2    3    4
 
@@ -98,29 +100,6 @@ namespace XMTuner
         {
             programData.Clear();
         }
-
-       /* #region Sirius Specific Methods
-
-
-        public void addChannelData(String[] details)
-        {
-            url = details[0];
-            channelKey = details[1];
-        }
-
-        public void addChannelMetadataS(String[] details)
-        {
-            if (details == null) { return; }
-            if (details[0] != null)
-            {
-                xmxref = Convert.ToInt32(details[2]);
-            }
-            if (details[1] != null)
-            {
-                channelKey = details[1];
-            }
-        }
-        #endregion*/
 
 
         #region IComparable<XMChannel> Members
