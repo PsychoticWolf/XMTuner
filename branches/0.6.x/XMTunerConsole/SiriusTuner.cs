@@ -106,12 +106,7 @@ namespace XMTuner
                             return true;
                         }
                         Boolean cd = loadChannelData();
-                        Boolean ecd = false;
                         if (cd)
-                        {
-                            ecd = loadSiriusChannelGuide();
-                        }
-                        if (cd && ecd)
                         {
                             //We're logged in and have valid channel information, set login flag to true
                             isLoggedIn = true;
@@ -146,11 +141,6 @@ namespace XMTuner
             }
             loginURL.close();
             return loginResult;
-        }
-
-        private bool loadSiriusChannelGuide()
-        {
-            return true; //This method is now handled by channelMetaData.
         }
 
         private Boolean getSiriusCaptcha(out String captchaResponse, out String captchaID, out CookieCollection playerCookies)
@@ -241,92 +231,6 @@ namespace XMTuner
             // Return the hexadecimal string.
             return sBuilder.ToString();
         }
-
-        protected override void loadChannelData_hook()
-        {
-            Boolean result = loadSiriusChannelGuide();
-            if (result == false)
-            {
-                output("Fatal error encountered loading Sirius Channel Data Extensions, errors " +
-                       "will occur. Restarting XMTuner is recommended.", "error");
-            }
-        }
-
-        /*private Boolean loadSiriusChannelGuide()
-        {
-            List<String[]> cd = loadSiriusExtendedChannelDataObj();
-            foreach (String[] channel in cd)
-            {
-                XMChannel c = Find(Convert.ToInt32(channel[0]));
-                c.addChannelMetadataS(channel);
-            }
-
-            return true;
-        }*/
-
-        /* private Boolean loadSiriusChannelGuide()
-        {
-            Boolean fromCache = false;
-            output("Loading Sirius Extended Channel Data...", "info");
-            String data;
-            String file = "channellineupsirius.cache";
-            cache.addCacheFile(file, "sirius channel metadata", -1);
-            if (cache.isCached(file))
-            {
-                data = cache.getFile(file);
-                fromCache = true;
-            }
-            else
-            {
-                String URL = "http://www.sirius.com/servlet/ContentServer?pagename=Sirius/XML/ChannelGuideXML&c=ChannelLineup&cid=1218563499691&pid=SIR_AUD_EVT_SXM&catid=all"; //&pid=SIR_IP_EVT&catid=all";
-                URL channelGuideURL = new URL(URL);
-                channelGuideURL.fetch();
-                if (channelGuideURL.isSuccess)
-                {
-                    data = channelGuideURL.response().Trim();
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            XmlDocument xmldoc = new XmlDocument();
-            try
-            {
-                xmldoc.LoadXml(data);
-            }
-            catch (XmlException)
-            {
-                output("Failed to load Sirius Extended Channel Data...", "error");
-                return false;
-            }
-            XmlNodeList list = xmldoc.GetElementsByTagName("channel");
-
-            foreach (XmlNode channel in list)
-            {
-                Int32 chanNum = Convert.ToInt32(channel.ChildNodes[4].InnerText);
-                String chanKey = channel.Attributes["key"].Value;
-                String chanURL = channel.ChildNodes[8].InnerText;
-
-                String[] details = new String[2];
-                details[0] = chanURL;
-                details[1] = chanKey;
-
-                XMChannel c = Find(chanNum);
-                c.addChannelData(details);
-            }
-
-            if (fromCache == false)
-            {
-                output("Sirius Extended Channel Data loaded successfully...", "info");
-                cache.saveFile("channellineupsirius.cache", data);
-            }
-            else
-            {
-                output("Sirius Extended Channel Data loaded successfully... (from cache)", "info");
-            }
-            return true;
-        } */
 
         public string getCaptchaResponse(int captchaNum)
         {
