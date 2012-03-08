@@ -230,7 +230,7 @@ namespace XMTuner
                 }
                 NowPlayingPage += "\t<td style=\"text-align: center;\" nowrap>";
                 if (channel.url != null) { NowPlayingPage += "<a href=\"" + channel.url + "\" target=\"_blank\">"; }
-                if (channel.category.ToLower().Contains("talk") || channel.category.ToLower().Contains("sports"))
+                if (channel.category != null && (channel.category.ToLower().Contains("talk") || channel.category.ToLower().Contains("sports")))
                 {
                     NowPlayingPage += "<div style=\"float: left;\"><img src=\"" + channel.logo_small + "\" border=\"0\" width=\"45\" height=\"40\"></div>";
                 }
