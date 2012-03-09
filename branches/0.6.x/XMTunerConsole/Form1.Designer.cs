@@ -50,8 +50,8 @@ namespace XMTuner
             this.components = new System.ComponentModel.Container();
             System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("Recently Played", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("Nothing Played Yet...");
+            System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("Recently Played", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem("Nothing Played Yet...");
             this.allChannelsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.favoriteChannelsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.byCategoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -96,16 +96,18 @@ namespace XMTuner
             this.clearToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tAbout = new System.Windows.Forms.TabPage();
             this.bUpdate = new System.Windows.Forms.Button();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.linkLabel2 = new System.Windows.Forms.LinkLabel();
+            this.label2 = new System.Windows.Forms.Label();
+            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.aBuildDate = new System.Windows.Forms.TextBox();
+            this.aVersion = new System.Windows.Forms.TextBox();
+            this.label12 = new System.Windows.Forms.Label();
+            this.label13 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
+            this.label11 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
-            this.label11 = new System.Windows.Forms.Label();
-            this.label12 = new System.Windows.Forms.Label();
-            this.aVersion = new System.Windows.Forms.TextBox();
-            this.label13 = new System.Windows.Forms.Label();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.pLabel6 = new System.Windows.Forms.Label();
             this.pLabel5 = new System.Windows.Forms.Label();
             this.pLabel4 = new System.Windows.Forms.Label();
@@ -374,7 +376,7 @@ namespace XMTuner
             this.splitContainer1.Panel2.Controls.Add(this.groupBox2);
             this.splitContainer1.Panel2MinSize = 0;
             this.splitContainer1.Size = new System.Drawing.Size(546, 208);
-            this.splitContainer1.SplitterDistance = 166;
+            this.splitContainer1.SplitterDistance = 170;
             this.splitContainer1.SplitterIncrement = 5;
             this.splitContainer1.SplitterWidth = 2;
             this.splitContainer1.TabIndex = 14;
@@ -391,7 +393,7 @@ namespace XMTuner
             this.channelBox.MultiSelect = false;
             this.channelBox.Name = "channelBox";
             this.channelBox.ShowItemToolTips = true;
-            this.channelBox.Size = new System.Drawing.Size(544, 164);
+            this.channelBox.Size = new System.Drawing.Size(544, 168);
             this.channelBox.TabIndex = 11;
             this.channelBox.TileSize = new System.Drawing.Size(515, 30);
             this.channelBox.UseCompatibleStateImageBehavior = false;
@@ -550,14 +552,14 @@ namespace XMTuner
             this.recentlyPlayedBox.ContextMenuStrip = this.historyContextMenu;
             this.recentlyPlayedBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.recentlyPlayedBox.FullRowSelect = true;
-            listViewGroup1.Header = "Recently Played";
-            listViewGroup1.Name = "listViewGroup1";
+            listViewGroup2.Header = "Recently Played";
+            listViewGroup2.Name = "listViewGroup1";
             this.recentlyPlayedBox.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
-            listViewGroup1});
+            listViewGroup2});
             this.recentlyPlayedBox.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
-            listViewItem1.Group = listViewGroup1;
+            listViewItem2.Group = listViewGroup2;
             this.recentlyPlayedBox.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem1});
+            listViewItem2});
             this.recentlyPlayedBox.Location = new System.Drawing.Point(3, 3);
             this.recentlyPlayedBox.Margin = new System.Windows.Forms.Padding(0);
             this.recentlyPlayedBox.Name = "recentlyPlayedBox";
@@ -600,14 +602,6 @@ namespace XMTuner
             // 
             this.tAbout.BackColor = System.Drawing.SystemColors.Control;
             this.tAbout.Controls.Add(this.bUpdate);
-            this.tAbout.Controls.Add(this.aBuildDate);
-            this.tAbout.Controls.Add(this.label8);
-            this.tAbout.Controls.Add(this.label9);
-            this.tAbout.Controls.Add(this.label10);
-            this.tAbout.Controls.Add(this.label11);
-            this.tAbout.Controls.Add(this.label12);
-            this.tAbout.Controls.Add(this.aVersion);
-            this.tAbout.Controls.Add(this.label13);
             this.tAbout.Controls.Add(this.groupBox1);
             this.tAbout.Location = new System.Drawing.Point(4, 22);
             this.tAbout.Margin = new System.Windows.Forms.Padding(2);
@@ -619,7 +613,7 @@ namespace XMTuner
             // 
             // bUpdate
             // 
-            this.bUpdate.Location = new System.Drawing.Point(415, 181);
+            this.bUpdate.Location = new System.Drawing.Point(429, 189);
             this.bUpdate.Name = "bUpdate";
             this.bUpdate.Size = new System.Drawing.Size(115, 23);
             this.bUpdate.TabIndex = 17;
@@ -627,31 +621,124 @@ namespace XMTuner
             this.bUpdate.UseVisualStyleBackColor = true;
             this.bUpdate.Click += new System.EventHandler(this.bUpdate_Click);
             // 
+            // groupBox1
+            // 
+            this.groupBox1.BackColor = System.Drawing.SystemColors.Control;
+            this.groupBox1.Controls.Add(this.linkLabel2);
+            this.groupBox1.Controls.Add(this.label2);
+            this.groupBox1.Controls.Add(this.linkLabel1);
+            this.groupBox1.Controls.Add(this.aBuildDate);
+            this.groupBox1.Controls.Add(this.aVersion);
+            this.groupBox1.Controls.Add(this.label12);
+            this.groupBox1.Controls.Add(this.label13);
+            this.groupBox1.Controls.Add(this.label8);
+            this.groupBox1.Controls.Add(this.label11);
+            this.groupBox1.Controls.Add(this.label9);
+            this.groupBox1.Controls.Add(this.label10);
+            this.groupBox1.Location = new System.Drawing.Point(76, 22);
+            this.groupBox1.Margin = new System.Windows.Forms.Padding(2);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Padding = new System.Windows.Forms.Padding(2);
+            this.groupBox1.Size = new System.Drawing.Size(382, 162);
+            this.groupBox1.TabIndex = 19;
+            this.groupBox1.TabStop = false;
+            // 
+            // linkLabel2
+            // 
+            this.linkLabel2.AutoSize = true;
+            this.linkLabel2.Location = new System.Drawing.Point(24, 145);
+            this.linkLabel2.Name = "linkLabel2";
+            this.linkLabel2.Size = new System.Drawing.Size(189, 13);
+            this.linkLabel2.TabIndex = 21;
+            this.linkLabel2.TabStop = true;
+            this.linkLabel2.Text = "GNU GENERAL PUBLIC LICENSE v3";
+            this.linkLabel2.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel2_LinkClicked);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(5, 129);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(312, 13);
+            this.label2.TabIndex = 20;
+            this.label2.Text = "(C) 2009-2012. XMTuner is free software. Under the terms of the ";
+            // 
+            // linkLabel1
+            // 
+            this.linkLabel1.AutoSize = true;
+            this.linkLabel1.Location = new System.Drawing.Point(253, 86);
+            this.linkLabel1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.linkLabel1.Name = "linkLabel1";
+            this.linkLabel1.Size = new System.Drawing.Size(125, 13);
+            this.linkLabel1.TabIndex = 18;
+            this.linkLabel1.TabStop = true;
+            this.linkLabel1.Text = "http://www.xmtuner.net/";
+            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
+            // 
             // aBuildDate
             // 
             this.aBuildDate.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.aBuildDate.ForeColor = System.Drawing.Color.Black;
-            this.aBuildDate.Location = new System.Drawing.Point(365, 73);
+            this.aBuildDate.Location = new System.Drawing.Point(314, 46);
             this.aBuildDate.Name = "aBuildDate";
             this.aBuildDate.ReadOnly = true;
             this.aBuildDate.Size = new System.Drawing.Size(62, 19);
             this.aBuildDate.TabIndex = 17;
-            this.aBuildDate.Text = "20110205";
+            this.aBuildDate.Text = "20120308";
             this.aBuildDate.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // aVersion
+            // 
+            this.aVersion.ForeColor = System.Drawing.Color.Black;
+            this.aVersion.Location = new System.Drawing.Point(314, 16);
+            this.aVersion.Name = "aVersion";
+            this.aVersion.ReadOnly = true;
+            this.aVersion.Size = new System.Drawing.Size(62, 20);
+            this.aVersion.TabIndex = 11;
+            this.aVersion.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label12.Location = new System.Drawing.Point(5, 10);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(132, 31);
+            this.label12.TabIndex = 12;
+            this.label12.Text = "XMTuner";
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(263, 19);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(48, 13);
+            this.label13.TabIndex = 10;
+            this.label13.Text = "Version: ";
             // 
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(300, 77);
+            this.label8.Location = new System.Drawing.Point(252, 49);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(59, 13);
             this.label8.TabIndex = 16;
             this.label8.Text = "Build Date:";
             // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label11.Location = new System.Drawing.Point(7, 52);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(75, 13);
+            this.label11.TabIndex = 13;
+            this.label11.Text = "Developers:";
+            // 
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(140, 111);
+            this.label9.Location = new System.Drawing.Point(25, 86);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(88, 13);
             this.label9.TabIndex = 15;
@@ -660,74 +747,11 @@ namespace XMTuner
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(140, 94);
+            this.label10.Location = new System.Drawing.Point(25, 69);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(62, 13);
             this.label10.TabIndex = 14;
             this.label10.Text = "Chris Crews";
-            // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label11.Location = new System.Drawing.Point(122, 77);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(75, 13);
-            this.label11.TabIndex = 13;
-            this.label11.Text = "Developers:";
-            // 
-            // label12
-            // 
-            this.label12.AutoSize = true;
-            this.label12.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label12.Location = new System.Drawing.Point(120, 35);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(132, 31);
-            this.label12.TabIndex = 12;
-            this.label12.Text = "XMTuner";
-            // 
-            // aVersion
-            // 
-            this.aVersion.ForeColor = System.Drawing.Color.Black;
-            this.aVersion.Location = new System.Drawing.Point(365, 43);
-            this.aVersion.Name = "aVersion";
-            this.aVersion.ReadOnly = true;
-            this.aVersion.Size = new System.Drawing.Size(62, 20);
-            this.aVersion.TabIndex = 11;
-            this.aVersion.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // label13
-            // 
-            this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(311, 47);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(48, 13);
-            this.label13.TabIndex = 10;
-            this.label13.Text = "Version: ";
-            // 
-            // groupBox1
-            // 
-            this.groupBox1.BackColor = System.Drawing.SystemColors.Control;
-            this.groupBox1.Controls.Add(this.linkLabel1);
-            this.groupBox1.Location = new System.Drawing.Point(109, 22);
-            this.groupBox1.Margin = new System.Windows.Forms.Padding(2);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Padding = new System.Windows.Forms.Padding(2);
-            this.groupBox1.Size = new System.Drawing.Size(330, 154);
-            this.groupBox1.TabIndex = 19;
-            this.groupBox1.TabStop = false;
-            // 
-            // linkLabel1
-            // 
-            this.linkLabel1.AutoSize = true;
-            this.linkLabel1.Location = new System.Drawing.Point(87, 139);
-            this.linkLabel1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.linkLabel1.Name = "linkLabel1";
-            this.linkLabel1.Size = new System.Drawing.Size(125, 13);
-            this.linkLabel1.TabIndex = 18;
-            this.linkLabel1.TabStop = true;
-            this.linkLabel1.Text = "http://www.xmtuner.net/";
-            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
             // 
             // pLabel6
             // 
@@ -950,7 +974,6 @@ namespace XMTuner
             this.tHistory.ResumeLayout(false);
             this.historyContextMenu.ResumeLayout(false);
             this.tAbout.ResumeLayout(false);
-            this.tAbout.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pLogoBox)).EndInit();
@@ -1038,6 +1061,8 @@ namespace XMTuner
         private System.Windows.Forms.ToolStripMenuItem copyToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripMenuItem clearToolStripMenuItem;
+        private System.Windows.Forms.LinkLabel linkLabel2;
+        private System.Windows.Forms.Label label2;
     }
 }
 
