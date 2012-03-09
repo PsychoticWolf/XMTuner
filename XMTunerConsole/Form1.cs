@@ -1,4 +1,23 @@
-﻿using System;
+﻿/*
+ * XMTuner: Copyright (C) 2009-2012 Chris Crews and Curtis M. Kularski.
+ * 
+ * This file is part of XMTuner.
+
+ * XMTuner is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+
+ * XMTuner is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with XMTuner.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+using System;
 using System.Windows.Forms;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -11,15 +30,36 @@ namespace XMTuner
 {
     public partial class Form1 : Form
     {
-        Core c;
         XMTuner self;
         Log logging;
-        Config cfg = new Config(true);
+        WebListner xmServer;
+        Boolean isConfigurationLoaded = false;
+        bool loggedIn = false;
+        bool serverRunning = false;
+        String network;
+        String username = "";
+        String password = "";
+        String port = "";
+        String bitrate;
+        bool autologin = false;
+        bool isMMS = false;
+        bool showNotification;
+        bool onTop;
+        bool showURLBuilder;
+        int numRecentHistory;
+        String tversityHost;
+        String hostname;
+
+        int i = 0;
+
+        String runTime = "";
+        String ip = "";
 
         #region Form1 Core
         public Form1()
         {
             InitializeComponent();
+            initPlayer();
 
             Microsoft.Win32.SystemEvents.PowerModeChanged += new
             Microsoft.Win32.PowerModeChangedEventHandler(powerModeChanged);    
@@ -30,15 +70,10 @@ namespace XMTuner
             logging = new Log(ref outputbox);
             aVersion.Text = configMan.version;
             outputbox.AppendText("XMTuner "+configMan.version+"\n");
-            c = new Core(logging);
 
             //Load config...
-            loadConfig();
-
-            //Do tasks for player initialization...
-            initPlayer();
-
-            lblClock.Text = "00:00:00";
+            refreshConfig();
+            lblClock.Text = "0:00:00";
 #if !DEBUG
             Updater update = new Updater(outputbox);
 #endif
@@ -46,17 +81,23 @@ namespace XMTuner
 
         protected override void OnPaintBackground(PaintEventArgs e)
         {
-            base.OnPaintBackground(e);
+            base.OnPaint(e);
             AeroLoad();
         }
 
         private void Form1_Shown(object sender, EventArgs e)
         {
             //If we have a configuration, and they want autologin, do it now.
-            if (cfg.loaded && cfg.autologin)
+            if (isConfigurationLoaded && autologin)
             {
                 start();
             }
+        }
+
+        private void Form1_FormClosing(Object sender, FormClosingEventArgs e)
+        {
+            if (logging == null) { return; }
+            //logging.doLog();
         }
 
         private void Form1_Resize(object sender, EventArgs e)
@@ -79,10 +120,10 @@ namespace XMTuner
             if (e.Mode == Microsoft.Win32.PowerModes.Suspend)
             {
                 //If the server isn't running, we don't need to do any of this...
-                if (c.isServerRunning == false) { return; }
+                if (serverRunning == false) { return; }
 
                 //We're going to sleep.. Stop.
-                output("System is going to sleep, stopping server.", LogLevel.Info);
+                output("System is going to sleep, stopping server.", "info");
                 stop();
             }
             else if (e.Mode == Microsoft.Win32.PowerModes.Resume)
@@ -90,67 +131,18 @@ namespace XMTuner
                 //XXX This will probably unconditionally start the server regardless of it if was up before...
 
                 //We're waking up, resume server.
-                output("System has resumed, starting server.", LogLevel.Info);
+                output("System has resumed, starting server.", "info");
                 start();
 
                 //If we were playing, resume.
                 playerNum = sleepPlayerNum;
                 if (playerNum > 0)
                 {
-                    output("Resuming playback...", LogLevel.Info);
+                    output("Resuming playback...", "info");
                     play(playerNum);
                 }
             }
         }
-        #endregion
-
-        #region Aero
-        [StructLayout(LayoutKind.Sequential)]
-        public struct MARGINS
-        {
-            public int cxLeftWidth;
-            public int cxRightWidth;
-            public int cyTopHeight;
-            public int cyBottomHeight;
-        }
-
-        [DllImport("dwmapi.dll")]
-        public static extern int DwmExtendFrameIntoClientArea(
-               IntPtr hWnd,
-               ref MARGINS pMarInset
-               );
-        [DllImport("dwmapi.dll")]
-        public static extern int DwmIsCompositionEnabled(ref int en);
-
-        private void AeroLoad()
-        {
-            if (System.Environment.OSVersion.Version.Major >= 6)  //make sure you are not on a legacy OS 
-            {
-                int en = 0;
-                DwmIsCompositionEnabled(ref en);  //check if the desktop composition is enabled
-                if (en > 0)
-                {
-                    this.TransparencyKey = Color.Gainsboro;
-                    this.BackColor = Color.Gainsboro;
-
-                    MARGINS margins = new MARGINS();
-
-                    margins.cxLeftWidth = 0;
-                    margins.cxRightWidth = 0;
-                    margins.cyTopHeight = -1;
-                    margins.cyBottomHeight = 0;
-
-                    IntPtr hWnd = this.Handle;
-                    int result = DwmExtendFrameIntoClientArea(hWnd, ref margins);
-                }
-                else
-                {
-                    this.TransparencyKey = Color.Empty;
-                    this.BackColor = SystemColors.Control;
-                }
-            }
-        }
-
         #endregion
 
         #region Start/Stop
@@ -165,76 +157,84 @@ namespace XMTuner
                 bStart.Text = "Start";
             }
         }
-
         private void start()
         {
-            output("Please wait... logging in", LogLevel.Info);
-            c.tick += new Core.TickHandler(coreEvent_Do);
-            c.Start();
-            output("XMTuner Ready...", LogLevel.Info);
-        }
-
-        private void coreEvent_Do(Core c, XMTunerEventArgs e)
-        {
-            self = c.tuner;
-            switch (e.source)
+            output("Please wait... logging in", "info");
+            if (network.ToUpper().Equals("SIRIUS"))
             {
-                case XMTunerEventSource.Tuner:
-                    switch(e.data) 
-                    {
-                        case XMTunerEventData.isLoggedIn:
-                            if (c.isLoggedIn)
-                            {
-                                bStart.Enabled = false;
-                                bStop.Enabled = true;
-                                channelBox.Enabled = true;
-                            }
-                            syncStatusLabel();
-                            loadChannels();
-
-                            break;
-                        case XMTunerEventData.isLoggedOut:
-                            bStart.Enabled = true;
-                            bStop.Enabled = false;
-
-                            unloadChannels();
-                            recentlyPlayedBox.Clear();
-                            syncStatusLabel();
-
-                            break;
-                    }
-                    break;
-                case XMTunerEventSource.Server:
-                    switch (e.data)
-                    {
-                        case XMTunerEventData.isRunning:
-                            viewServerToolStripMenuItem.Enabled = true;
-                            loginToolStripMenuItem.Enabled = false;
-                            timer1.Enabled = true;
-
-                            linkServer.Text = "Server is Running...";
-                            linkServer.Enabled = true;
-                            output("XMTuner Ready...", LogLevel.Info);
-                            break;
-                        case XMTunerEventData.isStopped:
-                            linkServer.Text = "Server is Stopped";
-                            linkServer.Enabled = false;
-                            timer1.Enabled = false;
-                            lblClock.Text = "00:00:00";
-                            break;
-                    }
-                    break;
+                self = new SiriusTuner(username, password, logging);
             }
+            else
+            {
+                self = new XMTuner(username, password, logging);
+            }
+            if (self.isLoggedIn == false)
+            {
+                //Not logged in successfully.. Bail!
+                return;
+            }
+            i = 0;
+
+            xmServer = new WebListner(self, port);
+            serverRunning = true;
+            xmServer.start();
+            if (xmServer.isRunning == false)
+            {
+                serverRunning = false;
+                //Server failed to start.
+                return;
+            }
+            viewServerToolStripMenuItem.Enabled = true;
+            loginToolStripMenuItem.Enabled = false;
+            timer1.Enabled = true;
+            timer2.Enabled = true;
+            linkServer.Text = "Server is Running...";
+            linkServer.Enabled = true;
+
+            loggedIn = true;
+            if (loggedIn) {
+                bStart.Enabled = false;
+                bStop.Enabled = true;
+                channelBox.Enabled = true;
+            }
+            syncStatusLabel();
+            loadChannels();
+            setupURLBuilder();
+            output("XMTuner Ready...", "info");
         }
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            if (c.isServerRunning == true)
+            double sec = 0;
+            double minute = 0;
+            double hour = 0;
+            if (serverRunning)
             {
-                String runTime = (DateTime.Now - c.server.serverStartTime).ToString().Split('.')[0];
+                i++;
+                sec = i;
+
+                if (sec >= 60) { minute = sec / 60; minute = Math.Floor(minute); sec = sec - (minute * 60); }
+                if (minute >= 60) { hour = minute / 60; hour = Math.Floor(hour); minute = minute - (hour * 60); }
+
+
+                runTime = hour.ToString() + ":";
+                if (minute < 10) { runTime += "0"+minute.ToString() + ":"; }
+                else {runTime+=minute.ToString()+":";}
+
+                if (sec < 10) { runTime += "0" + sec.ToString(); }
+                else { runTime += sec.ToString(); }
+
                 lblClock.Text = runTime;
             }
         }
+
+
+        private void timer2_Tick(object sender, EventArgs e)
+        {
+            self.doWhatsOn();
+        }
+
+
 
         //Stop
         private void bStop_Click(object sender, EventArgs e)
@@ -243,13 +243,30 @@ namespace XMTuner
         }
         private void stop()
         {
-            c.Stop();
             shutdownPlayer();
+            xmServer.stop();
+            serverRunning = false;
+            linkServer.Text = "Server is Stopped";
+            output("Server Uptime was "+runTime, "info");
+            linkServer.Enabled = false;
+            timer1.Enabled = false;
+            lblClock.Text = "0:00:00";
+            i = 0;
+            timer2.Enabled = false;
+            bStart.Enabled = true;
+            bStop.Enabled = false;
+            unloadChannels();
+            self = null;
+            xmServer = null;
+            loggedIn = false;
+            recentlyPlayedBox.Clear();
+            syncStatusLabel();
+            GC.Collect();
         }
 
         private void linkServer_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            System.Diagnostics.Process.Start("http://" + configMan.getLocalIP() + ":" + cfg.port);
+            System.Diagnostics.Process.Start("http://" + configMan.getLocalIP() + ":" + port);
         }
 
         private void restart()
@@ -268,71 +285,130 @@ namespace XMTuner
             //Store current configuration for comparison test
             NameValueCollection currentconfig = new configMan().getConfig();
 
-            Form2 form2 = new Form2(cache, c.isLoggedIn, cfg.ip);
+            Form2 form2 = new Form2(cache, loggedIn, ip);
             form2.ShowDialog();
-            cfg.reload();
+            refreshConfig(currentconfig);
         }
 
-        private Boolean loadConfig()
+        private List<String> compareConfig(NameValueCollection prevconfig, NameValueCollection config)
         {
-            if (c == null || c.cfg == null || c.cfg.loaded == false)
+            List<String> changedValues = new List<String>();
+            foreach (String value in config.AllKeys)
+            {
+                if (config[value] != prevconfig[value])
+                {
+                    changedValues.Add(value.ToLower());
+                }
+            }
+            if (changedValues.Count > 0)
+            {
+                String updatedvalues = "";
+                for (int i = 0; i < changedValues.Count; i++)
+                    updatedvalues += changedValues[i] + " ";
+                    output("Updated Values: " + updatedvalues, "debug");
+
+                return changedValues;
+            }
+            return null;
+        }
+
+        private bool refreshConfig() { return refreshConfig(null); }
+        private bool refreshConfig(NameValueCollection prevconfig)
+        {
+            configMan configuration = new configMan();
+            if (configuration.loaded == false)
             {
                 bStart.Enabled = false;
-                output("No Configuration\nClick Configure.", LogLevel.Error);
+                output("No Configuration\nClick Configure.", "error");
+                isConfigurationLoaded = false;
                 return false;
             }
-            cfg = c.cfg;
-            cfg.update += new Config.ConfigUpdateHandler(cfg_update);
 
-            //Set alwaysOnTop...
-            this.TopMost = cfg.onTop;
+            //Get configuration from configMan
+            NameValueCollection config = configuration.getConfig(true);
 
-            setChannelsListStyle(cfg.channelListStyle);
+            //Set config values using new config
+            setConfig(configuration, config);
+
+            //Get list of updated values if we're updating config
+            if (loggedIn == true && prevconfig != null)
+            {
+                List<String> updatedvalues = compareConfig(prevconfig, config);
+                if (updatedvalues != null)
+                {
+                    //Update downstream users dynamically or restart as needed
+                    updateRunningConfig(config, updatedvalues);
+                }
+            }
+
+            //Set alwaysOnTop and URL Builder settings...
+            this.TopMost = onTop; //Make XMTuner always on top
+            //Hide URL Builder on Top
+            enabledToolStripMenuItem.Checked = true;
+            if (showURLBuilder == false)
+            {
+                enabledToolStripMenuItem.Checked = false;
+                disabledToolStripMenuItem.Checked = true;
+                splitContainer1.Panel2Collapsed = true;
+            }
 
             //Messages & Item Twiddling
-            if (!c.isServerRunning)
+            if (!serverRunning)
             {
                 bStart.Enabled = true;
             }
             loginToolStripMenuItem.Enabled = true;
 
-            if (cfg.loaded == true)
+            if (isConfigurationLoaded == false)
             {
-                output("Configuration Loaded", LogLevel.Info);
+                output("Configuration Loaded", "info");
             }
+            isConfigurationLoaded = true;
             syncStatusLabel();
             return true;
         }
 
-        void cfg_update(Config cfg, ConfigUpdateEventArgs e)
+        private void updateRunningConfig(NameValueCollection config, List<String> updatedvalues)
         {
-            List<String> updatedvalues = e.data;
-            output("Updated Values: " + e.details, LogLevel.Debug);
+            //alwaysOnTop, showURLBuilder, showNotice (refreshed directly as they're Form1 elements)
 
-            //alwaysOnTop, showNotice (refreshed directly as they're Form1 elements)
-            this.TopMost = cfg.onTop; //Make XMTuner always on top
-            setChannelsListStyle(cfg.channelListStyle);
-            
-
-            if (c == null || c.server == null || self == null || c.isLoggedIn == false) { return; }
+            if (xmServer == null || self == null || loggedIn == false) { return; }
             //username, password, port [, network] = require restart
             if (updatedvalues.Contains("username") || updatedvalues.Contains("password") ||
                 updatedvalues.Contains("port") || updatedvalues.Contains("network"))
             {
-                output("Your configuration update requires XMTuner to restart the server to take effect. Restarting now...", LogLevel.Info);
+                output("Your configuration update requires XMTuner to restart the server to take effect. Restarting now...", "info");
                 restart();
             }
-
             //numRecentHistory
-            self.numItems = cfg.numRecentHistory;
+            self.numItems = numRecentHistory;
 
             //bitrate, isMMS, hostname, TVersity = should be dynamically applied
             if (updatedvalues.Contains("bitrate") || updatedvalues.Contains("ismms") ||
                 updatedvalues.Contains("hostname") || updatedvalues.Contains("tversity"))
             {
-                output("Updating configuration of web server...", LogLevel.Debug);
-                c.server.worker.cfg = cfg;
+                output("Updating configuration of web server...", "debug");
+                xmServer.worker.config = config;
             }
+        }
+
+        private void setConfig(configMan cfg, NameValueCollection config)
+        {
+            ip = configMan.getLocalIP();
+            username = config["username"];
+            password = config["password"];
+            port = config["port"];
+            bitrate = cfg.getConfigItem(config, "bitrate");
+            autologin = cfg.getConfigItemAsBoolean(config, "autologin");
+            isMMS = cfg.getConfigItemAsBoolean(config, "isMMS");
+            tversityHost = config["Tversity"];
+            hostname = config["hostname"];
+            network = config["network"];
+            showNotification = cfg.getConfigItemAsBoolean(config, "showNotice");
+            onTop = cfg.getConfigItemAsBoolean(config, "alwaysOnTop");
+            showURLBuilder = cfg.getConfigItemAsBoolean(config, "showURLBuilder");
+            numRecentHistory = Convert.ToInt32(config["numRecentHistory"]);
+            setChannelsListStyle(config["channelListStyle"]);
         }
         #endregion
 
@@ -356,7 +432,7 @@ namespace XMTuner
 
         private void viewServerToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("http://" + configMan.getLocalIP() + ":" + cfg.port);
+            System.Diagnostics.Process.Start("http://" + configMan.getLocalIP() + ":" + port);
         }
         #endregion
 
@@ -365,10 +441,15 @@ namespace XMTuner
         {
             System.Diagnostics.Process.Start("http://www.xmtuner.net/");
         }
+
+        private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("http://www.gnu.org/licenses/gpl-3.0.txt");
+        }
         #endregion
 
         #region Log Tab / Outputbox
-        private void output(String output, LogLevel level)
+        private void output(String output, String level)
         {
             logging.output(output, level);
         }
@@ -376,26 +457,24 @@ namespace XMTuner
         // This delegate enables asynchronous calls for setting
         // the text property on a TextBox control.
         public delegate void SetTextCallback(ref RichTextBox outputbox, string text, Color color);
-        public static void output(String output, LogLevel level, ref RichTextBox outputbox)
+        public static void output(String output, String level, ref RichTextBox outputbox)
         {
             Color color = Color.Black;
-            switch (level)
+            if (level.ToLower().Equals("error"))
             {
-                case LogLevel.Error:
-                    color = Color.Red;
-                    break;
-                case LogLevel.Notice:
-                    color = Color.OrangeRed;
-                    break;
-                case LogLevel.Player:
-                    color = Color.Green;
-                    break;
-                case LogLevel.Debug:
-                    color = Color.CornflowerBlue;
-                    break;
-                case LogLevel.Info:
-                    color = Color.Black;
-                    break;
+                color = Color.Red;
+            }
+            if (level.ToLower().Equals("debug"))
+            {
+                color = Color.CornflowerBlue;
+            }
+            if (level.ToLower().Equals("notice"))
+            {
+                color = Color.OrangeRed;
+            }
+            if (level.ToLower().Contains("player"))
+            {
+                color = Color.Green;
             }
 
             //We can't talk to outputbox from the server thread...
@@ -466,6 +545,13 @@ namespace XMTuner
         #endregion
 
         #region Channels Tab
+        private void setupURLBuilder()
+        {
+            // URL Builder
+            typeBox.SelectedItem = "Channel";
+            if (isMMS) { protocolBox.SelectedItem = "MMS"; } else { protocolBox.SelectedItem = "HTTP"; }
+            if (bitrate.Equals("high")) { bitRateBox.SelectedItem = "High"; } else { bitRateBox.SelectedItem = "Low"; }
+        }
 
         private void loadChannels()
         {
@@ -473,11 +559,9 @@ namespace XMTuner
             if (channelBox.Tag == null) { channelBox.Tag = ""; }
 
             //Channel ListView
-            output("Channels Tab: Loading...", LogLevel.Debug);
+            output("Channels Tab: Loading...", "debug");
             channelBox.BeginUpdate();
             channelBox.Clear();
-
-            loadFavoritesBegin(); //Favorites Tab loading is linked to us...
 
             //Columns for Item and Subitems
             channelBox.Columns.AddRange(new ColumnHeader[] { new ColumnHeader(), new ColumnHeader() });
@@ -490,7 +574,7 @@ namespace XMTuner
 
             //Add Groups
             channelBox.Groups.Add("cbGroupFavorite", "Favorite Channels");
-            channelBox.Groups.Add("cbGroupNormal", cfg.network.ToUpper() + " Channels");
+            channelBox.Groups.Add("cbGroupNormal", network.ToUpper() + " Channels");
 
             Int32 imagenum = 0;
             //Iterate through the channels (using a copy of the List)
@@ -514,7 +598,7 @@ namespace XMTuner
                         imagelist.ImageSize = new Size(30, 30);
                     }
                     imagelist.Images.Add(defaultImage);
-                    output("Channels Tab: Using default logo for " + chan.ToString(), LogLevel.Debug);
+                    output("Channels Tab: Using default logo for " + chan.ToString(), "debug");
                 }
                 //End Logo
 
@@ -545,7 +629,6 @@ namespace XMTuner
                     if (!channelBox.Tag.Equals("") && self.favorites.isFavorite(chan.num))
                     {
                         item.Group = channelBox.Groups["cbGroupFavorite"];
-                        addFavorite(chan);
                     }
 
                 channelBox.Items.Add(item);
@@ -553,8 +636,7 @@ namespace XMTuner
             }
 
             channelBox.EndUpdate();
-            output("Channels Tab: Complete", LogLevel.Debug);
-            loadFavoritesEnd(); //Favorites Tab loading is linked to us...
+            output("Channels Tab: Complete", "debug");
             timerCB.Enabled = true;
             timerCB.Tag = 0;
         }
@@ -563,7 +645,7 @@ namespace XMTuner
         {
             if (self.preloadImageRunning == false && self.preloadImagesUpdated == true)
             {
-                output("Channels Tab: New Images in Cache Detected, Updating...", LogLevel.Debug);
+                output("Channels Tab: New Images in Cache Detected, Updating...", "debug");
                 loadChannels();
                 self.preloadImagesUpdated = false;
             }
@@ -588,6 +670,110 @@ namespace XMTuner
             channelBox.LargeImageList.Dispose();
         }
 
+        private String getChannelAddress(String channelString, String protocol, String altBitrate)
+        {
+            if (channelBox.SelectedItems.Count == 0) { return ""; }
+            Int32 channelNum = Convert.ToInt32(channelBox.SelectedItems[0].Name);
+            return getAddress("stream", protocol, altBitrate, channelNum);
+        }
+
+        private String getFeedAddress(String protocol, String altBitrate)
+        {
+            return getAddress("feed", protocol, altBitrate, 0);
+        }
+
+        private String getPlaylistAddress(string protocol, string altBitrate)
+        {
+            return getAddress("playlist", protocol, altBitrate, 0);
+        }
+
+        private String getAddress(String type, String protocol, String altBitrate, Int32 channelNum)
+        {
+            NameValueCollection collectionForAdd = new NameValueCollection();
+            collectionForAdd.Add("type", protocol.ToLower());
+            collectionForAdd.Add("bitrate", altBitrate.ToLower());
+            NameValueCollection config = new NameValueCollection();
+            config.Add("bitrate", bitrate);
+            config.Add("isMMS", isMMS.ToString());
+            if (bitRateBox.SelectedIndex == -1) { altBitrate = bitrate; }
+
+            String host;
+            if (hostname.Equals("")) { host = ip; } else { host = hostname; }
+            host = host + ":" + port;
+
+            String address = TheConstructor.buildLink(type, host, collectionForAdd, null, channelNum, config);
+            return address;
+        }
+
+        private void makeAddress(object sender, EventArgs e)
+        {
+            
+            if (channelBox.Items.Count == 0) { return; }
+
+            String protocol;
+            String channel;
+            String altBitrate; 
+            protocol = (String) protocolBox.SelectedItem;
+            if (channelBox.SelectedItems.Count > 0)
+            {
+
+                channel = channelBox.SelectedItems[0].Name;
+            }
+            else
+            {
+                channel = channelBox.Items[0].Name;
+            }
+            altBitrate = (String)bitRateBox.SelectedItem;
+            if (typeBox.SelectedItem.ToString().ToLower().Equals("feed"))
+            {
+                addressBox.Text = getFeedAddress(protocol, altBitrate);
+            }
+            else if (typeBox.SelectedItem.ToString().ToLower().Equals("playlist"))
+            {
+                addressBox.Text = getPlaylistAddress(protocol, altBitrate);
+            }
+            else
+            {
+                addressBox.Text = getChannelAddress(channel, protocol, altBitrate);
+            }
+        }
+
+        private void updateTypeList(object sender, EventArgs e)
+        {
+            if (typeBox.SelectedItem.ToString().ToLower().Equals("playlist")) {
+                protocolBox.Items.Clear();
+                protocolBox.Items.Add("Type:");
+                protocolBox.Items.Add("ASX");
+                protocolBox.Items.Add("PLS");
+                protocolBox.Items.Add("M3U");
+                protocolBox.SelectedItem = "ASX";
+            } else {
+                protocolBox.Items.Clear();
+                protocolBox.Items.Add("Protocol:");
+                protocolBox.Items.Add("HTTP");
+                protocolBox.Items.Add("MMS");
+                protocolBox.Items.Add("ASX");
+                protocolBox.Items.Add("M3U");
+
+                if (!tversityHost.Equals(""))
+                {
+                    protocolBox.Items.Add("MP3");
+                    protocolBox.Items.Add("WAV");
+                }
+                if (isMMS) { protocolBox.SelectedItem = "MMS"; } else { protocolBox.SelectedItem = "HTTP"; }
+            }
+            makeAddress(sender, e);
+        }
+
+
+
+        private void cpyToClip_Click(object sender, EventArgs e)
+        {
+            if (addressBox.Text != "")
+            {
+                Clipboard.SetText(addressBox.Text);
+            }
+        }
 
         private void channelBox_DoubleClick(object sender, EventArgs e)
         {
@@ -614,65 +800,92 @@ namespace XMTuner
             updateChannels();
         }
 
+        private void enabledToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            enabledToolStripMenuItem.Checked = true;
+            disabledToolStripMenuItem.Checked = false;
+            splitContainer1.Panel2Collapsed = false;
+        }
+
+        private void disabledToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            enabledToolStripMenuItem.Checked = false;
+            disabledToolStripMenuItem.Checked = true;
+            splitContainer1.Panel2Collapsed = true;
+        }
+
         private void addToFavoritesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (self.favorites.isFavorite(Convert.ToInt32(channelBox.SelectedItems[0].Name)) == false)
+            ListViewItem item = channelBox.SelectedItems[0];
+            if (item.Name.Equals("")) { return; }
+            int num = Convert.ToInt32(item.Name);
+            XMChannel ch = self.Find(num);
+            if (self.favorites.isFavorite(num) == false)
             {
-                //Add to Favorites
-                bAddFavorite_Click(sender, e);
+                //Add to Favorites...
+                DialogResult result = MessageBox.Show("Add \"" + ch.ToString() + "\" to Favorites?", "Add to Favorites", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (result == DialogResult.Yes)
+                {
+                    if (self.favorites.addFavoriteChannel(num))
+                    {
+                        item.Group = channelBox.Groups["cbGroupFavorite"];
+                    }
+                }
             }
             else
             {
-                //Remove from Favorites
-                bRemoveFavorite_Click(sender, e);
+                //Already in favorites, offer to remove...
+                DialogResult result = MessageBox.Show("Remove \"" + ch.ToString() + "\" from Favorites?", "Remove from Favorites", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (result == DialogResult.Yes)
+                {
+                    if (self.favorites.removeFavoriteChannel(num))
+                    {
+                        item.Group = channelBox.Groups["cbGroupNormal"];
+                    }
+                }
             }
         }
 
-        private void setChannelsListStyle(channelListStyles style)
+        private void setChannelsListStyle(String style)
         {
             favoriteChannelsToolStripMenuItem.Checked = false;
             allChannelsToolStripMenuItem.Checked = false;
             byCategoryToolStripMenuItem.Checked = false;
 
-            switch (style)
+            if (style.ToLower().Equals("all"))
             {
-                case channelListStyles.All:
-                    allChannelsToolStripMenuItem.Checked = true;
-                    channelBox.Tag = "";
-                    break;
-                case channelListStyles.Category:
-                    byCategoryToolStripMenuItem.Checked = true;
-                    channelBox.Tag = "category";
-                    break;
-                case channelListStyles.Favorites:
-                    favoriteChannelsToolStripMenuItem.Checked = true;
-                    channelBox.Tag = "favorites";
-                    break;
+                allChannelsToolStripMenuItem.Checked = true;
+                channelBox.Tag = "";
+            }
+            else if (style.ToLower().Equals("category"))
+            {
+                byCategoryToolStripMenuItem.Checked = true;
+                channelBox.Tag = "category";
+            }
+            else if (style.ToLower().Equals("favorites"))
+            {
+                favoriteChannelsToolStripMenuItem.Checked = true;
+                channelBox.Tag = "favorites";
+                
             }
         }
 
         private void allChannelsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            setChannelsListStyle(channelListStyles.All);
+            setChannelsListStyle("all");
             loadChannels();
         }
 
         private void favoriteChannelsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            setChannelsListStyle(channelListStyles.Favorites);
+            setChannelsListStyle("favorites");
             loadChannels();
         }
 
         private void byCategoryToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            setChannelsListStyle(channelListStyles.Category);
+            setChannelsListStyle("category");
             loadChannels();
-        }
-
-        private void uRLBuilderToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Form3 form3 = new Form3(Convert.ToInt32(channelBox.SelectedItems[0].Name), cfg);
-            form3.ShowDialog();
         }
         #endregion
 
@@ -699,7 +912,11 @@ namespace XMTuner
             recentlyPlayedBox.Columns.Add("Channel");
             recentlyPlayedBox.Columns.Add("Song");
 
+            //Image defaultImage = Image.FromStream(Assembly.GetExecutingAssembly().GetManifestResourceStream("XMTuner.xmtuner64.png"));
+            //ImageList imagelist = new ImageList();
             recentlyPlayedBox.LargeImageList = channelBox.LargeImageList;
+            //imagelist.ImageSize = new Size(30, 30); //new Size(45, 40);
+            //imagelist.Images.Add(defaultImage);
 
             if (self.recentlyPlayed.Count == 0)
             {
@@ -711,15 +928,16 @@ namespace XMTuner
             {
                 foreach (String entry in self.recentlyPlayed)
                 {
-                    String[] _entry = entry.Split(new Char[] {'-'}, 2);
-                    String[] __entry = _entry[0].Split(new String[] {"M: "}, 2, StringSplitOptions.None);
-                    ListViewItem item = new ListViewItem(new String[] {_entry[1].Trim(), _entry[0].Trim()});
+                    String[] _entry = entry.Split(new Char[] { '-' }, 2);
+                    String[] __entry = _entry[0].Split(new String[] { "M: " }, 2, StringSplitOptions.None);
+                    ListViewItem item = new ListViewItem(new String[] { _entry[1].Trim(), _entry[0].Trim() });
                     item.ImageIndex = channelBox.FindItemWithText(__entry[1]).ImageIndex;
                     item.Group = recentlyPlayedBox.Groups[0];
                     recentlyPlayedBox.Items.Add(item);
                 }
             }
-            catch (InvalidOperationException) {}
+            catch (InvalidOperationException) { }
+            catch (IndexOutOfRangeException) { }
             recentlyPlayedBox.EndUpdate();
         }
 
@@ -746,234 +964,55 @@ namespace XMTuner
         }
         #endregion
 
-#region Favorites Tab
-        private void loadFavoritesBegin()
+        #region Aero
+        [StructLayout(LayoutKind.Sequential)]
+        public struct MARGINS
         {
-            output("Favorites Tab: Loading...", LogLevel.Debug);
-            favoritesListView.BeginUpdate();
-            favoritesListView.Clear();
-
-            //Columns for Item and Subitems
-            ColumnHeader column1, column2, column3, column4;
-            column1 = new ColumnHeader();
-            column1.Text = "Num";
-            column1.TextAlign = HorizontalAlignment.Center;
-            column1.Width = 35;
-
-            column2 = new ColumnHeader();
-            column2.Text = "Name";
-            column2.TextAlign = HorizontalAlignment.Left;
-            column2.Width = 148;
-
-            column4 = new ColumnHeader();
-            column4.Text = "Preset #";
-            column4.TextAlign = HorizontalAlignment.Center;
-            column4.Width = 53;
-
-            column3 = new ColumnHeader();
-            column3.Text = "Description";
-            column3.TextAlign = HorizontalAlignment.Left;
-            column3.Width = favoritesListView.Size.Width - (column1.Width + column2.Width + column4.Width +4);
-
-
-            favoritesListView.Columns.AddRange(new ColumnHeader[] { column1, column2, column3, column4 });
-
-        }
-        private void loadFavoritesEnd()
-        {
-            //Enable Form Controls for Managing Favorites...
-            addFavChNum.Enabled = true;
-            bAddFavorite.Enabled = true;
-
-            favoritesListView.EndUpdate();
-            output("Favorites Tab: Complete", LogLevel.Debug);
-        }
-        private void addFavorite(XMChannel chan)
-        {
-            //Verify we're being called on a channel that's set as a favorite.
-            if (self.favorites.isFavorite(chan.num) == false) { return; }
-
-            //Get preset number
-            String preset = self.favorites.getPreset(chan.num.ToString());
-
-            //We're a favorite channel.. add to the favorites panel listbox.
-            ListViewItem favorite = new ListViewItem(new String[] {chan.num.ToString(), chan.name, chan.desc, preset});
-                favorite.Name = chan.num.ToString();
-                favorite.Group = favoritesListView.Groups["favorite"];
-            favoritesListView.Items.Add(favorite);
-            output("Favorites Tab: Added "+ chan.ToString(), LogLevel.Debug);
+            public int cxLeftWidth;
+            public int cxRightWidth;
+            public int cyTopHeight;
+            public int cyBottomHeight;
         }
 
-        private void bAddFavorite_Click(object sender, EventArgs e)
-        {
-            int num;
-            //We try to support both the context menu and button method here..
-            if (sender.GetType().Name.Equals("Button"))
-            {
-                num = (int)addFavChNum.Value;
-            }
-            else
-            {
-                //The context menu doesn't use the number box. Look it up from the selected item.
-                ListViewItem item = channelBox.SelectedItems[0];
-                if (item.Name.Equals("")) { return; }
-                num = Convert.ToInt32(item.Name);
-            }
+        [DllImport("dwmapi.dll")]
+        public static extern int DwmExtendFrameIntoClientArea(
+               IntPtr hWnd,
+               ref MARGINS pMarInset
+               );
+        [DllImport("dwmapi.dll")]
+        public static extern int DwmIsCompositionEnabled(ref int en);
 
-            XMChannel ch = self.Find(num);
-            if (ch.isValid == true)
+        private void AeroLoad()
+        {
+            if (System.Environment.OSVersion.Version.Major >= 6)  //make sure you are not on a legacy OS 
             {
-                if (self.favorites.addFavoriteChannel(num) == true)
+                int en = 0;
+                DwmIsCompositionEnabled(ref en);  //check if the desktop composition is enabled
+                if (en > 0)
                 {
+                    this.TransparencyKey = Color.Gainsboro;
+                    this.BackColor = Color.Gainsboro;
+                    splitContainer2.BackColor = SystemColors.Control;
+                    splitContainer2.Panel1.BackColor = Color.Gainsboro;
 
-                    MessageBox.Show(ch.ToString() + " added to favorites.", "Add to Favorites", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    addFavoriteChannelUIHelper(ch.num);
+                    MARGINS margins = new MARGINS();
+
+                    margins.cxLeftWidth = 0;
+                    margins.cxRightWidth = 0;
+                    margins.cyTopHeight = -1;
+                    margins.cyBottomHeight = 0;
+
+                    IntPtr hWnd = this.Handle;
+                    int result = DwmExtendFrameIntoClientArea(hWnd, ref margins);
                 }
                 else
                 {
-                    MessageBox.Show(ch.ToString() + " is already a favorite channel.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
-            else
-            {
-                MessageBox.Show("Channel " + num.ToString() + " is not a valid channel.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        private void bRemoveFavorite_Click(object sender, EventArgs e)
-        {
-            ListViewItem item;
-            if (sender.GetType().Name == "Button")
-            {
-                item = favoritesListView.SelectedItems[0];
-            }
-            else
-            {
-                item = channelBox.SelectedItems[0];
-            }
-            if (item.Name.Equals("")) { return; }
-            int num = Convert.ToInt32(item.Name);
-            XMChannel ch = self.Find(num);
-
-            //Already in favorites, offer to remove...
-            DialogResult result = MessageBox.Show("Remove \"" + ch.ToString() + "\" from Favorites?", "Remove from Favorites", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            if (result == DialogResult.Yes)
-            {
-                if (self.favorites.removeFavoriteChannel(num))
-                {
-                    removeFavoriteChannelUIHelper(ch.num);
-                }
-                else
-                {
-                    MessageBox.Show("Error removing " + ch.ToString() + " from favorites.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    this.TransparencyKey = Color.Empty;
+                    this.BackColor = SystemColors.Control;
                 }
             }
         }
 
-        private void bAddPreset_Click(object sender, EventArgs e)
-        {
-            if (favoritesListView.SelectedItems.Count == 0) { return; }
-            ListViewItem item = favoritesListView.SelectedItems[0];
-            if (item.Name.Equals("")) { return; }
-            int num = Convert.ToInt32(item.Name);
-            int preset = (int)addPresetNum.Value;
-
-            XMChannel ch = self.Find(num);
-            DialogResult result = MessageBox.Show("Add " + ch.ToString() + " to Preset " + preset + "?", "Add Preset", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            if (result == DialogResult.Yes)
-            {
-                int tn = self.favorites.findPreset(preset); //Channel number that has this preset already, if any.
-                if (tn == 0)
-                {
-                    self.favorites.addPreset(num, preset);
-                    updatePresetUIHelper(num);
-                }
-                else
-                {
-                    ch = self.Find(tn);
-                    result = MessageBox.Show("Preset "+preset+" is already assigned to " +ch.ToString()+". Overwrite?", "Overwrite Preset", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                    if (result == DialogResult.Yes)
-                    {
-                        self.favorites.removePreset(tn);
-                        updatePresetUIHelper(tn);
-                        self.favorites.addPreset(num, preset);
-                        updatePresetUIHelper(num);
-                    }
-                }
-            }
-        }
-
-        private void bRemovePreset_Click(object sender, EventArgs e)
-        {
-            ListViewItem item = favoritesListView.SelectedItems[0];
-            if (item.Name.Equals("")) { return; }
-            int num = Convert.ToInt32(item.Name);
-            int preset = self.favorites.getPreset(num);
-            DialogResult result = MessageBox.Show("Remove Channel " + num + " from Preset " + preset + "?", "Add Preset", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            if (result == DialogResult.Yes)
-            {
-                self.favorites.removePreset(num);
-                updatePresetUIHelper(num);
-            }
-        }
-
-        private void favoritesListView_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
-        {
-            if (e.IsSelected == true)
-            {
-                bRemoveFavorite.Enabled = true;
-                addPresetNum.Enabled = true;
-                bAddPreset.Enabled = true;
-
-                if (self.favorites.hasPreset(Convert.ToInt32(e.Item.Name)) == true)
-                {
-                    bRemovePreset.Enabled = true;
-                }
-            }
-            else
-            {
-                bRemoveFavorite.Enabled = false;
-                bRemovePreset.Enabled = false;
-                addPresetNum.Enabled = false;
-                bAddPreset.Enabled = false;
-                bRemovePreset.Enabled = false;
-            }
-        }
-
-        private void addFavoriteChannelUIHelper(int num)
-        {
-            //Add Favorite to Favorites ListView
-            addFavorite(self.Find(num));
-
-            //Add Item to Favorites group in the channelBox listview
-            ListViewItem item = channelBox.Items.Find(num.ToString(), false)[0];
-                item.Group = channelBox.Groups["cbGroupFavorite"];
-        }
-
-        private void removeFavoriteChannelUIHelper(int num)
-        {
-            //Remove item from Favorites ListView
-            ListViewItem item = favoritesListView.Items.Find(num.ToString(), false)[0];
-                item.Remove();
-
-            //Move channel out of favorites group in the Channels ListView
-            item = channelBox.Items.Find(num.ToString(), false)[0];
-                item.Group = channelBox.Groups["cbGroupNormal"];
-        }
-
-        private void updatePresetUIHelper(int num)
-        {
-            ListViewItem item = favoritesListView.Items.Find(num.ToString(), false)[0];
-            item.SubItems[3].Text = self.favorites.getPreset(num.ToString());
-
-            updatePresetButtons();
-        }
-
-#endregion
-
-
-
-
-
+        #endregion
     }
 }

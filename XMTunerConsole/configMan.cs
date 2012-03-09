@@ -1,4 +1,23 @@
-﻿using System;
+﻿/*
+ * XMTuner: Copyright (C) 2009-2012 Chris Crews and Curtis M. Kularski.
+ * 
+ * This file is part of XMTuner.
+
+ * XMTuner is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+
+ * XMTuner is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with XMTuner.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Text;
@@ -18,7 +37,6 @@ namespace XMTuner
 
         //path to Application Data folder
         String path;
-
         public configMan()
         {
 #if DEBUG
@@ -33,13 +51,12 @@ namespace XMTuner
                 if (config.Count == 0)
                 {
                     readConfig();
-                    addDefaultValues();
                 }
                 return isConfig;
             }
         }
 
-        private NameValueCollection defaultConfig
+        public NameValueCollection defaultConfig
         {
             get
             {
@@ -57,9 +74,9 @@ namespace XMTuner
                 defaultConfig.Add("network", "XM");
                 defaultConfig.Add("showNotice", true.ToString());
                 defaultConfig.Add("alwaysOnTop", false.ToString());
+                defaultConfig.Add("showURLBuilder", true.ToString());
                 defaultConfig.Add("numRecentHistory", "25");
                 defaultConfig.Add("channelListStyle", "Favorite Channels");
-                defaultConfig.Add("enableServer", true.ToString());
                 return defaultConfig;
             }
         }
@@ -107,27 +124,13 @@ namespace XMTuner
             if (config.Count == 0)
             {
                 readConfig();
-                addDefaultValues();
             }
+            addDefaultValues();
             return config;
         }
-        private NameValueCollection getConfigReadOnly()
-        {
-            getConfig();
-            NameValueCollection roConfig = new NameValueCollection();
-            foreach (String key in config.AllKeys)
-            {
-                if (roConfig.Get(key) == null)
-                {
-                    roConfig[key] = config.Get(key);
-                }
-            }
-            return roConfig;
-        }
-
         public NameValueCollection getConfig(Boolean interpreted)
         {
-            NameValueCollection sConfig = getConfigReadOnly();
+            NameValueCollection sConfig = getConfig();
             if (Convert.ToBoolean(sConfig["bitrate"])) { sConfig["bitrate"] = "high"; } else { sConfig["bitrate"] = "low"; }
             if (sConfig["hostname"] != "") { sConfig["hostname"] = sConfig["hostname"] + ":" + sConfig["port"]; }
 
@@ -180,7 +183,7 @@ namespace XMTuner
             return getConfigItem(config, item);
         }
 
-        private String getConfigItem(NameValueCollection config, String item)
+        public String getConfigItem(NameValueCollection config, String item)
         {
                 if (config.Get(item) == null)
                 {
@@ -192,12 +195,7 @@ namespace XMTuner
                 }
         }
 
-        public Boolean getConfigItemAsBoolean(String item)
-        {
-            return getConfigItemAsBoolean(config, item);
-        }
-
-        private Boolean getConfigItemAsBoolean(NameValueCollection config, String item)
+        public Boolean getConfigItemAsBoolean(NameValueCollection config, String item)
         {
             if (config.Get(item) == null)
             {

@@ -1,4 +1,23 @@
-﻿using System;
+﻿/*
+ * XMTuner: Copyright (C) 2009-2012 Chris Crews and Curtis M. Kularski.
+ * 
+ * This file is part of XMTuner.
+
+ * XMTuner is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+
+ * XMTuner is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with XMTuner.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.IO;
@@ -22,15 +41,15 @@ namespace XMTuner
         }
 
 
-        public SiriusTuner(Config cfg, Log logging)
-            : base(cfg, logging, "SIRIUS")
+        public SiriusTuner(String username, String passw, Log logging)
+            : base(username, passw, logging, "SIRIUS")
         {
         }
 
         protected override Boolean login()
         {
             Boolean loginResult = true;
-            output("Logging into Sirius Internet Radio", LogLevel.Info);
+            output("Logging into Sirius Internet Radio", "info");
 
             //String captchaResponse;
             //String captchaID;
@@ -58,7 +77,7 @@ namespace XMTuner
             /*Boolean result = getSiriusCaptcha(out captchaResponse, out captchaID, out playerCookies);
             if (result == false)
             {
-                output("Error fetching Sirius Captcha for Login", LogLevel.Error);
+                output("Error fetching Sirius Captcha for Login", "error");
                 return false;
             }*/
 
@@ -72,12 +91,12 @@ namespace XMTuner
 
             //String data = "userName=" + HttpUtility.UrlEncode(user) + "&password=" + HttpUtility.UrlEncode(getMD5Hash(password)) + "&__checkbox_remember=true&remember=true&captchaEnabled=true&captchaID=" + HttpUtility.UrlEncode(captchaID) + "&timeNow=null&captcha_response=" + captchaResponse;
             URL loginURL = new URL(SiriusLoginURL);
-            output("Connecting to: " + SiriusLoginURL + " (" + loginURL.getIP() + ")", LogLevel.Debug);
+            output("Connecting to: " + SiriusLoginURL + " (" + loginURL.getIP() + ")", "debug");
             loginURL.setRequestHeader("Cookie", cookies);
             loginURL.setCookieContainer(playerCookies);
             loginURL.fetch(); //loginURL.fetch(data);
 
-            output("Server Response: " + loginURL.getStatusDescription(), LogLevel.Debug);
+            output("Server Response: " + loginURL.getStatusDescription(), "debug");
 
             if (loginURL.isSuccess)
             {
@@ -85,19 +104,19 @@ namespace XMTuner
                 loginCookies.Add(playerCookies);
                 cookies = setCookies(loginCookies);
 
-                output("Number of Cookies: " + cookieCount.ToString(), LogLevel.Debug);
+                output("Number of Cookies: " + cookieCount.ToString(), "debug");
 
                 if (cookieCount > 0)
                 {
 
                     if (cookieCount < 12)
                     {
-                        output("Login failed: Bad Username or Password", LogLevel.Error);
+                        output("Login failed: Bad Username or Password", "error");
                         loginResult = false;
                     }
                     else
                     {
-                        output("Logged in as " + user, LogLevel.Info);
+                        output("Logged in as " + user, "info");
                         /* For the purposes of quickLogin, we want to just do the actual login step
                            and let the normal data rebuilding occur incrementally on its own.*/
                         if (firstLogin == true)
@@ -106,12 +125,7 @@ namespace XMTuner
                             return true;
                         }
                         Boolean cd = loadChannelData();
-                        Boolean ecd = false;
                         if (cd)
-                        {
-                            ecd = loadSiriusChannelGuide();
-                        }
-                        if (cd && ecd)
                         {
                             //We're logged in and have valid channel information, set login flag to true
                             isLoggedIn = true;
@@ -131,7 +145,7 @@ namespace XMTuner
                         {
                             //If we don't have [complete] chanData, consider ourselves not-logged-in
                             isLoggedIn = false;
-                            output("Login failed: Unable to retrieve channel data.", LogLevel.Error);
+                            output("Login failed: Unable to retrieve channel data.", "error");
                             loginResult = false;
                         }
 
@@ -141,16 +155,11 @@ namespace XMTuner
             }
             else
             {
-                output("Login Failed: " + loginURL.getStatusDescription(), LogLevel.Error);
+                output("Login Failed: " + loginURL.getStatusDescription(), "error");
                 loginResult = false;
             }
             loginURL.close();
             return loginResult;
-        }
-
-        private bool loadSiriusChannelGuide()
-        {
-            return true; //This method is now handled by channelMetaData.
         }
 
         private Boolean getSiriusCaptcha(out String captchaResponse, out String captchaID, out CookieCollection playerCookies)
@@ -158,13 +167,13 @@ namespace XMTuner
             //Prefetch
             String SiriusPlayerURL = "http://www.sirius.com/player/home/siriushome.action";
             URL playerURL = new URL(SiriusPlayerURL);
-            output("Connecting to: " + SiriusPlayerURL, LogLevel.Debug);
+            output("Connecting to: " + SiriusPlayerURL, "debug");
             playerURL.setCookieContainer();
             playerURL.fetch();
-            output("Server Response: " + playerURL.getStatusDescription(), LogLevel.Debug);
+            output("Server Response: " + playerURL.getStatusDescription(), "debug");
             if (playerURL.isSuccess == false)
             {
-                output("Error: " + playerURL.getStatusDescription(), LogLevel.Error);
+                output("Error: " + playerURL.getStatusDescription(), "error");
                 captchaResponse = null;
                 captchaID = null;
                 playerCookies = null;
@@ -179,7 +188,7 @@ namespace XMTuner
             playerCookies.Add(new Cookie("sirius_login_type", "subscriber", "", "www.sirius.com"));
             cookies = setCookies(playerCookies);
 
-            output("Number of Cookies: " + cookieCount.ToString(), LogLevel.Debug);
+            output("Number of Cookies: " + cookieCount.ToString(), "debug");
 
             String data = playerURL.response();
 
@@ -210,7 +219,7 @@ namespace XMTuner
             }
             catch (ArgumentOutOfRangeException)
             {
-                output("Failed to get Sirius captcha.", LogLevel.Error);
+                output("Failed to get Sirius captcha.", "error");
                 captchaID = null;
                 captchaResponse = null;
                 return false;
@@ -241,92 +250,6 @@ namespace XMTuner
             // Return the hexadecimal string.
             return sBuilder.ToString();
         }
-
-        protected override void loadChannelData_hook()
-        {
-            Boolean result = loadSiriusChannelGuide();
-            if (result == false)
-            {
-                output("Fatal error encountered loading Sirius Channel Data Extensions, errors " +
-                       "will occur. Restarting XMTuner is recommended.", LogLevel.Error);
-            }
-        }
-
-        /*private Boolean loadSiriusChannelGuide()
-        {
-            List<String[]> cd = loadSiriusExtendedChannelDataObj();
-            foreach (String[] channel in cd)
-            {
-                XMChannel c = Find(Convert.ToInt32(channel[0]));
-                c.addChannelMetadataS(channel);
-            }
-
-            return true;
-        }*/
-
-        /* private Boolean loadSiriusChannelGuide()
-        {
-            Boolean fromCache = false;
-            output("Loading Sirius Extended Channel Data...", LogLevel.Info);
-            String data;
-            String file = "channellineupsirius.cache";
-            cache.addCacheFile(file, "sirius channel metadata", -1);
-            if (cache.isCached(file))
-            {
-                data = cache.getFile(file);
-                fromCache = true;
-            }
-            else
-            {
-                String URL = "http://www.sirius.com/servlet/ContentServer?pagename=Sirius/XML/ChannelGuideXML&c=ChannelLineup&cid=1218563499691&pid=SIR_AUD_EVT_SXM&catid=all"; //&pid=SIR_IP_EVT&catid=all";
-                URL channelGuideURL = new URL(URL);
-                channelGuideURL.fetch();
-                if (channelGuideURL.isSuccess)
-                {
-                    data = channelGuideURL.response().Trim();
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            XmlDocument xmldoc = new XmlDocument();
-            try
-            {
-                xmldoc.LoadXml(data);
-            }
-            catch (XmlException)
-            {
-                output("Failed to load Sirius Extended Channel Data...", LogLevel.Error);
-                return false;
-            }
-            XmlNodeList list = xmldoc.GetElementsByTagName("channel");
-
-            foreach (XmlNode channel in list)
-            {
-                Int32 chanNum = Convert.ToInt32(channel.ChildNodes[4].InnerText);
-                String chanKey = channel.Attributes["key"].Value;
-                String chanURL = channel.ChildNodes[8].InnerText;
-
-                String[] details = new String[2];
-                details[0] = chanURL;
-                details[1] = chanKey;
-
-                XMChannel c = Find(chanNum);
-                c.addChannelData(details);
-            }
-
-            if (fromCache == false)
-            {
-                output("Sirius Extended Channel Data loaded successfully...", LogLevel.Info);
-                cache.saveFile("channellineupsirius.cache", data);
-            }
-            else
-            {
-                output("Sirius Extended Channel Data loaded successfully... (from cache)", LogLevel.Info);
-            }
-            return true;
-        } */
 
         public string getCaptchaResponse(int captchaNum)
         {
@@ -464,13 +387,13 @@ namespace XMTuner
         protected override string playChannel(String address)
         {
             URL url = new URL(address);
-            output("Fetch: " + address + " (" + url.getIP() + ")", LogLevel.Debug);
+            output("Fetch: " + address + " (" + url.getIP() + ")", "debug");
             url.setRequestHeader("Cookie", cookies);
             url.fetch();
-            output("Server Response: " + url.getStatusDescription(), LogLevel.Debug);
+            output("Server Response: " + url.getStatusDescription(), "debug");
             if (url.isSuccess == false)
             {
-                output("Play Error: " + url.getStatusDescription(), LogLevel.Error);
+                output("Play Error: " + url.getStatusDescription(), "error");
                 return null;
             }
 
@@ -498,20 +421,20 @@ namespace XMTuner
             {
                 if (data.ToLower().Contains("access denied"))
                 {
-                    output("SIRIUS Internet Radio Error - Not Logged In", LogLevel.Error);
+                    output("SIRIUS Internet Radio Error - Not Logged In", "error");
                     isLoggedIn = false;
                 }
                 else
                 {
-                    output("SIRIUS Internet Radio Error - Unknown Error", LogLevel.Error);
-                    output("See playchannel.err for raw data", LogLevel.Debug);
+                    output("SIRIUS Internet Radio Error - Unknown Error", "error");
+                    output("See playchannel.err for raw data", "debug");
                 }
                 cache.saveFile("playchannel.err", data);
                 contentURL = null;
             }
             else
             {
-                output(contentURL, LogLevel.Debug);
+                output(contentURL, "debug");
             }
 
             return (contentURL);

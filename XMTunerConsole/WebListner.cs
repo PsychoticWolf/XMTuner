@@ -1,4 +1,23 @@
-﻿using System;
+﻿/*
+ * XMTuner: Copyright (C) 2009-2012 Chris Crews and Curtis M. Kularski.
+ * 
+ * This file is part of XMTuner.
+
+ * XMTuner is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+
+ * XMTuner is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with XMTuner.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Net;
@@ -18,7 +37,6 @@ namespace XMTuner
         String serverHost;
         public WebWorker worker;
         public bool isRunning = false;
-        public DateTime serverStartTime;
 
         public WebListner(XMTuner tuner, String newport)
         {
@@ -39,23 +57,22 @@ namespace XMTuner
 
         public void start()
         {
-            myTuner.output("Starting server...", LogLevel.Info);
+            myTuner.output("Starting server...", "info");
             theServer.Prefixes.Clear();
             theServer.Prefixes.Add(prefix);
             try
             {
                 theServer.Start();
                 isRunning = true;
-                serverStartTime = DateTime.Now;
-                myTuner.output("Server started", LogLevel.Info);
-                myTuner.output("Listening on port " + port, LogLevel.Info);
+                myTuner.output("Server started", "info");
+                myTuner.output("Listening on port " + port, "info");
             }
             catch (HttpListenerException e)
             {
                 isRunning = false;
-                myTuner.output("Server failed to start (Port already in use?)", LogLevel.Error);
-                myTuner.output("Check your settings or close the other application using the port", LogLevel.Error);
-                myTuner.output("Error " + e.ErrorCode + ": " + e.Message, LogLevel.Debug);
+                myTuner.output("Server failed to start (Port already in use?)", "error");
+                myTuner.output("Check your settings or close the other application using the port", "error");
+                myTuner.output("Error " + e.ErrorCode + ": " + e.Message, "debug");
                 return;
             }
             System.Threading.ThreadPool.QueueUserWorkItem(listen);
@@ -65,8 +82,7 @@ namespace XMTuner
         {
             theServer.Close();
             isRunning = false;
-            String runTime = (DateTime.Now - serverStartTime).ToString().Split('.')[0];
-            myTuner.output("Server stopped. Uptime was " + runTime, LogLevel.Info);
+            myTuner.output("Server stopped", "info");
         }
 
         private void listen(object state)
@@ -184,7 +200,7 @@ namespace XMTuner
             catch (HttpListenerException e)
             {
                 response.Abort();
-                myTuner.output("Error - Request Aborted Abnormally (" + e.Message + ")", LogLevel.Debug);
+                myTuner.output("Error - Request Aborted Abnormally (" + e.Message + ")", "debug");
             }
 
 
@@ -202,7 +218,7 @@ namespace XMTuner
             }
 
             String requestURL = request.Url.PathAndQuery;
-            myTuner.output("Incoming Request: (Source: " + request.RemoteEndPoint + ") " + request.HttpMethod + " - " + requestURL, LogLevel.Debug);
+            myTuner.output("Incoming Request: (Source: " + request.RemoteEndPoint + ") " + request.HttpMethod + " - " + requestURL, "debug");
 
             char[] seperator = new char[] {'/'};
             String[] parsedURL = requestURL.Split(seperator, 2, StringSplitOptions.RemoveEmptyEntries);
@@ -233,7 +249,7 @@ namespace XMTuner
             {
                 String responseString;
                 NameValueCollection URLParams = request.QueryString;
-                myTuner.output("Incoming 'What's On' Request", LogLevel.Info);
+                myTuner.output("Incoming 'What's On' Request", "info");
                 responseString = worker.DoNowPlaying(serverHost, URLParams);
                 SendRequest(context, null, responseString, "text/html", false, HttpStatusCode.OK);
 
@@ -256,13 +272,13 @@ namespace XMTuner
                 }
                 catch (FormatException e)
                 {
-                    myTuner.output("Failed to read XM channel number requested. ("+e.Message+")", LogLevel.Debug);
+                    myTuner.output("Failed to read XM channel number requested. ("+e.Message+")", "debug");
                 }
 
                 String chanName = myTuner.checkChannel(num);
                 if (!chanName.Equals(""))
                 {
-                    myTuner.output("Incoming Stream Request for XM" + streamParams[0] + " - " + chanName + "", LogLevel.Info);
+                    myTuner.output("Incoming Stream Request for XM" + streamParams[0] + " - " + chanName + "", "info");
                     //Do Action for Stream
                     NameValueCollection streamCollection = worker.DoStream(streamParams, serverHost);
                     response = streamCollection["msg"];
@@ -275,7 +291,7 @@ namespace XMTuner
                     {
                         if (streamCollection["playlist"] != null && streamCollection["playlist"].Contains("audio/") == true)
                         {
-                            myTuner.output("Using playlist wrapper for "+streamCollection["playlist"], LogLevel.Debug);
+                            myTuner.output("Using playlist wrapper for "+streamCollection["playlist"], "debug");
                             contentType = streamCollection["playlist"];
                         }
                         else
@@ -286,7 +302,7 @@ namespace XMTuner
                 }
                 else
                 {
-                    myTuner.output("Incoming Stream Request for Unknown XM Channel", LogLevel.Error);
+                    myTuner.output("Incoming Stream Request for Unknown XM Channel", "error");
                     response = "Invalid Channel Stream Request";
                     contentType = "text/plain";
                 }
@@ -349,41 +365,12 @@ namespace XMTuner
                 String playlist = worker.DoBuildPlaylist(methodURL, URLParams, serverHost);
                 SendRequest(context, null, playlist, servtype, false, HttpStatusCode.OK);
             }
-            else if (baseURL.Equals("log"))
-            {
-                SendRequest(context, null, myTuner.log, "text/plain", false, HttpStatusCode.OK);
-            }
-            else if (baseURL.Equals("logo"))
-            {
-                NameValueCollection logoParams = worker.parseStreamURL(methodURL);
-                int num = Convert.ToInt32(logoParams[0]);
-                MemoryStream imgstream = new MemoryStream();
-                System.Drawing.Image img = myTuner.Find(num).logo_small_image;
-                if (img == null)
-                {
-                    SendRequest(context, null, null, null, false, HttpStatusCode.NotFound);
-                    return;
-                }
-                String mimeType = worker.GetMimeType(img);
-                img.Save(imgstream, img.RawFormat);
-
-                SendRequest(context, imgstream, null, mimeType, false, HttpStatusCode.OK);
-            }
-            else if (baseURL.Equals("info"))
-            {
-                NameValueCollection logoParams = worker.parseStreamURL(methodURL);
-                int num = Convert.ToInt32(logoParams[0]);
-                myTuner.output("Incoming 'What's On' Request", LogLevel.Info);
-                String responseString = worker.DoChannelInfo(num);
-                SendRequest(context, null, responseString, "text/html", false, HttpStatusCode.OK);
-
-            }
             else
             {
                 string responseString = "<HTML><BODY>Unknown Request</BODY></HTML>";
                 SendRequest(context, null, responseString, "", false, HttpStatusCode.BadRequest);
             }
-            myTuner.output("Incoming Request Completed", LogLevel.Debug);
+            myTuner.output("Incoming Request Completed", "debug");
         }
 
     }

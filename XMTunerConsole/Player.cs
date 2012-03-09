@@ -1,4 +1,23 @@
-﻿using System;
+﻿/*
+ * XMTuner: Copyright (C) 2009-2012 Chris Crews and Curtis M. Kularski.
+ * 
+ * This file is part of XMTuner.
+
+ * XMTuner is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+
+ * XMTuner is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with XMTuner.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+using System;
 using System.Windows.Forms;
 using System.Drawing;
 using System.Reflection;
@@ -10,9 +29,6 @@ namespace XMTuner
         int playerNum;
         int p;
         int sleepPlayerNum = 0;
-
-        int wmpVisWidth;
-        int wmpVisHeight;
 
         #region Player
         private void updateNowPlayingData(Boolean useDefault, Boolean isLoading, Int32 num)
@@ -39,7 +55,7 @@ namespace XMTuner
                     }
                 }
 
-                //playerPanel.Refresh();
+                playerPanel.Refresh();
             }
             else
             {
@@ -96,9 +112,9 @@ namespace XMTuner
         private void syncStatusLabel()
         {
             pStatusLabel.Visible = true;
-            if (c.isLoggedIn == false)
+            if (loggedIn == false)
             {
-                if (cfg.loaded == false)
+                if (isConfigurationLoaded == false)
                 {
                     pStatusLabel.Text = "XMTuner needs to be configured before you can begin...";
                 }
@@ -160,11 +176,11 @@ namespace XMTuner
                 {
                     if (playerNum != 0)
                     {
-                        output("Player (" + self.Find(playerNum).ShortName + "): " + status, LogLevel.Player);
+                        output("Player (" + self.Find(playerNum).ShortName + "): " + status, "player");
                     }
                     else
                     {
-                        output("Player: " + status, LogLevel.Player);
+                        output("Player: " + status, "player");
                     }
                 }
             }
@@ -172,7 +188,7 @@ namespace XMTuner
 
         private void axWindowsMediaPlayer1_PlayStateChange(object sender, AxWMPLib._WMPOCXEvents_PlayStateChangeEvent e)
         {
-            output("Player ("+self.Find(playerNum).ShortName+"): " + axWindowsMediaPlayer1.playState, LogLevel.PlayerDebug);
+            output("Player ("+self.Find(playerNum).ShortName+"): " + axWindowsMediaPlayer1.playState, "player-debug");
 
             // If Windows Media Player is in the playing state, enable the data update timer. 
             if (axWindowsMediaPlayer1.playState == WMPLib.WMPPlayState.wmppsPlaying)
@@ -180,6 +196,8 @@ namespace XMTuner
                 pRetryTimer.Enabled = false;
                 axWindowsMediaPlayer1.enableContextMenu = true;
                 pTimer.Enabled = true;
+                self.lastChannelPlayed = playerNum;
+
                 showWMPPlayerUI();
             }
             else
@@ -223,7 +241,7 @@ namespace XMTuner
 
         private void doNotification()
         {
-            if (playerNum == 0 || !cfg.showNotification) { return; } //Bail early if we have no work to do.
+            if (playerNum == 0 || !showNotification) { return; } //Bail early if we have no work to do.
             XMChannel npChannel = self.Find(playerNum);
             String title = npChannel.ToString();
             String nptext = npChannel.artist + " - " + npChannel.song;
@@ -239,10 +257,6 @@ namespace XMTuner
 
         private void initPlayer()
         {
-            wmpVisWidth = axWindowsMediaPlayer1.Size.Width;
-            wmpVisHeight = axWindowsMediaPlayer1.Size.Height;
-
-            createPresetButtons();
             showLogo();
             axWindowsMediaPlayer1.uiMode = "none";
 
@@ -272,7 +286,7 @@ namespace XMTuner
         private void showWMPPlayerUI()
         {
             axWindowsMediaPlayer1.uiMode = "mini";
-            axWindowsMediaPlayer1.Size = new Size(wmpVisWidth, 35); //new Size(165, 35);
+            axWindowsMediaPlayer1.Size = new Size(165, 35);
             pHoverTimer.Start();
         }
 
@@ -280,7 +294,7 @@ namespace XMTuner
         {
             pHoverTimer.Stop();
             axWindowsMediaPlayer1.uiMode = "none";
-            axWindowsMediaPlayer1.Size = new Size(wmpVisWidth, wmpVisHeight);
+            axWindowsMediaPlayer1.Size = new Size(165, 50);
         }
 
         private void shutdownPlayer()
@@ -295,7 +309,7 @@ namespace XMTuner
             string errDesc = axWindowsMediaPlayer1.Error.get_Item(0).errorDescription;
 
             // Display the error description.
-            output(errCode + " " +errDesc, LogLevel.Error);
+            output(errCode + " " +errDesc, "error");
 
             //Handle things like stopping and trying to retune...
             int cnum = playerNum;
@@ -305,7 +319,7 @@ namespace XMTuner
             pLabel3.Text = "Attempting to retune (in 10 seconds)...";
             pLabel4.Text = errDesc;
             pStatusLabel.Text = "";
-            output("Error! Attempting to retune channel "+self.Find(cnum).ToString()+" (in 10 seconds)...", LogLevel.Error);
+            output("Error! Attempting to retune channel "+self.Find(cnum).ToString()+" (in 10 seconds)...", "error");
             pRetryTimer.Tag = cnum;
             pRetryTimer.Start();
         }
@@ -313,102 +327,8 @@ namespace XMTuner
         private void pRetryTimer_Tick(object sender, EventArgs e)
         {
             int cnum = (int)pRetryTimer.Tag;
-            output("Attempting to retune to channel " + self.Find(cnum).ToString() + "...", LogLevel.Info);
+            output("Attempting to retune to channel " + self.Find(cnum).ToString() + "...", "info");
             play(cnum);
-        }
-
-        private void txtChannelNum_Enter(object sender, EventArgs e)
-        {
-            play(Convert.ToInt32(txtChannelNum.Text));
-        }
-
-        private void txtChannelNum_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            if (e.KeyChar == (char)Keys.Back || e.KeyChar == (char)Keys.Delete) { return; }
-
-            if (e.KeyChar == (char)Keys.Return)
-            {
-                if (txtChannelNum.Text.Equals("")) { return; }
-                txtChannelNum.Text = txtChannelNum.Text.Replace(".", "");
-                int num = Convert.ToInt32(txtChannelNum.Text);
-                play(num);
-                tabcontrol1.Focus();
-                return;
-            }
-            if (Char.IsDigit(e.KeyChar) == false)
-            {
-                e.Handled = true;
-            }
-        }
-
-        private void createPresetButtons()
-        {
-            const int w = 50;
-            const int spacing = 2;
-            int h = panelPresets.Size.Height; //const int h = 25;
-            int maxwidth = panelPresets.Size.Width;
-            int x = 0;
-            const int y = 0;
-            x = (maxwidth - (10 * (w + spacing))) / 2;
-
-            for (int i = 1; i <= 10; i++)
-            {
-                Button pb = new Button();
-                pb.Location = new Point(x, y);
-                pb.Size = new Size(w, h);
-                x += w + spacing;
-                pb.Text = i.ToString();
-                pb.Name = "presetButton"+i.ToString();
-                pb.Click += new System.EventHandler(presetButton_Click);
-                panelPresets.Controls.Add(pb);
-            }
-
-            //Now populate them with something useful...
-            //updatePresetButtons();
-        }
-        private void presetButton_Click(object sender, EventArgs e)
-        {
-            Button buttonClicked = (Button)sender;
-            int pn = Convert.ToInt32(buttonClicked.Name.Replace("presetButton", ""));
-            int chnum = self.favorites.findPreset(pn);
-            if (chnum > 0)
-            {
-                play(chnum);
-            }
-        }
-
-        private void updatePresetButtons()
-        {
-            //if (self.favorites == null) { return; }
-
-            ImageList imageList = new ImageList();
-            imageList.ImageSize = new Size(45, 40);
-            String imageKey;
-            foreach (Button presetButton in panelPresets.Controls)
-            {
-                presetButton.Enabled = false;
-                int pn = Convert.ToInt32(presetButton.Name.Replace("presetButton", ""));
-                imageKey = pn.ToString();
-                presetButton.Image = null;
-                presetButton.ImageList = null;
-                presetButton.ImageKey = null;
-                presetButton.Text = pn.ToString();
-                int cn = self.favorites.findPreset(pn);
-                if (cn != 0)
-                {
-                    XMChannel chan = self.Find(cn);
-                    if (chan.logo_small_image != null)
-                    {
-                        imageList.Images.Add(imageKey, chan.logo_small_image);
-                    }
-                    presetButton.Enabled = true;
-                    presetButton.Text = null;
-                    presetButton.ImageList = imageList;
-                    presetButton.ImageKey = imageKey;
-                }
-            }
-
-
         }
 
         #endregion
