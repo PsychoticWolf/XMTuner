@@ -34,7 +34,8 @@ namespace XMTuner
         public Boolean isLoggedIn;
         public Boolean tryingLogin = false;
         protected Boolean firstLogin = false;
-        Boolean useChannelMetadata = false;
+        Boolean useChannelMetadata = true;
+        Boolean useWhatsOnData = false;
         public Boolean loadedChannelMetadata = false;
         Boolean loadedChannelMetadataCache = false;
         Boolean useProgramGuide = false;
@@ -318,7 +319,7 @@ namespace XMTuner
             //We try 5 times...
             for (j = 1; j <= 5; j++)
             {
-                String url = "http://www.siriusxm.com/userservices/cl/en-us/xml/lineup/200/client/UMP";
+                String url = "https://www.siriusxm.com/userservices/cl/en-us/xml/lineup/250/client/ump";
 
                 URL channelURL = new URL(url);
                 //channelURL.setRequestHeader("Cookie", cookies);
@@ -518,8 +519,18 @@ namespace XMTuner
         protected void doWhatsOn(Boolean atstartup)
         {
             //Update "What's On" data... (in background thread)
-            MethodInvoker simpleDelegate = new MethodInvoker(loadWhatsOn);
-            simpleDelegate.BeginInvoke(null, null);
+            if (useWhatsOnData == true)
+            {
+                MethodInvoker simpleDelegate = new MethodInvoker(loadWhatsOn);
+                simpleDelegate.BeginInvoke(null, null);
+            }
+
+            //Single Channel What's On Request...
+            if (lastChannelPlayed != 0)
+            {
+                MethodInvoker simpleDelegate2 = new MethodInvoker(loadWhatsOnDataSingle);
+                simpleDelegate2.BeginInvoke(null, null);
+            }
 
             doWhatsOnExtra();
         }
@@ -607,6 +618,61 @@ namespace XMTuner
 
         }
 
+        private void loadWhatsOnDataSingle()
+        {
+            XMChannel channel = Find(lastChannelPlayed);
+            if (channel == null || channel.num == 0) { return; }
+            output("Update What's On Data ("+ channel.ToString()+")...", "debug");
+            String timestamp = DateTime.Now.ToUniversalTime().AddSeconds(-5).ToString("MM-dd-H:mm:ss");
+            String whatsOnURL = "http://www.siriusxm.com/metadata/pdt/en-us/xml/channels/"+channel.channelKey+"/timestamp/"+timestamp;
+            URL whatsOn = new URL(whatsOnURL);
+            output("Fetching: " + whatsOnURL, "debug");
+            whatsOn.setRequestHeader("Cookie", cookies);
+            whatsOn.fetch();
+
+            output("Server Response: " + whatsOn.getStatusDescription(), "debug");
+            if (whatsOn.isSuccess)
+            {
+                setWhatsonDataSingle(whatsOn.response());
+                setRecentlyPlayed();
+            }
+            whatsOn.close();
+            output("What's On Update (" + channel.ToString() + ") Complete", "debug");
+        }
+
+        private Boolean setWhatsonDataSingle(String rawdata)
+        {
+            XmlDocument xmldoc = new XmlDocument();
+            try
+            {
+                xmldoc.LoadXml(rawdata);
+            }
+            catch (XmlException)
+            {
+                output("Failed to load Channel What's On Data...", "error");
+                return false;
+            }
+            XmlNodeList list = xmldoc.GetElementsByTagName("metaData");
+
+            //No Info?!?
+            if (list.Count == 0)
+            {
+                return false;
+            }
+            XmlNode item = list[0];
+            Int32 chanNum = Convert.ToInt32(item["channelNumber"].InnerText);
+            item = item["currentEvent"];
+            String artist = item["artists"]["name"].InnerText;
+            String song = item["song"]["name"].InnerText;
+            String album = item["song"]["album"]["name"].InnerText;
+
+            String[] info = new String[4] {chanNum.ToString(), artist, song, album };
+            XMChannel channel = Find(chanNum);
+            channel.addPlayingInfo(info);
+
+            return true;
+        }
+
         protected String setCookies(CookieCollection cookies)
         {
             cookieCount = cookies.Count;
@@ -636,10 +702,10 @@ namespace XMTuner
             XMChannel result = channels.Find(
             delegate(XMChannel chan)
             {
-                if (useXM == true && network.Equals("XM") == false)
+                /*if (useXM == true && network.Equals("XM") == false)
                 {
                     return chan.xmxref == channum;
-                }
+                }*/
                 return chan.num == channum;
             }
             );
@@ -686,6 +752,7 @@ namespace XMTuner
                 return null;
             }
             lastChannelPlayed = channelnum;
+            loadWhatsOnDataSingle();
             setRecentlyPlayed();
             return URL;
          }
