@@ -82,7 +82,7 @@ h2.green {
 	font-size: 16px;
 	font-weight: bold;
 	-moz-border-radius-bottomleft: 10px;
-	z-index: 1000;
+	z-index: 100000;
 }
 
 #superbar a, #superbar a:visited {
