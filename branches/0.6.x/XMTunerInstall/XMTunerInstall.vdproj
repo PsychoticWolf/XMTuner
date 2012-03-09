@@ -767,6 +767,19 @@
                             "Value" = "8:_19BE080CDB0940068EBBA2D72252DE75"
                             "UsePlugInResources" = "11:TRUE"
                             }
+                            "BannerText"
+                            {
+                            "Name" = "8:BannerText"
+                            "DisplayName" = "8:#1014"
+                            "Description" = "8:#1114"
+                            "Type" = "3:3"
+                            "ContextData" = "8:"
+                            "Attributes" = "3:0"
+                            "Setting" = "3:2"
+                            "Value" = "8:"
+                            "DefaultValue" = "8:#1214"
+                            "UsePlugInResources" = "11:TRUE"
+                            }
                             "InstallAllUsersVisible"
                             {
                             "Name" = "8:InstallAllUsersVisible"
@@ -803,6 +816,19 @@
                             "Value" = "8:_19BE080CDB0940068EBBA2D72252DE75"
                             "UsePlugInResources" = "11:TRUE"
                             }
+                            "BannerText"
+                            {
+                            "Name" = "8:BannerText"
+                            "DisplayName" = "8:#1014"
+                            "Description" = "8:#1114"
+                            "Type" = "3:3"
+                            "ContextData" = "8:"
+                            "Attributes" = "3:0"
+                            "Setting" = "3:2"
+                            "Value" = "8:"
+                            "DefaultValue" = "8:#1214"
+                            "UsePlugInResources" = "11:TRUE"
+                            }
                         }
                     }
                     "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_C533540041224844858F43AEB95C930D"
@@ -824,6 +850,32 @@
                             "Attributes" = "3:4"
                             "Setting" = "3:2"
                             "Value" = "8:_19BE080CDB0940068EBBA2D72252DE75"
+                            "UsePlugInResources" = "11:TRUE"
+                            }
+                            "BannerText"
+                            {
+                            "Name" = "8:BannerText"
+                            "DisplayName" = "8:#1014"
+                            "Description" = "8:#1114"
+                            "Type" = "3:3"
+                            "ContextData" = "8:"
+                            "Attributes" = "3:0"
+                            "Setting" = "3:2"
+                            "Value" = "8:"
+                            "DefaultValue" = "8:#1214"
+                            "UsePlugInResources" = "11:TRUE"
+                            }
+                            "BodyText"
+                            {
+                            "Name" = "8:BodyText"
+                            "DisplayName" = "8:#1015"
+                            "Description" = "8:#1115"
+                            "Type" = "3:3"
+                            "ContextData" = "8:"
+                            "Attributes" = "3:0"
+                            "Setting" = "3:2"
+                            "Value" = "8:In just moments you'll be ready to enjoy your Sirius or XM satelite radio stations on your PC, set-top media player, game console and smart phone. Click \"Next\" to get started..."
+                            "DefaultValue" = "8:#1215"
                             "UsePlugInResources" = "11:TRUE"
                             }
                             "CopyrightWarning"
@@ -915,6 +967,32 @@
                             "Value" = "8:_19BE080CDB0940068EBBA2D72252DE75"
                             "UsePlugInResources" = "11:TRUE"
                             }
+                            "InstalledBannerText"
+                            {
+                            "Name" = "8:InstalledBannerText"
+                            "DisplayName" = "8:InstalledBannerText"
+                            "Description" = "8:#1114"
+                            "Type" = "3:3"
+                            "ContextData" = "8:"
+                            "Attributes" = "3:0"
+                            "Setting" = "3:2"
+                            "Value" = "8:"
+                            "DefaultValue" = "8:#1214"
+                            "UsePlugInResources" = "11:TRUE"
+                            }
+                            "RemoveBannerText"
+                            {
+                            "Name" = "8:RemoveBannerText"
+                            "DisplayName" = "8:RemoveBannerText"
+                            "Description" = "8:#1114"
+                            "Type" = "3:3"
+                            "ContextData" = "8:"
+                            "Attributes" = "3:0"
+                            "Setting" = "3:2"
+                            "Value" = "8:"
+                            "DefaultValue" = "8:#1214"
+                            "UsePlugInResources" = "11:TRUE"
+                            }
                             "ShowProgress"
                             {
                             "Name" = "8:ShowProgress"
@@ -960,6 +1038,19 @@
                             "Value" = "8:_19BE080CDB0940068EBBA2D72252DE75"
                             "UsePlugInResources" = "11:TRUE"
                             }
+                            "BannerText"
+                            {
+                            "Name" = "8:BannerText"
+                            "DisplayName" = "8:#1014"
+                            "Description" = "8:#1114"
+                            "Type" = "3:3"
+                            "ContextData" = "8:"
+                            "Attributes" = "3:0"
+                            "Setting" = "3:2"
+                            "Value" = "8:"
+                            "DefaultValue" = "8:#1214"
+                            "UsePlugInResources" = "11:TRUE"
+                            }
                             "UpdateText"
                             {
                             "Name" = "8:UpdateText"
@@ -969,7 +1060,7 @@
                             "ContextData" = "8:"
                             "Attributes" = "3:0"
                             "Setting" = "3:2"
-                            "Value" = "8:For help with this product, please visit the [ProductName] website at http://xmtuner.pcfire.net/"
+                            "Value" = "8:For help with this product, please visit the [ProductName] website at http://xmtuner.net/"
                             "DefaultValue" = "8:#1258"
                             "UsePlugInResources" = "11:TRUE"
                             }
