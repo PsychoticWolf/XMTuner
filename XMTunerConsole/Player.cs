@@ -177,6 +177,8 @@ namespace XMTuner
                 pRetryTimer.Enabled = false;
                 axWindowsMediaPlayer1.enableContextMenu = true;
                 pTimer.Enabled = true;
+                self.lastChannelPlayed = playerNum;
+
                 showWMPPlayerUI();
             }
             else
