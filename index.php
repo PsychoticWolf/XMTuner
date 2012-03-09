@@ -15,7 +15,7 @@
 ?>
 
 <div style="font-size: 14pt; font-weight: bold; color: #ffffff; text-align: justify; background-color: #00cc00; padding: 15px; margin: 0px; text-shadow: 2px 2px 2px #000000;">
-						<p style="margin: 0px">June 29th, 2011: SiriusXM seems to have fixed their legacy streams - XMTuner is working again, as good as before anyway...</p>
+						<p style="margin: 0px">March 8, 2012: New version of XMTuner that features a correct channel lineup and some other fixes is out. Update now!</p>
 </div>
 
 
@@ -53,8 +53,19 @@ capable receivers and televisions, as well as a variety of smartphones such as t
 	<li>and much more!</li>
 </ul>
 
+		<h2>Release 0.6.4</h2>
+		<h3>March 8, 2012</h3>
+		<p>XMTuner 0.6.4 fixes the outdated channel lineup that's been present since the May 2011 channel lineup changes. It also fixes the program guide error (by disabling it), and the recent issues with 
+		song title information not being updated (XM's all-channel song feed is gone, replaced it with a current-channel only feed). 0.6.4 should also fix the IndexOutOfRange exception many users were experiencing.</p>
+		<p>0.6.4 also is the first release of XMTuner that is free software - XMTuner is now released under the terms of the <a href="http://www.gnu.org/licenses/gpl-3.0.txt">GNU General Public License v3</a>.</p>
+		
+		<h3>Known Issues with 0.6.4</h3>
+		<p>While 0.6.4 features an updated channel lineup, XMTuner still uses Sirius/XM's legacy players for the WMA streams. These players were not updated for the channel lineup changes. Sirius users are less
+		affected because channels on Sirius are given a key and not a number, however XM users will not be able to tune any channel number that did not exist online before the May lineup changes.</p>
+		<p>It is not currently possible to update XMTuner to use the new SiriusXM player - those streams are Flash (RTMPE) based and encrypted.</p>
+
 <h2>Release 0.6.3</h2>
-	<h3></h3>February 5, 2011</h3>
+	<h3>February 5, 2011</h3>
 	<p>XMTuner 0.6.3 is a bugfix release for XMTuner 0.6.2/0.6.1. This release fixes Sirius users who were still broken in 0.6.2. It also fixes the missing channel information and issues with channel tuning for
 		Sirius 800 (online-only) channels.</p>
 

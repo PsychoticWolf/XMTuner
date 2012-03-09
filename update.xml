@@ -1,12 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>  
 <xmtuner>  
-  <version>0.6.3.0</version>  
-  <url>http://www.xmtuner.net/releases/0.6.3</url>
-  <download>http://www.xmtuner.net/download/InstallXMTuner0-6-3.msi</download>
-  <details>Fixes for the new SiriusXM website:
-  * Fix Sirius support that was broken in 0.6.2
-  * Fix missing channel information / logos since SiriusXM Player changes.
-  * SIRIUS Only: 800 channels now work properly.
-  * Recommended update for Sirius and XM users
+  <version>0.6.4.0</version>  
+  <url>http://www.xmtuner.net/releases/0.6.4</url>
+  <download>http://www.xmtuner.net/download/InstallXMTuner0-6-4.msi</download>
+  <details>Fixes for the new SiriusXM Channel Lineup:
+  * Fix/update broken channel lineup
+  * Disable broken program guide
+  * Fix broken song info for current channel only
+  * KNOWN ISSUE: Channel Numbers that didn't exist before the lineup changes don't work on XM.
+  * Fix IndexOutOfRange exception
   </details>
 </xmtuner>

@@ -41,6 +41,19 @@ function get_version($index) {
 	return $version;
 }
 
+function get_sourceLink($version)
+{
+	$basepath = "download/";
+	$sourcefilename = "XMTunerSource-".str_replace(".","-",$version).".7z";
+	if (file_exists("$basepath/$sourcefilename") || file_exists($sourcefilename) )
+	{
+		$sourcelink = "/$basepath$sourcefilename";
+		return $sourcelink;
+	}
+	
+	return false;
+}
+
 if ($skip_ui == true) {
 	$files = remove_nonmsi(scandir("."));
 	usort($files, "cmp");
@@ -53,6 +66,7 @@ usort($files, "cmp");
 
 $basepath = "download/";
 $file = $basepath.$files[0];
+
 ?>
 
 <div id="download">
@@ -60,6 +74,6 @@ $file = $basepath.$files[0];
 <h3>Download&nbsp;XMTuner&nbsp;<?php $version = get_version(0); print($version);?>!</h3></a>
 <?php echo"Released on ".date("F j, Y",filemtime($file))."<br />\n"; ?>
 <?php print(get_filesize(0)); ?> (32-bit, MSI)<br/>
-<span style="font-size: 8pt;"><a href="/releases/<?php print($version); ?>">[Release Notes]</a></span>
+<span style="font-size: 8pt;"><a href="/releases/<?php print($version); ?>">[Release Notes]</a> <?php if (get_sourceLink($version)) { echo"<a href=\"".get_sourceLink($version)."\">[Source Code]</a>"; }?></span>
 
 </div>

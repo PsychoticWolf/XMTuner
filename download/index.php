@@ -26,7 +26,8 @@ require_once"inc_download.php";
 <h3>Download XMTuner <?php $version = (get_version(0)); print($version);?>!</h3></a>
 <?php echo"Released on ".date("F j, Y",filemtime($files[0]))."<br />\n"; ?>
 <?php print(get_filesize(0)); ?> (32-bit, MSI)<br/>
-<span style="font-size: 8pt;"><a href="/releases/<?php print($version); ?>">[Release Notes]</a></span>
+<span style="font-size: 8pt;"><a href="/releases/<?php print($version); ?>">[Release Notes]</a>
+<?php if (get_sourceLink($version)) { echo"<a href=\"".get_sourceLink($version)."\">[Source Code]</a>"; }?></span>
 
 </div>
 
