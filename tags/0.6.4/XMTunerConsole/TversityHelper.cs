@@ -1,0 +1,184 @@
+﻿/*
+ * XMTuner: Copyright (C) 2009-2012 Chris Crews and Curtis M. Kularski.
+ * 
+ * This file is part of XMTuner.
+
+ * XMTuner is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+
+ * XMTuner is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with XMTuner.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Xml;
+
+
+namespace XMTuner
+{
+    class TversityHelper
+    {
+        String tversityURL = "";
+        String ip;
+        String port;
+        Int32 id;
+        Boolean feedAdded;
+        String lastMessage;
+        public Int32 maxitemsperfeed;
+
+        public TversityHelper(String tvURL, String ip, String port)
+        {
+            tversityURL = tvURL;
+            this.ip = ip;
+            this.port = port;
+
+            feedAdded = getID();
+        }
+
+        public String message
+        {
+            get { return lastMessage; }
+        }
+
+
+        private String getXMTunerURL()
+        {
+            String url = "http://" + ip + ":" + port + "/feeds/";
+            return url;
+        }
+
+        public Boolean addFeed()
+        {
+            //http://192.168.1.102:41952/mediasource/add?transcodingwhen=&featured=Yes&public=No&lookforaudio=true&menus=&tags=&title=XMTest&url=http://192.168.1.104:19081/feeds/&type=audfeed&menuroot=TVersity%20Custom&id=
+            String url = "http://" + tversityURL + "/mediasource/add?";
+                url += "transcodingwhen=&";
+                url += "featured=Yes&";
+                url += "public=No&";
+                url += "lookforaudio=true&";
+                url += "menus=&tags=&";
+                url += "title=XM&";
+                url += "url=" + getXMTunerURL() + "&";
+                url += "type=audfeed&";
+                url += "menuroot=TVersity%20Custom&";
+                url += "&id=";
+
+            URL tAdd = new URL(url);
+            tAdd.setTimeout(60000);
+            tAdd.fetch();
+            String reply = tAdd.response();
+
+            return parseResponse(reply);
+        }
+
+        public Boolean getID()
+        {
+            String url = "http://" + tversityURL + "/mediasource/fetchlist?type=audfeed";
+            URL tFetch = new URL(url);
+            tFetch.fetch();
+            String data = tFetch.response();
+
+            XmlDocument xmldoc = new XmlDocument();
+            xmldoc.LoadXml(data);
+            XmlNodeList list = xmldoc.GetElementsByTagName("result");
+
+            foreach (XmlNode result in list)
+            {
+                String rURL = result.Attributes["url"].Value;
+                if (rURL == getXMTunerURL())
+                {
+                    Int32 rID = Convert.ToInt32(result.Attributes["id"].Value);
+                    id = rID;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public Boolean refresh()
+        {
+            if (id == 0) { return false; }
+
+            String url = "http://" + tversityURL + "/mediasource/refresh?id=" + id;
+
+            URL tFetch = new URL(url);
+            tFetch.fetch();
+            String data = tFetch.response();
+
+            return parseResponse(data);
+        }
+
+        private bool parseResponse(string data)
+        {
+            if (data == null || data.Equals("")) { return false; }
+
+            XmlDocument xmldoc = new XmlDocument();
+            xmldoc.LoadXml(data);
+            XmlNodeList list = xmldoc.GetElementsByTagName("response");
+            XmlNode response = list[0];
+
+            String status = response.Attributes["status"].Value;
+            String message = response.Attributes["message"].Value;
+
+            reportMessage(message);
+            if (status.Equals("success"))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        private void reportMessage(string message)
+        {
+            lastMessage = message;
+        }
+
+        public Boolean validate()
+        {
+            return getSettings();
+        }
+
+        public Boolean getSettings()
+        {
+            String url = "http://" + tversityURL + "/settings/fetch";
+
+            URL tFetch = new URL(url);
+            tFetch.fetch();
+            String data = tFetch.response();
+
+            if (parseResponse(data) == false) { return false; }
+
+            XmlDocument xmldoc = new XmlDocument();
+            xmldoc.LoadXml(data);
+            XmlNodeList list = xmldoc.GetElementsByTagName("result");
+            XmlNode config = list[0];
+
+            maxitemsperfeed = Convert.ToInt32(config.Attributes["maxItemsPerFeed"].Value);
+
+            return true;
+        }
+
+        public Boolean feed()
+        {
+            if (id == 0)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+    }
+}
