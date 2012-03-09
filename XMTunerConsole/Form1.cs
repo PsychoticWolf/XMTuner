@@ -904,15 +904,16 @@ namespace XMTuner
             {
                 foreach (String entry in self.recentlyPlayed)
                 {
-                    String[] _entry = entry.Split(new Char[] {'-'}, 2);
-                    String[] __entry = _entry[0].Split(new String[] {"M: "}, 2, StringSplitOptions.None);
-                    ListViewItem item = new ListViewItem(new String[] {_entry[1].Trim(), _entry[0].Trim()});
+                    String[] _entry = entry.Split(new Char[] { '-' }, 2);
+                    String[] __entry = _entry[0].Split(new String[] { "M: " }, 2, StringSplitOptions.None);
+                    ListViewItem item = new ListViewItem(new String[] { _entry[1].Trim(), _entry[0].Trim() });
                     item.ImageIndex = channelBox.FindItemWithText(__entry[1]).ImageIndex;
                     item.Group = recentlyPlayedBox.Groups[0];
                     recentlyPlayedBox.Items.Add(item);
                 }
             }
-            catch (InvalidOperationException) {}
+            catch (InvalidOperationException) { }
+            catch (IndexOutOfRangeException) { }
             recentlyPlayedBox.EndUpdate();
         }
 
