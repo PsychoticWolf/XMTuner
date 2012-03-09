@@ -441,6 +441,11 @@ namespace XMTuner
         {
             System.Diagnostics.Process.Start("http://www.xmtuner.net/");
         }
+
+        private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("http://www.gnu.org/licenses/gpl-3.0.txt");
+        }
         #endregion
 
         #region Log Tab / Outputbox
