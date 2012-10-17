@@ -15,6 +15,25 @@ if ($_REQUEST["form"] == "contactme")
 	$Message = strip_tags($_REQUEST['Message']);
 	$IP = $_SERVER['REMOTE_ADDR'];
 	
+	
+	$host = explode('@',$Email);
+	$host = $host[1];
+	if (!checkdnsrr($host,"ANY"))
+	{
+		die("E-mail Address contains non-existant hostname. We only let you contact us from valid e-mail addresses!");
+	}
+	
+	
+	if (strpos($Message, "[url=") !== FALSE ||
+		strpos($Message, "[/url]") !== FALSE ||
+		strpos($Message, "[link=") !== FALSE ||
+		strpos($Message, "[/link]") !== FALSE
+	   )
+	{
+		die("Invalid code in Message. This form does not accept BBCode.");
+	
+	}
+	
 	if (!$Email || !$Name || !$Subject || !$Message) {
 		die("Missing required field(s)");
 	}
