@@ -1,3 +1,26 @@
+<?php
+if ($pwSuperbar == "wiki")
+{
+	$skipStylesheet = true;
+?>
+<style type="text/css">
+#mw-head
+{
+	top: 25px !important;
+}
+
+#p-logo
+{
+	top: -135px !important;
+}
+</style>
+<?php
+}
+?>
+
+<?php
+if ($skipInnerStylesheet !== true) {
+?>
 <style type="text/css">
 #superbar {
 	font-family: Arial;
@@ -25,7 +48,8 @@
 	text-decoration: underline;
 }
 </style>
-
 <?php
+}
+
 include_once"inc_superbar.php";
 ?>
