@@ -14,8 +14,8 @@
 	include_once"inc_header.php";
 ?>
 
-<div style="font-size: 14pt; font-weight: bold; color: #ffffff; text-align: justify; background-color: #00cc00; padding: 15px; margin: 0px; text-shadow: 2px 2px 2px #000000;">
-						<p style="margin: 0px">March 8, 2012: New version of XMTuner that features a correct channel lineup and some other fixes is out. Update now!</p>
+<div style="font-size: 14pt; font-weight: bold; color: #ffffff; text-align: justify; background-color: #cc0000; padding: 15px; margin: 0px; text-shadow: 2px 2px 2px #000000;">
+						<p style="margin: 0px">September 30, 2012: The legacy streams are reportedly down (Represented by an Windows Media Player error). Its unknown if they'll be back.</p>
 </div>
 
 
