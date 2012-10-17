@@ -4,152 +4,48 @@
 <head>
 <link rel="stylesheet" href="xmtuner.css" type="text/css">
 <script src="slideshow.js" type="text/javascript"></script>
+<style type="text/css">
+P {
+	font-family: Arial;
+	font-size: 12pt;
+}
+</style>
 
-<title>XMTuner :: Sirius|XM Satelite Radio on your media player</title>
+<title>XMTuner :: The End of the Road...</title>
 </head>
 <body>
 
 <?php
 	include_once"inc_superbar.php";
+	$skipNavbarContent = true;
+	$content = "The End of the Road for XMTuner";
 	include_once"inc_header.php";
 ?>
-
-<div style="font-size: 14pt; font-weight: bold; color: #ffffff; text-align: justify; background-color: #cc0000; padding: 15px; margin: 0px; text-shadow: 2px 2px 2px #000000;">
-						<p style="margin: 0px">September 30, 2012: The legacy streams are reportedly down (Represented by an Windows Media Player error). Its unknown if they'll be back.</p>
-</div>
-
-
-<div id="show-parent">
-	<div id="show"><div id="show-index" style="float: left;"></div></div>
-
-</div>
 <div id="body">
-<div style="margin-right: 290px;">
+<div style="margin-right: 290px; margin-left: 50px;">
 	<?php
 		include_once"download/inc_download.php";
 	?>
-	<?php
-		include_once"inc_news.php";
-	?>
-<h2 class="red">About</h2>
-
-<p>XMTuner allows you to access the Sirius|XM Satelite Radio streams (both XM Radio Online and Sirius Internet Radio) on your UPnP media player. XMTuner serves as a proxy or interpreter between the SiriusXM web radio
-pages and your device or media server, making the streams much more accessible. XMTuner supports a variety of devices, such as the Xbox 360, Playstation 3, Nintendo Wii consoles, the D-Link DSM-320 and similar set-top players, several internet radio
-capable receivers and televisions, as well as a variety of smartphones such as the Blackberry, Palm, Android, and iPhone.</p>
-<p>In addition, XMTuner features its own built-in player, so you can play your favorite channels right from your desktop, with no bulky browser needed.</p>
+<div style="height: 240px">
+<a href="/screenshots/"><img border=1 src="/screenshots/images/0-6main.png" align="left" width="350" style="margin: 10px; margin-top: 0px;"></a>
+<p style="font-weight: bold">Its official, the XMTuner project is now retired.</p>
+<p>Recent changes by SiriusXM to their Internet Radio service have made it impossible to continue to support or develop XMTuner. As a result, XMTuner 0.6.4 will be the last version, and it will remain available to download.</p>
+<p>The source code for XMTuner 0.6.4 is already available for those who want it, and will also remain available. Additionally, I will be releasing the pre-release source-code for what would have been XMTuner 0.7 for download.</p>
+<p>Support will no longer be offered, the Sourceforge.net  forums will remain available for user-to-user support issues.</p>
+<p>XMTuner.net will cease operation on March 1, 2013. </p>
 </div>
+<h2 style="margin-top: 20px">Background</h2>
+<p>Changes by SiriusXM over the past two years have greatly interfered with the development of XMTuner, causing many of the features that it had to be degraded or downright broken, and while its ok to continue to use the software for as long as it continues to work, when it comes to putting time and effort into developing newer versions of XMTuner, its simply not worth it.</p>
+<p>XMTuner was always a pet project; I built it because I had a need to stream XM radio online streams to my media player, following website changes which broke the previous uXM and uSirius applications which did a simpler version of what XMTuner does today. It was always an imperfect setup for me, and I eventually moved on to just using a dedicated XM Satellite Radio and not using the internet streams as much personally. Not having the strong personal need meant devoting less time to the project, except when it meant improving the application, as a result there was a long pause between XMTuner 0.6 and what would have been 0.7, just as I was getting deep into rewriting huge portions of the XMTuner code, SiriusXM launched the new player to the world, and served as a strong reminder that XMTuner was completely at the mercy of whatever changes SiriusXM sees fit to introduce to its internet radio service. In this case, it meant the end of the support from SiriusXM for the Windows Media based streams that had been in use for years, in favor of an encrypted and much less usable flash format, which XMTuner would have required serious changes to begin to support and many of its features (everything beyond being a desktop-based player, pretty much, especially the media device/web support) would not have been able to be continued without even more time invested. In short, it wasn’t worth it to rewrite the application to support the new player, and I decided that I had no intention or plan to do so.</p>
+<p>I did continue to try to finish XMTuner 0.7 and still use the legacy player. Some of the features XMTuner 0.7 would’ve had: A new player interface with radio-style preset buttons, support for Sirius/XM Canada (if possible), not requiring the web-server or administrative privileges on Windows Vista/7 –to be more friendly for those in locked down environments, proxy support for those on corporate networks and XMTuner remote – the ability to control the application from another PC or mobile device.  Until the channel lineup changes broke many of the streams and subsequently the streams would go down unexpectedly, and at that point, I decided that development beyond XMTuner 0.6.4 would end without a change in direction from SiriusXM, which is not likely.</p>
+<p>This past August, I ended my subscription to SiriusXM Internet Radio, and reduced my satellite subscription to the Mostly Music package, as I don’t find the SiriusXM Entertainment Channels or their Internet player worth the money. As a result, my time with XMTuner has officially ended. </p>
+<p>Building on that, I have learned that SiriusXM has changed their legacy streams, which to my understanding exist (existed?) only for their SiriusXM for Business service, and XMTuner is no longer able to tune a majority of the channels because the streams no longer exist. This represents the final nail in the XMTuner coffin as XMTuner cannot be fixed if there’s no content on SiriusXM’s side. Its been a fun project, but the time has come for it to officially be put to rest.</p>
+<p>If there’s a developer interested in taking over the project, I am willing to transfer the domain and the source-code over to them, contact me to discuss this.</p>
+<p>Thanks everyone for your support<br/>
+-- Chris</p>
 
-<h2>Features</h2>
-<ul>
-	<li>XM and Sirius Radio Support</li>
-	<li>Integrated Media Player - not just for set-tops and mobiles, but your desktop too.</li>
-	<li>Customizable Recently Played History, Integrated SiriusXM Program Guide</li>
-	<li>Now Playing website</li>
-	<li>Works with a variety of devices and UPnP servers</li>
-	<li>Runs either a desktop application or in the background as a windows service.</li>
-	<li>Server can generate RSS Feeds as well as Playlists (PLS, ASX and M3U) for wide device and server compatibility</li>
-	<li>Supports transcoding streams to other formats using TVersity for devices that don't work with windows media.</li>
-	<li>Built-in Updater keeps you current.</li>
-	<li>and much more!</li>
-</ul>
 
-		<h2>Release 0.6.4</h2>
-		<h3>March 8, 2012</h3>
-		<p>XMTuner 0.6.4 fixes the outdated channel lineup that's been present since the May 2011 channel lineup changes. It also fixes the program guide error (by disabling it), and the recent issues with 
-		song title information not being updated (XM's all-channel song feed is gone, replaced it with a current-channel only feed). 0.6.4 should also fix the IndexOutOfRange exception many users were experiencing.</p>
-		<p>0.6.4 also is the first release of XMTuner that is free software - XMTuner is now released under the terms of the <a href="http://www.gnu.org/licenses/gpl-3.0.txt">GNU General Public License v3</a>.</p>
-		
-		<h3>Known Issues with 0.6.4</h3>
-		<p>While 0.6.4 features an updated channel lineup, XMTuner still uses Sirius/XM's legacy players for the WMA streams. These players were not updated for the channel lineup changes. Sirius users are less
-		affected because channels on Sirius are given a key and not a number, however XM users will not be able to tune any channel number that did not exist online before the May lineup changes.</p>
-		<p>It is not currently possible to update XMTuner to use the new SiriusXM player - those streams are Flash (RTMPE) based and encrypted.</p>
 
-<h2>Release 0.6.3</h2>
-	<h3>February 5, 2011</h3>
-	<p>XMTuner 0.6.3 is a bugfix release for XMTuner 0.6.2/0.6.1. This release fixes Sirius users who were still broken in 0.6.2. It also fixes the missing channel information and issues with channel tuning for
-		Sirius 800 (online-only) channels.</p>
-
-<h2>XMTuner 0.6.2</h2>
-<h3>February 4, 2011</h3>
-		<p>XMTuner 0.6.2 is a bugfix release for XMTuner 0.6.1. This release patches around the new player SiriusXM introduced today.</p>
-		
-		<h3>Known Issues with 0.6.2:</h3>
-		<ul>
-		<li>Channel Icons, Descriptions and Homepage links don't work properly</li>
-		<li>Cached data may cause issues, if you run into problems, clear your cache files by clicking the refresh channel data button in settings.</li>
-		</ul>
-
-<h2>XMTuner 0.6.1</h2>
-<h3>November 8, 2010</h3>
-<p>XMTuner 0.6.1 is a bugfix release for XMTuner 0.6. This fixes the login error experienced by XM users after changes to the XMRO login page.</p>
-
-<h2>XMTuner 0.6</h2>
-<h3>June 13, 2010</h3>
-<p>XMTuner 0.6 is a new major release. Focus on this release has been improving and simplifying features, primarily in the main UI, as well as lots of bugfixing. New to this release is the "XM Service Control"
-utility. This little application is the new home for the "Service" tab for users of the XMTuner service, letting you manage and configure the service as well as see its log file, without having to run the 
-main XMTuner program. Other new features include support for favorite channels, an improved history tab that better matches the rest of the application; Addition of views (such as by category) for the channels
-tab; The URL builder panel, which takes the UI for generating links to playlists, feeds, channels, etc, for configuring your devices and places it in a single location, which can be hidden away when you're done
-with it; XMTuner is now resizable, no more being stuck only seeing a few channels; On Windows 7 and Vista, Aero glass is now featured in the UI, so it better fits in with the rest of your desktop.</p>
-
-<p>Behind the scenes, the server now supports channel playlists for better compatibility with some devices and media servers, the transcoder (if enabled) can now provide wav streams as well as mp3. XMTuner now 
-supports windows power management, and will shut down its server when your computer sleeps, and upon wake-up restart back to its previous state. Lots of crashes and exceptions have been fixed, too many to list
-here. XMTuner 0.6 also now supports auto-retrying your stream when there's a built-in player error, as part of a drive to improve the application's performance both in responsiveness and long-term usage. XMTuner
-starts up faster, is easier to use, and plays longer than before.</p>
-		
-		<h3>Changes in 0.6</h3>
-		<ul>
-			<li>Improved Service Control with new XMTuner Service Control utility</li>
-			<li>Favorite Channels
-			<li>New History Tab
-			<li>URL Builder
-			<li>Channels tab now supports sorting by category
-			<li>Aero UI for Windows Vista / Windows 7 users
-			<li>UI Improvements, such as being resizable, always on top, etc.
-			<li>History length can now be customized and the notification box can be disabled, if desired.
-			<li>Improvements to TVersity transcoder support - can now transcode to WAV as well as MP3
-			<li>Channel Playlists now supported for feeds for servers and devices that need them.
-			<li>Support for Windows Power Management
-			<li>Auto relogin on login failure
-			<li>Auto-retry on player errors. 
-			<li>Lots of fixes for long-term usage and playback (can now stream reliably for 24+ hours)
-			<li>Improved error messages for when things inevitably go wrong.
-			<li>Lots of crash (exception) errors fixed
-			<li>Performance has been improved (both for UI like the channels tab and things like startup time.)
-			<li>Automatically check for relogin in the background in addition to when things happen
-			<li>and more...</li>
-		</ul>
-
-		<h2>Donations</h2>
-		<div style="margin-left: 20px; width: 700px;">
-		<p>XMTuner is free software. Created by students in their spare time - not a software development company. If you want to help support the continued development of XMTuner - you can donate to the project.</p>
-			<form action="https://www.paypal.com/cgi-bin/webscr" method="post" style="padding-left: 10px;">
-				<input type="hidden" name="cmd" value="_s-xclick">
-				<input type="hidden" name="hosted_button_id" value="FYBREFY97BCVL">
-				<input type="image" src="https://www.paypalobjects.com/WEBSCR-640-20110429-1/en_US/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
-				<img alt="" border="0" src="https://www.paypalobjects.com/WEBSCR-640-20110429-1/en_US/i/scr/pixel.gif" width="1" height="1">
-			</form>
-		</div>
-
-		<h2>Support</h2>
-		<p>Having a problem? The following resources are available to you to help get it solved. </p>
-		
-		<div style="margin-left: 20px; width: 700px;">
-		
-		<h3><a href="http://sourceforge.net/projects/xmtuner/forums/forum/1050609" target="_blank">SourceForge Forum</a></h3>
-		<p>Our sourceforge page has a interactive forum where you can ask your question and get help from other users for your particular problem.</p>
-		
-		<h3><a href="http://wiki.xmtuner.net/">XMTuner WIKI</a></h3>
-		<p>We're building a Knowledge base WIKI full of information about XMTuner which can be helpful in resolving problems. Even if you're not having a problem,
-		we would love to hear from you, help us build our database of working devices and configruations.</p>
-		
-		<h3><a href="/contact/">Contact the Developers</a></h3>
-		<p>Alright, so you've tried the above options and nothing quite worked out. That's ok. Send us an e-mail directly, and we'll try to help you out.</p>
-		
-		<h3><a href="https://bugzilla.pcfire.net/" target="_blank">XMTuner Bugzilla</a></h3>
-		<p>Found a problem? Let us know. If you're familar with software bug trackers, file a bug in our bugzilla. If not, we still want to know, so see the
-		above link and send us an e-mail.</p>
-		
-		</div>
 </div>
 <?php
 	include_once"inc_footer.php";
