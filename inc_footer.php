@@ -17,7 +17,7 @@
 	}
 	?>
 
-	<div id="footer-copy">XMTuner created by <a href="http://www.psychoticwolf.net/" target="_blank">Chris Crews</a> and <a href="" target="_blank">Curtis M. Kularski</a><br>&copy; 2009-2010 <a href="http://www.pcfire.net/" target="_blank">PCFire</a> | Not affiliated with <a href="http://www.siriusxm.com/" target="_blank">SiriusXM Satelite Radio Inc</a>.</div>
+	<div id="footer-copy">XMTuner created by <a href="http://www.psychoticwolf.net/" target="_blank">Chris Crews</a> and <a href="" target="_blank">Curtis M. Kularski</a><br>&copy; 2009-2012 <a href="http://www.pcfire.net/" target="_blank">PCFire</a> | Not affiliated with <a href="http://www.siriusxm.com/" target="_blank">SiriusXM Satelite Radio Inc</a>.</div>
 	
 	
 
