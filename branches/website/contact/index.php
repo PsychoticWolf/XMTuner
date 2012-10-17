@@ -17,9 +17,9 @@
 	<p style="width: 718px">Whether its a suggestion, technical support question or just postitive (or constructively negative) feedback.
 	We welcome hearing from our users. To contact us use the form below.</p>
 	
-	<p style="width: 650px; border: 1px dotted blue; color: DodgerBlue; background-color: LemonChiffon; padding: 5px;"><strong>Note!</strong> In an effort to maxmize
-	my limited time, and still be proactive in responding to issues, I've created a <a href="http://support.xmtuner.net/wiki/XMTuner:Frequent_Support_Issues" style="font-weight: bold;">Frequent Support Issues</a> page on
-	the XMTuner Support wiki. Your issue may already be covered there, so please have a look first, then if you still have problems or questions, feel free to contact me.</p>
+	<p style="width: 650px; border: 1px dotted blue; color: OrangeRed; background-color: MistyRose; padding: 5px;"><strong>Notice!</strong> 
+	XMTuner is retired. I am no longer providing technical support for the application. Use the Forums or the <a href="http://support.xmtuner.net/wiki/XMTuner:Frequent_Support_Issues" style="font-weight: bold;">Frequent Support Issues</a> page on
+	the XMTuner Support wiki. Your issue may already be covered there. For non-support related issues, feel free to contact me.</p>
 	<table id="contact">
 	<form action="post.php" method="POST">
 	<input type="hidden" name="form" value="contactme"/>
